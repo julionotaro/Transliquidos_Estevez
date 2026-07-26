@@ -114,3 +114,11 @@ entrada. **Sin ELK ni infraestructura de observabilidad**: para este volumen
   saldran (correctamente) como `SIN_TARIFA`.
 - Regimenes agregados quincenal/mensual: hoy se valida la base declarada contra la
   suma del rango; falta el criterio base de REPARTOS (D-08).
+
+## Estado de despliegue
+
+Aplicado al nodo Code `Auditar` del workflow `IlIod0DlephaLmAV` y publicado
+(version activa `95054237-f66f-4488-8822-cc8367f0e097`, 26/07/2026). Verificado
+con una ejecucion real en n8n (ejec. 541) contra las data tables vivas: una ruta
+FORESA -> TRANSTAMBRE salio `SIN_TARIFA` y la factura quedo `LISTO PARA PAGO: NO`.
+Pendiente la pasada con un PDF de factura real desde `auditar-factura.html`.
