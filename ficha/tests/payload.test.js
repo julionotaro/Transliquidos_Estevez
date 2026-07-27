@@ -16,6 +16,7 @@ const {
   adjuntosImagenesDesdePng,
   adjuntosDocsDesdeArchivos,
   armarPayloadFichas,
+  armarItemsFichaPorPagina,
   armarPayloadDocs,
   concatPaginasRasterizadas,
   componerHint,
@@ -74,15 +75,39 @@ test('el texto del usuario va primero y las imagenes despues', () => {
 // 2. Multipagina: 3 paginas -> 3 imagenes separadas, en orden
 // ============================================================================
 
-test('multipagina: num_paginas=3 produce 3 imagenes separadas, sin fusionar', () => {
+test('LOOP: paginas[] de 3 -> 3 items, cada uno con UNA sola imagen', () => {
   const pngs = concatPaginasRasterizadas([respuestaRast(3)]);
   assert.strictEqual(pngs.length, 3);
 
-  const p = armarPayloadFichas('gpt-4o-mini', adjuntosImagenesDesdePng(pngs), '');
-  const imgs = p.messages[1].content.filter(function (c) { return c.type === 'image_url'; });
+  const items = armarItemsFichaPorPagina('gpt-4o-mini', pngs, '');
+  assert.strictEqual(items.length, 3, 'un item (una llamada) por pagina');
 
-  assert.strictEqual(imgs.length, 3, 'una entrada de imagen por pagina');
-  imgs.forEach(function (i) { assert.match(i.image_url.url, /^data:image\/png;base64,/); });
+  items.forEach(function (it) {
+    const imgs = it.payload.messages[1].content.filter(function (c) { return c.type === 'image_url'; });
+    assert.strictEqual(imgs.length, 1, 'cada llamada lleva EXACTAMENTE una imagen');
+    assert.match(imgs[0].image_url.url, /^data:image\/png;base64,/);
+    assert.strictEqual(it.pass, 'fichas');
+    assert.strictEqual(it.modelo, 'gpt-4o-mini');
+  });
+});
+
+test('LOOP: pagina correcta por item (1,2,3), en orden', () => {
+  const pngs = concatPaginasRasterizadas([respuestaRast(3)]);
+  const items = armarItemsFichaPorPagina('gpt-4o-mini', pngs, '');
+
+  assert.deepStrictEqual(items.map(function (it) { return it.pagina; }), [1, 2, 3]);
+});
+
+test('LOOP: ninguna llamada de ficha lleva mas de una imagen', () => {
+  const pngs = concatPaginasRasterizadas([respuestaRast(5)]);
+  const items = armarItemsFichaPorPagina('gpt-4o', pngs, '');
+
+  assert.strictEqual(items.length, 5);
+  items.forEach(function (it) {
+    const crudo = JSON.stringify(it.payload);
+    const nImgs = (crudo.match(/data:image\/png;base64,/g) || []).length;
+    assert.strictEqual(nImgs, 1, 'una imagen por llamada, sin excepcion');
+  });
 });
 
 test('multipagina: varios PDF se concatenan en orden de llegada', () => {
@@ -180,20 +205,22 @@ test('una imagen suelta en documentos va como image_url', () => {
 // 5. Prompts intactos (el encargo prohibe tocarlos)
 // ============================================================================
 
-test('los prompts son copia literal del nodo v3.2', () => {
-  const src = fs.readFileSync(path.join(__dirname, 'fixtures', 'preparar-payload-v3.2-original.js'), 'utf8');
-  const reconstruir = function (letra) {
-    const arr = [];
-    const re = new RegExp('^' + letra + '\\.push\\((.*)\\);$');
-    for (const line of src.split('\n')) {
-      const m = line.match(re);
-      if (m) { arr.push(eval(m[1])); }
-    }
-    return arr.join('\n');
-  };
+test('el prompt de ficha coincide byte a byte con el fixture esperado (v3.4)', () => {
+  // Fixture deliberado: la instruccion es "esta imagen es UNA ficha" (v3.4,
+  // loop por pagina). Guarda contra cambios accidentales del prompt.
+  const esperado = fs.readFileSync(path.join(__dirname, 'fixtures', 'prompt-fichas-esperado.txt'), 'utf8');
+  assert.strictEqual(PROMPT_FICHAS, esperado, 'el prompt de ficha cambio sin actualizar el fixture');
+});
 
-  assert.strictEqual(PROMPT_FICHAS, reconstruir('A'), 'el prompt de ficha no debe cambiar');
-  assert.strictEqual(PROMPT_DOCS, reconstruir('B'), 'el prompt de documentos no debe cambiar');
+test('el prompt de documentos no cambio', () => {
+  const esperado = fs.readFileSync(path.join(__dirname, 'fixtures', 'prompt-docs-esperado.txt'), 'utf8');
+  assert.strictEqual(PROMPT_DOCS, esperado, 'el prompt de documentos no debe cambiar');
+});
+
+test('el prompt de ficha refleja "una ficha por imagen", no "por pagina del PDF"', () => {
+  assert.match(PROMPT_FICHAS, /ESTA IMAGEN ES UNA SOLA FICHA/);
+  assert.match(PROMPT_FICHAS, /hojas\[\] debe tener EXACTAMENTE UNA entrada/);
+  assert.doesNotMatch(PROMPT_FICHAS, /El PDF puede contener VARIAS fichas/);
 });
 
 test('el prompt de ficha conserva la regla del marcador 0', () => {

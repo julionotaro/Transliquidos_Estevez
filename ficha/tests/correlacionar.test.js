@@ -12,9 +12,26 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { correlacionar, renderInforme, procesar, ESTADO_LECTURA, setLogActivo } = require('../correlacionar.js');
+const { correlacionar, renderInforme, procesar, parseRespuesta, ESTADO_LECTURA, setLogActivo } = require('../correlacionar.js');
 
 setLogActivo(false);
+
+// Reproduce el ENSAMBLADO pre-v3.4 (respuestas[0]=fichas, [1]=documentos) y
+// llama al core correlacionar()+renderInforme(). La regresion compara ESTO contra
+// el fuente v3.1: prueba que el core (guardas + correlacion) no cambio. El
+// ensamblado nuevo (loop por pagina) es procesar(respuestas, metas), que tiene su
+// propia seccion de tests. Este helper ES el procesar de v3.2, literal.
+function nucleoV32(respuestas) {
+  const rA = parseRespuesta(respuestas[0]);
+  const rB = parseRespuesta(respuestas[1]);
+  const res = correlacionar(rA, rB);
+  if (!res.ok) {
+    return { ok: false, linea: 'ERROR: la pasada de FICHAS no devolvio JSON valido.', datos_json: '', avisos: 1, errores: 1, lectura_revisar: 0 };
+  }
+  const salida = { hojas: res.hojas, viajes: res.viajes, documentos: res.documentos, errores: res.errores, avisos: res.avisos };
+  const nRevisar = res.viajes.filter(function (v) { return v.estado_lectura === ESTADO_LECTURA.REVISAR; }).length;
+  return { ok: true, linea: renderInforme(res), datos_json: JSON.stringify(salida), avisos: res.avisos.length, errores: res.errores.length, lectura_revisar: nRevisar };
+}
 
 // --- Arnes: ejecuta el fuente ORIGINAL del nodo con un shim de $input ---------
 
@@ -133,7 +150,7 @@ const CASOS = {
 for (const nombre of Object.keys(CASOS)) {
   test('regresion ' + nombre + ': informe identico al fuente original v3.1', () => {
     const original = correrOriginal(CASOS[nombre]);
-    const nuevo = procesar(CASOS[nombre]);
+    const nuevo = nucleoV32(CASOS[nombre]);
 
     assert.strictEqual(nuevo.ok, original.ok);
     assert.strictEqual(sinLineasNuevas(nuevo.linea), original.linea,
@@ -142,7 +159,7 @@ for (const nombre of Object.keys(CASOS)) {
 
   test('regresion ' + nombre + ': errores y avisos identicos al original', () => {
     const original = JSON.parse(correrOriginal(CASOS[nombre]).datos_json);
-    const nuevo = JSON.parse(procesar(CASOS[nombre]).datos_json);
+    const nuevo = JSON.parse(nucleoV32(CASOS[nombre]).datos_json);
 
     assert.deepStrictEqual(nuevo.errores, original.errores);
     assert.deepStrictEqual(nuevo.avisos, original.avisos);
@@ -151,7 +168,7 @@ for (const nombre of Object.keys(CASOS)) {
 
   test('regresion ' + nombre + ': los campos de viaje preexistentes no cambian', () => {
     const original = JSON.parse(correrOriginal(CASOS[nombre]).datos_json);
-    const nuevo = JSON.parse(procesar(CASOS[nombre]).datos_json);
+    const nuevo = JSON.parse(nucleoV32(CASOS[nombre]).datos_json);
     const NUEVOS = ['estado_lectura', 'motivo_revision', 'motivos_revision', 'pagina_origen'];
 
     for (let i = 0; i < original.viajes.length; i++) {
@@ -284,16 +301,122 @@ test('el informe muestra el conteo de lectura y el estado por viaje', () => {
   assert.match(informe, /LECTURA: REVISAR -> /);
 });
 
-test('la salida del nodo expone el conteo de filas a revisar', () => {
-  const out = procesar(CASOS.varias_fichas);
+// ============================================================================
+// 3. AGREGACION v3.4 — loop por pagina: procesar(respuestas, metas)
+// ============================================================================
+//
+// Cada pagina es una respuesta pass:'fichas' con UNA hoja; la de documentos va
+// aparte. procesar las reagrupa por indice contra las metas de Preparar Payload.
 
-  assert.strictEqual(out.lectura_revisar, 1);
+// Respuesta de una pagina de ficha (una sola hoja).
+function respFicha(h) { return respuesta({ hojas: [h] }); }
+function respDocs(docs) { return respuesta({ documentos: docs || [] }); }
+function metaFicha(pagina) { return { pass: 'fichas', pagina: pagina }; }
+const META_DOCS = { pass: 'documentos' };
+
+// PDF de las 3 fichas: Asensi / Pablo Carles / Marcos, una hoja por pagina.
+function tresFichas() {
+  const respuestas = [
+    respFicha(hoja([bloque()], { pagina: 1, conductor: 'ASENSI', tractora: '2498KZL' })),
+    respFicha(hoja([bloque({ referencia: 'B2' })], { pagina: 1, conductor: 'PABLO CARLES', tractora: '8420KKT' })),
+    respFicha(hoja([bloque({ referencia: 'B3' })], { pagina: 1, conductor: 'MARCOS', tractora: '3729JLH' })),
+    respDocs([]),
+  ];
+  const metas = [metaFicha(1), metaFicha(2), metaFicha(3), META_DOCS];
+  return { respuestas: respuestas, metas: metas };
+}
+
+test('AGREGACION: 3 paginas de ficha -> 3 hojas, todos los viajes, cero perdida', () => {
+  const { respuestas, metas } = tresFichas();
+  const out = procesar(respuestas, metas);
+  const S = JSON.parse(out.datos_json);
+
   assert.strictEqual(out.ok, true);
+  assert.strictEqual(S.hojas.length, 3, 'una hoja por ficha, ninguna perdida');
+  assert.strictEqual(S.viajes.length, 3, 'los 3 viajes (1 por ficha en este fixture)');
+  assert.deepStrictEqual(
+    S.hojas.map(function (h) { return h.conductor; }),
+    ['ASENSI', 'PABLO CARLES', 'MARCOS'], 'las 3 fichas, en orden de pagina');
 });
 
-test('pasada de fichas invalida -> ok:false, sin reventar', () => {
-  const out = procesar([{ json: {} }, { json: {} }]);
+test('AGREGACION: pagina_origen se inyecta con la pagina real, no la del modelo', () => {
+  // El modelo ve una sola imagen y siempre dice pagina:1; el sistema pisa con la real.
+  const { respuestas, metas } = tresFichas();
+  const S = JSON.parse(procesar(respuestas, metas).datos_json);
 
-  assert.strictEqual(out.ok, false);
-  assert.match(out.linea, /no devolvio JSON valido/);
+  assert.deepStrictEqual(S.viajes.map(function (v) { return v.pagina_origen; }), [1, 2, 3]);
+});
+
+test('AGREGACION: una pagina con JSON invalido es ERROR visible, no perdida silenciosa', () => {
+  const respuestas = [
+    respFicha(hoja([bloque()], { conductor: 'ASENSI', tractora: '2498KZL' })),
+    { json: { choices: [{ message: { content: 'esto no es JSON' } }] } }, // pagina 2 rota
+    respFicha(hoja([bloque({ referencia: 'B3' })], { conductor: 'MARCOS', tractora: '3729JLH' })),
+    respDocs([]),
+  ];
+  const metas = [metaFicha(1), metaFicha(2), metaFicha(3), META_DOCS];
+  const out = procesar(respuestas, metas);
+  const S = JSON.parse(out.datos_json);
+
+  assert.strictEqual(S.hojas.length, 2, 'se leyeron 2 fichas');
+  assert.ok(S.errores.some(function (e) { return /Pagina 2:.*no devolvio JSON valido/.test(e); }),
+    'la ficha no leida aparece como ERROR, con su numero de pagina');
+});
+
+test('AGREGACION: hojas:[] (pagina de documento) NO cuenta como ficha perdida', () => {
+  // Una pagina impresa entre fichas: el modelo devuelve {hojas:[]}. Es legitimo.
+  const respuestas = [
+    respFicha(hoja([bloque()], { conductor: 'ASENSI', tractora: '2498KZL' })),
+    respuesta({ hojas: [] }), // pagina 2 = documento impreso
+    respDocs([]),
+  ];
+  const metas = [metaFicha(1), metaFicha(2), META_DOCS];
+  const out = procesar(respuestas, metas);
+  const S = JSON.parse(out.datos_json);
+
+  assert.strictEqual(S.hojas.length, 1);
+  assert.ok(!S.errores.some(function (e) { return /Pagina 2/.test(e); }),
+    'una pagina de documento no genera error de ficha perdida');
+});
+
+test('AGREGACION: los documentos enganchan por matricula a la ficha de su pagina', () => {
+  // Documento con matricula de Marcos -> debe asociarse al viaje de Marcos.
+  const respuestas = [
+    respFicha(hoja([bloque()], { conductor: 'ASENSI', tractora: '2498KZL' })),
+    respFicha(hoja([bloque({ referencia: 'B3' })], { conductor: 'MARCOS', tractora: '3729JLH' })),
+    respDocs([doc({ matricula_tractor: '3729JLH', referencia: 'CMR-MARCOS' })]),
+  ];
+  const metas = [metaFicha(1), metaFicha(2), META_DOCS];
+  const S = JSON.parse(procesar(respuestas, metas).datos_json);
+
+  const marcos = S.viajes.find(function (v) { return v.tractora === '3729JLH'; });
+  assert.strictEqual(marcos.docs.length, 1, 'el CMR engancho a la ficha de Marcos');
+  assert.strictEqual(marcos.referencia, 'CMR-MARCOS');
+});
+
+test('la salida del nodo expone el conteo de filas a revisar', () => {
+  const respuestas = [
+    respFicha(hoja([bloque()], { conductor: 'ASENSI', tractora: '2498KZL' })),
+    respFicha(hoja([bloque({ km_recorridos: 900 })], { conductor: 'MARCOS', tractora: '3729JLH' })),
+    respDocs([]),
+  ];
+  const metas = [metaFicha(1), metaFicha(2), META_DOCS];
+  const out = procesar(respuestas, metas);
+
+  assert.strictEqual(out.ok, true);
+  assert.strictEqual(out.lectura_revisar, 1, 'el viaje con km descuadrado cuenta como REVISAR');
+});
+
+test('todas las paginas de ficha con JSON invalido -> ok:true pero con errores, sin reventar', () => {
+  // Ninguna ficha leible: no revienta; correlacionar reporta "ninguna ficha" +
+  // procesar reporta cada pagina fallida. No es un ok:false catastrofico.
+  const respuestas = [
+    { json: { choices: [{ message: { content: 'roto' } }] } },
+    respDocs([]),
+  ];
+  const out = procesar(respuestas, [metaFicha(1), META_DOCS]);
+
+  assert.strictEqual(out.ok, true);
+  assert.ok(out.errores >= 1);
+  assert.match(out.linea, /Pagina 1:.*no devolvio JSON valido/);
 });

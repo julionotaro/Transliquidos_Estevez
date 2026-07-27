@@ -1,19 +1,28 @@
-// ===== PREPARAR PAYLOAD v3.3: lectura de ficha sobre imagen rasterizada =====
+// ===== PREPARAR PAYLOAD v3.4: una llamada por pagina (loop) =================
 //
 // Logica pura del nodo Code "Preparar Payload" del workflow [ESTEVEZ] Ingesta
 // Viaje (WD0q9Ic0oDvUoJwp). Extraida aqui para que el repo sea la fuente de
 // verdad; el nodo se genera con `node ficha/build-nodo.js`.
 //
-// Cambio v3.2 -> v3.3: la pasada de FICHAS ahora va al modelo como imagen
-// rasterizada a 300 DPI (image_url, detail:high), no como PDF-archivo. Ese es el
-// bug de fondo probado el 26/07: manuscrito sobre PDF-archivo rinde mal, sobre
-// imagen rinde bien. La pasada de DOCUMENTOS no se toca — sigue con type:file y
-// gpt-4o, que funciona.
+// Cambio v3.3 -> v3.4: la pasada de FICHAS emite UN item por pagina rasterizada,
+// cada uno con UNA sola imagen. "Extraer GPT-4o" corre una vez por pagina y cada
+// llamada devuelve una ficha. Antes (v3.3) las N imagenes iban en UNA sola
+// llamada, y gpt-4o-mini devolvia una sola ficha perdiendo el resto en silencio
+// (ejec. 552: prompt_tokens 111878 = recibio las 3 imagenes, devolvio 1). Con
+// una imagen por llamada es imposible perder una ficha por diseno, sin depender
+// del modelo. El prompt se ajusto a "esta imagen es UNA ficha".
+//
+// Cambio v3.2 -> v3.3 (vigente): la ficha va como imagen rasterizada a 300 DPI
+// (image_url, detail:high), no como PDF-archivo. La pasada de DOCUMENTOS no se
+// toca — sigue con type:file y gpt-4o sobre el PDF entero, que funciona.
 //
 // La rasterizacion la hace el nodo HTTP "Rasterizar Ficha" (multipart al
 // microservicio en http://rasterizador:8000/rasterizar?dpi=300, un run por PDF).
-// El wrapper de este nodo lee $('Rasterizar Ficha').all() y las paginas
-// resultantes se concatenan en adjuntos[]. Prompt sin cambios.
+//
+// Nota: con loop por pagina, las paginas que sean DOCUMENTOS impresos tambien
+// llegan al modelo de ficha. El prompt les manda devolver hojas:[] (no inventar
+// una ficha a partir de un CMR). La agregacion aguas abajo trata hojas:[] como
+// "esa pagina no era ficha", no como perdida.
 //
 // Arnes de barrido:
 //   MODELO_FICHAS es la variable a swappear entre corridas. Modelos cableados:
@@ -44,16 +53,18 @@ function logInfo(m) { if (LOG_ACTIVO) { console.log('[ficha:payload] ' + m); } }
 function logError(m) { if (LOG_ACTIVO) { console.error('[ficha:payload] ERROR ' + m); } }
 
 // --- Prompts ---------------------------------------------------------------
-// PROMPT_FICHAS y PROMPT_DOCS son COPIAS LITERALES del nodo v3.2. No modificar
-// aqui — el prompt ya tiene reglas anti-fabricacion validadas. Cualquier cambio
-// va como fase aparte, con test que muestre que rinde mejor sobre las 3 fichas.
+// PROMPT_DOCS es copia literal del nodo v3.2 (no tocar). PROMPT_FICHAS cambio en
+// v3.4: "una ficha por pagina del PDF" -> "esta imagen es UNA ficha", porque
+// ahora cada llamada recibe una sola imagen. Las reglas anti-fabricacion
+// (null indica el TIPO nunca 0, no inventar ano/odometros, etc.) NO cambiaron.
+// El test compara byte a byte contra el fixture prompt-fichas-esperado.
 
 var PROMPT_FICHAS = [
   'Eres un transcriptor de FICHAS DE CHOFER manuscritas de Trans. Liquidos Estevez S.L.',
   '',
-  'El PDF puede contener VARIAS fichas. Cada ficha ocupa una pagina y se reconoce por: membrete impreso TRANS. LIQUIDOS ESTEVEZ, S.L., campos CONDUCTOR / TRACTORA / REMOLQUE escritos a mano, tres bloques de viaje con FECHA DE CARGA, NOMBRE DE CARGA, LUGAR DE CARGA, TIPO DE MERCANCIA y KM, y abajo los recuadros GASTOS DEL VIAJE y OBSERVACIONES.',
+  'ESTA IMAGEN ES UNA SOLA FICHA de chofer. Se reconoce por: membrete impreso TRANS. LIQUIDOS ESTEVEZ, S.L., campos CONDUCTOR / TRACTORA / REMOLQUE escritos a mano, tres bloques de viaje con FECHA DE CARGA, NOMBRE DE CARGA, LUGAR DE CARGA, TIPO DE MERCANCIA y KM, y abajo los recuadros GASTOS DEL VIAJE y OBSERVACIONES. Extrae TODOS los viajes de esta ficha.',
   '',
-  'TU UNICA TAREA son las fichas manuscritas. IGNORA POR COMPLETO toda pagina que sea documento impreso (CMR, carta de porte, albaran, orden de transporte, orden de carga, guia, ticket de bascula, autorizacion de salida, correo). NO uses datos de esas paginas para rellenar una ficha.',
+  'TU UNICA TAREA son las fichas manuscritas. Si esta imagen NO es una ficha manuscrita sino un documento impreso (CMR, carta de porte, albaran, orden de transporte, orden de carga, guia, ticket de bascula, autorizacion de salida, correo), devuelve hojas vacio: {"hojas":[]}. NO inventes una ficha a partir de un documento impreso.',
   '',
   '=== REGLA MAS IMPORTANTE: NO CONFABULES ===',
   'Estas leyendo letra manuscrita sobre un escaneo. Si NO puedes leer un campo con seguridad, devuelve null.',
@@ -68,15 +79,15 @@ var PROMPT_FICHAS = [
   '4) CONFUNDIR ETIQUETAS DE GASTOS. En OBSERVACIONES suele haber lineas tipo Transf. / Nominas que NO son dietas ni peajes. Asigna cada importe a la fila del recuadro GASTOS DEL VIAJE donde realmente esta escrito.',
   '',
   'REGLAS:',
-  '- UNA entrada en hojas[] por CADA ficha. Si hay tres fichas, devuelve tres. NUNCA fusiones fichas: conductores o tractoras distintas son fichas distintas.',
-  '- Dentro de cada ficha, un elemento en bloques[] por cada bloque RELLENO (maximo 3). No inventes bloques vacios.',
+  '- hojas[] debe tener EXACTAMENTE UNA entrada: la ficha de esta imagen. NO inventes fichas adicionales; NO devuelvas mas de una.',
+  '- Dentro de la ficha, un elemento en bloques[] por cada bloque RELLENO (maximo 3). No inventes bloques vacios.',
   '- TRANSCRIPCION LITERAL: copia lo escrito con sus abreviaturas y faltas. No corrijas, no traduzcas, no completes.',
   '- MATRICULAS: transcribe caracter a caracter lo que ves (formato habitual 4 digitos + 3 letras, ej 2498KZL). Si una letra o cifra es dudosa, devuelve lo que lees pero NO fuerces un formato valido.',
   '- FECHAS: se escriben dd/mm/aaaa o dd-m-aa. Devuelve SIEMPRE fecha_carga_texto con lo escrito tal cual. Si el ano figura, completo o abreviado (26 = 2026), rellena tambien fecha_carga en YYYY-MM-DD. Devuelve fecha_carga null SOLO si el ano no esta escrito o no se distingue.',
   '- ODOMETROS: km_inicio es KM. AL INICIO DEL VIAJE. km_final es KM. AL FINAL DEL VIAJE. km_recorridos es KM. RECORRIDOS. Transcribe los tres TAL COMO ESTAN ESCRITOS, quitando los puntos de miles (838.163 -> 838163). Si un campo esta vacio o ilegible, null: es normal que km_recorridos falte.',
   '- CANTIDAD: el peso escrito por el chofer en kg, sin puntos de miles (23.140 -> 23140). Si no se lee, null.',
   '- GASTOS: transcribe el recuadro GASTOS DEL VIAJE por tipo (dietas, gasoleo, peajes, lavados, otros) con su importe, segun la columna EN EFECTIVO o A CREDITO. Transcribe el texto completo de OBSERVACIONES por separado, sin convertirlo en gastos.',
-  '- pagina: numero de pagina del PDF donde esta la ficha (1 = primera).',
+  '- pagina: pon 1 (esta imagen es una sola ficha; el sistema asigna el numero de pagina real del PDF).',
   '',
   'SOBRE EL ESQUEMA: los null del ejemplo indican el TIPO del campo, no un valor por defecto. Devuelve el dato leido o null. NUNCA 0 en un campo numerico que no pudiste leer.',
   '',
@@ -158,7 +169,7 @@ function mkPayloadOpenAI(modelo, sys, userText, adjuntos) {
   return p;
 }
 
-var USER_TEXT_FICHAS = 'Transcribe TODAS las fichas de chofer manuscritas de este PDF, una entrada por ficha, revisando los tres bloques de cada una. Ignora los documentos impresos. Si un campo no se lee con seguridad, devuelve null en vez de adivinar.';
+var USER_TEXT_FICHAS = 'Transcribe la ficha de chofer manuscrita de esta imagen, revisando sus tres bloques de viaje. Si esta imagen es un documento impreso y no una ficha, devuelve {"hojas":[]}. Si un campo no se lee con seguridad, devuelve null en vez de adivinar.';
 var USER_TEXT_DOCS = 'Extrae TODOS los documentos impresos de este PDF, una entrada por pagina. Ignora las fichas manuscritas.';
 
 /** Construye el payload de la pasada de fichas para un modelo dado. */
@@ -171,6 +182,31 @@ function armarPayloadFichas(modelo, adjuntos, hint) {
   }
   var texto = USER_TEXT_FICHAS + (hint || '');
   return mkPayloadOpenAI(modelo, PROMPT_FICHAS, texto, adjuntos);
+}
+
+/**
+ * Loop por pagina: un item de payload por imagen rasterizada. Cada uno lleva UNA
+ * sola imagen -> una llamada -> una ficha. Ese es el corazon del arreglo v3.4:
+ * con una imagen por llamada es imposible perder una ficha, sin depender del
+ * modelo. `pagina` (1-indexed) viaja en el item para que la agregacion aguas
+ * abajo le asigne el numero de pagina real a la ficha.
+ *
+ * @returns {Array<{pass:'fichas', pagina:number, modelo:string, payload:object}>}
+ */
+function armarItemsFichaPorPagina(modelo, pngB64Array, hint) {
+  var items = [];
+  for (var i = 0; i < pngB64Array.length; i++) {
+    var b64 = pngB64Array[i];
+    if (!b64) continue;
+    var adjuntos = adjuntosImagenesDesdePng([b64]);
+    items.push({
+      pass: 'fichas',
+      pagina: i + 1,
+      modelo: modelo,
+      payload: armarPayloadFichas(modelo, adjuntos, hint),
+    });
+  }
+  return items;
 }
 
 /** Construye el payload de la pasada de documentos. */
@@ -217,6 +253,7 @@ if (typeof module !== 'undefined' && module.exports) {
     adjuntosDocsDesdeArchivos: adjuntosDocsDesdeArchivos,
     mkPayloadOpenAI: mkPayloadOpenAI,
     armarPayloadFichas: armarPayloadFichas,
+    armarItemsFichaPorPagina: armarItemsFichaPorPagina,
     armarPayloadDocs: armarPayloadDocs,
     concatPaginasRasterizadas: concatPaginasRasterizadas,
     componerHint: componerHint,

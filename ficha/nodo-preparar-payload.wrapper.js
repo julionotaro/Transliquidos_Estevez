@@ -2,20 +2,18 @@
 // [ESTEVEZ] Ingesta Viaje — WD0q9Ic0oDvUoJwp.
 //
 // Entrada: los items de "Rasterizar Ficha" (una respuesta del microservicio por
-// PDF). El base64 de los adjuntos para la pasada de documentos NO se lee de aca:
-// viene ya resuelto en `archivos`, desde "Preparar Rasterizacion".
+// PDF, con paginas[]). El base64 de los adjuntos para la pasada de documentos NO
+// se lee de aca: viene ya resuelto en `archivos`, desde "Preparar Rasterizacion"
+// (ver ese nodo: getBinaryDataBuffer resuelve contra la entrada del nodo actual,
+// que aca ya no tiene binarios; leer binary[key].data devuelve "filesystem-v2").
 //
-// Por que: `getBinaryDataBuffer` resuelve contra la entrada del nodo actual, que
-// a esta altura es la respuesta JSON del rasterizador y no tiene binarios. Y
-// leer `binary[key].data` de un nodo anterior devuelve la cadena "filesystem-v2"
-// (modo de almacenamiento filesystem), que decodificada da basura sin lanzar
-// error. Verificado en esta instancia (ejec. 550).
-//
-// Salida: dos items, uno por pasada, igual que v3.2 — "Extraer GPT-4o" corre una
-// vez por item.
+// Salida (v3.4 — loop por pagina): N+1 items.
+//   - N items pass:'fichas', uno por pagina rasterizada, cada uno con UNA imagen.
+//   - 1 item  pass:'documentos', el PDF entero como type:file.
+// "Extraer GPT-4o" corre una vez por item -> una llamada de ficha por pagina.
+// "Formatear Linea Gesruta" reagrupa por indice contra $('Preparar Payload').
 
 // ===== BARRIDO DE MODELOS =====
-// Pasada A (ficha manuscrita) sobre IMAGEN rasterizada a 300 DPI.
 // Cambiar MODELO_FICHAS para correr el barrido. Cableados: gpt-4o-mini, gpt-4o.
 // Se puede pisar por corrida mandando `modelo_fichas` en el body del webhook.
 const MODELO_FICHAS = 'gpt-4o-mini';
@@ -29,13 +27,14 @@ const notas = body['Notas'] || hook.json['Notas'] || '';
 // Override por corrida, para el barrido sin tocar el nodo.
 const modeloFichas = body['modelo_fichas'] || MODELO_FICHAS;
 
-// --- Pasada A: paginas rasterizadas -> image_url ---------------------------
+// --- Pasada A: una llamada por pagina rasterizada --------------------------
 const respuestasRast = $input.all().map(function (it) { return it.json || {}; });
 const pngs = concatPaginasRasterizadas(respuestasRast);
 if (pngs.length === 0) {
   throw new Error('El rasterizador no devolvio ninguna pagina. La ficha NO se puede leer sobre PDF-archivo (rinde mal en manuscrito); se aborta en vez de degradar en silencio.');
 }
-const adjuntosFicha = adjuntosImagenesDesdePng(pngs);
+const hint = componerHint(empresaHint, notas);
+const itemsFicha = armarItemsFichaPorPagina(modeloFichas, pngs, hint);
 
 // --- Pasada B: adjuntos originales, con el base64 leido aguas arriba --------
 const archivos = ($('Preparar Rasterizacion').first().json || {}).archivos || [];
@@ -44,12 +43,13 @@ if (archivos.length === 0) {
 }
 const adjuntosDocs = adjuntosDocsDesdeArchivos(archivos);
 
-const hint = componerHint(empresaHint, notas);
-
 logInfo('modelo_fichas=' + modeloFichas + ' modelo_docs=' + MODELO_DOCS +
-  ' paginas_rasterizadas=' + pngs.length + ' archivos=' + archivos.length);
+  ' llamadas_ficha=' + itemsFicha.length + ' (una por pagina) archivos=' + archivos.length);
 
-return [
-  { json: { pass: 'fichas', modelo: modeloFichas, paginas_rasterizadas: pngs.length, payload: armarPayloadFichas(modeloFichas, adjuntosFicha, hint) } },
-  { json: { pass: 'documentos', modelo: MODELO_DOCS, payload: armarPayloadDocs(MODELO_DOCS, adjuntosDocs, hint) } }
-];
+// N items de ficha (uno por pagina) + 1 de documentos, en ese orden.
+const out = [];
+for (const it of itemsFicha) {
+  out.push({ json: { pass: 'fichas', pagina: it.pagina, modelo: it.modelo, payload: it.payload } });
+}
+out.push({ json: { pass: 'documentos', modelo: MODELO_DOCS, payload: armarPayloadDocs(MODELO_DOCS, adjuntosDocs, hint) } });
+return out;

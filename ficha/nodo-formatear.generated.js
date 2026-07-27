@@ -308,14 +308,73 @@ function parseRespuesta(it) {
   try { return JSON.parse(c); } catch (e) { return null; }
 }
 
-/** Arma el item de salida del nodo a partir de las dos respuestas de OpenAI. */
-function procesar(respuestas) {
-  const rA = parseRespuesta(respuestas[0]);
-  const rB = parseRespuesta(respuestas[1]);
-  const res = correlacionar(rA, rB);
-  if (!res.ok) {
-    return { ok: false, linea: 'ERROR: la pasada de FICHAS no devolvio JSON valido.', datos_json: '', avisos: 1, errores: 1, lectura_revisar: 0 };
+/**
+ * Ensambla las respuestas del modelo (v3.4: loop por pagina) y corre la
+ * correlacion. Cada respuesta se empareja POR INDICE con su meta de "Preparar
+ * Payload" ($('Preparar Payload').all()), que dice si el item era una pasada de
+ * ficha (con su numero de pagina) o la de documentos.
+ *
+ *   - N respuestas pass:'fichas', cada una {hojas:[0..1]}. Se les inyecta la
+ *     `pagina` real (el modelo ve una sola imagen y no la conoce). Se juntan en
+ *     un unico rA = {hojas:[...todas...]}, en orden de pagina.
+ *   - 1 respuesta pass:'documentos' -> rB = {documentos:[...]}.
+ *
+ * Perdida de fichas imposible en silencio: si una pasada de ficha devuelve JSON
+ * invalido, es un ERROR explicito (no un hueco). Si devuelve hojas:[] es que esa
+ * pagina no era una ficha (documento impreso) -> no cuenta como perdida.
+ *
+ * @param {Array} respuestas  salida de "Extraer GPT-4o" ($input.all()).
+ * @param {Array} metas       $('Preparar Payload').all().map(i => i.json).
+ */
+function procesar(respuestas, metas) {
+  metas = Array.isArray(metas) ? metas : [];
+  const erroresPrevios = [];
+  const hojasAll = [];
+  let rB = null;
+  let paginasFicha = 0;
+
+  for (let i = 0; i < respuestas.length; i++) {
+    const meta = metas[i] || {};
+    const parsed = parseRespuesta(respuestas[i]);
+    if (meta.pass === 'documentos') {
+      rB = parsed;
+      continue;
+    }
+    // pass 'fichas' (o desconocido: se trata como ficha, es el default del canal).
+    paginasFicha++;
+    const pagina = (typeof meta.pagina === 'number' && isFinite(meta.pagina)) ? meta.pagina : (i + 1);
+    if (!parsed) {
+      // JSON invalido: la ficha de esta pagina NO se leyo. Se hace visible.
+      erroresPrevios.push('Pagina ' + pagina + ': el modelo de ficha no devolvio JSON valido; esa ficha NO se leyo (no se pierde en silencio).');
+      continue;
+    }
+    const hojas = Array.isArray(parsed.hojas) ? parsed.hojas : [];
+    if (hojas.length === 0) {
+      // hojas:[] = esa pagina no era una ficha (documento impreso). No es perdida.
+      continue;
+    }
+    for (let h = 0; h < hojas.length; h++) {
+      const hoja = hojas[h];
+      hoja.pagina = pagina; // el sistema asigna la pagina real; pisa lo que diga el modelo
+      hojasAll.push(hoja);
+    }
+    if (hojas.length > 1) {
+      erroresPrevios.push('Pagina ' + pagina + ': el modelo devolvio ' + hojas.length + ' fichas para una sola imagen; se cargan todas con esta pagina. Revisar.');
+    }
   }
+
+  const res = correlacionar({ hojas: hojasAll }, rB);
+  if (!res.ok) {
+    return { ok: false, linea: 'ERROR: ninguna pasada de FICHAS devolvio JSON valido.', datos_json: '', avisos: 1, errores: 1, lectura_revisar: 0 };
+  }
+
+  // Los errores de ensamblado (fichas no leidas) van al frente del informe.
+  res.errores = erroresPrevios.concat(res.errores);
+
+  logInfo('loop por pagina: ' + paginasFicha + ' llamada(s) de ficha -> ' +
+    hojasAll.length + ' ficha(s) leida(s), ' + res.viajes.length + ' viaje(s); ' +
+    erroresPrevios.length + ' fallo(s) de lectura de pagina.');
+
   const salida = { hojas: res.hojas, viajes: res.viajes, documentos: res.documentos, errores: res.errores, avisos: res.avisos };
   const nRevisar = res.viajes.filter(function (v) { return v.estado_lectura === ESTADO_LECTURA.REVISAR; }).length;
   return {
@@ -335,10 +394,12 @@ if (typeof module !== 'undefined' && module.exports) {
 // Envoltorio especifico de n8n para el nodo Code "Formatear Linea Gesruta" del
 // workflow [ESTEVEZ] Ingesta Viaje — WD0q9Ic0oDvUoJwp.
 //
-// Solo hace de puente: toma los dos items de respuesta de OpenAI (pasada de
-// fichas y pasada de documentos) y delega en procesar(). Toda la logica vive en
+// Solo hace de puente: toma las respuestas de OpenAI (v3.4: N pasadas de ficha,
+// una por pagina, + 1 pasada de documentos) y las empareja por indice con las
+// metas de "Preparar Payload" (que dicen pass y pagina). Toda la logica vive en
 // correlacionar.js. `node ficha/build-nodo.js` pega correlacionar.js delante de
 // este archivo y produce el script final del nodo.
 
 const respuestas = $input.all();
-return [{ json: procesar(respuestas) }];
+const metas = $('Preparar Payload').all().map(function (it) { return it.json || {}; });
+return [{ json: procesar(respuestas, metas) }];

@@ -1,4 +1,4 @@
-# Canal ficha — lectura sobre imagen 300 DPI + estado_lectura (v3.3)
+# Canal ficha — loop por pagina sobre imagen 300 DPI (v3.4)
 
 Logica de los nodos Code del workflow n8n `[ESTEVEZ] Ingesta Viaje`
 (`WD0q9Ic0oDvUoJwp`). Este directorio es la **fuente de verdad**: los nodos se
@@ -9,6 +9,46 @@ generan desde aqui con `npm run build`.
 | `Preparar Rasterizacion` | `nodo-preparar-rasterizacion.wrapper.js` |
 | `Preparar Payload` | `payload.js` + `nodo-preparar-payload.wrapper.js` |
 | `Formatear Linea Gesruta` | `correlacionar.js` + `nodo-formatear.wrapper.js` |
+
+---
+
+## v3.4 — Una llamada por pagina (elimina la perdida de fichas)
+
+El defecto que corrige. En v3.3 las N imagenes rasterizadas iban en **una sola
+llamada** al modelo. En la corrida real (ejec. 552) gpt-4o-mini recibio las 3
+imagenes (`prompt_tokens: 111878` lo confirma) y devolvio **una sola ficha**:
+perdio Pablo Carles y Marcos **en silencio**, sin error, sin REVISAR. No era
+problema del modelo sino de arquitectura.
+
+v3.4 lo corrige **por diseno**: `Preparar Payload` desagrega `paginas[]` en
+**N+1 items** — uno por pagina de ficha (con UNA imagen) mas uno de documentos.
+`Extraer GPT-4o` corre una vez por item, asi que hay **una llamada por pagina** y
+cada una devuelve una ficha. Con una imagen por llamada es imposible perder una
+ficha, sin depender de que modelo se use.
+
+```
+Rasterizar Ficha (paginas[N]) → Preparar Payload (N+1 items) → Extraer GPT-4o (N+1 llamadas) → Formatear
+```
+
+- **`pagina_origen`** de cada viaje = el numero de pagina de su llamada. El
+  modelo ve una sola imagen y no conoce su pagina; el prompt le dice `pagina: 1`
+  y `Formatear` lo pisa con la pagina real (que viaja en el item de `Preparar
+  Payload`).
+- **`Formatear`** reagrupa las N+1 respuestas emparejandolas **por indice** con
+  `$('Preparar Payload').all()` (que dice `pass` y `pagina`). El core
+  `correlacionar()` no cambio: recibe un unico `rA = {hojas:[...todas...]}`.
+  Alineacion verificada con sonda (todas las fichas enganchan a su pagina).
+- **Perdida imposible en silencio:** una pagina cuya llamada devuelve JSON
+  invalido es un **ERROR** explicito con su numero de pagina. Una que devuelve
+  `hojas:[]` es una pagina de documento impreso (no una ficha) y **no** cuenta
+  como perdida.
+
+### El prompt cambio (deliberado)
+
+De "el PDF puede contener VARIAS fichas, una por pagina" a "**esta imagen es UNA
+ficha**; `hojas[]` con exactamente una entrada". Las reglas anti-fabricacion
+(null indica el TIPO nunca 0, no inventar ano/odometros, etc.) **no** cambiaron.
+El test compara byte a byte contra `tests/fixtures/prompt-fichas-esperado.txt`.
 
 ---
 
@@ -32,11 +72,8 @@ Hook Viaje ─┬─ Preparar Archivado → ... (rama de archivado, sin cambios)
 - **`Rasterizar Ficha`** (HTTP node) llama a
   `POST http://rasterizador:8000/rasterizar?dpi=300` con el PDF en el campo
   multipart `file`, y devuelve `{dpi, num_paginas, paginas[].png_base64}`.
-- **`Preparar Payload`** concatena las paginas de todas las respuestas y las
-  manda como `image_url` con `detail:'high'`.
-
-Una entrada de imagen por pagina: las paginas **no se fusionan**. El prompt ya
-resuelve el resto (una entrada en `hojas[]` por ficha, ignorar paginas impresas).
+- **`Preparar Payload`** (v3.4) emite un item por pagina, cada uno con UNA
+  `image_url` (`detail:'high'`), mas un item de documentos. Ver la seccion v3.4.
 
 ### Por que un HTTP node y no `httpRequest` dentro del Code node
 
