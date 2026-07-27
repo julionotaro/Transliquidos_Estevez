@@ -1,42 +1,79 @@
-// Genera el script del nodo Code "Formatear Linea Gesruta" concatenando la
-// logica (correlacionar.js) con el envoltorio de n8n.
+// Genera los scripts de los nodos Code del workflow [ESTEVEZ] Ingesta Viaje,
+// concatenando la logica versionada con cada envoltorio de n8n.
 //
-//   node ficha/build-nodo.js            -> escribe nodo-formatear.generated.js
-//   node ficha/build-nodo.js --check    -> falla si el generado esta desactualizado
+// El nodo Code de n8n no puede importar archivos: necesita un script
+// autocontenido. Generarlo desde una sola fuente evita que el repo y el workflow
+// se separen en silencio (ESTADO-Y-TRASPASO §4).
+//
+//   node ficha/build-nodo.js            -> reescribe los *.generated.js
+//   node ficha/build-nodo.js --check    -> falla si alguno esta desactualizado
 
 const fs = require('fs');
 const path = require('path');
 
 const DIR = __dirname;
-const SALIDA = path.join(DIR, 'nodo-formatear.generated.js');
 
-function construir() {
-  const logica = fs.readFileSync(path.join(DIR, 'correlacionar.js'), 'utf8');
-  const wrapper = fs.readFileSync(path.join(DIR, 'nodo-formatear.wrapper.js'), 'utf8');
-  return [
+// logica: modulos a inlinear delante del wrapper (en orden). [] = wrapper solo.
+const TARGETS = [
+  {
+    nodo: 'Formatear Linea Gesruta',
+    logica: ['correlacionar.js'],
+    wrapper: 'nodo-formatear.wrapper.js',
+    salida: 'nodo-formatear.generated.js',
+  },
+  {
+    nodo: 'Preparar Payload',
+    logica: ['payload.js'],
+    wrapper: 'nodo-preparar-payload.wrapper.js',
+    salida: 'nodo-preparar-payload.generated.js',
+  },
+  {
+    nodo: 'Preparar Rasterizacion',
+    logica: [],
+    wrapper: 'nodo-preparar-rasterizacion.wrapper.js',
+    salida: 'nodo-preparar-rasterizacion.generated.js',
+  },
+];
+
+function construir(t) {
+  const partes = [
     '// ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.',
-    '// Fuente: ficha/correlacionar.js + ficha/nodo-formatear.wrapper.js',
-    '// Contenido exacto del nodo Code "Formatear Linea Gesruta" (WD0q9Ic0oDvUoJwp).',
+    '// Fuente: ' + t.logica.concat([t.wrapper]).map(function (f) { return 'ficha/' + f; }).join(' + '),
+    '// Contenido exacto del nodo Code "' + t.nodo + '" (WD0q9Ic0oDvUoJwp).',
     '',
-    logica.trimEnd(),
-    '',
-    wrapper.trimEnd(),
-    '',
-  ].join('\n');
-}
-
-const generado = construir();
-
-if (process.argv.includes('--check')) {
-  const actual = fs.existsSync(SALIDA) ? fs.readFileSync(SALIDA, 'utf8') : '';
-  if (actual !== generado) {
-    console.error('nodo-formatear.generated.js esta desactualizado. Corre: node ficha/build-nodo.js');
-    process.exit(1);
+  ];
+  for (const f of t.logica) {
+    partes.push(fs.readFileSync(path.join(DIR, f), 'utf8').trimEnd());
+    partes.push('');
   }
-  console.log('nodo-formatear.generated.js al dia.');
-} else {
-  fs.writeFileSync(SALIDA, generado);
-  console.log('Escrito ' + SALIDA + ' (' + generado.length + ' bytes)');
+  partes.push(fs.readFileSync(path.join(DIR, t.wrapper), 'utf8').trimEnd());
+  partes.push('');
+  return partes.join('\n');
 }
 
-module.exports = { construir };
+const check = process.argv.includes('--check');
+let desactualizados = 0;
+
+for (const t of TARGETS) {
+  const generado = construir(t);
+  const ruta = path.join(DIR, t.salida);
+  if (check) {
+    const actual = fs.existsSync(ruta) ? fs.readFileSync(ruta, 'utf8') : '';
+    if (actual !== generado) {
+      console.error(t.salida + ' esta desactualizado.');
+      desactualizados++;
+    } else {
+      console.log(t.salida + ' al dia.');
+    }
+  } else {
+    fs.writeFileSync(ruta, generado);
+    console.log('Escrito ' + t.salida + ' (' + generado.length + ' bytes)');
+  }
+}
+
+if (check && desactualizados > 0) {
+  console.error('\n' + desactualizados + ' archivo(s) desactualizado(s). Corre: node ficha/build-nodo.js');
+  process.exit(1);
+}
+
+module.exports = { TARGETS: TARGETS, construir: construir };

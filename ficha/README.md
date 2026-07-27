@@ -1,8 +1,101 @@
-# Correlacionador de ficha — estado_lectura por fila (v3.2)
+# Canal ficha — lectura sobre imagen 300 DPI + estado_lectura (v3.3)
 
-Logica del nodo Code `Formatear Linea Gesruta` del workflow n8n
-`[ESTEVEZ] Ingesta Viaje` (`WD0q9Ic0oDvUoJwp`). Este directorio es la **fuente de
-verdad**: el nodo se genera desde aqui.
+Logica de los nodos Code del workflow n8n `[ESTEVEZ] Ingesta Viaje`
+(`WD0q9Ic0oDvUoJwp`). Este directorio es la **fuente de verdad**: los nodos se
+generan desde aqui con `npm run build`.
+
+| Nodo n8n | Se genera desde |
+|---|---|
+| `Preparar Rasterizacion` | `nodo-preparar-rasterizacion.wrapper.js` |
+| `Preparar Payload` | `payload.js` + `nodo-preparar-payload.wrapper.js` |
+| `Formatear Linea Gesruta` | `correlacionar.js` + `nodo-formatear.wrapper.js` |
+
+---
+
+## v3.3 — La ficha se lee sobre imagen, no sobre PDF-archivo
+
+El bug de fondo. El test controlado del 26/07 probo que el manuscrito se lee bien
+como **imagen rasterizada a 300 DPI** y mal como PDF-archivo (`type:'file'`).
+Hasta v3.2 la pasada de ficha mandaba el PDF como archivo; por eso kg, km, fecha
+y matricula salian null o inventados.
+
+### Topologia nueva
+
+```
+Hook Viaje ─┬─ Preparar Archivado → ... (rama de archivado, sin cambios)
+            └─ Preparar Rasterizacion → Rasterizar Ficha → Preparar Payload → Extraer GPT-4o
+```
+
+- **`Preparar Rasterizacion`** abre el item del webhook (que trae N binarios bajo
+  `data0`, `data1`...) en un item por PDF, con el binario bajo la clave `data`.
+  Hace falta porque el HTTP node manda un multipart por item.
+- **`Rasterizar Ficha`** (HTTP node) llama a
+  `POST http://rasterizador:8000/rasterizar?dpi=300` con el PDF en el campo
+  multipart `file`, y devuelve `{dpi, num_paginas, paginas[].png_base64}`.
+- **`Preparar Payload`** concatena las paginas de todas las respuestas y las
+  manda como `image_url` con `detail:'high'`.
+
+Una entrada de imagen por pagina: las paginas **no se fusionan**. El prompt ya
+resuelve el resto (una entrada en `hojas[]` por ficha, ignorar paginas impresas).
+
+### Por que un HTTP node y no `httpRequest` dentro del Code node
+
+Probado contra el servicio real: dentro de un Code node de n8n **no hay forma de
+mandar multipart**. `this.helpers.httpRequest` con `formData` devuelve 422 sin
+llegar a la red, `require('form-data')` esta bloqueado (`Module 'form-data' is
+disallowed`) y el multipart armado a mano tambien da 422. El HTTP Request node
+nativo con `parameterType: 'formBinaryData'` funciona a la primera (verificado:
+200, `num_paginas: 1`, PNG valido). Si alguien intenta "simplificar" metiendo la
+llamada dentro del Code node, va a chocar con esto.
+
+### Fallar seguro
+
+Si el rasterizador no devuelve ninguna pagina, `Preparar Payload` **aborta con
+error**. No cae de vuelta a `type:'file'`: ese camino es justamente el que no
+funciona, y degradar en silencio daria lecturas malas con cara de buenas.
+
+### La pasada de documentos no cambia
+
+Sigue con `MODELO_DOCS = 'gpt-4o'` y el PDF como `type:'file'`. Funciona.
+
+---
+
+## Arnes de barrido de modelos
+
+`MODELO_FICHAS` vive en el wrapper de `Preparar Payload`. Hay dos formas de
+cambiarlo:
+
+1. **Por corrida, sin tocar nada**: mandar `modelo_fichas` en el body del
+   webhook. Es lo que usa el barrido.
+2. **Por defecto**: editar `MODELO_FICHAS` en
+   `nodo-preparar-payload.wrapper.js`, `npm run build`, y redesplegar el nodo.
+
+| Modelo | Proveedor | Cableado |
+|---|---|---|
+| `gpt-4o-mini` | OpenAI | si |
+| `gemini-flash` | Google | **no** — falta credencial |
+| `gpt-4o` | OpenAI | si |
+
+Un modelo no cableado **falla con mensaje explicito**; nunca arma un payload de
+OpenAI con nombre de otro proveedor.
+
+### Activar el slot Gemini
+
+Cuando exista la credencial de Google AI Studio:
+
+1. Cargar la credencial en n8n.
+2. Agregar un HTTP node contra
+   `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash:generateContent`.
+   Gemini no acepta el esquema de OpenAI: las imagenes van como
+   `contents[].parts[].inline_data = {mime_type:'image/png', data:<b64>}`.
+3. Escribir `armarPayloadGemini()` en `payload.js` y quitar el `throw` de
+   `armarPayloadFichas()`.
+4. Marcar `wired: true` en `MODELOS_BARRIDO`.
+
+La forma de los datos ya esta: `concatPaginasRasterizadas()` devuelve los PNG en
+base64, que es lo que Gemini necesita.
+
+---
 
 ## Que hace
 
@@ -11,7 +104,7 @@ documentos impresos (B)—, correlaciona documento contra viaje por matricula +
 ventana de fechas + peso, aplica las guardas anti-fabricacion y arma el informe
 mas el `datos_json` que consumen los nodos de persistencia.
 
-## Que cambia en v3.2
+## v3.2 — estado_lectura por fila
 
 **Nada de la correlacion ni de las guardas.** Lo unico que cambia es que las
 guardas ahora marcan **la fila**, no solo el texto global.
@@ -71,12 +164,17 @@ esquema nunca entra como dato (ESTADO §4, error 2). Un `kg` que no se leyo qued
 
 | Archivo | Que es |
 |---|---|
-| `correlacionar.js` | La logica. Unica fuente de verdad. |
-| `nodo-formatear.wrapper.js` | Envoltorio de n8n (lee `$input.all()`, delega en `procesar()`). |
-| `build-nodo.js` | Concatena los dos anteriores en el script del nodo Code. |
-| `nodo-formatear.generated.js` | **Generado. No editar a mano.** Contenido exacto del nodo. |
-| `tests/correlacionar.test.js` | Regresion + blindaje. |
-| `tests/fixtures/formatear-v3.1-original.js` | Fuente del nodo ANTES del cambio. Es el patron de oro de la regresion. |
+| `payload.js` | Armado de payloads + prompts + registro de modelos del barrido. |
+| `correlacionar.js` | Correlacion ficha<->documento y guardas de lectura. |
+| `nodo-preparar-rasterizacion.wrapper.js` | Envoltorio: abre el item del webhook en uno por PDF. |
+| `nodo-preparar-payload.wrapper.js` | Envoltorio: `MODELO_FICHAS`, lee las paginas rasterizadas. |
+| `nodo-formatear.wrapper.js` | Envoltorio: lee `$input.all()`, delega en `procesar()`. |
+| `build-nodo.js` | Genera los tres `*.generated.js`. |
+| `*.generated.js` | **Generados. No editar a mano.** Contenido exacto de cada nodo. |
+| `tests/payload.test.js` | Imagen vs file, multipagina, conmutacion de modelo. |
+| `tests/correlacionar.test.js` | Regresion + blindaje de `estado_lectura`. |
+| `tests/fixtures/formatear-v3.1-original.js` | Patron de oro de la regresion del correlacionador. |
+| `tests/fixtures/preparar-payload-v3.2-original.js` | Patron de oro de los prompts. |
 
 ## Uso
 
@@ -103,23 +201,36 @@ Si alguien toca la correlacion o una guarda sin querer, esos 24 tests fallan.
 
 ## Estado de despliegue
 
-Aplicado y publicado el 26/07/2026 (version activa
-`5453af47-5b68-4654-a4fc-97e1e31959a4`). El `jsCode` del nodo desplegado se
-verifico **byte a byte** contra `nodo-formatear.generated.js` (mismo md5).
-Se toco tambien `Preparar Filas Viajes` para persistir los tres campos nuevos.
+v3.3 aplicado y publicado el 27/07/2026 (version activa
+`0934e6dd-6b5f-46b5-b496-662d04eea00d`). Los tres nodos Code desplegados se
+verificaron **byte a byte** contra sus `*.generated.js`.
 
-**Pendiente de verificacion:** una corrida end-to-end con un PDF de ficha real.
-No se pudo hacer desde aqui: los nodos Code se ejecutan siempre (el `pinData` no
-los cubre), asi que `Preparar Payload` aborta sin binario, y forzar la corrida
-completa habria escrito filas de prueba en las tablas de produccion. Hay que
-subir un PDF real por `ingesta-viaje.html` y confirmar que las filas de `Viajes`
-traen `estado_lectura`.
+Alcanzabilidad del rasterizador desde n8n verificada con un workflow-sonda
+temporal (despues archivado): `GET /health` -> `{"status":"ok"}`, y
+`POST /rasterizar?dpi=300` con un PDF real -> `200`, `num_paginas: 1`,
+PNG valido de 1250x600. La sonda tambien es la evidencia de que `httpRequest`
+dentro del Code node no sirve para multipart.
+
+### Pendiente: fase PRUEBA
+
+Todo lo que sigue necesita el PDF real de las 3 fichas y no se corrio:
+
+1. Subir el PDF por `ingesta-viaje.html`.
+2. Correr la pasada por `gpt-4o-mini` y por `gpt-4o` (`modelo_fichas` en el body).
+3. Llenar `barrido-modelos.md` con viajes / ano / odometros / km / gastos / kg /
+   matriculas por modelo.
+4. Verificar que `Viajes` queda con kg/km/fecha/matricula correctos y que ningun
+   digito dudoso entra sin `estado_lectura = REVISAR`.
+
+**La eleccion del modelo la hace el operador con esa tabla.** `MODELO_FICHAS`
+quedo en `gpt-4o-mini` como punto de partida del barrido (el mas barato), no como
+ganador: nadie lo midio todavia.
 
 ## Lo que este cambio NO toca
 
-- **Rasterizacion.** `Preparar Payload` sigue mandando el PDF como `type:'file'`.
-  Ese es el hueco real del encargo 2 y depende de que el servicio rasterizador
-  (`estudio-ia/activos/rasterizador/`) este desplegado en el VPS.
-- **Correlacion** ficha<->documento: encargo 3.
-- **`MODELO_FICHAS`**: sigue en `gpt-5`, definido en `Preparar Payload`. El
-  barrido de modelos no se corrio.
+- **El prompt de ficha**: intacto. Un test compara ambos prompts contra el
+  fixture del nodo v3.2 y falla si alguien los toca.
+- **La pasada de documentos**: intacta (`gpt-4o`, `type:'file'`).
+- **Correlacion** ficha<->documento y tablero PENDIENTES: encargos 3 y 5.
+- **Ingesta asincrona**: encargo 4. El canal ficha sigue sincrono, y ahora suma
+  el tiempo de rasterizado (~0,7 s por PDF chico) al del modelo.
