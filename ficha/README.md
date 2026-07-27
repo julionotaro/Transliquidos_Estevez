@@ -48,11 +48,37 @@ nativo con `parameterType: 'formBinaryData'` funciona a la primera (verificado:
 200, `num_paginas: 1`, PNG valido). Si alguien intenta "simplificar" metiendo la
 llamada dentro del Code node, va a chocar con esto.
 
+### De donde sale el base64 de la pasada de documentos
+
+**No** de `Preparar Payload`: lo lee `Preparar Rasterizacion` y viaja en
+`archivos`. Es obligatorio que sea asi.
+
+`this.helpers.getBinaryDataBuffer(itemIndex, key)` resuelve contra la entrada
+del nodo **actual**. Cuando `Preparar Payload` paso a recibir la respuesta JSON
+del rasterizador, dejo de tener binarios en su entrada y esa llamada empezo a
+fallar. El problema no es que falle: es el fallback. Leer
+`binary[key].data` desde otro nodo devuelve, con el modo de almacenamiento
+**filesystem**, la cadena literal `"filesystem-v2"` — no el contenido.
+`Buffer.from('filesystem-v2','base64')` da 9 bytes de basura **sin lanzar
+error**, asi que la pasada de documentos habria mandado un PDF corrupto a gpt-4o
+y nadie se habria enterado.
+
+Verificado en esta instancia (ejec. 550): `b.data === 'filesystem-v2'`,
+`largo 13`, decodificado `"~)^+-zo"`, `correcto: false`. Y `helpers.binaryToBuffer`
+no existe en el Code node. Por eso el binario se lee **solo** donde esta
+realmente disponible: en `Preparar Rasterizacion`, que cuelga directo de
+`Hook Viaje`.
+
 ### Fallar seguro
 
-Si el rasterizador no devuelve ninguna pagina, `Preparar Payload` **aborta con
-error**. No cae de vuelta a `type:'file'`: ese camino es justamente el que no
-funciona, y degradar en silencio daria lecturas malas con cara de buenas.
+- Si el rasterizador no devuelve ninguna pagina, `Preparar Payload` **aborta**.
+  No cae de vuelta a `type:'file'`: ese camino es justamente el que no funciona,
+  y degradar en silencio daria lecturas malas con cara de buenas.
+- Si no llega ningun PDF, `Preparar Rasterizacion` **aborta** con un mensaje
+  claro en vez de dejar la rama muerta en silencio (D-11: el escaner solo saca
+  PDF). **Ojo:** esto es un cambio de comportamiento — antes un envio con solo
+  imagenes igual iba al modelo. Si la oficina sube fotos sueltas, hay que
+  revisarlo.
 
 ### La pasada de documentos no cambia
 
@@ -202,8 +228,13 @@ Si alguien toca la correlacion o una guarda sin querer, esos 24 tests fallan.
 ## Estado de despliegue
 
 v3.3 aplicado y publicado el 27/07/2026 (version activa
-`0934e6dd-6b5f-46b5-b496-662d04eea00d`). Los tres nodos Code desplegados se
+`d6159aad-8eb9-4305-91d1-123adf8b7ac9`). Los tres nodos Code desplegados se
 verificaron **byte a byte** contra sus `*.generated.js`.
+
+El fix de la corrupcion silenciosa del binario se verifico replicando la
+topologia real en un workflow-sonda (ejec. 551): el PDF llega **intacto** a la
+pasada de documentos (`b64_len: 40` para 28 bytes, decodificado identico al
+original).
 
 Alcanzabilidad del rasterizador desde n8n verificada con un workflow-sonda
 temporal (despues archivado): `GET /health` -> `{"status":"ok"}`, y

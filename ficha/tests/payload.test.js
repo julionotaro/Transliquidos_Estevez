@@ -216,3 +216,35 @@ test('el hint del operador se adjunta al texto del usuario', () => {
 test('"No estoy seguro" no se propaga como hint de empresa', () => {
   assert.strictEqual(componerHint('No estoy seguro', ''), '');
 });
+
+// ============================================================================
+// 7. Regresion: corrupcion silenciosa del binario (bug encontrado el 27/07)
+// ============================================================================
+
+test('REGRESION: el marcador "filesystem-v2" nunca puede pasar por base64 de PDF', () => {
+  // n8n en modo filesystem pone la cadena literal 'filesystem-v2' en
+  // binary[key].data. Decodificarla como base64 da 9 bytes de basura SIN
+  // lanzar error: la pasada de documentos recibiria un PDF corrupto y nadie
+  // se enteraria. Por eso el base64 se lee en Preparar Rasterizacion, que si
+  // tiene el binario en su entrada, y viaja en `archivos`.
+  const basura = Buffer.from('filesystem-v2', 'base64');
+
+  assert.ok(basura.length < 20, 'el marcador decodifica a un puñado de bytes');
+  assert.notStrictEqual(basura.toString('utf8'), '%PDF-1.1 contenido de prueba');
+
+  // adjuntosDocsDesdeArchivos consume base64 YA resuelto: si le llega el
+  // marcador, lo propaga tal cual. Por eso la guarda vive aguas arriba.
+  const adj = adjuntosDocsDesdeArchivos([{ nombre: 'x.pdf', mime: 'application/pdf', b64: 'filesystem-v2' }]);
+  assert.strictEqual(adj[0].file.file_data, 'data:application/pdf;base64,filesystem-v2',
+    'el modulo no puede detectarlo: la unica defensa es leer el binario donde SI esta');
+});
+
+test('la pasada de documentos consume `archivos` con base64 ya resuelto', () => {
+  const real = Buffer.from('%PDF-1.1 real', 'utf8').toString('base64');
+  const adj = adjuntosDocsDesdeArchivos([{ nombre: 'r.pdf', mime: 'application/pdf', b64: real }]);
+  const p = armarPayloadDocs('gpt-4o', adj, '');
+
+  const file = p.messages[1].content.find(function (c) { return c.type === 'file'; });
+  const vuelta = Buffer.from(file.file.file_data.split(',')[1], 'base64').toString('utf8');
+  assert.strictEqual(vuelta, '%PDF-1.1 real', 'el PDF debe llegar intacto al modelo');
+});
