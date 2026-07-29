@@ -13,10 +13,14 @@
 // "Extraer GPT-4o" corre una vez por item -> una llamada de ficha por pagina.
 // "Formatear Linea Gesruta" reagrupa por indice contra $('Preparar Payload').
 
-// ===== BARRIDO DE MODELOS =====
-// Cambiar MODELO_FICHAS para correr el barrido. Cableados: gpt-4o-mini, gpt-4o.
-// Se puede pisar por corrida mandando `modelo_fichas` en el body del webhook.
-const MODELO_FICHAS = 'gpt-4o-mini';
+// ===== MODELO DE FICHAS =====
+// gpt-4o es el lector de produccion desde el §8 del encargo lectura-confiable
+// (29/07/2026): sobre banda ampliada (B.1) lee 5/9 OK todos correctos y sus
+// misreads rompen la consistencia -> los caza la guarda, cero OK malo oculto.
+// mini quedo fuera del proceso: sobre banda igual leia mal digitos legibles
+// (techo de capacidad del modelo). Se puede pisar por corrida con `modelo_fichas`
+// en el body del webhook (lo usa el barrido/pruebas de idoneidad).
+const MODELO_FICHAS = 'gpt-4o';
 const MODELO_DOCS = 'gpt-4o';
 
 const hook = $('Hook Viaje').first();
