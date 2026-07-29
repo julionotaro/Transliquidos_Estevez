@@ -16,6 +16,78 @@ PDF de prueba: el real de las **3 fichas** (`20260720181636.pdf`, 3 páginas):
 
 ---
 
+## BARRIDO v3.5 (B.1: recorte por banda) — §8 del encargo lectura-confiable
+
+Con B.1 la ficha se lee sobre **bandas ampliadas** (matricula + km de cada
+viaje via `/rasterizar-regiones`), no sobre la A4 entera. Verificacion sobre las
+3 fichas reales (9 viajes), contra la verdad de campo recortada de la propia
+ficha. Corridas reales: **570 (mini) y 573 (gpt-4o)**, ambas por el webhook vivo.
+
+| Config | Fichas/Viajes | estado_lectura | OK verificados correctos | OK malos ocultos |
+|---|---|---|---|---|
+| mini SIN crop (ejec. 557) | 3/9 ✓ | 2 OK / 7 REVISAR | — | 0 (ruidoso) |
+| **mini CON crop (570)** | 3/9 ✓ | **3 OK / 6 REVISAR** | **3/3 limpios** ✓ | **0** |
+| gpt-4o SIN crop (ejec. 560) | 3/9 ✓ | 9 OK / 0 REVISAR | — | **~4 (ocultos)** ⚠️ |
+| **gpt-4o CON crop (573)** | 3/9 ✓ | **5 OK / 4 REVISAR** | **5/5 limpios** ✓ | **0** |
+
+### El hallazgo: el crop desactiva el misread OCULTO de gpt-4o
+
+El peligro del barrido v3.4 eran los misreads internamente consistentes de gpt-4o
+que pasaban como OK con dato malo. **El recorte los desarma:** o los lee bien, o
+rompe su consistencia y la guarda los caza.
+
+| Viaje | Real | gpt-4o SIN crop (560) | gpt-4o CON crop (573) |
+|---|---|---|---|
+| Asensi V1 | 838163→**839056**=893 | 839086/923 **OK oculto** ✗ | **839056/893 OK correcto** ✓ |
+| Marcos V7 | **1053783**→1053906=123 | 105783 (digito dropeado) **OK oculto** ✗ | 1057823→neg → **REVISAR** ✓ |
+| Marcos V9 | 1054286→**1054410**=124 | 1054400/114 **OK oculto** ✗ | 1054400 vs escrito 124 → **REVISAR** ✓ |
+
+gpt-4o CON crop pasa de "9/9 OK con ~4 malos ocultos" (peligroso) a "5 OK todos
+correctos / 4 REVISAR" (seguro). **Los 5 OK se verificaron uno por uno contra la
+ficha real: cero digitos malos en OK (§8.2 bloqueante: PASA).**
+
+### El limite: con mini, el crop NO alcanza — el techo es el MODELO
+
+mini CON crop mejora poco (arreglo V3: 841063→841067) pero sigue leyendo mal
+digitos que en la banda ampliada estan **cristalinos**: leyo `839056` como
+`239056` (un 8 clarisimo como 2), matricula `8420`→`8400`, `1053783`→`1057823`.
+La banda km a 300 DPI muestra "838.163 / 839.056 / 893" sin ninguna ambiguedad,
+y aun asi mini falla. **Eso prueba que el error que queda es de CAPACIDAD del
+modelo, no de resolucion.**
+
+### Consecuencia para B.2 (relectura) — reportado, no construido
+
+La relectura focalizada re-recorta mas ceñido y a mayor DPI cuando la guarda no
+cierra. Pero si el crop **ya es legible** y el modelo igual lo lee mal (probado
+arriba), **volver a recortar mas ceñido con el MISMO modelo no lo va a arreglar**:
+no es un problema de tamaño de imagen. §8.3 lo anticipa exactamente ("si la
+relectura no recupera nada... reportarlo"). Con la evidencia en mano, la relectura
+same-model rinde poco sobre el modo de error real observado.
+
+**Por eso el corte (§9): B.1 entregado y verificado; el siguiente entregable NO es
+la relectura sino:**
+1. **Promover gpt-4o como MODELO_FICHAS** — el crop lo vuelve seguro (0 malos
+   ocultos). Hoy queda en `gpt-4o-mini` por la regla "no cambiar sin OK"; es la
+   recomendacion tecnica fuerte, pendiente del OK de Julio.
+2. **Consenso mini+gpt-4o (Palanca A)** como red para el residual: donde discrepan
+   en un campo que factura → REVISAR. Es la red que ni el crop ni la relectura
+   pueden dar sobre un misread coherente.
+
+### Latencia y coste (§8.5) — mejora, no empeora
+
+Corridas de 24s (573) y 33s (570), muy por debajo del limite de 144s del webhook.
+5 llamadas/PDF (3 ficha + 1 docs OpenAI + 1 rasterizador). Y el crop **abarata**:
+~5.860 prompt_tokens/llamada vs 37K+ de la pagina entera sola (las bandas son
+chicas). B.1 lee mejor Y sale mas barato.
+
+### Config actual
+
+`MODELO_FICHAS = gpt-4o-mini` (default, sin cambiar sin OK), pisable por corrida
+con `modelo_fichas` en el body. `MODELO_DOCS = gpt-4o`. Bandas en `REGIONES_FICHA`
+(payload.js). Columna `intentos_lectura` agregada a `Viajes` (la puebla B.2).
+
+---
+
 ## BARRIDO v3.4 (loop por pagina) — mini vs gpt-4o, mismas 3 fichas
 
 Con el loop por pagina, **ambos modelos leen las 3 fichas / 9 viajes, cero
