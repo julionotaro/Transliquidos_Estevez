@@ -28,7 +28,16 @@ ficha. Corridas reales: **570 (mini) y 573 (gpt-4o)**, ambas por el webhook vivo
 | mini SIN crop (ejec. 557) | 3/9 ✓ | 2 OK / 7 REVISAR | — | 0 (ruidoso) |
 | **mini CON crop (570)** | 3/9 ✓ | **3 OK / 6 REVISAR** | **3/3 limpios** ✓ | **0** |
 | gpt-4o SIN crop (ejec. 560) | 3/9 ✓ | 9 OK / 0 REVISAR | — | **~4 (ocultos)** ⚠️ |
-| **gpt-4o CON crop (573)** | 3/9 ✓ | **5 OK / 4 REVISAR** | **5/5 limpios** ✓ | **0** |
+| **gpt-4o CON crop (573)** | 3/9 ✓ | **6 OK / 3 REVISAR** | **5 de 6** (V9 mal) | **1: V9** ⚠️ |
+
+> **Correccion (dato verificado, no estimado).** El conteo definitivo de gpt-4o
+> CON crop es **6 OK / 3 REVISAR** (leido de la ejecucion, no inferido). De los 6
+> OK, cinco son correctos, pero **V9 es un misread coherente que paso como OK con
+> dato malo**: gpt-4o leyo inicio `1054286`→`1054236`(?) no, leyo final
+> `1054400` y recorridos `114`; la ficha real dice final `1054410`, recorridos
+> **124**. `1054400-1054286=114` cierra solo -> la guarda no lo ve. **El crop
+> reduce el misread oculto pero NO lo elimina** (V1 y V7 quedaron protegidos, V9
+> no). Esto es exactamente lo que la Palanca A (consenso) tiene que cazar.
 
 ### El hallazgo: el crop desactiva el misread OCULTO de gpt-4o
 
@@ -42,9 +51,10 @@ rompe su consistencia y la guarda los caza.
 | Marcos V7 | **1053783**→1053906=123 | 105783 (digito dropeado) **OK oculto** ✗ | 1057823→neg → **REVISAR** ✓ |
 | Marcos V9 | 1054286→**1054410**=124 | 1054400/114 **OK oculto** ✗ | 1054400 vs escrito 124 → **REVISAR** ✓ |
 
-gpt-4o CON crop pasa de "9/9 OK con ~4 malos ocultos" (peligroso) a "5 OK todos
-correctos / 4 REVISAR" (seguro). **Los 5 OK se verificaron uno por uno contra la
-ficha real: cero digitos malos en OK (§8.2 bloqueante: PASA).**
+gpt-4o CON crop pasa de "9/9 OK con ~4 malos ocultos" (muy peligroso) a "6 OK / 3
+REVISAR" con **un solo** OK malo residual (V9). Enorme mejora, pero **§8.2
+bloqueante NO pasa del todo con gpt-4o solo**: V9 se cuela. Por eso el consenso no
+es opcional.
 
 ### El limite: con mini, el crop NO alcanza — el techo es el MODELO
 
@@ -72,6 +82,45 @@ la relectura sino:**
 2. **Consenso mini+gpt-4o (Palanca A)** como red para el residual: donde discrepan
    en un campo que factura → REVISAR. Es la red que ni el crop ni la relectura
    pueden dar sobre un misread coherente.
+
+### Prueba de idoneidad de Gemini 2.5 (ejec. 577, flash, misma banda)
+
+Antes de darle un rol en el consenso. Gemini **2.5-flash** sobre las mismas
+bandas (prompt equivalente; gemini-2.5-pro dio error de acceso en este proyecto,
+se probo flash). Verdad de campo recortada de la ficha:
+
+| | Acierto de Gemini flash | Nota |
+|---|---|---|
+| V1 Asensi km_final | `339056` ✗ (real 839056) | gpt-4o lo acerto |
+| V7 Marcos km_inicio | `1053783` ✓ (real 1053783) | **gpt-4o lo erro** |
+| V9 Marcos km_final | `1054410` ✓ (real 1054410) | **gpt-4o leyo 1054400** |
+| V6 odometros | `941407→941533` ✓ exactos | gpt-4o leyo +5 |
+| matricula Pablo | `8480` ✗ (real 8420) | gpt-4o acerto (8420) |
+| varios cantidad_kg | garbled (85100, 240.80) | peor que gpt-4o en kg |
+
+**Veredicto: Gemini 2.5 PASA como segundo lector del consenso, NO como lector
+solo.** Lee en el mismo tramo de calidad que gpt-4o (mejor en unos, peor en
+otros) y, lo que importa, **yerra DISTINTO**: sus errores estan poco
+correlacionados con los de gpt-4o. Eso es justo lo que necesita un consenso —
+dos modelos rara vez cometen el MISMO misread coherente.
+
+Comprobado sobre el caso critico (el que ninguna capa previa caza):
+- **V9** (el OK malo de gpt-4o, km_cargados 114 vs real 124): Gemini lee 174.
+  gpt-4o≠Gemini → **el consenso lo manda a REVISAR**. Cazado. ✓
+- **V1**: gpt-4o correcto (839056), Gemini erra (339056) → discrepan → REVISAR.
+  El consenso PROTEGE el OK bueno de gpt-4o de un error de Gemini (no lo pisa,
+  lo marca para humano). ✓
+- **V7** (REVISAR de gpt-4o): Gemini lee 1053783→1053906=123, consistente y
+  **correcto** → el consenso puede RECUPERAR el REVISAR a OK. Baja carga humana. ✓
+
+Es exactamente la arquitectura que pediste: Gemini valida los OK de gpt-4o (caza
+el oculto V9) y re-lee los REVISAR (recupera V7). Confirmado con datos.
+
+Salvedad: la prueba uso gemini-2.5-flash con prompt compacto equivalente; el
+consenso de produccion debe usar el prompt compartido y decidir flash-vs-pro por
+coste/latencia (flash corre en cada ingesta). Y el consenso debe comparar el
+campo facturable (km_cargados / odometros), no el `km_recorridos` escrito, que es
+ruidoso (en V6 Gemini leyo recorridos 186 pero sus odometros dan 126 correcto).
 
 ### Latencia y coste (§8.5) — mejora, no empeora
 
