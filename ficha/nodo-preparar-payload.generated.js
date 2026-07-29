@@ -82,6 +82,12 @@ var PROMPT_FICHAS = [
   '3) PERDER BLOQUES. Se devolvieron 6 viajes cuando habia 9. Revisa los TRES bloques de CADA ficha antes de responder.',
   '4) CONFUNDIR ETIQUETAS DE GASTOS. En OBSERVACIONES suele haber lineas tipo Transf. / Nominas que NO son dietas ni peajes. Asigna cada importe a la fila del recuadro GASTOS DEL VIAJE donde realmente esta escrito.',
   '',
+  '=== RECORTES AMPLIADOS ADJUNTOS ===',
+  'Ademas de la ficha completa recibiras recortes ampliados de las zonas que mas importan, cada uno rotulado con un texto ANTES de su imagen:',
+  '- "RECORTE MATRICULA": la fila CONDUCTOR / TRACTORA / REMOLQUE.',
+  '- "RECORTE KM VIAJE 1|2|3": la linea KM AL INICIO DEL VIAJE / KM AL FINAL DEL VIAJE / KM RECORRIDOS del bloque de viaje 1, 2 y 3 (de arriba hacia abajo).',
+  'Para la MATRICULA de la tractora y para los tres KM de cada viaje, LEE DEL RECORTE AMPLIADO correspondiente: se ve mas grande y nitido que en la ficha completa. Usa la ficha completa para el resto de los campos y para el contexto (que bloque es cual, gastos, observaciones). El recorte "KM VIAJE N" pertenece al bloque de viaje N; NO cruces valores entre viajes. Si un recorte sale en blanco o no contiene el dato, vuelve a la ficha completa para ese campo. Seguis leyendo digito por digito: el recorte ampliado no te autoriza a adivinar.',
+  '',
   'REGLAS:',
   '- hojas[] debe tener EXACTAMENTE UNA entrada: la ficha de esta imagen. NO inventes fichas adicionales; NO devuelvas mas de una.',
   '- Dentro de la ficha, un elemento en bloques[] por cada bloque RELLENO (maximo 3). No inventes bloques vacios.',
@@ -213,6 +219,101 @@ function armarItemsFichaPorPagina(modelo, pngB64Array, hint) {
   return items;
 }
 
+// --- B.1: recorte por banda ------------------------------------------------
+//
+// La ficha es un formulario de layout fijo. Los campos que facturan (matricula,
+// km de cada viaje) viven en bandas horizontales estables, derivadas del raster
+// real a 300 DPI (ver README del rasterizador). El nodo HTTP "Rasterizar Ficha"
+// llama a /rasterizar-regiones con estas bandas (sin `pagina` -> se aplican a
+// todas las paginas) e incluir_pagina_completa=true, asi cada pagina vuelve con
+// la imagen completa (contexto) + los recortes ampliados de sus bandas.
+//
+// REGIONES_FICHA es la fuente de verdad de las coordenadas: el body del nodo
+// HTTP debe ser exactamente JSON.stringify(REGIONES_FICHA) (test lo verifica).
+var REGIONES_FICHA = [
+  { nombre: 'band_matricula', x0: 0.03, y0: 0.150, x1: 0.99, y1: 0.212 },
+  { nombre: 'km_v1', x0: 0.04, y0: 0.300, x1: 0.99, y1: 0.345 },
+  { nombre: 'km_v2', x0: 0.04, y0: 0.435, x1: 0.99, y1: 0.478 },
+  { nombre: 'km_v3', x0: 0.04, y0: 0.572, x1: 0.99, y1: 0.616 },
+];
+
+// Rotulo de cada banda (texto que precede a su imagen en el content) y orden.
+var BANDAS_FICHA_LABEL = {
+  band_matricula: 'RECORTE MATRICULA (fila CONDUCTOR / TRACTORA / REMOLQUE)',
+  km_v1: 'RECORTE KM VIAJE 1',
+  km_v2: 'RECORTE KM VIAJE 2',
+  km_v3: 'RECORTE KM VIAJE 3',
+};
+var BANDAS_FICHA_ORDEN = ['band_matricula', 'km_v1', 'km_v2', 'km_v3'];
+
+/**
+ * Content parts (texto + imagen intercalados) de UNA pagina de la respuesta de
+ * /rasterizar-regiones: primero la ficha completa rotulada, luego cada banda con
+ * su rotulo. Una banda `parece_vacio` (escaneo desplazado -> crop en blanco) se
+ * OMITE: el modelo cae en la ficha completa para ese campo (fallback B.1). Se
+ * lee digito por digito igual; el recorte amplia, no autoriza a adivinar.
+ * @param {{png_base64:string, regiones?:Array<{nombre,png_base64,parece_vacio}>}} pagina
+ */
+function adjuntosFichaConBandas(pagina) {
+  var out = [];
+  if (pagina && pagina.png_base64) {
+    out.push({ type: 'text', text: 'FICHA COMPLETA:' });
+    out.push({ type: 'image_url', image_url: { url: 'data:image/png;base64,' + pagina.png_base64, detail: 'high' } });
+  }
+  var porNombre = {};
+  var regs = (pagina && Array.isArray(pagina.regiones)) ? pagina.regiones : [];
+  for (var i = 0; i < regs.length; i++) { if (regs[i] && regs[i].nombre) { porNombre[regs[i].nombre] = regs[i]; } }
+  for (var k = 0; k < BANDAS_FICHA_ORDEN.length; k++) {
+    var nombre = BANDAS_FICHA_ORDEN[k];
+    var r = porNombre[nombre];
+    if (!r || !r.png_base64 || r.parece_vacio) { continue; }
+    out.push({ type: 'text', text: (BANDAS_FICHA_LABEL[nombre] || nombre) + ':' });
+    out.push({ type: 'image_url', image_url: { url: 'data:image/png;base64,' + r.png_base64, detail: 'high' } });
+  }
+  return out;
+}
+
+/**
+ * Aplana las paginas de N respuestas de /rasterizar-regiones en orden,
+ * conservando la imagen completa y las regiones de cada una.
+ * @returns {Array<{png_base64:string, regiones:Array}>}
+ */
+function concatPaginasConRegiones(respuestasRast) {
+  var out = [];
+  for (var i = 0; i < respuestasRast.length; i++) {
+    var r = respuestasRast[i] || {};
+    var paginas = Array.isArray(r.paginas) ? r.paginas : [];
+    for (var j = 0; j < paginas.length; j++) {
+      var p = paginas[j];
+      if (p && p.png_base64) { out.push({ png_base64: p.png_base64, regiones: Array.isArray(p.regiones) ? p.regiones : [] }); }
+    }
+  }
+  return out;
+}
+
+/**
+ * Loop por pagina con bandas (B.1): un item de payload por pagina, cada uno con
+ * la ficha completa + los recortes ampliados de sus bandas. Mantiene la garantia
+ * v3.4 (una imagen-pagina por llamada -> imposible perder una ficha) y agrega la
+ * lectura sobre banda ampliada para los campos que facturan.
+ * @returns {Array<{pass:'fichas', pagina:number, modelo:string, payload:object}>}
+ */
+function armarItemsFichaPorPaginaConBandas(modelo, paginas, hint) {
+  var items = [];
+  for (var i = 0; i < paginas.length; i++) {
+    var pagina = paginas[i];
+    if (!pagina || !pagina.png_base64) { continue; }
+    var adjuntos = adjuntosFichaConBandas(pagina);
+    items.push({
+      pass: 'fichas',
+      pagina: i + 1,
+      modelo: modelo,
+      payload: armarPayloadFichas(modelo, adjuntos, hint),
+    });
+  }
+  return items;
+}
+
 /** Construye el payload de la pasada de documentos. */
 function armarPayloadDocs(modelo, adjuntos, hint) {
   if (!esOpenAI(modelo)) {
@@ -261,6 +362,12 @@ if (typeof module !== 'undefined' && module.exports) {
     armarPayloadDocs: armarPayloadDocs,
     concatPaginasRasterizadas: concatPaginasRasterizadas,
     componerHint: componerHint,
+    REGIONES_FICHA: REGIONES_FICHA,
+    BANDAS_FICHA_LABEL: BANDAS_FICHA_LABEL,
+    BANDAS_FICHA_ORDEN: BANDAS_FICHA_ORDEN,
+    adjuntosFichaConBandas: adjuntosFichaConBandas,
+    concatPaginasConRegiones: concatPaginasConRegiones,
+    armarItemsFichaPorPaginaConBandas: armarItemsFichaPorPaginaConBandas,
   };
 }
 
@@ -293,14 +400,18 @@ const notas = body['Notas'] || hook.json['Notas'] || '';
 // Override por corrida, para el barrido sin tocar el nodo.
 const modeloFichas = body['modelo_fichas'] || MODELO_FICHAS;
 
-// --- Pasada A: una llamada por pagina rasterizada --------------------------
+// --- Pasada A: una llamada por pagina rasterizada, con bandas ampliadas -----
+// "Rasterizar Ficha" llama a /rasterizar-regiones (incluir_pagina_completa=true),
+// asi cada pagina vuelve con la imagen completa (contexto) + los recortes de sus
+// bandas (matricula, km_v1/v2/v3). B.1: los campos que facturan se leen sobre la
+// banda ampliada, no sobre la A4 entera.
 const respuestasRast = $input.all().map(function (it) { return it.json || {}; });
-const pngs = concatPaginasRasterizadas(respuestasRast);
-if (pngs.length === 0) {
+const paginas = concatPaginasConRegiones(respuestasRast);
+if (paginas.length === 0) {
   throw new Error('El rasterizador no devolvio ninguna pagina. La ficha NO se puede leer sobre PDF-archivo (rinde mal en manuscrito); se aborta en vez de degradar en silencio.');
 }
 const hint = componerHint(empresaHint, notas);
-const itemsFicha = armarItemsFichaPorPagina(modeloFichas, pngs, hint);
+const itemsFicha = armarItemsFichaPorPaginaConBandas(modeloFichas, paginas, hint);
 
 // --- Pasada B: adjuntos originales, con el base64 leido aguas arriba --------
 const archivos = ($('Preparar Rasterizacion').first().json || {}).archivos || [];

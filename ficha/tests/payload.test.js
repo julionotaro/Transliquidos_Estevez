@@ -21,6 +21,11 @@ const {
   concatPaginasRasterizadas,
   componerHint,
   setLogActivo,
+  REGIONES_FICHA,
+  BANDAS_FICHA_ORDEN,
+  adjuntosFichaConBandas,
+  concatPaginasConRegiones,
+  armarItemsFichaPorPaginaConBandas,
 } = require('../payload.js');
 
 setLogActivo(false);
@@ -125,6 +130,100 @@ test('paginas sin png_base64 se descartan en vez de mandar basura', () => {
 test('sin respuestas del rasterizador no se arma ninguna imagen', () => {
   assert.deepStrictEqual(concatPaginasRasterizadas([]), []);
   assert.deepStrictEqual(concatPaginasRasterizadas([{}]), []);
+});
+
+// ============================================================================
+// 2b. B.1: recorte por banda ampliada (matricula + km por viaje)
+// ============================================================================
+
+function paginaConBandas(vacios) {
+  vacios = vacios || {};
+  const regiones = REGIONES_FICHA.map(function (r) {
+    return { nombre: r.nombre, png_base64: PNG_1PX, parece_vacio: !!vacios[r.nombre] };
+  });
+  return { png_base64: PNG_1PX, regiones: regiones };
+}
+
+function respuestaRegiones(numPaginas, vacios) {
+  const paginas = [];
+  for (let i = 1; i <= numPaginas; i++) {
+    const p = paginaConBandas(vacios);
+    p.pagina = i;
+    paginas.push(p);
+  }
+  return { dpi: 300, num_paginas: numPaginas, paginas: paginas };
+}
+
+test('REGIONES_FICHA cubre matricula y los 3 km, con coordenadas validas 0-1', () => {
+  const nombres = REGIONES_FICHA.map(function (r) { return r.nombre; });
+  assert.deepStrictEqual(nombres, ['band_matricula', 'km_v1', 'km_v2', 'km_v3']);
+  REGIONES_FICHA.forEach(function (r) {
+    assert.ok(r.x0 >= 0 && r.x0 < r.x1 && r.x1 <= 1, r.nombre + ' x fuera de rango');
+    assert.ok(r.y0 >= 0 && r.y0 < r.y1 && r.y1 <= 1, r.nombre + ' y fuera de rango');
+    assert.strictEqual(r.pagina, undefined, 'sin pagina: la banda aplica a todas las paginas');
+  });
+});
+
+test('concatPaginasConRegiones conserva imagen completa + regiones por pagina', () => {
+  const paginas = concatPaginasConRegiones([respuestaRegiones(3)]);
+  assert.strictEqual(paginas.length, 3);
+  paginas.forEach(function (p) {
+    assert.strictEqual(p.png_base64, PNG_1PX);
+    assert.strictEqual(p.regiones.length, 4);
+  });
+});
+
+test('B.1: cada pagina -> 1 item con la ficha completa PRIMERO y luego las bandas rotuladas', () => {
+  const paginas = concatPaginasConRegiones([respuestaRegiones(3)]);
+  const items = armarItemsFichaPorPaginaConBandas('gpt-4o-mini', paginas, '');
+  assert.strictEqual(items.length, 3, 'un item (una llamada) por pagina: garantia del loop intacta');
+  assert.deepStrictEqual(items.map(function (it) { return it.pagina; }), [1, 2, 3]);
+
+  const content = items[0].payload.messages[1].content;
+  // content[0] = user text; content[1] = "FICHA COMPLETA:"; content[2] = imagen pagina.
+  assert.strictEqual(content[0].type, 'text');
+  assert.strictEqual(content[1].text, 'FICHA COMPLETA:');
+  assert.strictEqual(content[2].type, 'image_url');
+
+  // Debe haber exactamente 1 pagina completa + 4 bandas = 5 imagenes.
+  const imgs = content.filter(function (c) { return c.type === 'image_url'; });
+  assert.strictEqual(imgs.length, 5, 'ficha completa + 4 bandas');
+
+  // Los rotulos de banda estan presentes y en orden.
+  const textos = content.filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; });
+  assert.ok(textos.some(function (t) { return /RECORTE MATRICULA/.test(t); }));
+  assert.ok(textos.some(function (t) { return t === 'RECORTE KM VIAJE 1:'; }));
+  assert.ok(textos.some(function (t) { return t === 'RECORTE KM VIAJE 2:'; }));
+  assert.ok(textos.some(function (t) { return t === 'RECORTE KM VIAJE 3:'; }));
+});
+
+test('B.1: una banda parece_vacio se OMITE (fallback a ficha completa), no se manda en blanco', () => {
+  const paginas = concatPaginasConRegiones([respuestaRegiones(1, { km_v2: true })]);
+  const content = armarItemsFichaPorPaginaConBandas('gpt-4o-mini', paginas, '')[0].payload.messages[1].content;
+
+  const textos = content.filter(function (c) { return c.type === 'text'; }).map(function (c) { return c.text; });
+  assert.ok(!textos.includes('RECORTE KM VIAJE 2:'), 'la banda vacia no se rotula ni se manda');
+  assert.ok(textos.includes('RECORTE KM VIAJE 1:') && textos.includes('RECORTE KM VIAJE 3:'));
+  // Ficha completa + 3 bandas (se omitio km_v2) = 4 imagenes.
+  const imgs = content.filter(function (c) { return c.type === 'image_url'; });
+  assert.strictEqual(imgs.length, 4);
+});
+
+test('B.1: ninguna ficha se pierde aunque TODAS las bandas vengan vacias (queda la ficha completa)', () => {
+  const vacios = { band_matricula: true, km_v1: true, km_v2: true, km_v3: true };
+  const paginas = concatPaginasConRegiones([respuestaRegiones(3, vacios)]);
+  const items = armarItemsFichaPorPaginaConBandas('gpt-4o-mini', paginas, '');
+  assert.strictEqual(items.length, 3, 'sigue habiendo 3 llamadas: la ficha completa nunca falta');
+  items.forEach(function (it) {
+    const imgs = it.payload.messages[1].content.filter(function (c) { return c.type === 'image_url'; });
+    assert.strictEqual(imgs.length, 1, 'solo la ficha completa cuando todas las bandas caen');
+  });
+});
+
+test('el prompt de ficha explica los recortes ampliados adjuntos', () => {
+  assert.match(PROMPT_FICHAS, /RECORTES AMPLIADOS ADJUNTOS/);
+  assert.match(PROMPT_FICHAS, /RECORTE KM VIAJE 1\|2\|3/);
+  assert.match(PROMPT_FICHAS, /el recorte ampliado no te autoriza a adivinar/);
 });
 
 // ============================================================================

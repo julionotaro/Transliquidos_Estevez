@@ -27,14 +27,18 @@ const notas = body['Notas'] || hook.json['Notas'] || '';
 // Override por corrida, para el barrido sin tocar el nodo.
 const modeloFichas = body['modelo_fichas'] || MODELO_FICHAS;
 
-// --- Pasada A: una llamada por pagina rasterizada --------------------------
+// --- Pasada A: una llamada por pagina rasterizada, con bandas ampliadas -----
+// "Rasterizar Ficha" llama a /rasterizar-regiones (incluir_pagina_completa=true),
+// asi cada pagina vuelve con la imagen completa (contexto) + los recortes de sus
+// bandas (matricula, km_v1/v2/v3). B.1: los campos que facturan se leen sobre la
+// banda ampliada, no sobre la A4 entera.
 const respuestasRast = $input.all().map(function (it) { return it.json || {}; });
-const pngs = concatPaginasRasterizadas(respuestasRast);
-if (pngs.length === 0) {
+const paginas = concatPaginasConRegiones(respuestasRast);
+if (paginas.length === 0) {
   throw new Error('El rasterizador no devolvio ninguna pagina. La ficha NO se puede leer sobre PDF-archivo (rinde mal en manuscrito); se aborta en vez de degradar en silencio.');
 }
 const hint = componerHint(empresaHint, notas);
-const itemsFicha = armarItemsFichaPorPagina(modeloFichas, pngs, hint);
+const itemsFicha = armarItemsFichaPorPaginaConBandas(modeloFichas, paginas, hint);
 
 // --- Pasada B: adjuntos originales, con el base64 leido aguas arriba --------
 const archivos = ($('Preparar Rasterizacion').first().json || {}).archivos || [];

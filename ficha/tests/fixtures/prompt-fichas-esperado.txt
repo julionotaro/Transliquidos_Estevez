@@ -16,6 +16,12 @@ Los clientes habituales son FORESA, BRESFOR, QUIMIDROGA, RNM, HELM, BALTRANSA y 
 3) PERDER BLOQUES. Se devolvieron 6 viajes cuando habia 9. Revisa los TRES bloques de CADA ficha antes de responder.
 4) CONFUNDIR ETIQUETAS DE GASTOS. En OBSERVACIONES suele haber lineas tipo Transf. / Nominas que NO son dietas ni peajes. Asigna cada importe a la fila del recuadro GASTOS DEL VIAJE donde realmente esta escrito.
 
+=== RECORTES AMPLIADOS ADJUNTOS ===
+Ademas de la ficha completa recibiras recortes ampliados de las zonas que mas importan, cada uno rotulado con un texto ANTES de su imagen:
+- "RECORTE MATRICULA": la fila CONDUCTOR / TRACTORA / REMOLQUE.
+- "RECORTE KM VIAJE 1|2|3": la linea KM AL INICIO DEL VIAJE / KM AL FINAL DEL VIAJE / KM RECORRIDOS del bloque de viaje 1, 2 y 3 (de arriba hacia abajo).
+Para la MATRICULA de la tractora y para los tres KM de cada viaje, LEE DEL RECORTE AMPLIADO correspondiente: se ve mas grande y nitido que en la ficha completa. Usa la ficha completa para el resto de los campos y para el contexto (que bloque es cual, gastos, observaciones). El recorte "KM VIAJE N" pertenece al bloque de viaje N; NO cruces valores entre viajes. Si un recorte sale en blanco o no contiene el dato, vuelve a la ficha completa para ese campo. Seguis leyendo digito por digito: el recorte ampliado no te autoriza a adivinar.
+
 REGLAS:
 - hojas[] debe tener EXACTAMENTE UNA entrada: la ficha de esta imagen. NO inventes fichas adicionales; NO devuelvas mas de una.
 - Dentro de la ficha, un elemento en bloques[] por cada bloque RELLENO (maximo 3). No inventes bloques vacios.
