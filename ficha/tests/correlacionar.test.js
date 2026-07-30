@@ -420,3 +420,92 @@ test('todas las paginas de ficha con JSON invalido -> ok:true pero con errores, 
   assert.ok(out.errores >= 1);
   assert.match(out.linea, /Pagina 1:.*no devolvio JSON valido/);
 });
+
+// ============================================================================
+// 3. FUSION Document AI (encargo integracion): km_inicio/km_final de Document AI,
+//    resto de gpt-4o; guarda de confianza/formato; km_recorridos solo contexto.
+// ============================================================================
+
+const { evaluarCampoDocai } = require('../docai.js');
+
+function campoD(valor, conf, malformado) {
+  const base = { valor: malformado ? null : valor, conf: conf, malformado: !!malformado, raw: String(valor) };
+  return Object.assign(base, evaluarCampoDocai(base));
+}
+function bandaD(iniV, iniC, finV, finC, opts) {
+  opts = opts || {};
+  return {
+    inicio: campoD(iniV, iniC, opts.iniMalf),
+    final: campoD(finV, finC, opts.finMalf),
+    recorridos: { valor: (opts.rec != null ? opts.rec : null), raw: String(opts.rec) },
+  };
+}
+function raUnViaje(kmIniGpt, kmFinGpt, rec) {
+  return { hojas: [{ pagina: 1, conductor: 'X', tractora: '1234ABC', bloques: [{ orden: 1, km_inicio: kmIniGpt, km_final: kmFinGpt, km_recorridos: rec, cantidad_kg: 20000, fecha_carga: '2026-07-13', nombre_carga: 'FORESA' }] }] };
+}
+function viaje0(res) { return res.viajes[0]; }
+
+test('FUSION: km_inicio/km_final vienen de Document AI, no de gpt-4o', () => {
+  const rA = raUnViaje(111111, 222222, 893); // gpt-4o "leyo" cualquier cosa
+  const docai = { 1: { km_v1: bandaD(838163, 0.97, 839056, 0.85, { rec: 893 }) } };
+  const v = viaje0(correlacionar(rA, null, docai));
+  assert.strictEqual(v.km_inicio, 838163, 'km_inicio es el de Document AI');
+  assert.strictEqual(v.km_final, 839056, 'km_final es el de Document AI');
+  assert.strictEqual(v.km_inicio_gpt, 111111, 'se conserva el de gpt-4o como contexto');
+  assert.strictEqual(v.fuente_odometro, 'docai');
+  assert.strictEqual(v.estado_lectura, ESTADO_LECTURA.OK);
+});
+
+test('FUSION: km_final con baja confianza (<0.80) -> REVISAR baja_confianza', () => {
+  const rA = raUnViaje(1, 1, 893);
+  const docai = { 1: { km_v1: bandaD(838163, 0.97, 739056, 0.755, { rec: 893 }) } };
+  const v = viaje0(correlacionar(rA, null, docai));
+  assert.strictEqual(v.estado_lectura, ESTADO_LECTURA.REVISAR);
+  assert.match(v.motivo_revision, /km_final con baja confianza de Document AI \(0\.755\)/);
+});
+
+test('FUSION: km_final malformado -> REVISAR, valor null, no se parsea el numero roto', () => {
+  const rA = raUnViaje(1, 1, 123);
+  const docai = { 1: { km_v1: bandaD(940907, 0.92, 94030, 0.835, { finMalf: true, rec: 123 }) } };
+  const v = viaje0(correlacionar(rA, null, docai));
+  assert.strictEqual(v.km_final, null);
+  assert.strictEqual(v.estado_lectura, ESTADO_LECTURA.REVISAR);
+  assert.match(v.motivo_revision, /km_final con formato invalido/);
+});
+
+test('CONTEXTO: km_recorridos escrito entra en el motivo pero NO corrige el valor', () => {
+  // final baja confianza pero inicio+recorridos coincide con final -> el motivo lo
+  // dice como pista; el km_final sigue siendo el de Document AI (no se reemplaza).
+  const rA = raUnViaje(1, 1, 893);
+  const docai = { 1: { km_v1: bandaD(838163, 0.97, 839056, 0.755, { rec: 893 }) } };
+  const v = viaje0(correlacionar(rA, null, docai));
+  assert.strictEqual(v.km_final, 839056, 'el valor NO se toca con el recorrido escrito');
+  assert.match(v.motivo_revision, /el km_recorridos escrito \(893\) SI es consistente/);
+});
+
+test('REAL V9: gpt-4o metia 1054400/114 como OK invisible; Document AI lo caza', () => {
+  // gpt-4o (invisible): 1054286->1054400 = 114 (mal, real 124). Document AI lee
+  // km_final 1059410 con conf .614 -> REVISAR. El error deja de ser invisible.
+  const rA = raUnViaje(1054286, 1054400, 124);
+  const docai = { 1: { km_v1: bandaD(1054286, 0.95, 1059410, 0.614, { rec: 124 }) } };
+  const v = viaje0(correlacionar(rA, null, docai));
+  assert.strictEqual(v.estado_lectura, ESTADO_LECTURA.REVISAR);
+  assert.match(v.motivo_revision, /baja confianza/);
+});
+
+test('FALLBACK: Document AI activo pero sin banda para este viaje -> REVISAR no verificado', () => {
+  const rA = raUnViaje(838163, 839056, 893);
+  const docai = { 2: { km_v1: bandaD(1, 0.9, 2, 0.9, { rec: 1 }) } }; // otra pagina
+  const v = viaje0(correlacionar(rA, null, docai));
+  assert.strictEqual(v.fuente_odometro, 'gpt4o');
+  assert.strictEqual(v.estado_lectura, ESTADO_LECTURA.REVISAR);
+  assert.match(v.motivo_revision, /sin lectura de Document AI/);
+});
+
+test('SIN Document AI (mapa vacio): comportamiento viejo, km de gpt-4o, sin campos nuevos', () => {
+  const rA = raUnViaje(838163, 839056, 893);
+  const v = viaje0(correlacionar(rA, null, {}));
+  assert.strictEqual(v.km_inicio, 838163, 'km de gpt-4o');
+  assert.strictEqual(v.fuente_odometro, undefined, 'ningun campo nuevo cuando DocAI no esta activo');
+  assert.strictEqual(v.docai, undefined);
+});

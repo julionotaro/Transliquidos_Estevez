@@ -33,6 +33,18 @@ const TARGETS = [
     wrapper: 'nodo-preparar-rasterizacion.wrapper.js',
     salida: 'nodo-preparar-rasterizacion.generated.js',
   },
+  {
+    nodo: 'Preparar DocAI',
+    logica: [],
+    wrapper: 'nodo-preparar-docai.wrapper.js',
+    salida: 'nodo-preparar-docai.generated.js',
+  },
+  {
+    nodo: 'Extraer DocAI',
+    logica: ['docai.js'],
+    wrapper: 'nodo-extraer-docai.wrapper.js',
+    salida: 'nodo-extraer-docai.generated.js',
+  },
 ];
 
 function construir(t) {

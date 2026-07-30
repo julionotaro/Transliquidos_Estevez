@@ -9,4 +9,20 @@
 
 const respuestas = $input.all();
 const metas = $('Preparar Payload').all().map(function (it) { return it.json || {}; });
-return [{ json: procesar(respuestas, metas) }];
+
+// Odometros leidos por Document AI (nodo "Extraer DocAI"), indexados por pagina.
+// Si el nodo no existe o no corrio, docaiPorPagina queda vacio y el correlacionador
+// se comporta como antes (odometros de gpt-4o). Con DocAI activo, km_inicio/km_final
+// vienen de ahi y se aplican las guardas de confianza/formato.
+let docaiPorPagina = {};
+try {
+  const items = $('Extraer DocAI').all();
+  for (const it of items) {
+    const j = it.json || {};
+    if (j.pagina !== undefined && j.pagina !== null) {
+      docaiPorPagina[j.pagina] = { km_v1: j.km_v1, km_v2: j.km_v2, km_v3: j.km_v3 };
+    }
+  }
+} catch (e) { docaiPorPagina = {}; }
+
+return [{ json: procesar(respuestas, metas, docaiPorPagina) }];

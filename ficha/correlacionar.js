@@ -46,11 +46,16 @@ var dias = function (a, b) { if (!a || !b) { return null; } const da = Date.pars
  * @returns {{ok:boolean, hojas:Array, viajes:Array, documentos:Array,
  *            errores:Array, avisos:Array}}
  */
-function correlacionar(rA, rB) {
+function correlacionar(rA, rB, docaiPorPagina) {
   if (!rA) {
     logError('la pasada de FICHAS no devolvio JSON valido');
     return { ok: false, hojas: [], viajes: [], documentos: [], errores: [], avisos: [] };
   }
+  docaiPorPagina = docaiPorPagina || {};
+  // Document AI esta "activo" solo si el canal aporto lecturas. Sin eso, el
+  // correlacionador se comporta EXACTAMENTE como antes (odometros de gpt-4o, sin
+  // campos ni guardas nuevas) — la regresion queda intacta.
+  const docaiActivo = Object.keys(docaiPorPagina).length > 0;
   const hojasRaw = Array.isArray(rA.hojas) ? rA.hojas : [];
   const docsRaw = (rB && Array.isArray(rB.documentos)) ? rB.documentos : [];
 
@@ -62,17 +67,22 @@ function correlacionar(rA, rB) {
   const marcar = function (v, motivo) { v.motivos_revision.push(motivo); };
 
   // ---- Viajes desde las fichas ----
+  // FUSION Document AI: km_inicio/km_final vienen de Document AI (lector de
+  // odometros) cuando esta disponible; el resto de los campos, de gpt-4o. El
+  // km_recorridos escrito lo sigue leyendo gpt-4o y se usa SOLO como contexto,
+  // nunca para corregir un odometro (encargo integracion §3).
   const viajes = [];
   for (let h = 0; h < hojasRaw.length; h++) {
     const H = hojasRaw[h];
     const bloques = Array.isArray(H.bloques) ? H.bloques : [];
+    const paginaH = (typeof H.pagina === 'number' && isFinite(H.pagina)) ? H.pagina : null;
     for (let i = 0; i < bloques.length; i++) {
       const b = bloques[i];
-      viajes.push({
+      const v = {
         hoja_idx: h, orden: num(b.orden) || (i + 1),
         conductor: nz(H.conductor), tractora: nz(H.tractora), remolque: nz(H.remolque), empresa: nz(H.empresa),
         tractoraN: mat(H.tractora),
-        pagina_origen: (typeof H.pagina === 'number' && isFinite(H.pagina)) ? H.pagina : null,
+        pagina_origen: paginaH,
         fecha_carga: nz(b.fecha_carga), fecha_carga_texto: nz(b.fecha_carga_texto), fecha_descarga: nz(b.fecha_descarga),
         nombre_carga: nz(b.nombre_carga), lugar_carga: nz(b.lugar_carga),
         nombre_descarga: nz(b.nombre_descarga), lugar_descarga: nz(b.lugar_descarga),
@@ -80,10 +90,59 @@ function correlacionar(rA, rB) {
         km_inicio: num(b.km_inicio), km_final: num(b.km_final), km_recorridos: num(b.km_recorridos),
         motivos_revision: [],
         docs: []
-      });
+      };
+      // FUSION Document AI (solo si el canal aporto lecturas): km_inicio/km_final
+      // pasan a venir de Document AI (banda de km del viaje `orden` de la pagina).
+      if (docaiActivo) {
+        v.km_inicio_gpt = v.km_inicio; v.km_final_gpt = v.km_final;
+        v.fuente_odometro = 'gpt4o'; v.docai = null;
+        const dp = (v.pagina_origen != null) ? docaiPorPagina[v.pagina_origen] : null;
+        const dband = dp ? dp['km_v' + v.orden] : null;
+        if (dband) {
+          v.docai = dband;
+          v.fuente_odometro = 'docai';
+          v.km_inicio = (dband.inicio && dband.inicio.valor != null) ? dband.inicio.valor : null;
+          v.km_final = (dband.final && dband.final.valor != null) ? dband.final.valor : null;
+        }
+      }
+      viajes.push(v);
     }
   }
   if (viajes.length === 0) { errores.push('No se detecto ninguna ficha de chofer con bloques rellenos.'); }
+
+  // ---- GUARDA Document AI: confianza/formato de los odometros ----
+  // Solo si Document AI esta activo. Un odometro se acepta solo si NO es malformado
+  // Y conf >= umbral (la decision ok/motivo la trae ya evaluada docai.js). El
+  // km_recorridos escrito (gpt-4o) se agrega al motivo como contexto para el
+  // humano; NO cambia la decision ni corrige el valor. La guarda de consistencia
+  // (final-inicio vs recorridos, mas abajo) sigue existiendo aparte, no se duplica.
+  for (let i = 0; docaiActivo && i < viajes.length; i++) {
+    const v = viajes[i];
+    if (v.fuente_odometro !== 'docai' || !v.docai) {
+      // Document AI no leyo este viaje: sus km no estan verificados por el lector
+      // confiable. No se confia en el km de gpt-4o en silencio.
+      marcar(v, 'odometros sin lectura de Document AI (no verificados)');
+      continue;
+    }
+    ['inicio', 'final'].forEach(function (campo) {
+      const c = v.docai[campo];
+      if (!c || c.ok) { return; }
+      let motivo;
+      if (c.motivo === 'formato_invalido_docai') {
+        motivo = 'km_' + campo + ' con formato invalido leido por Document AI ("' + (c.raw || '') + '")';
+      } else {
+        motivo = 'km_' + campo + ' con baja confianza de Document AI (' + (typeof c.conf === 'number' ? c.conf.toFixed(3) : '?') + ')';
+      }
+      // Contexto (§3): el km_recorridos escrito como pista, nunca como corrector.
+      if (v.km_recorridos !== null && v.km_inicio !== null && v.km_final !== null) {
+        const consistente = Math.abs((v.km_final - v.km_inicio) - v.km_recorridos) <= 5;
+        motivo += consistente
+          ? '; el km_recorridos escrito (' + v.km_recorridos + ') SI es consistente con lo leido'
+          : '; el km_recorridos escrito (' + v.km_recorridos + ') NO coincide con lo leido';
+      }
+      marcar(v, motivo);
+    });
+  }
 
   // ---- GUARDA A: ano fuera de rango (mala lectura del ano en el manuscrito) ----
   // Se aplica ANTES del match porque la fecha se usa para desempatar documentos.
@@ -322,8 +381,9 @@ function parseRespuesta(it) {
  * @param {Array} respuestas  salida de "Extraer GPT-4o" ($input.all()).
  * @param {Array} metas       $('Preparar Payload').all().map(i => i.json).
  */
-function procesar(respuestas, metas) {
+function procesar(respuestas, metas, docaiPorPagina) {
   metas = Array.isArray(metas) ? metas : [];
+  docaiPorPagina = docaiPorPagina || {};
   const erroresPrevios = [];
   const hojasAll = [];
   let rB = null;
@@ -359,7 +419,7 @@ function procesar(respuestas, metas) {
     }
   }
 
-  const res = correlacionar({ hojas: hojasAll }, rB);
+  const res = correlacionar({ hojas: hojasAll }, rB, docaiPorPagina);
   if (!res.ok) {
     return { ok: false, linea: 'ERROR: ninguna pasada de FICHAS devolvio JSON valido.', datos_json: '', avisos: 1, errores: 1, lectura_revisar: 0 };
   }
