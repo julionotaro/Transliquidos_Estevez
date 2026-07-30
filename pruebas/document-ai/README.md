@@ -18,10 +18,15 @@ Endpoint: `https://eu-documentai.googleapis.com/v1/projects/163988540080/locatio
 
 ## Modalidad A vs B
 
-- **A (esta sonda):** cada banda (band_matricula, km_v1/v2/v3) va sola al procesador.
+- **A:** cada banda (band_matricula, km_v1/v2/v3) va sola al procesador.
   12 llamadas por PDF (3 páginas × 4 bandas).
-- **B (pendiente):** página completa → Document AI → filtrar tokens por bounding box
-  dentro de cada banda. Da además las coordenadas reales de cada número.
+- **B:** página completa → Document AI → filtrar tokens por bounding box
+  (`normalizedVertices`) dentro de cada banda. 3 llamadas/PDF, + coordenadas reales.
+
+Ambas implementadas: `Armar DocAI` emite 12 items A + 3 items B (por eso Rasterizar
+lleva `incluir_pagina_completa=true`); `Extraer DocAI` parsea A por texto y B por
+bounding box. Resultado y veredicto en `docs/prueba-document-ai.md`:
+**B = 14/18 odómetros, SIRVE con guarda de confianza+formato; km_final es el débil.**
 
 ## CAVEAT de credencial (documentado en el encargo §1)
 
