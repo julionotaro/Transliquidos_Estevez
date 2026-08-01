@@ -17,7 +17,7 @@ const DIR = __dirname;
 const TARGETS = [
   {
     nodo: 'Formatear Linea Gesruta',
-    logica: ['correlacionar.js'],
+    logica: ['cruce.js', 'correlacionar.js'],
     wrapper: 'nodo-formatear.wrapper.js',
     salida: 'nodo-formatear.generated.js',
   },

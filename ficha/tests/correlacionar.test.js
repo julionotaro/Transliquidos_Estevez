@@ -169,7 +169,13 @@ for (const nombre of Object.keys(CASOS)) {
   test('regresion ' + nombre + ': los campos de viaje preexistentes no cambian', () => {
     const original = JSON.parse(correrOriginal(CASOS[nombre]).datos_json);
     const nuevo = JSON.parse(nucleoV32(CASOS[nombre]).datos_json);
-    const NUEVOS = ['estado_lectura', 'motivo_revision', 'motivos_revision', 'pagina_origen'];
+    // Campos ADITIVOS: se excluyen de la comparacion, pero todo el RESTO
+    // (cantidad_kg, km_*, kg_documento, referencia, cliente...) se compara byte a
+    // byte contra el original -> prueba que el camino normal no regresiona.
+    const NUEVOS = ['estado_lectura', 'motivo_revision', 'motivos_revision', 'pagina_origen',
+      // Fase 2 (modelo albaran=unidad):
+      'cantidad_declarada', 'modo_cantidad', 'es_multiviaje', 'n_viajes_declarado',
+      'origen_km', 'regimen_indexacion', 'estado', 'pendiente_falta', 'pendiente_reclamar_a', 'origen_campos'];
 
     for (let i = 0; i < original.viajes.length; i++) {
       const vo = original.viajes[i];

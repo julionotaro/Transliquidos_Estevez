@@ -38,15 +38,29 @@ var mat = function (x) { return (x || '').toString().toUpperCase().replace(/[^A-
 var upp = function (x) { return (x || '').toString().toUpperCase(); };
 var dias = function (a, b) { if (!a || !b) { return null; } const da = Date.parse(a + 'T00:00:00Z'); const db = Date.parse(b + 'T00:00:00Z'); if (!isFinite(da) || !isFinite(db)) { return null; } return Math.round((db - da) / 86400000); };
 
+// --- Reglas del modelo albaran=unidad (Fase 2, ficha/cruce.js) ---------------
+// En n8n el build (build-nodo.js) concatena cruce.js ANTES que este archivo, asi
+// que sus funciones quedan globales; en node/test se requieren. `typeof X ===
+// 'function'` sobre un identificador no declarado devuelve 'undefined' sin lanzar,
+// asi que el ternario elige la fuente correcta en cada entorno.
+var CRUCE = (typeof clasificarCantidad === 'function')
+  ? { clasificarCantidad: clasificarCantidad, regimenIndexacion: regimenIndexacion, repartirKm: repartirKm, esRutaMultiviaje: esRutaMultiviaje, RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE }
+  : require('./cruce.js');
+
+// Fuente legible de un dato para el audit trail (§4): que papel/pagina lo aporto.
+var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'doc') + ':pag' + (d.pagina || '?')) : null; };
+
 /**
  * Correlaciona la pasada de fichas (rA) con la de documentos (rB).
  *
  * @param {object|null} rA JSON de la pasada de fichas   ({hojas:[...]}).
  * @param {object|null} rB JSON de la pasada de documentos ({documentos:[...]}).
+ * @param {object} [opts] {rutas} lista RUTAS_MULTIVIAJE (default la de cruce.js).
  * @returns {{ok:boolean, hojas:Array, viajes:Array, documentos:Array,
  *            errores:Array, avisos:Array}}
  */
-function correlacionar(rA, rB) {
+function correlacionar(rA, rB, opts) {
+  const rutas = (opts && opts.rutas) ? opts.rutas : CRUCE.RUTAS_MULTIVIAJE;
   if (!rA) {
     logError('la pasada de FICHAS no devolvio JSON valido');
     return { ok: false, hojas: [], viajes: [], documentos: [], errores: [], avisos: [] };
@@ -62,12 +76,18 @@ function correlacionar(rA, rB) {
   const marcar = function (v, motivo) { v.motivos_revision.push(motivo); };
 
   // ---- Viajes desde las fichas ----
-  const viajes = [];
+  // `let` (no const): la expansion multi-viaje (Fase 2) reasigna el array.
+  let viajes = [];
   for (let h = 0; h < hojasRaw.length; h++) {
     const H = hojasRaw[h];
     const bloques = Array.isArray(H.bloques) ? H.bloques : [];
     for (let i = 0; i < bloques.length; i++) {
       const b = bloques[i];
+      // Modelo albaran=unidad (§1): `cantidad` de la ficha puede ser kg o numero
+      // de viajes. Discriminacion determinista (cruce.js), con lo que DECLARA la
+      // ficha (nombre y lugares del bloque): ruta registrada -> viajes; valor <100
+      // en ruta no registrada -> REVISAR (red de seguridad); si no -> kg.
+      const clz = CRUCE.clasificarCantidad(num(b.cantidad_kg), nz(b.nombre_carga), nz(b.lugar_carga), nz(b.lugar_descarga), rutas);
       viajes.push({
         hoja_idx: h, orden: num(b.orden) || (i + 1),
         conductor: nz(H.conductor), tractora: nz(H.tractora), remolque: nz(H.remolque), empresa: nz(H.empresa),
@@ -76,11 +96,30 @@ function correlacionar(rA, rB) {
         fecha_carga: nz(b.fecha_carga), fecha_carga_texto: nz(b.fecha_carga_texto), fecha_descarga: nz(b.fecha_descarga),
         nombre_carga: nz(b.nombre_carga), lugar_carga: nz(b.lugar_carga),
         nombre_descarga: nz(b.nombre_descarga), lugar_descarga: nz(b.lugar_descarga),
-        tipo_mercancia: nz(b.tipo_mercancia), cantidad_kg: num(b.cantidad_kg),
+        tipo_mercancia: nz(b.tipo_mercancia),
+        // En modo kg, `cantidad_kg` = lo leido (identico a v3.2). En viajes/REVISAR
+        // NO es un peso, asi que queda null: nunca se factura un "6 kg" espurio.
+        cantidad_kg: (clz.modo === 'kg') ? clz.kg : null,
+        cantidad_declarada: num(b.cantidad_kg),
+        modo_cantidad: clz.modo,
+        es_multiviaje: (clz.modo === 'viajes'),
+        n_viajes_declarado: clz.n_viajes,
         km_inicio: num(b.km_inicio), km_final: num(b.km_final), km_recorridos: num(b.km_recorridos),
+        origen_km: 'leido',
+        regimen_indexacion: null,
+        estado: null, pendiente_falta: null, pendiente_reclamar_a: null,
+        origen_campos: {},
         motivos_revision: [],
         docs: []
       });
+      // Red de seguridad §1: valor demasiado chico para ser kg en una ruta que no
+      // esta registrada como multiviaje -> a REVISAR, visible en el tablero, en vez
+      // de meter "N kg" en silencio. Cuando se confirme la ruta se agrega a la lista.
+      if (clz.motivo === 'posible_multiviaje_ruta_no_registrada') {
+        const vLast = viajes[viajes.length - 1];
+        marcar(vLast, 'posible_multiviaje_ruta_no_registrada: cantidad ' + num(b.cantidad_kg) + ' < 100; ni kg valido ni ruta multiviaje registrada');
+        errores.push('Viaje ' + viajes.length + ': cantidad ' + num(b.cantidad_kg) + ' demasiado baja para kg y ruta (' + (nz(b.nombre_carga) || '?') + ' ' + (nz(b.lugar_carga) || '?') + '->' + (nz(b.lugar_descarga) || '?') + ') no registrada en RUTAS_MULTIVIAJE. REVISAR (posible_multiviaje_ruta_no_registrada).');
+      }
     }
   }
   if (viajes.length === 0) { errores.push('No se detecto ninguna ficha de chofer con bloques rellenos.'); }
@@ -203,6 +242,30 @@ function correlacionar(rA, rB) {
       avisos.push('Viaje ' + (i + 1) + ': ficha ' + v.cantidad_kg + ' kg vs documento ' + v.kg_documento + ' kg. Prevalece el documento.');
       marcar(v, 'ficha ' + v.cantidad_kg + ' kg vs documento ' + v.kg_documento + ' kg');
     }
+    // --- Fase 2: regimen de indexacion, estado de documentacion y audit ---
+    // Regimen (D-03/D-06): SOLO se marca; el calculo se cierra en facturacion (F4).
+    v.regimen_indexacion = CRUCE.regimenIndexacion(v.cliente, v.origen, v.destino);
+    // Estado de documentacion (§3): un unico estado para lo incompleto, con QUE
+    // falta y a QUIEN reclamar. Es un eje distinto del de LECTURA (estado_lectura).
+    if (v.docs.length === 0) {
+      v.estado = 'PENDIENTE_DOCUMENTACION';
+      v.pendiente_falta = 'documentos del viaje (albaran/CMR/carta de porte)';
+      v.pendiente_reclamar_a = 'chofer / cliente cargador';
+    } else {
+      v.estado = 'con_documentacion';
+    }
+    // Audit trail (§4): de que papel/pagina salio cada campo. kg y referencia
+    // vienen del documento (D-01); km, de la ficha; el resto, del que gano el pick.
+    v.origen_campos = {
+      cliente: (mx > 0) ? 'documento:cliente_probable' : (v.nombre_carga ? 'ficha:nombre_carga' : null),
+      referencia: v.referencia ? fuenteDoc(dRef) : null,
+      kg_documento: (v.kg_documento !== null) ? fuenteDoc(dKg) : null,
+      origen: (dOD && nz(dOD.origen)) ? fuenteDoc(dOD) : (v.lugar_carga ? 'ficha:lugar_carga' : null),
+      destino: (dOD && nz(dOD.destino)) ? fuenteDoc(dOD) : (v.lugar_descarga ? 'ficha:lugar_descarga' : null),
+      material: (dMt && nz(dMt.material)) ? fuenteDoc(dMt) : (v.tipo_mercancia ? 'ficha:tipo_mercancia' : null),
+      km: (v.km_cargados !== null) ? ('ficha:odometro:' + v.origen_km) : null,
+      cantidad_ficha: (v.cantidad_kg !== null) ? 'ficha:cantidad' : null
+    };
   }
 
   // ---- GUARDA C: odometros uniformes dentro de una hoja ----
@@ -228,6 +291,95 @@ function correlacionar(rA, rB) {
     }
   }
   for (const o of docsHuerfanos) { errores.push('Documento pag ' + (o.d.pagina || '?') + ' (' + (nz(o.d.referencia) || 'sin ref') + ', ' + (nz(o.d.matricula_tractor) || 'sin matricula') + '): ' + o.motivo + '.'); }
+
+  // ---- Fase 2: expansion multi-viaje (bloque = N viajes) ----
+  // Un bloque de ruta multiviaje declara N viajes (campo cantidad). Cada viaje
+  // real trae SU propio albaran (kg propio, D-01). Se generan N filas: las que
+  // tienen albaran quedan consolidadas con su kg; las que faltan quedan
+  // PENDIENTE_DOCUMENTACION, VISIBLES para reclamar (§3). Los km del bloque (la
+  // jornada completa) se reparten entre los N y se marcan `derivado_de_bloque`.
+  // Si el odometro del bloque quedo dudoso, los N heredan REVISAR: no se reparte
+  // un numero dudoso y salen N confiables.
+  // !!! Este camino NO se probo contra papel real (encargo §7.5): no hay ficha
+  // !!! FORESA Villagarcia->Caldas en el set. Solo tests unitarios. Cuando aparezca
+  // !!! una real, es la PRIMERA prueba a correr.
+  if (viajes.some(function (v) { return v.es_multiviaje; })) {
+    const expandidos = [];
+    for (let i = 0; i < viajes.length; i++) {
+      const v = viajes[i];
+      if (!v.es_multiviaje) { expandidos.push(v); continue; }
+      const N = v.n_viajes_declarado;
+      const albaranes = v.docs.filter(function (d) { return (d.tipo_doc || '') === 'albaran'; });
+      const secundarios = v.docs.filter(function (d) { return (d.tipo_doc || '') !== 'albaran'; });
+      const M = albaranes.length;
+      if (!N) {
+        // Multiviaje pero no se leyo cuantos: no se puede desglosar. Una fila, REVISAR.
+        marcar(v, 'bloque multiviaje sin numero de viajes legible; no se pudo desglosar');
+        errores.push('Bloque multiviaje (' + (v.cliente || '?') + ' ' + (v.origen || '?') + '->' + (v.destino || '?') + '): no se leyo el numero de viajes en la ficha. No se desgloso.');
+        expandidos.push(v);
+        continue;
+      }
+      const nSlots = Math.max(N, M);
+      if (M > N) { avisos.push('Bloque multiviaje ' + (v.cliente || '') + ' ' + (v.origen || '') + '->' + (v.destino || '') + ': declara ' + N + ' viajes y llegaron ' + M + ' albaranes; se generan ' + nSlots + '.'); }
+      const reparto = CRUCE.repartirKm(v.km_cargados, nSlots); // [] si el bloque no trae km
+      const bloqueDudoso = v.motivos_revision.length > 0;
+      for (let j = 0; j < nSlots; j++) {
+        const alb = (j < M) ? albaranes[j] : null;
+        const nv = {
+          hoja_idx: v.hoja_idx, orden: v.orden, sub_orden: j + 1,
+          conductor: v.conductor, tractora: v.tractora, remolque: v.remolque, empresa: v.empresa, tractoraN: v.tractoraN,
+          pagina_origen: v.pagina_origen,
+          fecha_carga: v.fecha_carga, fecha_carga_texto: v.fecha_carga_texto, fecha_descarga: v.fecha_descarga,
+          nombre_carga: v.nombre_carga, lugar_carga: v.lugar_carga, nombre_descarga: v.nombre_descarga, lugar_descarga: v.lugar_descarga,
+          tipo_mercancia: v.tipo_mercancia,
+          cantidad_kg: null, cantidad_declarada: v.cantidad_declarada, modo_cantidad: 'viajes',
+          es_multiviaje: true, n_viajes_declarado: N,
+          cliente: v.cliente, origen: v.origen, destino: v.destino, material: v.material,
+          referencia: null, tipo_doc: null, fecha_documento: null,
+          kg_documento: null, fuente_peso: null,
+          importe_documento: null, tarifa_tn_documento: null,
+          km_inicio: null, km_final: null, km_recorridos: null,
+          km_cargados: reparto.length ? reparto[j] : null, km_vacios: null,
+          origen_km: 'derivado_de_bloque',
+          regimen_indexacion: v.regimen_indexacion,
+          motivos_revision: bloqueDudoso ? v.motivos_revision.slice() : [],
+          docs: alb ? [alb] : []
+        };
+        if (alb) {
+          // Documento de origen del viaje: kg y referencia de SU albaran (D-01).
+          nv.kg_documento = num(alb.kg_neto);
+          nv.fuente_peso = nz(alb.tipo_doc);
+          nv.referencia = nz(alb.referencia);
+          nv.tipo_doc = nz(alb.tipo_doc);
+          nv.fecha_documento = nz(alb.fecha);
+          nv.estado = 'con_documentacion';
+          nv.pendiente_falta = null; nv.pendiente_reclamar_a = null;
+        } else {
+          nv.estado = 'PENDIENTE_DOCUMENTACION';
+          nv.pendiente_falta = 'albaran del viaje ' + (j + 1) + ' de ' + N + ' (multiviaje)';
+          nv.pendiente_reclamar_a = 'cliente';
+          errores.push('Bloque ' + (v.cliente || '') + ' ' + (v.origen || '') + '->' + (v.destino || '') + ': falta el albaran del viaje ' + (j + 1) + ' de ' + N + '. PENDIENTE_DOCUMENTACION (reclamar al cliente).');
+        }
+        nv.origen_campos = {
+          cliente: v.origen_campos ? v.origen_campos.cliente : null,
+          referencia: alb ? fuenteDoc(alb) : null,
+          kg_documento: alb ? fuenteDoc(alb) : null,
+          origen: v.origen_campos ? v.origen_campos.origen : null,
+          destino: v.origen_campos ? v.origen_campos.destino : null,
+          material: v.origen_campos ? v.origen_campos.material : null,
+          km: (nv.km_cargados !== null) ? 'ficha:odometro:derivado_de_bloque' : null,
+          cantidad_ficha: null
+        };
+        expandidos.push(nv);
+      }
+      // Secundarios (CMR/ticket) del bloque: sin dato real para asignarlos a un
+      // viaje puntual, se anotan a nivel de bloque en vez de perderse en silencio.
+      if (secundarios.length > 0) {
+        avisos.push('Bloque multiviaje ' + (v.cliente || '') + ': ' + secundarios.length + ' documento(s) no-albaran (CMR/ticket) sin viaje puntual asignado; quedan a nivel de bloque. Revisar.');
+      }
+    }
+    viajes = expandidos;
+  }
 
   // ---- Estado de lectura por fila ----
   // Cubre la calidad de LECTURA de la ficha. Deliberadamente NO incluye
@@ -321,8 +473,9 @@ function parseRespuesta(it) {
  *
  * @param {Array} respuestas  salida de "Extraer GPT-4o" ($input.all()).
  * @param {Array} metas       $('Preparar Payload').all().map(i => i.json).
+ * @param {object} [opts]     {rutas} pasa a correlacionar (default cruce.js).
  */
-function procesar(respuestas, metas) {
+function procesar(respuestas, metas, opts) {
   metas = Array.isArray(metas) ? metas : [];
   const erroresPrevios = [];
   const hojasAll = [];
@@ -359,7 +512,7 @@ function procesar(respuestas, metas) {
     }
   }
 
-  const res = correlacionar({ hojas: hojasAll }, rB);
+  const res = correlacionar({ hojas: hojasAll }, rB, opts);
   if (!res.ok) {
     return { ok: false, linea: 'ERROR: ninguna pasada de FICHAS devolvio JSON valido.', datos_json: '', avisos: 1, errores: 1, lectura_revisar: 0 };
   }
