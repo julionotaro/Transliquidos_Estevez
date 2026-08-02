@@ -39,13 +39,20 @@ const TARGETS = [
     wrapper: 'nodo-preparar-filas-viajes.wrapper.js',
     salida: 'nodo-preparar-filas-viajes.generated.js',
   },
+  {
+    nodo: 'Pendientes',
+    logica: ['pendientes.js'],
+    wrapper: 'nodo-vista-pendientes.wrapper.js',
+    salida: 'nodo-vista-pendientes.generated.js',
+    workflowId: '(nuevo) [ESTEVEZ] Vista Pendientes',
+  },
 ];
 
 function construir(t) {
   const partes = [
     '// ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.',
     '// Fuente: ' + t.logica.concat([t.wrapper]).map(function (f) { return 'ficha/' + f; }).join(' + '),
-    '// Contenido exacto del nodo Code "' + t.nodo + '" (WD0q9Ic0oDvUoJwp).',
+    '// Contenido exacto del nodo Code "' + t.nodo + '" (' + (t.workflowId || 'WD0q9Ic0oDvUoJwp') + ').',
     '',
   ];
   for (const f of t.logica) {
