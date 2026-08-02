@@ -33,6 +33,12 @@ const TARGETS = [
     wrapper: 'nodo-preparar-rasterizacion.wrapper.js',
     salida: 'nodo-preparar-rasterizacion.generated.js',
   },
+  {
+    nodo: 'Preparar Filas Viajes',
+    logica: [],
+    wrapper: 'nodo-preparar-filas-viajes.wrapper.js',
+    salida: 'nodo-preparar-filas-viajes.generated.js',
+  },
 ];
 
 function construir(t) {
