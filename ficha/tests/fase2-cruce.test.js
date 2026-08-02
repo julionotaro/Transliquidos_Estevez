@@ -72,11 +72,58 @@ test('cruce: red de seguridad <100 en ruta no registrada -> revisar', () => {
 });
 
 test('cruce: regimen de indexacion por cliente/ruta (D-03/D-06)', () => {
-  assert.strictEqual(cruce.regimenIndexacion('BALTRANSA', 'X', 'Y'), 'incluida');
-  assert.strictEqual(cruce.regimenIndexacion('FORESA', 'Villagarcía', 'Caldas de Reis'), 'agregada_mensual');
-  assert.strictEqual(cruce.regimenIndexacion('FORESA', 'Caldas de Reis', 'Ourense'), 'agregada_quincenal');
-  assert.strictEqual(cruce.regimenIndexacion('FORESA', 'Caldas', 'Teruel'), 'linea');
-  assert.strictEqual(cruce.regimenIndexacion('QUIMIDROGA', 'Barcelona', 'Leiria'), 'linea');
+  assert.strictEqual(cruce.regimenIndexacion('BALTRANSA', 'X', 'Y').regimen, 'incluida');
+  assert.strictEqual(cruce.regimenIndexacion('FORESA', 'Villagarcía', 'Caldas de Reis').regimen, 'agregada_mensual');
+  assert.strictEqual(cruce.regimenIndexacion('FORESA', 'Caldas de Reis', 'Ourense').regimen, 'agregada_quincenal');
+  assert.strictEqual(cruce.regimenIndexacion('FORESA', 'Caldas', 'Teruel').regimen, 'linea');
+  assert.strictEqual(cruce.regimenIndexacion('QUIMIDROGA', 'Barcelona', 'Leiria').regimen, 'linea');
+  assert.strictEqual(cruce.regimenIndexacion('RNM', 'Aveiro', 'Porriño').regimen, 'linea');
+  assert.strictEqual(cruce.regimenIndexacion('HELM', 'X', 'Y').regimen, 'linea');
+});
+
+// ============================================================================
+// Cierre v1, pieza 1 — cliente no reconocido falla ruidoso (NO alias de FORBA)
+// ============================================================================
+test('cierre-v1: cliente conocido con regimen linea -> sin cambios (no regresion)', () => {
+  const r = cruce.regimenIndexacion('QUIMIDROGA', 'Barcelona', 'Leiria');
+  assert.strictEqual(r.regimen, 'linea');
+  assert.strictEqual(r.motivo, null);
+});
+
+test('cierre-v1: BALTRANSA -> incluida (no cambia)', () => {
+  const r = cruce.regimenIndexacion('BALTRANSA', 'X', 'Y');
+  assert.strictEqual(r.regimen, 'incluida');
+  assert.strictEqual(r.motivo, null);
+});
+
+test('cierre-v1: FORESA en Caldas->Orense -> agregada_quincenal (no cambia)', () => {
+  const r = cruce.regimenIndexacion('FORESA', 'Caldas de Reis', 'Ourense');
+  assert.strictEqual(r.regimen, 'agregada_quincenal');
+  assert.strictEqual(r.motivo, null);
+});
+
+test('cierre-v1: cliente "FORBA" (misread de FORESA) -> NO alias, regimen null + motivo con el valor leido', () => {
+  const r = cruce.regimenIndexacion('FORBA', 'Caldas', 'Orense');
+  assert.strictEqual(r.regimen, null);
+  assert.strictEqual(r.motivo, 'cliente_no_reconocido: FORBA');
+});
+
+test('cierre-v1: cliente null (no se leyo) -> mismo tratamiento, motivo indica que no se leyo', () => {
+  const r = cruce.regimenIndexacion(null, 'Caldas', 'Orense');
+  assert.strictEqual(r.regimen, null);
+  assert.strictEqual(r.motivo, 'cliente_no_reconocido: (no se leyo)');
+});
+
+test('cierre-v1 end-to-end: bloque con cliente "FORBA" -> REVISAR con el valor leido visible en el motivo, sin abrir el escaneo', () => {
+  const h = hoja({ tractora: '9999FRB' }, [bloque({
+    nombre_carga: 'FORBA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE',
+    cantidad_kg: 22540, km_inicio: 100000, km_final: 100183, km_recorridos: 183,
+  })]);
+  const res = correr([h], []);
+  const v = res.viajes[0];
+  assert.strictEqual(v.regimen_indexacion, null, 'no se asigna regimen a un cliente no reconocido');
+  assert.strictEqual(v.estado_lectura, 'REVISAR');
+  assert.match(v.motivo_revision, /cliente_no_reconocido: FORBA/);
 });
 
 // ============================================================================

@@ -44,7 +44,7 @@ var dias = function (a, b) { if (!a || !b) { return null; } const da = Date.pars
 // 'function'` sobre un identificador no declarado devuelve 'undefined' sin lanzar,
 // asi que el ternario elige la fuente correcta en cada entorno.
 var CRUCE = (typeof clasificarCantidad === 'function')
-  ? { clasificarCantidad: clasificarCantidad, regimenIndexacion: regimenIndexacion, repartirKm: repartirKm, esRutaMultiviaje: esRutaMultiviaje, RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE }
+  ? { clasificarCantidad: clasificarCantidad, regimenIndexacion: regimenIndexacion, repartirKm: repartirKm, esRutaMultiviaje: esRutaMultiviaje, RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE, CLIENTES_CONOCIDOS: CLIENTES_CONOCIDOS }
   : require('./cruce.js');
 
 // Fuente legible de un dato para el audit trail (§4): que papel/pagina lo aporto.
@@ -55,12 +55,13 @@ var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'do
  *
  * @param {object|null} rA JSON de la pasada de fichas   ({hojas:[...]}).
  * @param {object|null} rB JSON de la pasada de documentos ({documentos:[...]}).
- * @param {object} [opts] {rutas} lista RUTAS_MULTIVIAJE (default la de cruce.js).
+ * @param {object} [opts] {rutas, clientes} listas configurables (default cruce.js).
  * @returns {{ok:boolean, hojas:Array, viajes:Array, documentos:Array,
  *            errores:Array, avisos:Array}}
  */
 function correlacionar(rA, rB, opts) {
   const rutas = (opts && opts.rutas) ? opts.rutas : CRUCE.RUTAS_MULTIVIAJE;
+  const clientes = (opts && opts.clientes) ? opts.clientes : CRUCE.CLIENTES_CONOCIDOS;
   if (!rA) {
     logError('la pasada de FICHAS no devolvio JSON valido');
     return { ok: false, hojas: [], viajes: [], documentos: [], errores: [], avisos: [] };
@@ -244,7 +245,14 @@ function correlacionar(rA, rB, opts) {
     }
     // --- Fase 2: regimen de indexacion, estado de documentacion y audit ---
     // Regimen (D-03/D-06): SOLO se marca; el calculo se cierra en facturacion (F4).
-    v.regimen_indexacion = CRUCE.regimenIndexacion(v.cliente, v.origen, v.destino);
+    // Cierre v1 pieza 1: cliente fuera de CLIENTES_CONOCIDOS (o no leido) NO recibe
+    // regimen por defecto -- eso fue el bug real (FORBA, misread de FORESA, se
+    // llevo 'linea' en silencio en vez de 'agregada_quincenal'). Ahora falla
+    // ruidoso: regimen_indexacion queda null y el viaje va a REVISAR con el valor
+    // leido en el motivo, visible sin abrir el escaneo. NO es un alias de FORBA.
+    const ridx = CRUCE.regimenIndexacion(v.cliente, v.origen, v.destino, clientes);
+    v.regimen_indexacion = ridx.regimen;
+    if (ridx.motivo) { marcar(v, ridx.motivo); }
     // Estado de documentacion (§3): un unico estado para lo incompleto, con QUE
     // falta y a QUIEN reclamar. Es un eje distinto del de LECTURA (estado_lectura).
     if (v.docs.length === 0) {

@@ -90,6 +90,27 @@ function clasificarCantidad(cantidad, cliente, origen, destino, rutas) {
   return { modo: 'kg', n_viajes: 1, kg: c, motivo: null, ruta: null };
 }
 
+// --- CLIENTES_CONOCIDOS: lista configurable, unico lugar (Cierre v1, pieza 1) -
+// Un cliente leido fuera de esta lista NUNCA recibe regimen por defecto: eso fue
+// el bug real (gpt-4o leyo "FORBA" -- misread de FORESA -- y el sistema le asigno
+// 'linea' en silencio, cuando por D-06 le tocaba 'agregada_quincenal'). La solucion
+// NO es un alias de FORBA: un alias por cada misread convierte un error de lectura
+// en regla de negocio, y manana aparece "FORESAA" o "FORFSA". Un cliente fuera de
+// esta lista falla RUIDOSO (REVISAR con el valor leido en el motivo), nunca en
+// silencio. Para sumar un cliente real nuevo: agregarlo aca, nada mas.
+var CLIENTES_CONOCIDOS = ['FORESA', 'BRESFOR', 'QUIMIDROGA', 'RNM', 'HELM', 'BALTRANSA'];
+
+/** ¿El cliente leido esta en la lista de clientes conocidos? */
+function esClienteConocido(cliente, clientes) {
+  var lista = Array.isArray(clientes) ? clientes : CLIENTES_CONOCIDOS;
+  var cl = norm(cliente);
+  if (!cl) { return false; }
+  for (var i = 0; i < lista.length; i++) {
+    if (cl.indexOf(norm(lista[i])) >= 0) { return true; }
+  }
+  return false;
+}
+
 /**
  * Regimen de indexacion (suplemento gasoleo) por cliente + ruta (D-03 y D-06).
  * NO calcula la indexacion — solo marca el regimen; el calculo se cierra en la
@@ -101,19 +122,31 @@ function clasificarCantidad(cantidad, cliente, origen, destino, rutas) {
  *   agregada_quincenal  FORESA Caldas de Reis -> Ourense (Orember): total quincenal.
  *   linea               caso general (FORESA otros destinos, Quimidroga, RNM...).
  *
- * @returns {'incluida'|'agregada_mensual'|'agregada_quincenal'|'linea'}
+ * Cliente fuera de CLIENTES_CONOCIDOS (o no leido): NO se asigna regimen por
+ * defecto. Devuelve motivo para que el caller marque el viaje REVISAR con el
+ * valor leido visible (Cierre v1, pieza 1) — el error de lectura no debe
+ * disfrazarse de decision de negocio.
+ *
+ * @returns {{regimen: 'incluida'|'agregada_mensual'|'agregada_quincenal'|'linea'|null,
+ *            motivo: string|null}}
  */
-function regimenIndexacion(cliente, origen, destino) {
+function regimenIndexacion(cliente, origen, destino, clientes) {
+  if (!esClienteConocido(cliente, clientes)) {
+    return { regimen: null, motivo: 'cliente_no_reconocido: ' + (nz_local(cliente) || '(no se leyo)') };
+  }
   var cl = norm(cliente);
-  if (cl.indexOf('BALTRANSA') >= 0) { return 'incluida'; }
+  if (cl.indexOf('BALTRANSA') >= 0) { return { regimen: 'incluida', motivo: null }; }
   var esForesa = cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0;
   if (esForesa) {
-    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS DE REIS')) { return 'agregada_mensual'; }
-    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) { return 'agregada_quincenal'; }
-    return 'linea'; // FORESA a cualquier otro destino: por viaje (D-06).
+    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS DE REIS')) { return { regimen: 'agregada_mensual', motivo: null }; }
+    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) { return { regimen: 'agregada_quincenal', motivo: null }; }
+    return { regimen: 'linea', motivo: null }; // FORESA a cualquier otro destino: por viaje (D-06).
   }
-  return 'linea';
+  return { regimen: 'linea', motivo: null }; // QUIMIDROGA, RNM, HELM: por viaje (regla general).
 }
+// nz_local: version standalone de nz (correlacionar.js la tiene con otro nombre;
+// aca solo hace falta para el mensaje de motivo, sin acoplar los dos modulos).
+function nz_local(x) { if (x === null || x === undefined) { return null; } var s = String(x).trim(); return (s === '' || s.toLowerCase() === 'null') ? null : s; }
 
 /**
  * Reparte los km del bloque entre n viajes (§1). Piso entero a cada uno y el
@@ -136,9 +169,11 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE,
     UMBRAL_CANTIDAD_KG: UMBRAL_CANTIDAD_KG,
+    CLIENTES_CONOCIDOS: CLIENTES_CONOCIDOS,
     norm: norm,
     coincideTexto: coincideTexto,
     esRutaMultiviaje: esRutaMultiviaje,
+    esClienteConocido: esClienteConocido,
     clasificarCantidad: clasificarCantidad,
     regimenIndexacion: regimenIndexacion,
     repartirKm: repartirKm,
