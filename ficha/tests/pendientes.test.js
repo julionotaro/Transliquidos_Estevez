@@ -93,3 +93,31 @@ test('cierre-v1 pendientes: HTML escapa contenido (motivo con caracteres especia
   assert.ok(!html.includes('<script>'), 'no debe inyectar HTML sin escapar');
   assert.ok(html.includes('&lt;script&gt;'));
 });
+
+// ============================================================================
+// v1.1 pieza 1 — acciones en la misma pantalla (render)
+// ============================================================================
+test('v1.1 render: cada fila trae un form que postea a /webhook/viajes-accion con los 3 botones', () => {
+  const v = viajeBase({ id: 42, estado: 'PENDIENTE_DOCUMENTACION' });
+  const out = filtrarPendientes([v]);
+  const html = renderHTML(out);
+  assert.match(html, /action="\/webhook\/viajes-accion"/);
+  assert.match(html, /method="post"/);
+  assert.match(html, /value="42"/, 'id del viaje va en un campo oculto');
+  assert.match(html, /name="accion" value="corregir"/);
+  assert.match(html, /name="accion" value="resolver"/);
+  assert.match(html, /name="accion" value="incidencia"/);
+});
+
+test('v1.1 render: las notas (incidencias) del historial se muestran en la fila', () => {
+  const v = viajeBase({
+    estado: 'PENDIENTE_DOCUMENTACION',
+    historial_correcciones: JSON.stringify([
+      { accion: 'incidencia', usuario: 'julio', fecha: '2026-08-03T10:00:00.000Z', campo: null, valor_anterior: null, valor_nuevo: 'Cliente confirmo por telefono' }
+    ])
+  });
+  const out = filtrarPendientes([v]);
+  assert.deepStrictEqual(out[0].notas, ['Cliente confirmo por telefono']);
+  const html = renderHTML(out);
+  assert.match(html, /Cliente confirmo por telefono/);
+});

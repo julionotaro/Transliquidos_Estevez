@@ -44,7 +44,14 @@ const TARGETS = [
     logica: ['pendientes.js'],
     wrapper: 'nodo-vista-pendientes.wrapper.js',
     salida: 'nodo-vista-pendientes.generated.js',
-    workflowId: '(nuevo) [ESTEVEZ] Vista Pendientes',
+    workflowId: '[ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)',
+  },
+  {
+    nodo: 'Aplicar Accion',
+    logica: ['cruce.js', 'acciones-pendientes.js'],
+    wrapper: 'nodo-aplicar-accion.wrapper.js',
+    salida: 'nodo-aplicar-accion.generated.js',
+    workflowId: '[ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)',
   },
 ];
 

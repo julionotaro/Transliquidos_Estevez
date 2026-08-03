@@ -308,9 +308,9 @@ function correlacionar(rA, rB, opts) {
   // jornada completa) se reparten entre los N y se marcan `derivado_de_bloque`.
   // Si el odometro del bloque quedo dudoso, los N heredan REVISAR: no se reparte
   // un numero dudoso y salen N confiables.
-  // !!! Este camino NO se probo contra papel real (encargo §7.5): no hay ficha
-  // !!! FORESA Villagarcia->Caldas en el set. Solo tests unitarios. Cuando aparezca
-  // !!! una real, es la PRIMERA prueba a correr.
+  // Estructura confirmada contra dato real (v1.1, exportacion sistema de
+  // escritorio, expediente 00050461). Falta cerrar el riesgo de LECTURA: ver
+  // ficha/cruce.js y docs/fase2-cierre-y-fase3-bloqueantes.md.
   if (viajes.some(function (v) { return v.es_multiviaje; })) {
     const expandidos = [];
     for (let i = 0; i < viajes.length; i++) {

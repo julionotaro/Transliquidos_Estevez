@@ -1,18 +1,24 @@
 // ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.
 // Fuente: ficha/pendientes.js + ficha/nodo-vista-pendientes.wrapper.js
-// Contenido exacto del nodo Code "Pendientes" ((nuevo) [ESTEVEZ] Vista Pendientes).
+// Contenido exacto del nodo Code "Pendientes" ([ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)).
 
-// ===== VISTA DE PENDIENTES — filtro y render (Cierre v1, pieza 2) ===========
+// ===== VISTA DE PENDIENTES — filtro y render (Cierre v1 pieza 2 + v1.1 pieza 1) =====
 //
 // Lista minima y consultable de todo lo que quedo esperando algo: falta
 // documentacion (estado === 'PENDIENTE_DOCUMENTACION') o la lectura fue dudosa
-// (estado_lectura === 'REVISAR', incluye el nuevo cliente_no_reconocido de la
-// pieza 1). Son DOS EJES independientes (un viaje puede estar en uno, el otro,
-// los dos, o ninguno) — por eso el filtro es OR, no AND.
+// (estado_lectura === 'REVISAR', incluye el cliente_no_reconocido de cierre-v1).
+// Son DOS EJES independientes (un viaje puede estar en uno, el otro, los dos,
+// o ninguno) — por eso el filtro es OR, no AND.
 //
-// Esto NO es el tablero de Fase 4: no hay edicion ni flujo de resolucion, solo
-// se mira. Lee directo de la tabla `Viajes` (lrBxWpTUxMtO8U48) via el nodo
-// dataTable "Leer Viajes" del workflow "[ESTEVEZ] Vista Pendientes".
+// v1.1: cada fila tiene acciones (corregir/resolver/anotar incidencia) que
+// postean a /webhook/viajes-accion (misma pantalla, sin canal externo -- la
+// correccion tiene que quedar conectada a la base para ser trazable). La logica
+// de esas acciones vive en acciones-pendientes.js; este archivo solo LEE el
+// historial para mostrar las notas (incidencias) en la fila.
+//
+// Esto NO es el tablero de Fase 4: no hay flujo de resolucion con estados
+// intermedios, solo accion directa + registro. Lee directo de la tabla
+// `Viajes` (lrBxWpTUxMtO8U48) via el nodo dataTable "Leer Viajes".
 
 'use strict';
 
@@ -31,6 +37,25 @@ function diasEsperando(createdAt, ahoraMs) {
  */
 function esPendiente(v) {
   return v.estado === 'PENDIENTE_DOCUMENTACION' || v.estado_lectura === 'REVISAR';
+}
+
+// Lectura de historial_correcciones SOLO para mostrar notas (incidencias) en
+// la fila. Copia deliberadamente chica de la logica de parseo que vive en
+// acciones-pendientes.js (que es quien ESCRIBE el historial): mantiene este
+// nodo (solo lectura/render) sin depender de la logica de escritura de
+// acciones, que a su vez depende de cruce.js. Evita inflar este nodo con
+// codigo que no usa.
+function notasDeHistorial(historialStr) {
+  if (!historialStr) { return []; }
+  var lista;
+  try { lista = JSON.parse(historialStr); } catch (e) { return []; }
+  if (!Array.isArray(lista)) { return []; }
+  var out = [];
+  for (var i = 0; i < lista.length; i++) {
+    var h = lista[i];
+    if (h && h.accion === 'incidencia' && h.valor_nuevo) { out.push(h.valor_nuevo); }
+  }
+  return out;
 }
 
 /**
@@ -56,7 +81,8 @@ function filtrarPendientes(viajes, ahoraMs) {
       que_falta: v.pendiente_falta || null,
       reclamar_a: v.pendiente_reclamar_a || null,
       motivo_revision: v.motivo_revision || null,
-      dias_esperando: diasEsperando(v.createdAt, ahoraMs)
+      dias_esperando: diasEsperando(v.createdAt, ahoraMs),
+      notas: notasDeHistorial(v.historial_correcciones)
     });
   }
   out.sort(function (a, b) {
@@ -75,17 +101,40 @@ function escHtml(s) {
 }
 
 /**
- * Pagina HTML autocontenida: tabla legible, ordenada por dias_esperando desc.
- * Lista vacia -> mensaje claro, no una tabla rota ni un error.
+ * Acciones de la fila (v1.1): UN form con id oculto, "usuario" y "valor"
+ * compartidos, y 3 botones submit (accion=corregir|resolver|incidencia). El
+ * backend (nodo "Aplicar Accion") decide que hacer con "valor" segun accion:
+ * nuevo cliente para corregir, texto de la nota para incidencia, ignorado
+ * para resolver. Plain HTML POST -- funciona sin JS, recarga sobre la misma
+ * pantalla via redirect del webhook.
+ */
+function accionesHTML(p) {
+  return '<form method="post" action="/webhook/viajes-accion" class="acc">' +
+    '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
+    '<input type="text" name="usuario" placeholder="Tu nombre" required size="10">' +
+    '<input type="text" name="valor" placeholder="Cliente correcto / nota" size="16">' +
+    '<button type="submit" name="accion" value="corregir" title="Corrige el cliente y re-evalua el regimen">Corregir cliente</button>' +
+    '<button type="submit" name="accion" value="resolver" title="La documentacion llego por otra via">Marcar resuelto</button>' +
+    '<button type="submit" name="accion" value="incidencia" title="Nota libre, no saca el viaje de la lista">Anotar incidencia</button>' +
+    '</form>';
+}
+
+/**
+ * Pagina HTML autocontenida: tabla legible, ordenada por dias_esperando desc,
+ * con acciones de correccion por fila (v1.1). Lista vacia -> mensaje claro,
+ * no una tabla rota ni un error.
  * @param {Array<object>} pendientes  salida de filtrarPendientes().
  */
 function renderHTML(pendientes) {
   var lista = Array.isArray(pendientes) ? pendientes : [];
   var filas;
   if (lista.length === 0) {
-    filas = '<tr><td colspan="8" class="vacio">No hay viajes pendientes ni en revision. Todo al dia.</td></tr>';
+    filas = '<tr><td colspan="10" class="vacio">No hay viajes pendientes ni en revision. Todo al dia.</td></tr>';
   } else {
     filas = lista.map(function (p) {
+      var notasHtml = p.notas.length
+        ? '<ul class="notas">' + p.notas.map(function (n) { return '<li>' + escHtml(n) + '</li>'; }).join('') + '</ul>'
+        : '-';
       return '<tr>' +
         '<td>' + escHtml(p.fecha_carga || '-') + '</td>' +
         '<td>' + escHtml(p.chofer || '-') + '</td>' +
@@ -95,6 +144,8 @@ function renderHTML(pendientes) {
         '<td>' + escHtml(p.reclamar_a || '-') + '</td>' +
         '<td class="dias">' + (p.dias_esperando === null ? '-' : p.dias_esperando) + '</td>' +
         '<td>' + escHtml(p.motivo_revision || '-') + '</td>' +
+        '<td>' + notasHtml + '</td>' +
+        '<td>' + accionesHTML(p) + '</td>' +
         '</tr>';
     }).join('');
   }
@@ -111,12 +162,17 @@ function renderHTML(pendientes) {
     'tr:nth-child(even){background:#fafafa}',
     '.dias{text-align:right;font-weight:bold;white-space:nowrap}',
     '.vacio{text-align:center;padding:2rem;color:#666}',
+    '.notas{margin:0;padding-left:1rem}',
+    'form.acc{display:flex;flex-wrap:wrap;gap:.25rem;min-width:260px}',
+    'form.acc input{padding:.2rem;font-size:.8rem}',
+    'form.acc button{font-size:.75rem;padding:.2rem .4rem;cursor:pointer}',
     '</style></head><body>',
     '<h1>Pendientes (' + lista.length + ')</h1>',
     '<p class="sub">Documentacion faltante o lectura a revisar. Ordenado por antiguedad, lo mas viejo primero.</p>',
     '<table><thead><tr>',
     '<th>Fecha de carga</th><th>Chofer</th><th>Cliente</th><th>Ruta</th>',
     '<th>Que falta</th><th>A quien reclamar</th><th>Dias esperando</th><th>Motivo de revision</th>',
+    '<th>Notas</th><th>Acciones</th>',
     '</tr></thead><tbody>',
     filas,
     '</tbody></table>',
@@ -128,8 +184,10 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     diasEsperando: diasEsperando,
     esPendiente: esPendiente,
+    notasDeHistorial: notasDeHistorial,
     filtrarPendientes: filtrarPendientes,
     escHtml: escHtml,
+    accionesHTML: accionesHTML,
     renderHTML: renderHTML
   };
 }

@@ -30,15 +30,23 @@ por valor). No hay pantalla Control para Estevez (el tablero es Fase 4). Cuando
 se construya el tablero (Fase 4), tiene que entender ambos vocabularios o migrar
 las filas viejas en ese momento.
 
-## ⚠️ Multi-viaje: NO verificado contra papel real
+## ✅ Multi-viaje: modelo confirmado contra exportación real (2026-08-03)
 
-El camino multi-viaje (bloque = N viajes, FORESA Villagarcía→Caldas de Reis) está
-cubierto **solo por tests unitarios**. No existe ninguna ficha real de ese caso en
-el set de referencia (las 3 fichas reales son todas de bloque simple).
+Actualización del encargo v1.1 §0.3: Julio aportó una exportación real del
+sistema de escritorio (HNOS. ESTEVEZ CASAL). Contiene el caso multi-viaje FORESA
+que hasta ahora solo tenía cobertura unitaria: expediente `00050461`, ruta
+CALDAS DE REIS→OREMBER, **tres viajes Nº 01/02/03** con referencias distintas
+(2002854, 2002844, 2002866) e importes distintos, mismo cabeza/remolque.
 
-> **Cuando aparezca una ficha FORESA Villagarcía→Caldas real, esa es la PRIMERA
-> corrida a hacer.** Es el punto de mayor riesgo del modelo nuevo: puede estar mal
-> y nadie se entera hasta que llegue el papel. Escanearla y subirla es prioridad.
+**Esto confirma la estructura del modelo de Fase 2 contra dato real**: bloque de
+ficha = N viajes, cada uno con su propio albarán/referencia/importe. El multi-viaje
+deja de estar "no verificado" a nivel de modelo de dominio.
+
+Lo que **sigue sin probar** es la LECTURA: no hay todavía una ficha manuscrita real
+de ese expediente para confirmar que gpt-4o lee bien `cantidad=3` en el campo de
+la ficha (el riesgo de OCR de un bloque multi-viaje, distinto del riesgo de
+estructura de datos que ya se cerró). Cuando aparezca esa ficha escaneada, es la
+primera corrida a hacer para cerrar también el riesgo de lectura.
 
 ## 🚧 BLOQUEANTE de Fase 3 — persistencia por documento
 

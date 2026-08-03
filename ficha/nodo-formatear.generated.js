@@ -14,12 +14,17 @@
 // que no queden hardcodeadas en el medio de correlacionar.js y sean testeables
 // solas. La logica de expansion/consolidacion que las usa vive en correlacionar.js.
 //
-// !!! ADVERTENCIA: el camino MULTI-VIAJE (bloque = N viajes) NO se probo nunca
-// !!! contra papel real. No hay ninguna ficha FORESA Villagarcia->Caldas en el
-// !!! set de referencia (las 3 fichas reales son todas de bloque simple). Esta
-// !!! cubierto solo con tests unitarios. Es el punto de mas riesgo del modelo
-// !!! nuevo: cuando aparezca una ficha real de ese caso, es la PRIMERA prueba a
-// !!! correr. Ver docs y encargo §7.5.
+// ESTRUCTURA confirmada contra dato real (encargo v1.1 2026-08-03): la
+// exportacion del sistema de escritorio (expediente 00050461, CALDAS DE
+// REIS->OREMBER) trae exactamente este patron -- 3 viajes Nº 01/02/03, cada uno
+// con su propia referencia e importe, mismo cabeza/remolque. El modelo
+// bloque=N viajes ya NO esta "no verificado" a nivel de dominio.
+//
+// Lo que SIGUE sin probar es la LECTURA: no hay todavia una ficha manuscrita
+// real de un bloque multi-viaje para confirmar que gpt-4o lee bien `cantidad=3`
+// en el campo de la ficha (riesgo de OCR, distinto del riesgo de estructura que
+// ya se cerro). Cuando aparezca esa ficha escaneada, es la primera corrida a
+// hacer. Ver docs/fase2-cierre-y-fase3-bloqueantes.md.
 
 'use strict';
 
@@ -494,9 +499,9 @@ function correlacionar(rA, rB, opts) {
   // jornada completa) se reparten entre los N y se marcan `derivado_de_bloque`.
   // Si el odometro del bloque quedo dudoso, los N heredan REVISAR: no se reparte
   // un numero dudoso y salen N confiables.
-  // !!! Este camino NO se probo contra papel real (encargo §7.5): no hay ficha
-  // !!! FORESA Villagarcia->Caldas en el set. Solo tests unitarios. Cuando aparezca
-  // !!! una real, es la PRIMERA prueba a correr.
+  // Estructura confirmada contra dato real (v1.1, exportacion sistema de
+  // escritorio, expediente 00050461). Falta cerrar el riesgo de LECTURA: ver
+  // ficha/cruce.js y docs/fase2-cierre-y-fase3-bloqueantes.md.
   if (viajes.some(function (v) { return v.es_multiviaje; })) {
     const expandidos = [];
     for (let i = 0; i < viajes.length; i++) {
