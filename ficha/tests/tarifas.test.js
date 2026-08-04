@@ -1,49 +1,60 @@
 // Tests v1.1 pieza 2 — lookup de tarifas (planilla carga/auditoria).
 //
-// Fixtures tomadas 1:1 del readback real contra la tabla Tarifas
-// (Siwhv2AUWTSeFlrJ, 538 filas, ejecucion 622/624 sobre WD v6wjsdY20vzpPEop,
-// 2026-08-03) -- no son numeros inventados.
+// Fixtures: valores de ruta/tarifa tomados del readback real contra `Tarifas`;
+// la columna `cliente` usa la RAZON SOCIAL exacta tal cual quedo tras la recarga
+// del Excel (Siwhv2AUWTSeFlrJ, 698 filas, 2026-08-04) -- que es contra lo que
+// hoy matchea buscarTarifa. Los objetos `viaje` usan el codigo corto leido
+// ("FORESA", "RNM"...), que buscarTarifa resuelve via ficha/clientes.js.
 
 'use strict';
 
 const test = require('node:test');
 const assert = require('node:assert');
-const { clienteParaTarifa, matchCampo, buscarTarifa } = require('../tarifas.js');
+const { matchCampo, buscarTarifa } = require('../tarifas.js');
+
+const CLI_FORESA = 'FORESA IND.QUIMICAS DEL NOROESTE, S.A.';
+const CLI_QUIMIDROGA = 'QUIMIDROGA, S.A.';
+const CLI_RNM = 'RNM TRANSPORTES QUIMICOS, LDA';
+const CLI_HELM = 'HELM IBERICA, S.A.';
 
 function filaTarifa(campos) {
   return Object.assign({
-    cliente: 'FORESA', origen: '', destino: '', material: '',
+    cliente: CLI_FORESA, origen: '', destino: '', material: '',
     tarifa_tn: '', precio_fijo: '', vigente_desde: '', id: 0
   }, campos);
 }
 
-// Subconjunto real: FORESA CALDAS/VILLAGARCIA(+BRESFOR AVEIRO)->TERUEL, dos
-// vigencias superpuestas (2025-01-01 y 2026-01-01).
+// Escenario FORESA ->TERUEL con dos vigencias, para cubrir el selector por
+// fecha. La recarga atomizo los origenes y dedup dejo una sola vigencia por
+// ruta en la tabla real (FORESA CALDAS DE REIS->TERUEL: 56, 2026-08-03), asi
+// que este fixture es CONSTRUIDO sobre esa fila real para no perder la cobertura
+// del selector; conserva ademas una forma con parentesis ("BRESFOR (AVEIRO)")
+// para ejercitar el fallback por fragmento en origen.
 const TARIFAS_FORESA_TERUEL = [
-  filaTarifa({ origen: 'CALDAS/VILLAGARCIA', destino: 'TERUEL', tarifa_tn: '54.9', vigente_desde: '2025-01-01', id: 37 }),
+  filaTarifa({ origen: 'CALDAS DE REIS', destino: 'TERUEL', tarifa_tn: '54.9', vigente_desde: '2025-01-01', id: 37 }),
   filaTarifa({ origen: 'BRESFOR (AVEIRO)', destino: 'TERUEL', tarifa_tn: '54.9', vigente_desde: '2025-01-01', id: 70 }),
-  filaTarifa({ origen: 'CALDAS/VILLAGARCIA', destino: 'TERUEL', tarifa_tn: '56.0', vigente_desde: '2026-01-01', id: 248 }),
+  filaTarifa({ origen: 'CALDAS DE REIS', destino: 'TERUEL', tarifa_tn: '56.0', vigente_desde: '2026-01-01', id: 248 }),
   filaTarifa({ origen: 'BRESFOR (AVEIRO)', destino: 'TERUEL', tarifa_tn: '56.0', vigente_desde: '2026-01-01', id: 274 }),
 ];
 
-// Real: QUIMIDROGA BARCELONA->LEIRIA (PT), id 363.
+// Real: QUIMIDROGA BARCELONA->LEIRIA (PT).
 const TARIFAS_QUIMIDROGA_LEIRIA = [
-  filaTarifa({ cliente: 'QUIMIDROGA', origen: 'BARCELONA', destino: 'LEIRIA (PT)', tarifa_tn: '88.25', vigente_desde: '2026-01-15', id: 363 }),
+  filaTarifa({ cliente: CLI_QUIMIDROGA, origen: 'BARCELONA', destino: 'LEIRIA (PT)', tarifa_tn: '88.25', vigente_desde: '2026-01-15', id: 363 }),
 ];
 
-// Real: RNM AVEIRO->PORRIÑO, id 166.
+// Real: RNM AVEIRO->PORRIÑO.
 const TARIFAS_RNM = [
-  filaTarifa({ cliente: 'RNM', origen: 'AVEIRO', destino: 'PORRIÑO', tarifa_tn: '19.0', vigente_desde: '2025-01-01', id: 166 }),
+  filaTarifa({ cliente: CLI_RNM, origen: 'AVEIRO', destino: 'PORRIÑO', tarifa_tn: '19.0', vigente_desde: '2025-01-01', id: 166 }),
 ];
 
-test('tarifas: clienteParaTarifa mapea BRESFOR a FORESA (mismo criterio que cruce.regimenIndexacion)', () => {
-  assert.strictEqual(clienteParaTarifa('FORESA'), 'FORESA');
-  assert.strictEqual(clienteParaTarifa('BRESFOR'), 'FORESA');
-  assert.strictEqual(clienteParaTarifa('QUIMIDROGA'), 'QUIMIDROGA');
-  assert.strictEqual(clienteParaTarifa('RNM'), 'RNM');
-  assert.strictEqual(clienteParaTarifa('HELM'), 'HELM');
-  assert.strictEqual(clienteParaTarifa('QUIMICAS DEL JARAMA'), 'QUIMICAS DEL JARAMA');
-  assert.strictEqual(clienteParaTarifa('TEPSA'), null, 'cliente fuera del tarifario -> null, no inventa mapeo');
+test('tarifas: cliente leido con codigo corto resuelve la razon social y matchea EXACTO', () => {
+  // El viaje trae "FORESA" (codigo corto); la tabla trae la razon social
+  // completa. buscarTarifa resuelve la identidad y matchea exacto -- este es
+  // justo el caso que regresionaba tras la recarga.
+  const viaje = { cliente: 'FORESA', origen: 'CALDAS DE REIS', destino: 'TERUEL', fecha: '2026-07-07' };
+  const r = buscarTarifa(viaje, TARIFAS_FORESA_TERUEL);
+  assert.notStrictEqual(r.estado, 'SIN_TARIFA', 'FORESA (codigo corto) debe resolver contra la razon social');
+  assert.strictEqual(r.tarifa.valor, 56.0);
 });
 
 test('tarifas: hit DIRECTO en destino, elige la vigencia correcta por fecha del viaje', () => {
@@ -56,18 +67,21 @@ test('tarifas: hit DIRECTO en destino, elige la vigencia correcta por fecha del 
 });
 
 test('tarifas: fecha anterior a la vigencia nueva usa la version vieja (viaje 2025)', () => {
-  const viaje = { cliente: 'FORESA', origen: 'CALDAS/VILLAGARCIA', destino: 'TERUEL', fecha: '2025-06-01' };
+  const viaje = { cliente: 'FORESA', origen: 'CALDAS DE REIS', destino: 'TERUEL', fecha: '2025-06-01' };
   const r = buscarTarifa(viaje, TARIFAS_FORESA_TERUEL);
   assert.strictEqual(r.tarifa.valor, 54.9);
   assert.strictEqual(r.fila.id, 37);
 });
 
-test('tarifas: FALLBACK por fragmento — ficha "CALDAS DE REIS" matchea tarifa "CALDAS/VILLAGARCIA" real', () => {
-  // Caso real verificado: la ficha lee "CALDAS DE REIS", la tarifa FORESA
-  // trae el origen como celda multi-valor "CALDAS/VILLAGARCIA". El texto
-  // completo no coincide -- el fragmento "CALDAS" si.
+test('tarifas: FALLBACK por fragmento en origen — ficha "PORTO DE AVEIRO" matchea tarifa "BRESFOR (AVEIRO)"', () => {
+  // El fallback por fragmento sigue vivo para las formas con parentesis que la
+  // recarga NO atomizo (codigo de pais / origen entre parentesis). La ficha lee
+  // "PORTO DE AVEIRO", la tarifa trae "BRESFOR (AVEIRO)": el texto completo no
+  // coincide, el fragmento "AVEIRO" si. (matchCampo tambien maneja las celdas
+  // multi-valor con "/", aunque el tarifario nuevo ya casi no las trae.)
   assert.strictEqual(matchCampo('CALDAS DE REIS', 'CALDAS/VILLAGARCIA'), 'TOKEN');
-  const viaje = { cliente: 'FORESA', origen: 'CALDAS DE REIS', destino: 'TERUEL', fecha: '2026-07-07' };
+  assert.strictEqual(matchCampo('PORTO DE AVEIRO', 'BRESFOR (AVEIRO)'), 'TOKEN');
+  const viaje = { cliente: 'FORESA', origen: 'PORTO DE AVEIRO', destino: 'TERUEL', fecha: '2026-07-07' };
   const r = buscarTarifa(viaje, TARIFAS_FORESA_TERUEL);
   assert.strictEqual(r.estado, 'FALLBACK_PROVINCIA');
   assert.strictEqual(r.tarifa.valor, 56.0);
@@ -93,7 +107,9 @@ test('tarifas: SIN_TARIFA cuando el cliente no esta en el tarifario en absoluto 
   const viaje = { cliente: 'TEPSA', origen: 'BARCELONA', destino: 'LEIRIA PORTUGAL', fecha: '2026-07-13' };
   const r = buscarTarifa(viaje, TARIFAS_QUIMIDROGA_LEIRIA);
   assert.strictEqual(r.estado, 'SIN_TARIFA');
-  assert.match(r.motivo, /cliente_sin_tarifario: TEPSA/);
+  // Codigo de cliente sin razon social mapeada -> REVISAR ruidoso con el valor
+  // leido (mismo patron que "cliente no reconocido"), no tarifa a ciegas.
+  assert.match(r.motivo, /cliente_no_mapeado: TEPSA/);
 });
 
 test('tarifas: SIN_TARIFA cuando el cliente tiene tarifario pero no hay fila para esa ruta (FORESA CALDAS->ORENSE, hueco real confirmado)', () => {
@@ -105,7 +121,8 @@ test('tarifas: SIN_TARIFA cuando el cliente tiene tarifario pero no hay fila par
   const viaje = { cliente: 'FORESA', origen: 'CALDAS', destino: 'ORENSE', fecha: '2026-07-13' };
   const r = buscarTarifa(viaje, TARIFAS_FORESA_TERUEL);
   assert.strictEqual(r.estado, 'SIN_TARIFA');
-  assert.match(r.motivo, /sin_tarifa: FORESA CALDAS -> ORENSE/);
+  // El motivo nombra la razon social resuelta (identidad ok), la ruta es la que falta.
+  assert.match(r.motivo, /sin_tarifa: FORESA IND\.QUIMICAS DEL NOROESTE, S\.A\. CALDAS -> ORENSE/);
 });
 
 test('tarifas: RNM Aveiro->Porriño hit directo', () => {
@@ -119,6 +136,14 @@ test('tarifas: OCR "AVEPTO" (misread real de AVEIRO) no matchea la fila AVEIRO -
   // Ficha real (viaje id 3, hoja 29): la lectura de gpt-4o dio "AVEPTO" en vez
   // de "AVEIRO". Sin alias de misread (mismo criterio que CLIENTES_CONOCIDOS
   // en cruce.js): esto debe fallar visible, no matchear por casualidad.
+  //
+  // NOTA (fix de identidad 2026-08-04): con la razon social resuelta, la
+  // IDENTIDAD de cliente RNM ahora si matchea (antes fallaba por eso). Lo que
+  // sigue sin resolver es la GEOGRAFIA: "AVEPTO" no es "AVEIRO". El encargo
+  // listaba este viaje como "debe volver a resolver", pero resolverlo exigiria
+  // un alias de misread AVEPTO->AVEIRO, prohibido por la misma disciplina del
+  // encargo (nada de fuzzy sobre identidad; y el guardia de 2 letras del PR #1).
+  // Queda SIN_TARIFA por razon real de lectura, no por el bug de identidad.
   const viaje = { cliente: 'RNM', origen: 'AVEPTO', destino: 'PORRIÑO', fecha: '2026-07-16' };
   const r = buscarTarifa(viaje, TARIFAS_RNM);
   assert.strictEqual(r.estado, 'SIN_TARIFA');
@@ -131,7 +156,7 @@ test('tarifas: BUG real encontrado en la corrida en vivo del 2026-08-03 -- "AVEP
   // coincidia con el fragmento suelto "PT" de "AZAMBUJA(PT)". Country-code de
   // 2 letras nunca debe ser un fragmento de match valido.
   const filas = [
-    filaTarifa({ cliente: 'RNM', origen: 'AZAMBUJA(PT)', destino: 'PORRIÑO', tarifa_tn: '29.83', vigente_desde: '2026-01-01', id: 171 }),
+    filaTarifa({ cliente: CLI_RNM, origen: 'AZAMBUJA(PT)', destino: 'PORRIÑO', tarifa_tn: '29.83', vigente_desde: '2026-01-01', id: 171 }),
   ];
   const viaje = { cliente: 'RNM', origen: 'AVEPTO', destino: 'PORRIÑO', fecha: '2026-07-16' };
   const r = buscarTarifa(viaje, filas);
@@ -145,7 +170,7 @@ test('tarifas: matchCampo descarta fragmentos de pais de 2 letras (PT/ES) como c
 });
 
 test('tarifas: precio_fijo (EUR/viaje) se distingue de tarifa_tn (EUR/t)', () => {
-  const filas = [filaTarifa({ cliente: 'HELM', origen: 'X', destino: 'Y', precio_fijo: '250', vigente_desde: '2026-01-01', id: 900 })];
+  const filas = [filaTarifa({ cliente: CLI_HELM, origen: 'X', destino: 'Y', precio_fijo: '250', vigente_desde: '2026-01-01', id: 900 })];
   const r = buscarTarifa({ cliente: 'HELM', origen: 'X', destino: 'Y', fecha: '2026-07-01' }, filas);
   assert.strictEqual(r.tarifa.tipo, 'fijo');
   assert.strictEqual(r.tarifa.valor, 250);

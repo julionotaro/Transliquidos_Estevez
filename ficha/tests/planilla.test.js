@@ -17,9 +17,14 @@ function viajeBase(campos) {
   }, campos);
 }
 
+// `cliente` = razon social exacta de la tabla real (post-recarga Excel
+// 2026-08-04); el viaje trae el codigo corto "FORESA", que buscarTarifa resuelve
+// via ficha/clientes.js. El origen "BRESFOR (AVEIRO)" ejercita el fallback por
+// fragmento (la ficha lo lee distinto).
+const CLI_FORESA = 'FORESA IND.QUIMICAS DEL NOROESTE, S.A.';
 const TARIFAS = [
-  { cliente: 'FORESA', origen: 'CALDAS/VILLAGARCIA', destino: 'TERUEL', material: '', tarifa_tn: '54.9', precio_fijo: '', vigente_desde: '2025-01-01', id: 37 },
-  { cliente: 'FORESA', origen: 'BRESFOR (AVEIRO)', destino: 'TERUEL', material: '', tarifa_tn: '56.0', precio_fijo: '', vigente_desde: '2026-01-01', id: 274 },
+  { cliente: CLI_FORESA, origen: 'CALDAS/VILLAGARCIA', destino: 'TERUEL', material: '', tarifa_tn: '54.9', precio_fijo: '', vigente_desde: '2025-01-01', id: 37 },
+  { cliente: CLI_FORESA, origen: 'BRESFOR (AVEIRO)', destino: 'TERUEL', material: '', tarifa_tn: '56.0', precio_fijo: '', vigente_desde: '2026-01-01', id: 274 },
 ];
 
 const INDEXACION = [

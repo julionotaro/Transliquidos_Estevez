@@ -16,8 +16,9 @@ function viajeBase(campos) {
   }, campos);
 }
 
+// `cliente` = razon social exacta (post-recarga Excel); el viaje trae "FORESA".
 const TARIFAS = [
-  { cliente: 'FORESA', origen: 'BRESFOR (AVEIRO)', destino: 'TERUEL', material: '', tarifa_tn: '56.0', precio_fijo: '', vigente_desde: '2026-01-01', id: 274 },
+  { cliente: 'FORESA IND.QUIMICAS DEL NOROESTE, S.A.', origen: 'BRESFOR (AVEIRO)', destino: 'TERUEL', material: '', tarifa_tn: '56.0', precio_fijo: '', vigente_desde: '2026-01-01', id: 274 },
 ];
 const INDEXACION = [
   { cliente: 'FORESA-BRESFOR', tipo: 'gasoleo', pct: '0.1064', desde: '2026-07-01', hasta: '2026-07-15', id: 12 },

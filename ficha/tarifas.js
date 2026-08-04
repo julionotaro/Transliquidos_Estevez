@@ -1,20 +1,26 @@
 // ===== LOOKUP DE TARIFAS — planilla carga/auditoria (v1.1 pieza 2) ==========
 //
 // Busca la tarifa vigente de un viaje contra la tabla real `Tarifas`
-// (Siwhv2AUWTSeFlrJ, 538 filas confirmadas por readback 2026-08-03). Schema
+// (Siwhv2AUWTSeFlrJ, 698 filas tras la recarga del Excel 2026-08-04). Schema
 // real: cliente, origen, destino, material, tarifa_tn (string), precio_fijo
 // (string), vigente_desde (string).
 //
-// HALLAZGO clave del readback: el schema real ya mete MAS DE UN origen/destino
-// en la misma celda ("CALDAS/VILLAGARCIA", "BRESFOR (AVEIRO)", "LEIRIA (PT)")
-// en vez de una fila por variante. El "fallback por provincia" que pide el
-// encargo NO es una tabla nueva de provincias: es matchear el FRAGMENTO
-// separado por / ( ) , cuando el texto completo no coincide. Ejemplo real
-// verificado: ficha "CALDAS DE REIS" vs tarifa "CALDAS/VILLAGARCIA" -> no hay
-// match directo, pero el fragmento "CALDAS" si matchea.
+// IDENTIDAD DE CLIENTE (encargo 2026-08-04): el Excel trae RAZON SOCIAL
+// completa en `cliente` ("FORESA IND.QUIMICAS DEL NOROESTE, S.A."). El cliente
+// del viaje se resuelve a esa razon social por MAPA EXPLICITO (ficha/clientes.js)
+// y se compara EXACTO — nunca por fragmento sobre `cliente`, porque un fragmento
+// cruza razones sociales distintas y facturaria en silencio la tarifa de otro.
 //
-// Tambien hay vigencias superpuestas para la misma ruta (ej. FORESA
-// CALDAS/VILLAGARCIA->TERUEL: filas 2025-01-01 y 2026-01-01) -- hay que elegir
+// ORIGEN/DESTINO si admiten fallback por FRAGMENTO (geografia con solapes
+// esperables): el schema mete a veces mas de un lugar o un codigo de pais en la
+// misma celda ("LEIRIA (PT)", "BRESFOR (AVEIRO)"). El fallback matchea el
+// fragmento separado por / ( ) , cuando el texto completo no coincide. Ejemplo
+// real: ficha "LEIRIA PORTUGAL" vs tarifa "LEIRIA (PT)" -> el fragmento
+// "LEIRIA" matchea. (La recarga atomizo los origenes empacados tipo
+// "CALDAS/VILLAGARCIA" del tarifario viejo, pero el fallback se mantiene para
+// las formas con parentesis/codigo de pais que siguen existiendo.)
+//
+// Cuando hay mas de una fila para la misma ruta con distinta vigencia, se elige
 // la vigente a la fecha del viaje, no la primera que aparezca.
 
 'use strict';
@@ -23,19 +29,9 @@ var CRUCE_TAR = (typeof coincideTexto === 'function')
   ? { coincideTexto: coincideTexto, norm: norm }
   : require('./cruce.js');
 
-// Tarifas.cliente real: FORESA, HELM, QUIMICAS DEL JARAMA, QUIMIDROGA, RNM.
-// BRESFOR es un ORIGEN de FORESA en esta tabla, no un cliente propio -- mismo
-// mapeo que cruce.regimenIndexacion (evita una segunda fuente de verdad).
-function clienteParaTarifa(clienteViaje) {
-  var cl = CRUCE_TAR.norm(clienteViaje);
-  if (!cl) { return null; }
-  if (cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0) { return 'FORESA'; }
-  if (cl.indexOf('QUIMIDROGA') >= 0) { return 'QUIMIDROGA'; }
-  if (cl.indexOf('JARAMA') >= 0) { return 'QUIMICAS DEL JARAMA'; }
-  if (cl.indexOf('RNM') >= 0) { return 'RNM'; }
-  if (cl.indexOf('HELM') >= 0) { return 'HELM'; }
-  return null;
-}
+var CLIENTES_TAR = (typeof resolverCliente === 'function')
+  ? { resolverCliente: resolverCliente }
+  : require('./clientes.js');
 
 // Fragmentos de 2 caracteres o menos (codigos de pais: PT, ES, IT, FR...) se
 // descartan del fallback: son sustring de casi cualquier lectura de OCR con
@@ -89,8 +85,9 @@ function valorTarifa(fila) {
 }
 
 /**
- * Busca la tarifa vigente de un viaje. NUNCA inventa: sin match de
- * cliente+origen+destino -> SIN_TARIFA con motivo visible.
+ * Busca la tarifa vigente de un viaje. NUNCA inventa: sin identidad de cliente
+ * resuelta o sin match de razon social + origen + destino -> SIN_TARIFA con
+ * motivo visible (el viaje queda REVISAR en la planilla).
  *
  * @param {object} viaje  {cliente, origen, destino, fecha}
  * @param {Array<object>} tarifasRows  filas crudas de la tabla Tarifas.
@@ -100,15 +97,22 @@ function valorTarifa(fila) {
 function buscarTarifa(viaje, tarifasRows) {
   var v = viaje || {};
   var filas = Array.isArray(tarifasRows) ? tarifasRows : [];
-  var clienteTarifa = clienteParaTarifa(v.cliente);
-  if (!clienteTarifa) {
-    return { estado: 'SIN_TARIFA', tarifa: null, fila: null, motivo: 'cliente_sin_tarifario: ' + (v.cliente || '(no leido)') };
-  }
 
+  // 1) Identidad: cliente leido -> razon social exacta (mapa explicito). Un
+  //    codigo sin razon social mapeada NO recibe tarifa a ciegas: falla ruidoso
+  //    con el valor leido en el motivo (mismo patron que "cliente no reconocido").
+  var ident = CLIENTES_TAR.resolverCliente(v.cliente);
+  if (!ident.razonSocial) {
+    return { estado: 'SIN_TARIFA', tarifa: null, fila: null, motivo: ident.motivo || 'cliente_no_mapeado' };
+  }
+  var clienteObjetivo = CRUCE_TAR.norm(ident.razonSocial);
+
+  // 2) Candidatas: match EXACTO de razon social (identidad), fragmento solo en
+  //    origen/destino (geografia).
   var candidatas = [];
   for (var i = 0; i < filas.length; i++) {
     var f = filas[i];
-    if (CRUCE_TAR.norm(f.cliente) !== clienteTarifa) { continue; }
+    if (CRUCE_TAR.norm(f.cliente) !== clienteObjetivo) { continue; }
     var nivelOrigen = matchCampo(v.origen, f.origen);
     var nivelDestino = matchCampo(v.destino, f.destino);
     if (!nivelOrigen || !nivelDestino) { continue; }
@@ -118,7 +122,7 @@ function buscarTarifa(viaje, tarifasRows) {
   if (!candidatas.length) {
     return {
       estado: 'SIN_TARIFA', tarifa: null, fila: null,
-      motivo: 'sin_tarifa: ' + clienteTarifa + ' ' + (v.origen || '?') + ' -> ' + (v.destino || '?')
+      motivo: 'sin_tarifa: ' + ident.razonSocial + ' ' + (v.origen || '?') + ' -> ' + (v.destino || '?')
     };
   }
 
@@ -150,7 +154,9 @@ function buscarTarifa(viaje, tarifasRows) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    clienteParaTarifa: clienteParaTarifa,
+    // identidad de cliente vive en clientes.js; se re-exporta para que quien ya
+    // importa tarifas.js pueda resolver sin conocer el modulo nuevo.
+    resolverCliente: CLIENTES_TAR.resolverCliente,
     tokens: tokens,
     matchCampo: matchCampo,
     valorTarifa: valorTarifa,
