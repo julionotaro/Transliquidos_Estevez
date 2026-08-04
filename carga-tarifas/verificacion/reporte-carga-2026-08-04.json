@@ -1,0 +1,91 @@
+{
+  "filas_crudas": 704,
+  "filas_mapeadas": 704,
+  "filas_excluidas": 0,
+  "filas_finales_tras_dedup": 698,
+  "conflictos": [
+    {
+      "clave": "DROGAS VIGO, S.L.|SANTANDER|PORRIÑO|Cualquiera",
+      "filas": [
+        {
+          "cliente": "DROGAS VIGO, S.L.",
+          "origen": "SANTANDER",
+          "destino": "PORRIÑO",
+          "material": "Cualquiera",
+          "tarifa_tn": "43.48",
+          "precio_fijo": "",
+          "vigente_desde": "2024-12-16"
+        },
+        {
+          "cliente": "DROGAS VIGO, S.L.",
+          "origen": "SANTANDER",
+          "destino": "PORRIÑO",
+          "material": "Cualquiera",
+          "tarifa_tn": "38",
+          "precio_fijo": "",
+          "vigente_desde": "2023-01-16"
+        }
+      ],
+      "elegida": {
+        "cliente": "DROGAS VIGO, S.L.",
+        "origen": "SANTANDER",
+        "destino": "PORRIÑO",
+        "material": "Cualquiera",
+        "tarifa_tn": "43.48",
+        "precio_fijo": "",
+        "vigente_desde": "2024-12-16"
+      }
+    },
+    {
+      "clave": "HELM IBERICA, S.A.|BILBAO|MONZON (HUESCA)|SOSA",
+      "filas": [
+        {
+          "cliente": "HELM IBERICA, S.A.",
+          "origen": "BILBAO",
+          "destino": "MONZON (HUESCA)",
+          "material": "SOSA",
+          "tarifa_tn": "",
+          "precio_fijo": "708.1",
+          "vigente_desde": ""
+        },
+        {
+          "cliente": "HELM IBERICA, S.A.",
+          "origen": "BILBAO",
+          "destino": "MONZON (HUESCA)",
+          "material": "SOSA",
+          "tarifa_tn": "",
+          "precio_fijo": "764.75",
+          "vigente_desde": "2026-01-01"
+        }
+      ],
+      "elegida": {
+        "cliente": "HELM IBERICA, S.A.",
+        "origen": "BILBAO",
+        "destino": "MONZON (HUESCA)",
+        "material": "SOSA",
+        "tarifa_tn": "",
+        "precio_fijo": "764.75",
+        "vigente_desde": "2026-01-01"
+      }
+    }
+  ],
+  "avisos": [
+    "U.M. \"KILOMETROS\" (BRESFOR IND. DO FORMOL, S.A.: TERUEL -> AVEIRO) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"LITROS\" (CASAIS Y CIA., S.L.: VILLALBA -> VALENCIA) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por litros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: ALCALA HENARES -> CALDAS DE REIS) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: ALCALA HENARES -> TORDESILLAS) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: AZUQUECA DE HENARES -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: BARCELONA -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: CALDAS DE REIS -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: GETAFE -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: MADRID -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: QUER -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: REINOSA -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: REINOSA -> CALDAS DE REIS) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: SALVATIERRA -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: TORDESILLAS -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: TORDESILLAS -> CALDAS DE REIS) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (CLAVO FOOD FACTORY, S.A.: TUDELA -> Cualquiera) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila.",
+    "U.M. \"KILOMETROS\" (FORESA IND.QUIMICAS DEL NOROESTE, S.A.: TERUEL -> CALDAS DE REIS) va a precio_fijo pero NO es un flete cerrado por viaje -- es una tarifa por kilometros. Revisar con Julio antes de facturar con esta fila."
+  ]
+}
