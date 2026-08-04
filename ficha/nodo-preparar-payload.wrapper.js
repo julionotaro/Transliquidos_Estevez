@@ -36,7 +36,10 @@ const modeloFichas = body['modelo_fichas'] || MODELO_FICHAS;
 // asi cada pagina vuelve con la imagen completa (contexto) + los recortes de sus
 // bandas (matricula, km_v1/v2/v3). B.1: los campos que facturan se leen sobre la
 // banda ampliada, no sobre la A4 entera.
-const respuestasRast = $input.all().map(function (it) { return it.json || {}; });
+// NOTA: la entrada directa de este nodo ya no es "Rasterizar Ficha" (ahora la rama
+// Document AI corre en el medio), asi que las paginas rasterizadas se leen por
+// referencia explicita a "Rasterizar Ficha", no de $input.
+const respuestasRast = $('Rasterizar Ficha').all().map(function (it) { return it.json || {}; });
 const paginas = concatPaginasConRegiones(respuestasRast);
 if (paginas.length === 0) {
   throw new Error('El rasterizador no devolvio ninguna pagina. La ficha NO se puede leer sobre PDF-archivo (rinde mal en manuscrito); se aborta en vez de degradar en silencio.');
