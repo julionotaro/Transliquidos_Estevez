@@ -37,11 +37,19 @@ function clienteParaTarifa(clienteViaje) {
   return null;
 }
 
+// Fragmentos de 2 caracteres o menos (codigos de pais: PT, ES, IT, FR...) se
+// descartan del fallback: son sustring de casi cualquier lectura de OCR con
+// esas dos letras seguidas (bug real encontrado en la corrida en vivo del
+// 2026-08-03 -- "AVEPTO", misread de AVEIRO, matcheaba "AZAMBUJA(PT)" por el
+// fragmento suelto "PT", asignando una tarifa de una ruta que no tiene nada
+// que ver). Ningun nombre de lugar real en esta tabla tiene 2 caracteres.
+var LARGO_MINIMO_TOKEN = 3;
+
 /** Separa "CALDAS/VILLAGARCIA", "BRESFOR (AVEIRO)", "LEIRIA (PT)" en fragmentos. */
 function tokens(s) {
   var n = CRUCE_TAR.norm(s);
   if (!n) { return []; }
-  return n.split(/[/(),]+/).map(function (t) { return t.trim(); }).filter(function (t) { return t; });
+  return n.split(/[/(),]+/).map(function (t) { return t.trim(); }).filter(function (t) { return t.length >= LARGO_MINIMO_TOKEN; });
 }
 
 /**

@@ -115,13 +115,33 @@ test('tarifas: RNM Aveiro->Porriño hit directo', () => {
   assert.strictEqual(r.tarifa.valor, 19.0);
 });
 
-test('tarifas: OCR "AVEPTO" (misread real de AVEIRO) no matchea -- SIN_TARIFA visible, no se disfraza', () => {
+test('tarifas: OCR "AVEPTO" (misread real de AVEIRO) no matchea la fila AVEIRO -- SIN_TARIFA visible, no se disfraza', () => {
   // Ficha real (viaje id 3, hoja 29): la lectura de gpt-4o dio "AVEPTO" en vez
   // de "AVEIRO". Sin alias de misread (mismo criterio que CLIENTES_CONOCIDOS
   // en cruce.js): esto debe fallar visible, no matchear por casualidad.
   const viaje = { cliente: 'RNM', origen: 'AVEPTO', destino: 'PORRIÑO', fecha: '2026-07-16' };
   const r = buscarTarifa(viaje, TARIFAS_RNM);
   assert.strictEqual(r.estado, 'SIN_TARIFA');
+});
+
+test('tarifas: BUG real encontrado en la corrida en vivo del 2026-08-03 -- "AVEPTO" NO debe matchear "AZAMBUJA(PT)" via el fragmento suelto "PT"', () => {
+  // La primera corrida en vivo asigno a un viaje RNM con origen "AVEPTO" (OCR
+  // de AVEIRO) la tarifa de la fila RNM AZAMBUJA(PT)->PORRIÑO (29.83 EUR/t,
+  // id real 171) -- "AVEPTO" contiene el substring "PT" (posiciones 3-4), que
+  // coincidia con el fragmento suelto "PT" de "AZAMBUJA(PT)". Country-code de
+  // 2 letras nunca debe ser un fragmento de match valido.
+  const filas = [
+    filaTarifa({ cliente: 'RNM', origen: 'AZAMBUJA(PT)', destino: 'PORRIÑO', tarifa_tn: '29.83', vigente_desde: '2026-01-01', id: 171 }),
+  ];
+  const viaje = { cliente: 'RNM', origen: 'AVEPTO', destino: 'PORRIÑO', fecha: '2026-07-16' };
+  const r = buscarTarifa(viaje, filas);
+  assert.strictEqual(r.estado, 'SIN_TARIFA', 'AVEPTO no debe matchear AZAMBUJA(PT) via el fragmento "PT"');
+});
+
+test('tarifas: matchCampo descarta fragmentos de pais de 2 letras (PT/ES) como criterio de match', () => {
+  assert.strictEqual(matchCampo('AVEPTO', 'AZAMBUJA(PT)'), null);
+  // pero un lugar real de 3+ letras dentro de parentesis SI matchea
+  assert.strictEqual(matchCampo('LEIRIA PORTUGAL', 'LEIRIA (PT)'), 'TOKEN');
 });
 
 test('tarifas: precio_fijo (EUR/viaje) se distingue de tarifa_tn (EUR/t)', () => {
