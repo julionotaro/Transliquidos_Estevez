@@ -55,7 +55,7 @@ const TARGETS = [
   },
   {
     nodo: 'Planilla',
-    logica: ['cruce.js', 'tarifas.js', 'indexacion.js', 'planilla.js'],
+    logica: ['cruce.js', 'clientes.js', 'tarifas.js', 'indexacion.js', 'planilla.js'],
     wrapper: 'nodo-planilla.wrapper.js',
     salida: 'nodo-planilla.generated.js',
     workflowId: '[ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)',

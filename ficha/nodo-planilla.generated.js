@@ -1,5 +1,5 @@
 // ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.
-// Fuente: ficha/cruce.js + ficha/tarifas.js + ficha/indexacion.js + ficha/planilla.js + ficha/nodo-planilla.wrapper.js
+// Fuente: ficha/cruce.js + ficha/clientes.js + ficha/tarifas.js + ficha/indexacion.js + ficha/planilla.js + ficha/nodo-planilla.wrapper.js
 // Contenido exacto del nodo Code "Planilla" ([ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)).
 
 // ===== CRUCE FICHA<->DOCUMENTO — reglas del modelo "albaran = unidad facturable" =====
@@ -189,23 +189,122 @@ if (typeof module !== 'undefined' && module.exports) {
   };
 }
 
+// ===== IDENTIDAD DE CLIENTE — resolucion explicita a razon social ===========
+//
+// Unico lugar donde se resuelve QUIEN es el cliente de un viaje contra la
+// identidad canonica que usa la tabla `Tarifas` (Siwhv2AUWTSeFlrJ). Reusable:
+// cualquier modulo que necesite pasar del cliente leido a la fila de Tarifas
+// (hoy tarifas.js; manana facturacion, cruces, etc.) resuelve por aca, no
+// re-implementa el mapeo.
+//
+// POR QUE ESTE MODULO (encargo 2026-08-04): `Tarifas` fue reemplazada con el
+// Excel del sistema de escritorio, que trae RAZON SOCIAL completa
+// ("FORESA IND.QUIMICAS DEL NOROESTE, S.A."). El codigo viejo comparaba el
+// codigo corto ("FORESA") por igualdad exacta contra esa columna -> 0 hits ->
+// 9/9 viajes vivos en SIN_TARIFA. Regresion real confirmada por corrida.
+//
+// DECISION DE DISENO (no se re-discute): la identidad de cliente se resuelve
+// por MAPA EXPLICITO, nunca por fragmento/substring sobre la razon social. Un
+// fragmento cruza razones sociales sin relacion ("S.A.", "TRANSPORTES",
+// "QUIMICAS" aparecen en decenas de nombres) y facturaria a un cliente la
+// tarifa de otro EN SILENCIO. Mismo precedente ya establecido en el proyecto:
+// "NO se uso alias para FORBA" (cruce.js, CLIENTES_CONOCIDOS) y "cliente no
+// reconocido falla ruidoso". Un codigo sin razon social mapeada NO recibe
+// tarifa a ciegas: devuelve motivo para que el viaje quede REVISAR.
+//
+// OJO — razones sociales que comparten prefijo son clientes DISTINTOS y solo
+// una es la del viaje habitual:
+//   "FORESA IND.QUIMICAS DEL NOROESTE, S.A."  (Galicia, el de los viajes)  != "FORESA FRANCE, SAS"
+//   "QUIMIDROGA, S.A."                        (Espana)                     != "QUIMIDROGA PORTUGAL, LDA"
+//   "HELM IBERICA, S.A."                                                   != "HELM PROMAN METHANOL AG"
+// Por eso el `token` de reconocimiento apunta a UNA razon social exacta; si en
+// el futuro aparece un viaje del otro cliente homonimo, se agrega su propia
+// entrada con un token mas especifico ANTES en la lista, no se afloja el match.
+
+'use strict';
+
+var CRUCE_CLI = (typeof norm === 'function') ? { norm: norm } : require('./cruce.js');
+
+// `token`: fragmento corto y distintivo con que la ficha/lectura nombra al
+//   cliente. Se usa SOLO para reconocer la lectura (mismo criterio que
+//   esClienteConocido en cruce.js: la lectura CONTIENE el token). Nunca se
+//   compara el token contra Tarifas.cliente.
+// `razonSocial`: identidad EXACTA tal cual quedo en Tarifas.cliente tras la
+//   recarga del Excel (2026-08-04). Es lo unico que se compara — exacto — con
+//   Tarifas.cliente.
+//
+// Poblado con los clientes de los 9 viajes vivos (FORESA, RNM) y los demas
+// codigos referenciados en el codigo del proyecto (clienteParaTarifa /
+// grupoIndexacion: QUIMIDROGA, HELM, QUIMICAS DEL JARAMA, BRESFOR). Para sumar
+// un cliente: agregar una entrada aca, nada mas.
+var ALIAS_CLIENTE = [
+  { token: 'FORESA',              razonSocial: 'FORESA IND.QUIMICAS DEL NOROESTE, S.A.' },
+  // BRESFOR: en la tabla VIEJA era solo un ORIGEN de FORESA; el Excel nuevo lo
+  // trae como CLIENTE propio con sus filas ("BRESFOR IND. DO FORMOL, S.A."),
+  // asi que un viaje BRESFOR resuelve su PROPIO tarifario, no el de FORESA
+  // (cambio deliberado vs. el codigo viejo, que los conflaba). La agrupacion
+  // FORESA-BRESFOR para la indexacion es otra cosa y sigue en indexacion.js.
+  { token: 'BRESFOR',             razonSocial: 'BRESFOR IND. DO FORMOL, S.A.' },
+  { token: 'QUIMIDROGA',          razonSocial: 'QUIMIDROGA, S.A.' },
+  { token: 'RNM',                 razonSocial: 'RNM TRANSPORTES QUIMICOS, LDA' },
+  { token: 'HELM',                razonSocial: 'HELM IBERICA, S.A.' },
+  { token: 'JARAMA',              razonSocial: 'QUIMICAS DEL JARAMA, S.A.' },
+];
+
+/**
+ * Resuelve el cliente leido de un viaje a su razon social canonica en Tarifas.
+ * NO adivina: si la lectura no contiene ningun token conocido, devuelve
+ * razonSocial null y un motivo con el valor leido (para que el caller marque
+ * el viaje REVISAR, mismo patron que "cliente no reconocido").
+ *
+ * @param {string} clienteViaje  valor leido del cliente (ficha/documento).
+ * @param {Array<object>} [alias] tabla de alias (default ALIAS_CLIENTE; inyectable en tests).
+ * @returns {{razonSocial: string|null, token: string|null, motivo: string|null}}
+ */
+function resolverCliente(clienteViaje, alias) {
+  var lista = Array.isArray(alias) ? alias : ALIAS_CLIENTE;
+  var cl = CRUCE_CLI.norm(clienteViaje);
+  if (!cl) {
+    return { razonSocial: null, token: null, motivo: 'cliente_no_leido' };
+  }
+  for (var i = 0; i < lista.length; i++) {
+    if (cl.indexOf(CRUCE_CLI.norm(lista[i].token)) >= 0) {
+      return { razonSocial: lista[i].razonSocial, token: lista[i].token, motivo: null };
+    }
+  }
+  return { razonSocial: null, token: null, motivo: 'cliente_no_mapeado: ' + (clienteViaje || '(no leido)') };
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    ALIAS_CLIENTE: ALIAS_CLIENTE,
+    resolverCliente: resolverCliente,
+  };
+}
+
 // ===== LOOKUP DE TARIFAS — planilla carga/auditoria (v1.1 pieza 2) ==========
 //
 // Busca la tarifa vigente de un viaje contra la tabla real `Tarifas`
-// (Siwhv2AUWTSeFlrJ, 538 filas confirmadas por readback 2026-08-03). Schema
+// (Siwhv2AUWTSeFlrJ, 698 filas tras la recarga del Excel 2026-08-04). Schema
 // real: cliente, origen, destino, material, tarifa_tn (string), precio_fijo
 // (string), vigente_desde (string).
 //
-// HALLAZGO clave del readback: el schema real ya mete MAS DE UN origen/destino
-// en la misma celda ("CALDAS/VILLAGARCIA", "BRESFOR (AVEIRO)", "LEIRIA (PT)")
-// en vez de una fila por variante. El "fallback por provincia" que pide el
-// encargo NO es una tabla nueva de provincias: es matchear el FRAGMENTO
-// separado por / ( ) , cuando el texto completo no coincide. Ejemplo real
-// verificado: ficha "CALDAS DE REIS" vs tarifa "CALDAS/VILLAGARCIA" -> no hay
-// match directo, pero el fragmento "CALDAS" si matchea.
+// IDENTIDAD DE CLIENTE (encargo 2026-08-04): el Excel trae RAZON SOCIAL
+// completa en `cliente` ("FORESA IND.QUIMICAS DEL NOROESTE, S.A."). El cliente
+// del viaje se resuelve a esa razon social por MAPA EXPLICITO (ficha/clientes.js)
+// y se compara EXACTO — nunca por fragmento sobre `cliente`, porque un fragmento
+// cruza razones sociales distintas y facturaria en silencio la tarifa de otro.
 //
-// Tambien hay vigencias superpuestas para la misma ruta (ej. FORESA
-// CALDAS/VILLAGARCIA->TERUEL: filas 2025-01-01 y 2026-01-01) -- hay que elegir
+// ORIGEN/DESTINO si admiten fallback por FRAGMENTO (geografia con solapes
+// esperables): el schema mete a veces mas de un lugar o un codigo de pais en la
+// misma celda ("LEIRIA (PT)", "BRESFOR (AVEIRO)"). El fallback matchea el
+// fragmento separado por / ( ) , cuando el texto completo no coincide. Ejemplo
+// real: ficha "LEIRIA PORTUGAL" vs tarifa "LEIRIA (PT)" -> el fragmento
+// "LEIRIA" matchea. (La recarga atomizo los origenes empacados tipo
+// "CALDAS/VILLAGARCIA" del tarifario viejo, pero el fallback se mantiene para
+// las formas con parentesis/codigo de pais que siguen existiendo.)
+//
+// Cuando hay mas de una fila para la misma ruta con distinta vigencia, se elige
 // la vigente a la fecha del viaje, no la primera que aparezca.
 
 'use strict';
@@ -214,19 +313,9 @@ var CRUCE_TAR = (typeof coincideTexto === 'function')
   ? { coincideTexto: coincideTexto, norm: norm }
   : require('./cruce.js');
 
-// Tarifas.cliente real: FORESA, HELM, QUIMICAS DEL JARAMA, QUIMIDROGA, RNM.
-// BRESFOR es un ORIGEN de FORESA en esta tabla, no un cliente propio -- mismo
-// mapeo que cruce.regimenIndexacion (evita una segunda fuente de verdad).
-function clienteParaTarifa(clienteViaje) {
-  var cl = CRUCE_TAR.norm(clienteViaje);
-  if (!cl) { return null; }
-  if (cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0) { return 'FORESA'; }
-  if (cl.indexOf('QUIMIDROGA') >= 0) { return 'QUIMIDROGA'; }
-  if (cl.indexOf('JARAMA') >= 0) { return 'QUIMICAS DEL JARAMA'; }
-  if (cl.indexOf('RNM') >= 0) { return 'RNM'; }
-  if (cl.indexOf('HELM') >= 0) { return 'HELM'; }
-  return null;
-}
+var CLIENTES_TAR = (typeof resolverCliente === 'function')
+  ? { resolverCliente: resolverCliente }
+  : require('./clientes.js');
 
 // Fragmentos de 2 caracteres o menos (codigos de pais: PT, ES, IT, FR...) se
 // descartan del fallback: son sustring de casi cualquier lectura de OCR con
@@ -280,8 +369,9 @@ function valorTarifa(fila) {
 }
 
 /**
- * Busca la tarifa vigente de un viaje. NUNCA inventa: sin match de
- * cliente+origen+destino -> SIN_TARIFA con motivo visible.
+ * Busca la tarifa vigente de un viaje. NUNCA inventa: sin identidad de cliente
+ * resuelta o sin match de razon social + origen + destino -> SIN_TARIFA con
+ * motivo visible (el viaje queda REVISAR en la planilla).
  *
  * @param {object} viaje  {cliente, origen, destino, fecha}
  * @param {Array<object>} tarifasRows  filas crudas de la tabla Tarifas.
@@ -291,15 +381,22 @@ function valorTarifa(fila) {
 function buscarTarifa(viaje, tarifasRows) {
   var v = viaje || {};
   var filas = Array.isArray(tarifasRows) ? tarifasRows : [];
-  var clienteTarifa = clienteParaTarifa(v.cliente);
-  if (!clienteTarifa) {
-    return { estado: 'SIN_TARIFA', tarifa: null, fila: null, motivo: 'cliente_sin_tarifario: ' + (v.cliente || '(no leido)') };
-  }
 
+  // 1) Identidad: cliente leido -> razon social exacta (mapa explicito). Un
+  //    codigo sin razon social mapeada NO recibe tarifa a ciegas: falla ruidoso
+  //    con el valor leido en el motivo (mismo patron que "cliente no reconocido").
+  var ident = CLIENTES_TAR.resolverCliente(v.cliente);
+  if (!ident.razonSocial) {
+    return { estado: 'SIN_TARIFA', tarifa: null, fila: null, motivo: ident.motivo || 'cliente_no_mapeado' };
+  }
+  var clienteObjetivo = CRUCE_TAR.norm(ident.razonSocial);
+
+  // 2) Candidatas: match EXACTO de razon social (identidad), fragmento solo en
+  //    origen/destino (geografia).
   var candidatas = [];
   for (var i = 0; i < filas.length; i++) {
     var f = filas[i];
-    if (CRUCE_TAR.norm(f.cliente) !== clienteTarifa) { continue; }
+    if (CRUCE_TAR.norm(f.cliente) !== clienteObjetivo) { continue; }
     var nivelOrigen = matchCampo(v.origen, f.origen);
     var nivelDestino = matchCampo(v.destino, f.destino);
     if (!nivelOrigen || !nivelDestino) { continue; }
@@ -309,7 +406,7 @@ function buscarTarifa(viaje, tarifasRows) {
   if (!candidatas.length) {
     return {
       estado: 'SIN_TARIFA', tarifa: null, fila: null,
-      motivo: 'sin_tarifa: ' + clienteTarifa + ' ' + (v.origen || '?') + ' -> ' + (v.destino || '?')
+      motivo: 'sin_tarifa: ' + ident.razonSocial + ' ' + (v.origen || '?') + ' -> ' + (v.destino || '?')
     };
   }
 
@@ -341,7 +438,9 @@ function buscarTarifa(viaje, tarifasRows) {
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    clienteParaTarifa: clienteParaTarifa,
+    // identidad de cliente vive en clientes.js; se re-exporta para que quien ya
+    // importa tarifas.js pueda resolver sin conocer el modulo nuevo.
+    resolverCliente: CLIENTES_TAR.resolverCliente,
     tokens: tokens,
     matchCampo: matchCampo,
     valorTarifa: valorTarifa,
