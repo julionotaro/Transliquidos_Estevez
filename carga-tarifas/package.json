@@ -1,0 +1,10 @@
+{
+  "name": "carga-tarifas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mapeo/dedup/carga del tarifario nuevo (Tarifas_general.xls, sistema de escritorio) a la tabla Tarifas de n8n. Encargo 2026-08-04, tarea B.",
+  "main": "carga-tarifas.js",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}
