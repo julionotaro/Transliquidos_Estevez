@@ -53,6 +53,13 @@ const TARGETS = [
     salida: 'nodo-aplicar-accion.generated.js',
     workflowId: '[ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)',
   },
+  {
+    nodo: 'Planilla',
+    logica: ['cruce.js', 'tarifas.js', 'indexacion.js', 'planilla.js'],
+    wrapper: 'nodo-planilla.wrapper.js',
+    salida: 'nodo-planilla.generated.js',
+    workflowId: '[ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)',
+  },
 ];
 
 function construir(t) {
