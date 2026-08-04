@@ -119,9 +119,45 @@ function armarFila(viaje, tarifasRows, indexacionRows) {
   };
 }
 
+// Fecha de carga: no es una de las columnas que se transcriben a mano al
+// escritorio (el encargo la deja fuera de COLUMNAS a proposito), pero el
+// encargo SI pide poder "filtrar por cliente, por chofer, por fecha, para
+// cargar por lotes" -- se agrega como columna extra, ANTES de COLUMNAS, sin
+// alterar el orden de escritorio que valoresEnOrden()/COLUMNAS ya fijan.
+var COLUMNA_FECHA = { clave: 'fecha_carga', titulo: 'Fecha carga' };
+var COLUMNAS_TABLA = [COLUMNA_FECHA].concat(COLUMNAS);
+
 /** Proyecta una fila a un array de valores en el orden de COLUMNAS (para render y tests de orden). */
 function valoresEnOrden(fila) {
   return COLUMNAS.map(function (c) { return fila[c.clave]; });
+}
+
+/** Igual que valoresEnOrden pero incluye la columna Fecha carga (para filtro y render de tabla). */
+function valoresTabla(fila) {
+  return COLUMNAS_TABLA.map(function (c) { return fila[c.clave]; });
+}
+
+/**
+ * Filtro por columna sobre filas ya armadas (misma logica que corre en el
+ * navegador via el <script> inline de renderHTML -- ver ahi). Sustring,
+ * insensible a mayusculas, AND entre columnas con filtro no vacio.
+ *
+ * @param {Array<object>} filas
+ * @param {Array<string>} filtros  un valor por columna de COLUMNAS_TABLA (fecha + las 16), '' = sin filtrar esa columna.
+ */
+function filtrarFilasPorColumna(filas, filtros) {
+  var lista = Array.isArray(filas) ? filas : [];
+  var f = Array.isArray(filtros) ? filtros : [];
+  return lista.filter(function (fila) {
+    var valores = valoresTabla(fila);
+    for (var i = 0; i < f.length; i++) {
+      var q = (f[i] || '').toString().trim().toLowerCase();
+      if (!q) { continue; }
+      var texto = (valores[i] === null || valores[i] === undefined) ? '' : String(valores[i]).toLowerCase();
+      if (texto.indexOf(q) === -1) { return false; }
+    }
+    return true;
+  });
 }
 
 function armarFilas(viajes, tarifasRows, indexacionRowsCrudas) {
@@ -154,7 +190,7 @@ function celda(valor) {
  */
 function renderHTML(filas) {
   var lista = Array.isArray(filas) ? filas : [];
-  var nCols = COLUMNAS.length;
+  var nCols = COLUMNAS_TABLA.length;
   var cuerpo;
   if (lista.length === 0) {
     cuerpo = '<tr><td colspan="' + nCols + '" class="vacio-tabla">No hay viajes para mostrar.</td></tr>';
@@ -162,11 +198,14 @@ function renderHTML(filas) {
     cuerpo = lista.map(function (f) {
       var claseFila = f.resaltar ? ' class="resaltada"' : '';
       var titulo = f.resaltar ? ' title="' + escHtml(f.motivos_resaltado.join(' | ')) + '"' : '';
-      var celdas = valoresEnOrden(f).map(celda).join('');
+      var celdas = valoresTabla(f).map(celda).join('');
       return '<tr' + claseFila + titulo + ' data-id="' + escHtml(f.id) + '">' + celdas + '</tr>';
     }).join('');
   }
-  var headers = COLUMNAS.map(function (c) { return '<th>' + escHtml(c.titulo) + '</th>'; }).join('');
+  var headers = COLUMNAS_TABLA.map(function (c) { return '<th>' + escHtml(c.titulo) + '</th>'; }).join('');
+  var filtros = COLUMNAS_TABLA.map(function (c, i) {
+    return '<th><input type="text" class="filtro-col" data-col="' + i + '" placeholder="filtrar ' + escHtml(c.titulo) + '"></th>';
+  }).join('');
   return [
     '<!doctype html><html lang="es"><head><meta charset="utf-8">',
     '<title>Planilla carga/auditoria - Transliquidos Estevez</title>',
@@ -184,13 +223,49 @@ function renderHTML(filas) {
     '.vacio-tabla{text-align:center;padding:2rem;color:#666}',
     '.leyenda{margin:.5rem 0 1rem;font-size:.85rem;color:#555}',
     '.leyenda .muestra{display:inline-block;width:.9rem;height:.9rem;background:#fff3cd;border:1px solid #ddd;vertical-align:middle;margin-right:.3rem}',
+    'tr.filtros th{background:#eee;padding:.25rem}',
+    'tr.filtros input{width:100%;box-sizing:border-box;padding:.2rem .3rem;font-size:.8rem;font-weight:normal}',
+    'tr.oculta-por-filtro{display:none}',
+    '#limpiar-filtros{margin:0 0 .5rem;font-size:.8rem;padding:.25rem .6rem;cursor:pointer}',
     '</style></head><body>',
     '<h1>Planilla de carga / auditoria (' + lista.length + ')</h1>',
     '<p class="sub">Copilot de carga (transcribir al sistema de escritorio) + auditoria de facturacion (misma tabla).</p>',
     '<p class="leyenda"><span class="muestra"></span>Resaltado = revisar antes de facturar (REVISAR, PENDIENTE_DOCUMENTACION, SIN_TARIFA o indexacion agregada sin cerrar). Pasar el mouse por la fila para ver el motivo.</p>',
-    '<table id="planilla"><thead><tr>' + headers + '</tr></thead><tbody>',
+    '<button type="button" id="limpiar-filtros">Limpiar filtros</button>',
+    '<table id="planilla"><thead><tr>' + headers + '</tr><tr class="filtros">' + filtros + '</tr></thead><tbody>',
     cuerpo,
     '</tbody></table>',
+    // Filtro por columna, 100% inline -- sin CDN, sin archivo aparte (el VPS
+    // bloquea CDN, ver encargo). Substring, insensible a mayusculas, AND
+    // entre columnas con filtro no vacio -- misma logica que
+    // filtrarFilasPorColumna() en planilla.js (duplicada aca a proposito:
+    // esto corre en el navegador del usuario, no en el nodo Code de n8n).
+    '<script>',
+    '(function () {',
+    '  var tabla = document.getElementById("planilla");',
+    '  if (!tabla) { return; }',
+    '  var inputs = Array.prototype.slice.call(tabla.querySelectorAll("tr.filtros input"));',
+    '  function aplicar() {',
+    '    var filtros = inputs.map(function (i) { return i.value.trim().toLowerCase(); });',
+    '    var filas = tabla.querySelectorAll("tbody tr");',
+    '    for (var f = 0; f < filas.length; f++) {',
+    '      var tr = filas[f];',
+    '      var celdas = tr.children;',
+    '      if (celdas.length < filtros.length) { continue; }',
+    '      var visible = true;',
+    '      for (var i = 0; i < filtros.length; i++) {',
+    '        if (!filtros[i]) { continue; }',
+    '        var texto = (celdas[i].textContent || "").toLowerCase();',
+    '        if (texto.indexOf(filtros[i]) === -1) { visible = false; break; }',
+    '      }',
+    '      tr.classList.toggle("oculta-por-filtro", !visible);',
+    '    }',
+    '  }',
+    '  inputs.forEach(function (i) { i.addEventListener("input", aplicar); });',
+    '  var limpiar = document.getElementById("limpiar-filtros");',
+    '  if (limpiar) { limpiar.addEventListener("click", function () { inputs.forEach(function (i) { i.value = ""; }); aplicar(); }); }',
+    '})();',
+    '</script>',
     '</body></html>'
   ].join('\n');
 }
@@ -198,12 +273,15 @@ function renderHTML(filas) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     COLUMNAS: COLUMNAS,
+    COLUMNAS_TABLA: COLUMNAS_TABLA,
     tipoIva: tipoIva,
     calcularImporte: calcularImporte,
     textoTarifa: textoTarifa,
     armarFila: armarFila,
     valoresEnOrden: valoresEnOrden,
+    valoresTabla: valoresTabla,
     armarFilas: armarFilas,
+    filtrarFilasPorColumna: filtrarFilasPorColumna,
     escHtml: escHtml,
     renderHTML: renderHTML
   };
