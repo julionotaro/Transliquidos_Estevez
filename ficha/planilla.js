@@ -130,6 +130,71 @@ function armarFilas(viajes, tarifasRows, indexacionRowsCrudas) {
   return lista.map(function (v) { return armarFila(v, tarifasRows, indexacionRows); });
 }
 
+// --- HTML minimo: mismo estilo que ficha/pendientes.js (sin framework, sin build) --
+function escHtml(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function celda(valor) {
+  if (valor === null || valor === undefined || valor === '') { return '<td class="vacio">-</td>'; }
+  return '<td>' + escHtml(valor) + '</td>';
+}
+
+/**
+ * Tabla HTML autocontenida. Doble uso en la MISMA tabla (no hay modo copilot
+ * vs modo auditoria por separado): todas las columnas del escritorio siempre
+ * visibles para transcribir, y las filas con REVISAR / PENDIENTE_DOCUMENTACION
+ * / SIN_TARIFA / indexacion sin cerrar SIEMPRE resaltadas (no se ocultan --
+ * el objetivo de la auditoria es justamente verlas). El motivo del resaltado
+ * va en el atributo title de la fila, visible al pasar el mouse, sin agregar
+ * una columna que no esta en el sistema de escritorio.
+ *
+ * @param {Array<object>} filas  salida de armarFilas().
+ */
+function renderHTML(filas) {
+  var lista = Array.isArray(filas) ? filas : [];
+  var nCols = COLUMNAS.length;
+  var cuerpo;
+  if (lista.length === 0) {
+    cuerpo = '<tr><td colspan="' + nCols + '" class="vacio-tabla">No hay viajes para mostrar.</td></tr>';
+  } else {
+    cuerpo = lista.map(function (f) {
+      var claseFila = f.resaltar ? ' class="resaltada"' : '';
+      var titulo = f.resaltar ? ' title="' + escHtml(f.motivos_resaltado.join(' | ')) + '"' : '';
+      var celdas = valoresEnOrden(f).map(celda).join('');
+      return '<tr' + claseFila + titulo + ' data-id="' + escHtml(f.id) + '">' + celdas + '</tr>';
+    }).join('');
+  }
+  var headers = COLUMNAS.map(function (c) { return '<th>' + escHtml(c.titulo) + '</th>'; }).join('');
+  return [
+    '<!doctype html><html lang="es"><head><meta charset="utf-8">',
+    '<title>Planilla carga/auditoria - Transliquidos Estevez</title>',
+    '<style>',
+    'body{font-family:system-ui,Arial,sans-serif;margin:2rem;background:#f7f7f7;color:#222}',
+    'h1{font-size:1.3rem;margin-bottom:.2rem}',
+    'p.sub{color:#555;margin-top:0}',
+    'table{border-collapse:collapse;width:100%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1)}',
+    'th,td{border:1px solid #ddd;padding:.4rem .5rem;text-align:left;font-size:.85rem;white-space:nowrap}',
+    'th{background:#333;color:#fff;position:sticky;top:0}',
+    'tr:nth-child(even){background:#fafafa}',
+    'tr.resaltada{background:#fff3cd}',
+    'tr.resaltada:hover{background:#ffe69c}',
+    'td.vacio{color:#999}',
+    '.vacio-tabla{text-align:center;padding:2rem;color:#666}',
+    '.leyenda{margin:.5rem 0 1rem;font-size:.85rem;color:#555}',
+    '.leyenda .muestra{display:inline-block;width:.9rem;height:.9rem;background:#fff3cd;border:1px solid #ddd;vertical-align:middle;margin-right:.3rem}',
+    '</style></head><body>',
+    '<h1>Planilla de carga / auditoria (' + lista.length + ')</h1>',
+    '<p class="sub">Copilot de carga (transcribir al sistema de escritorio) + auditoria de facturacion (misma tabla).</p>',
+    '<p class="leyenda"><span class="muestra"></span>Resaltado = revisar antes de facturar (REVISAR, PENDIENTE_DOCUMENTACION, SIN_TARIFA o indexacion agregada sin cerrar). Pasar el mouse por la fila para ver el motivo.</p>',
+    '<table id="planilla"><thead><tr>' + headers + '</tr></thead><tbody>',
+    cuerpo,
+    '</tbody></table>',
+    '</body></html>'
+  ].join('\n');
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     COLUMNAS: COLUMNAS,
@@ -138,6 +203,8 @@ if (typeof module !== 'undefined' && module.exports) {
     textoTarifa: textoTarifa,
     armarFila: armarFila,
     valoresEnOrden: valoresEnOrden,
-    armarFilas: armarFilas
+    armarFilas: armarFilas,
+    escHtml: escHtml,
+    renderHTML: renderHTML
   };
 }
