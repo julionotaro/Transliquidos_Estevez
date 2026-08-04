@@ -111,7 +111,11 @@ function correlacionar(rA, rB, opts) {
         estado: null, pendiente_falta: null, pendiente_reclamar_a: null,
         origen_campos: {},
         motivos_revision: [],
-        docs: []
+        docs: [],
+        // Documentos que matchean la matricula pero NO se pudieron atar a ESTA
+        // pata del dia (mismo camion, varios viajes): quedan aparte, no definen
+        // la carga del viaje. Ver el match documento->viaje mas abajo.
+        docs_ambiguos: []
       });
       // Red de seguridad §1: valor demasiado chico para ser kg en una ruta que no
       // esta registrada como multiviaje -> a REVISAR, visible en el tablero, en vez
@@ -168,8 +172,18 @@ function correlacionar(rA, rB, opts) {
       }
     }
     if (cands.length > 1) {
+      // No se pudo desambiguar (mismo camion, varias patas el mismo dia; ni la
+      // fecha ni el kg separan). NO se le presta la carga a ningun viaje: un
+      // documento de la pata B no puede definir material/origen/destino de la
+      // pata A (fue el bug real -- un CMR de acido sulfurico contaminaba una
+      // pata de sosa). Queda adjunto APARTE, para traza y para que un humano lo
+      // asigne; el viaje conserva lo que dice su ficha y, si no tiene doc propio,
+      // queda PENDIENTE_DOCUMENTACION (honesto), no facturado con datos de otro.
+      d.ambiguo = true;
       cands.sort(function (a, b) { return a.docs.length - b.docs.length; });
-      avisos.push('Documento ' + et + ' encaja en ' + cands.length + ' viajes de ' + d.matricula_tractor + '. Asignado al bloque ' + cands[0].orden + '; REVISAR.');
+      cands[0].docs_ambiguos.push(d);
+      avisos.push('Documento ' + et + ' matchea ' + cands.length + ' viajes de ' + d.matricula_tractor + ' y no se pudo desambiguar (fecha/kg). NO se le asigna la carga a ningun viaje; queda adjunto al bloque ' + cands[0].orden + ' para revision humana.');
+      continue;
     }
     cands[0].docs.push(d);
   }
@@ -351,7 +365,8 @@ function correlacionar(rA, rB, opts) {
           origen_km: 'derivado_de_bloque',
           regimen_indexacion: v.regimen_indexacion,
           motivos_revision: bloqueDudoso ? v.motivos_revision.slice() : [],
-          docs: alb ? [alb] : []
+          docs: alb ? [alb] : [],
+          docs_ambiguos: []
         };
         if (alb) {
           // Documento de origen del viaje: kg y referencia de SU albaran (D-01).
@@ -436,6 +451,7 @@ function renderInforme(res) {
       L.push('  VIAJE ' + n + ' | ' + f(v.cliente) + ' | ' + f(v.fecha_carga || v.fecha_carga_texto));
       L.push('    ' + f(v.origen) + ' -> ' + f(v.destino) + '   ' + f(v.material));
       L.push('    Ref: ' + f(v.referencia) + ' [' + f(v.tipo_doc) + ']   Docs asociados: ' + v.docs.length + (v.docs.length ? ' (pag ' + v.docs.map(function (d) { return d.pagina; }).join(', ') + ')' : ''));
+      if (v.docs_ambiguos && v.docs_ambiguos.length) { L.push('    Docs ambiguos (NO asignados, revisar): pag ' + v.docs_ambiguos.map(function (d) { return d.pagina; }).join(', ')); }
       L.push('    Peso ficha: ' + f(v.cantidad_kg) + ' kg | documento: ' + f(v.kg_documento) + ' kg [' + f(v.fuente_peso) + ']');
       L.push('    KM: ' + f(v.km_inicio) + ' -> ' + f(v.km_final) + ' = ' + f(v.km_cargados) + (v.km_recorridos !== null ? '  (ficha: ' + v.km_recorridos + ')' : '  (ficha no lo trae)') + '   vacios: ' + f(v.km_vacios));
       if (v.importe_documento !== null) { L.push('    Importe doc: ' + v.importe_documento + ' EUR'); }

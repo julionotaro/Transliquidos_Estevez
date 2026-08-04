@@ -175,7 +175,9 @@ for (const nombre of Object.keys(CASOS)) {
     const NUEVOS = ['estado_lectura', 'motivo_revision', 'motivos_revision', 'pagina_origen',
       // Fase 2 (modelo albaran=unidad):
       'cantidad_declarada', 'modo_cantidad', 'es_multiviaje', 'n_viajes_declarado',
-      'origen_km', 'regimen_indexacion', 'estado', 'pendiente_falta', 'pendiente_reclamar_a', 'origen_campos'];
+      'origen_km', 'regimen_indexacion', 'estado', 'pendiente_falta', 'pendiente_reclamar_a', 'origen_campos',
+      // Fix contaminacion entre patas del mismo camion (2026-08-04):
+      'docs_ambiguos'];
 
     for (let i = 0; i < original.viajes.length; i++) {
       const vo = original.viajes[i];
@@ -276,6 +278,42 @@ test('"sin documentacion" NO marca REVISAR: es otro eje, no calidad de lectura',
     JSON.parse(CASOS.sin_docs[1].json.choices[0].message.content));
   assert.ok(res.errores.some(function (e) { return /SIN DOCUMENTACION/.test(e); }),
     'el error de documentacion se sigue reportando aparte');
+});
+
+test('contaminacion: doc de una pata NO presta material/destino a la otra pata del mismo camion (bug real 2026-08-04)', () => {
+  // Escenario real del probe: un camion (2498KZL) hace dos viajes el mismo dia.
+  // Viaje 1: RNM AVEIRO->BEGEGA, SOSA. Viaje 2: ASTURIANA ZINC, ACIDO SULFURICO.
+  // Un CMR de acido sulfurico matchea la matricula, cae en la ventana de fecha
+  // de AMBOS y no trae kg parseable -> no se puede desambiguar. NO debe prestarle
+  // su carga (acido sulfurico / destino de la pata 2) al viaje 1 (sosa).
+  const cmrAcidoAmbiguo = doc({
+    pagina: 5, tipo_doc: 'cmr', referencia: '2601014469',
+    matricula_tractor: '2498KZL', fecha: '2026-07-30',
+    origen: 'SAN JUAN DE NIEVA', destino: 'VIANA DO CASTELO', material: 'ACIDO SULFURICO',
+    kg_neto: null, cliente_probable: 'ASTURIANA ZINC',
+  });
+  const caso = entrada(
+    [hoja([
+      bloque({ orden: 1, fecha_carga: '2026-07-29', fecha_descarga: '2026-07-30', nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'BEGEGA', tipo_mercancia: 'SOSA', cantidad_kg: 17900, km_inicio: 845752, km_final: 846406, km_recorridos: null }),
+      bloque({ orden: 2, fecha_carga: '2026-07-30', fecha_descarga: '2026-07-31', nombre_carga: 'ASTURIANA ZINC', lugar_carga: 'SAN JUAN DE NIEVA', lugar_descarga: 'VIANA DO CASTELO', tipo_mercancia: 'ACIDO SULFURICO', cantidad_kg: 24160, km_inicio: 846531, km_final: 847037, km_recorridos: null }),
+    ])],
+    [cmrAcidoAmbiguo]);
+  const res = correlacionar(
+    JSON.parse(caso[0].json.choices[0].message.content),
+    JSON.parse(caso[1].json.choices[0].message.content));
+  const v1 = res.viajes[0];
+
+  // El viaje 1 (sosa) NO hereda la carga del CMR de acido de la otra pata.
+  assert.notStrictEqual(v1.material, 'ACIDO SULFURICO', 'viaje 1 no debe heredar el material del CMR ambiguo');
+  assert.strictEqual(v1.material, 'SOSA', 'viaje 1 conserva su material de ficha');
+  assert.notStrictEqual(v1.destino, 'VIANA DO CASTELO', 'viaje 1 no debe heredar el destino del CMR ambiguo');
+  assert.strictEqual(v1.destino, 'BEGEGA', 'viaje 1 conserva su lugar de descarga de ficha');
+  // El doc ambiguo queda aparte, no como documentacion confirmada del viaje.
+  assert.strictEqual(v1.docs.length, 0, 'el doc ambiguo no cuenta como doc confirmado');
+  assert.strictEqual(v1.docs_ambiguos.length, 1, 'el doc ambiguo queda adjunto aparte para revision');
+  assert.strictEqual(v1.estado, 'PENDIENTE_DOCUMENTACION', 'sin doc propio confirmado -> PENDIENTE, no facturado con datos de otro');
+  assert.ok(res.avisos.some(function (a) { return /no se pudo desambiguar/.test(a); }),
+    'la ambiguedad se surfacea en avisos');
 });
 
 test('lote mixto: cada viaje lleva su propio estado_lectura', () => {
