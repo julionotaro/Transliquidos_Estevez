@@ -23,7 +23,7 @@ const TARIFAS = [
   { cliente: 'RNM', origen: 'AVEIRO', destino: 'PORRIÑO', material: '', tarifa_tn: '19.0', precio_fijo: '', vigente_desde: '2025-01-01', id: 166 },
 ];
 const INDEXACION = [
-  { cliente: 'FORESA-BRESFOR', tipo: 'gasoleo', pct: '0.1064', desde: '2026-07-01', hasta: '2026-07-15', id: 12 },
+  { cliente: '', tipo: 'FORESA-BRESFOR', pct: '0.1064', desde: '2026-07-01', hasta: '2026-07-15', id: 12 },
 ];
 
 // Datos reales de la corrida de las 3 fichas verdad-de-campo (ejecucion 624,

@@ -28,7 +28,7 @@ const TARIFAS = [
 ];
 
 const INDEXACION = [
-  { cliente: 'FORESA-BRESFOR', tipo: 'gasoleo', pct: '0.1064', desde: '2026-07-01', hasta: '2026-07-15', id: 12 },
+  { cliente: '', tipo: 'FORESA-BRESFOR', pct: '0.1064', desde: '2026-07-01', hasta: '2026-07-15', id: 12 },
 ];
 
 // ============================================================================

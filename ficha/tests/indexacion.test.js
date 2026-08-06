@@ -1,8 +1,9 @@
 // Tests v1.1 pieza 2 — indexacion (planilla carga/auditoria).
 //
-// Fixtures de pct/desde/hasta tomadas 1:1 del readback real contra la tabla
-// Indexacion (or1otD9WsjJ3V8Cr) DESPUES de deduplicar (37.660 filas en bruto,
-// 70 tramos reales x538 duplicados -- ver nota en indexacion.js).
+// Fixtures de pct/desde/hasta tomadas del readback real contra la tabla
+// Indexacion (or1otD9WsjJ3V8Cr). Tras la recarga 2026-08-06 la CATEGORIA vive en
+// `tipo` (FORESA-BRESFOR/HELM/QUIMIDROGA/OTROS) y `cliente` queda vacio; el match
+// de buscarPct es por `tipo` -- ver nota en indexacion.js.
 
 'use strict';
 
@@ -10,8 +11,9 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { deduplicarIndexacion, grupoIndexacion, buscarPct, indexacionDeFila } = require('../indexacion.js');
 
+// Esquema post-recarga: categoria en `tipo`, `cliente` vacio.
 function filaIdx(campos) {
-  return Object.assign({ cliente: 'FORESA-BRESFOR', tipo: 'gasoleo', pct: '0.10', desde: '', hasta: '', id: 0 }, campos);
+  return Object.assign({ cliente: '', tipo: 'FORESA-BRESFOR', pct: '0.10', desde: '', hasta: '', id: 0 }, campos);
 }
 
 // Tramos reales FORESA-BRESFOR (subconjunto).
@@ -25,10 +27,10 @@ const TRAMOS_FORESA_BRESFOR = [
 
 // Tramo real HELM open-ended (vigente hasta 2099-12-31).
 const TRAMOS_HELM = [
-  filaIdx({ cliente: 'HELM', desde: '2026-07-20', hasta: '2099-12-31', pct: '0.039', id: 26 }),
+  filaIdx({ tipo: 'HELM', desde: '2026-07-20', hasta: '2099-12-31', pct: '0.039', id: 26 }),
 ];
 
-test('indexacion: deduplicarIndexacion colapsa la duplicacion x538 real de la tabla', () => {
+test('indexacion: deduplicarIndexacion colapsa duplicados exactos (defensa contra cross-join)', () => {
   const original = [];
   for (let i = 0; i < 538; i++) { original.push(filaIdx({ desde: '2026-07-01', hasta: '2026-07-15', pct: '0.1064', id: 12 })); }
   original.push(filaIdx({ desde: '2026-07-16', hasta: '2026-07-31', pct: '0.0665', id: 69 })); // sin duplicar en este fixture

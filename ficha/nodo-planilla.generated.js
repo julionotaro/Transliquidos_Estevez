@@ -451,27 +451,28 @@ if (typeof module !== 'undefined' && module.exports) {
 // ===== INDEXACION (suplemento gasoleo) — planilla carga/auditoria (v1.1 p.2) =
 //
 // Resuelve el % de indexacion para viajes en regimen 'linea' contra la tabla
-// real `Indexacion` (or1otD9WsjJ3V8Cr). Schema real confirmado por readback
-// 2026-08-03: cliente (en realidad GRUPO, no el cliente del viaje), tipo,
-// pct (string), desde, hasta.
+// real `Indexacion` (or1otD9WsjJ3V8Cr). Schema: cliente, tipo, pct, desde,
+// hasta (todas string).
 //
-// HALLAZGO del readback: la tabla tiene 37.660 filas en bruto, pero son 70
-// tramos reales duplicados exactamente x538 (= el numero de filas de
-// Tarifas -- huella de un bug de carga, probablemente un cruce accidental
-// contra Tarifas al popular la tabla). docs/brief-v3-oficina-agentica.md ya
-// documentaba "70 tramos, 6 solapas oficiales" -- consistente con los 70
-// tramos unicos verificados. deduplicarIndexacion() hace esa limpieza; el
-// nodo que lee la tabla la llama antes de armar la planilla (ver
-// nodo-planilla.wrapper.js). NO corrige la tabla en n8n -- eso es un cambio de
-// datos, fuera de alcance de esta pieza; solo evita arrastrar el bug a la
-// busqueda.
+// RECARGA 2026-08-06 (encargo recarga-indexacion, desde SUPLEMENTO_GASOLEO.xlsx):
+// la CATEGORIA vive ahora en `tipo` (FORESA-BRESFOR / HELM / QUIMIDROGA / OTROS,
+// nombre de la solapa del Excel) y `cliente` queda VACIO. La identidad
+// cliente->categoria se resuelve en codigo (grupoIndexacion), NO en la tabla --
+// mismo patron que ficha/clientes.js para tarifas. Antes la categoria vivia en
+// `cliente` (mal nombrado) y `tipo` era el literal 'gasoleo'; el match paso a
+// ser por `tipo` (ver buscarPct).
 //
-// Grupos reales confirmados (docs/reglas-facturacion.md "Grupos de indexacion
-// (confirmado)"): FORESA-BRESFOR, QUIMIDROGA, HELM, OTROS, AGENCIA, AUTONOMOS.
-// AGENCIA/AUTONOMOS no tienen regla de asignacion por cliente documentada
-// ("pendientes" en docs/reglas-facturacion.md) -- este modulo NO los asigna
-// nunca via cliente, para no inventar una regla de negocio que no esta
-// confirmada.
+// Una fila por tramo (~48 filas activas), no una por cliente. La tabla vieja
+// llego a tener 37.660 filas por un cross-join accidental contra Tarifas
+// (538 x 70); la recarga la deja limpia. deduplicarIndexacion() queda como
+// defensa idempotente (el nodo la llama antes de armar la planilla, ver
+// nodo-planilla.wrapper.js); sobre datos limpios no cambia nada.
+//
+// Categorias activas en v1 (docs/dominio-facturacion.md §4.1): FORESA-BRESFOR,
+// QUIMIDROGA, HELM, OTROS. Todo cliente que no caiga en una nombrada usa OTROS
+// (fallback por defecto). Las solapas AGENCIA/AUTONOMOS del Excel NO se cargan
+// (circuito de subcontratacion, fuera de v1). BALTRANSA es caso aparte (0% en
+// factura, no depende de esta tabla).
 //
 // D-03 / nota del encargo: la indexacion AGREGADA (quincenal/mensual) NUNCA
 // se calcula aca -- se cierra en facturacion. Este modulo la marca (regimen
@@ -484,10 +485,11 @@ var CRUCE_IDX = (typeof norm === 'function') ? { norm: norm } : require('./cruce
 function round2(n) { return Math.round(n * 100) / 100; }
 
 /**
- * Limpia la duplicacion x538 de la tabla real (ver nota de cabecera): agrupa
- * por (cliente, tipo, pct, desde, hasta) y se queda con una fila por
- * combinacion unica. Idempotente -- correrla sobre datos ya limpios no cambia
- * nada. NO escribe de vuelta en n8n, solo filtra en memoria para la busqueda.
+ * Defensa idempotente contra duplicados: agrupa por (cliente, tipo, pct, desde,
+ * hasta) y se queda con una fila por combinacion unica. Tras la recarga
+ * 2026-08-06 la tabla ya esta limpia, asi que sobre datos buenos no cambia nada;
+ * queda por si un cross-join accidental (como el x538 historico) volviera a
+ * colarse. NO escribe de vuelta en n8n, solo filtra en memoria para la busqueda.
  */
 function deduplicarIndexacion(indexacionRows) {
   var filas = Array.isArray(indexacionRows) ? indexacionRows : [];
@@ -529,7 +531,10 @@ function buscarPct(grupo, fecha, indexacionRows) {
   if (!fecha) { return null; }
   for (var i = 0; i < filas.length; i++) {
     var f = filas[i];
-    if (CRUCE_IDX.norm(f.cliente) !== grupo) { continue; }
+    // La categoria vive en `tipo` (recarga 2026-08-06 desde el Excel); `cliente`
+    // queda vacio. La identidad cliente->categoria se resuelve en codigo
+    // (grupoIndexacion), no en la tabla -- mismo patron que ficha/clientes.js.
+    if (CRUCE_IDX.norm(f.tipo) !== grupo) { continue; }
     if ((f.desde || '') <= fecha && fecha <= (f.hasta || '')) {
       var pct = parseFloat(f.pct);
       if (isFinite(pct)) { return { pct: pct, fila: f }; }

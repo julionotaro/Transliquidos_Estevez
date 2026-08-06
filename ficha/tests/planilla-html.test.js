@@ -21,7 +21,7 @@ const TARIFAS = [
   { cliente: 'FORESA IND.QUIMICAS DEL NOROESTE, S.A.', origen: 'BRESFOR (AVEIRO)', destino: 'TERUEL', material: '', tarifa_tn: '56.0', precio_fijo: '', vigente_desde: '2026-01-01', id: 274 },
 ];
 const INDEXACION = [
-  { cliente: 'FORESA-BRESFOR', tipo: 'gasoleo', pct: '0.1064', desde: '2026-07-01', hasta: '2026-07-15', id: 12 },
+  { cliente: '', tipo: 'FORESA-BRESFOR', pct: '0.1064', desde: '2026-07-01', hasta: '2026-07-15', id: 12 },
 ];
 
 test('planilla html: lista vacia -> mensaje claro, no tabla rota', () => {
