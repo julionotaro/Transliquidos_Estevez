@@ -33,6 +33,8 @@
 var CRUCE_IDX = (typeof norm === 'function') ? { norm: norm } : require('./cruce.js');
 
 function round2(n) { return Math.round(n * 100) / 100; }
+// pct 0.1838 -> "18.38%" (para los motivos de REVISAR, legible por la oficina).
+function pctTxt(p) { return round2(p * 100) + '%'; }
 
 /**
  * Defensa idempotente contra duplicados: agrupa por (cliente, tipo, pct, desde,
@@ -75,22 +77,41 @@ function grupoIndexacion(clienteViaje) {
   return { grupo: 'OTROS', motivo: 'grupo_por_defecto: cliente "' + (clienteViaje || '(no leido)') + '" sin regla explicita (D-5)' };
 }
 
-/** Tramo vigente [desde,hasta] (inclusive, string ISO) para un grupo+fecha. null si no hay tramo. */
+/**
+ * Resuelve el tramo de indexacion para un grupo+fecha. NO devuelve el primero en
+ * silencio: aplica la regla de borde §4.4 (docs/dominio-facturacion.md).
+ *
+ * La categoria vive en `tipo` (recarga 2026-08-06 desde el Excel); `cliente`
+ * queda vacio. La identidad cliente->categoria se resuelve en codigo
+ * (grupoIndexacion), no en la tabla -- mismo patron que ficha/clientes.js.
+ *
+ * @returns {{estado:'ok', pct:number, fila:object}}                     un unico % cubre la fecha
+ *        | {{estado:'sin_tramo', pct:null, fila:null}}                  ningun tramo cubre la fecha (hueco / fuera de rango)
+ *        | {{estado:'sin_fecha', pct:null, fila:null}}                  no hay fecha del viaje
+ *        | {{estado:'ambiguo', pct:null, fila:null, candidatos:number[], filas:object[]}}  la fecha cae en >1 tramo con % DISTINTO (dia de corte)
+ */
 function buscarPct(grupo, fecha, indexacionRows) {
   var filas = Array.isArray(indexacionRows) ? indexacionRows : [];
-  if (!fecha) { return null; }
+  if (!fecha) { return { estado: 'sin_fecha', pct: null, fila: null }; }
+  var matches = [];
   for (var i = 0; i < filas.length; i++) {
     var f = filas[i];
-    // La categoria vive en `tipo` (recarga 2026-08-06 desde el Excel); `cliente`
-    // queda vacio. La identidad cliente->categoria se resuelve en codigo
-    // (grupoIndexacion), no en la tabla -- mismo patron que ficha/clientes.js.
     if (CRUCE_IDX.norm(f.tipo) !== grupo) { continue; }
     if ((f.desde || '') <= fecha && fecha <= (f.hasta || '')) {
       var pct = parseFloat(f.pct);
-      if (isFinite(pct)) { return { pct: pct, fila: f }; }
+      if (isFinite(pct)) { matches.push({ pct: pct, fila: f }); }
     }
   }
-  return null;
+  if (matches.length === 0) { return { estado: 'sin_tramo', pct: null, fila: null }; }
+  var distintos = [];
+  for (var j = 0; j < matches.length; j++) { if (distintos.indexOf(matches[j].pct) < 0) { distintos.push(matches[j].pct); } }
+  // Solape en dia de corte (hasta de un tramo = desde del siguiente) con %
+  // distinto: la fecha es ambigua. NO se elige uno en silencio (§4.4) -> REVISAR.
+  // Si todos los tramos que cubren la fecha traen el MISMO %, no hay ambiguedad.
+  if (distintos.length > 1) {
+    return { estado: 'ambiguo', pct: null, fila: null, candidatos: distintos, filas: matches.map(function (m) { return m.fila; }) };
+  }
+  return { estado: 'ok', pct: matches[0].pct, fila: matches[0].fila };
 }
 
 /**
@@ -101,7 +122,7 @@ function buscarPct(grupo, fecha, indexacionRows) {
  * @param {object} viaje  {cliente, fecha, regimen_indexacion}
  * @param {number|null} importeLinea  cantidad x tarifa ya calculado (D-08 base).
  * @param {Array<object>} indexacionRows  filas DEDUPLICADAS de Indexacion.
- * @returns {{modo:'calculada'|'regimen_pendiente'|'incluida'|'sin_regimen',
+ * @returns {{modo:'calculada'|'regimen_pendiente'|'incluida'|'sin_regimen'|'revisar',
  *            pct:number|null, importe:number|null, grupo:string|null,
  *            etiqueta:string, motivo:string|null}}
  */
@@ -124,12 +145,26 @@ function indexacionDeFila(viaje, importeLinea, indexacionRows) {
 
   var g = grupoIndexacion(v.cliente);
   var hit = buscarPct(g.grupo, v.fecha, indexacionRows);
-  if (!hit) {
+
+  // §4.4 (regla de borde): la fecha cae en un dia de corte que pertenece a dos
+  // tramos con % distinto. NO se elige uno en silencio -> REVISAR, con los pct
+  // candidatos y la fecha en el motivo para que la oficina defina la convencion.
+  if (hit.estado === 'ambiguo') {
     return {
-      modo: 'sin_regimen', pct: null, importe: null, grupo: g.grupo, etiqueta: '-',
-      motivo: 'sin_tramo_vigente: ' + g.grupo + ' @ ' + (v.fecha || '(sin fecha)')
+      modo: 'revisar', pct: null, importe: null, grupo: g.grupo, etiqueta: 'REVISAR',
+      motivo: 'indexacion_ambigua: ' + g.grupo + ' @ ' + (v.fecha || '(sin fecha)') +
+        ' cae en tramos con % distinto (' + hit.candidatos.map(pctTxt).join(' / ') + '); definir convencion de dia de corte'
     };
   }
+  // §4.4: fecha no cubierta por ningun tramo del Excel (hueco o fuera de rango).
+  // NO se aplica 0 ni el tramo vecino -> REVISAR, con la fecha en el motivo.
+  if (hit.estado !== 'ok') {
+    return {
+      modo: 'revisar', pct: null, importe: null, grupo: g.grupo, etiqueta: 'REVISAR',
+      motivo: 'indexacion_sin_tramo: ' + g.grupo + ' @ ' + (v.fecha || '(sin fecha)') + ' fuera de los tramos cargados'
+    };
+  }
+
   var importe = (typeof importeLinea === 'number' && isFinite(importeLinea)) ? round2(importeLinea * hit.pct) : null;
   return {
     modo: 'calculada', pct: hit.pct, importe: importe, grupo: g.grupo,

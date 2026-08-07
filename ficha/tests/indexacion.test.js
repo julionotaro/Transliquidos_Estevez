@@ -16,13 +16,27 @@ function filaIdx(campos) {
   return Object.assign({ cliente: '', tipo: 'FORESA-BRESFOR', pct: '0.10', desde: '', hasta: '', id: 0 }, campos);
 }
 
-// Tramos reales FORESA-BRESFOR (subconjunto).
+// Tramos reales FORESA-BRESFOR: las 14 filas EXACTAS del Excel/tabla recargada
+// (2026-08-06). Se usan completas a proposito para que aparezcan las
+// caracteristicas reales de borde (§4.4): el hueco 2026-05-15->05-18 (05-16/17
+// sin cubrir) y los dias de corte con % distinto (05-01: 0.1838 vs 0.1717;
+// 06-15: 0.1452 vs 0.1279). Los cortes con MISMO % (06-07: 0.1452/0.1452) NO
+// son ambiguos.
 const TRAMOS_FORESA_BRESFOR = [
+  filaIdx({ desde: '2026-04-20', hasta: '2026-04-26', pct: '0.1838', id: 1 }),
+  filaIdx({ desde: '2026-04-27', hasta: '2026-05-01', pct: '0.1838', id: 2 }),
+  filaIdx({ desde: '2026-05-01', hasta: '2026-05-10', pct: '0.1717', id: 3 }),
+  filaIdx({ desde: '2026-05-11', hasta: '2026-05-15', pct: '0.1717', id: 4 }),
+  filaIdx({ desde: '2026-05-18', hasta: '2026-05-24', pct: '0.1584', id: 5 }),
+  filaIdx({ desde: '2026-05-25', hasta: '2026-05-31', pct: '0.1584', id: 6 }),
   filaIdx({ desde: '2026-06-01', hasta: '2026-06-07', pct: '0.1452', id: 7 }),
   filaIdx({ desde: '2026-06-07', hasta: '2026-06-15', pct: '0.1452', id: 8 }),
   filaIdx({ desde: '2026-06-15', hasta: '2026-06-21', pct: '0.1279', id: 9 }),
+  filaIdx({ desde: '2026-06-22', hasta: '2026-06-28', pct: '0.1279', id: 10 }),
+  filaIdx({ desde: '2026-06-29', hasta: '2026-06-30', pct: '0.1279', id: 11 }),
   filaIdx({ desde: '2026-07-01', hasta: '2026-07-15', pct: '0.1064', id: 12 }),
-  filaIdx({ desde: '2026-07-16', hasta: '2026-07-31', pct: '0.0665', id: 69 }),
+  filaIdx({ desde: '2026-07-16', hasta: '2026-07-31', pct: '0.0665', id: 13 }),
+  filaIdx({ desde: '2026-08-01', hasta: '2026-08-15', pct: '0.0918', id: 14 }),
 ];
 
 // Tramo real HELM open-ended (vigente hasta 2099-12-31).
@@ -61,18 +75,33 @@ test('indexacion: grupoIndexacion — cliente sin regla explicita cae en OTROS c
 
 test('indexacion: buscarPct encuentra el tramo vigente por fecha', () => {
   const hit = buscarPct('FORESA-BRESFOR', '2026-07-07', TRAMOS_FORESA_BRESFOR);
+  assert.strictEqual(hit.estado, 'ok');
   assert.strictEqual(hit.pct, 0.1064);
   assert.strictEqual(hit.fila.id, 12);
 });
 
-test('indexacion: buscarPct no inventa un tramo cuando la fecha cae en un hueco real', () => {
-  // Hueco real entre 2026-06-21 (fin id 9) y 2026-07-01 (inicio id 12).
-  const hit = buscarPct('FORESA-BRESFOR', '2026-06-25', TRAMOS_FORESA_BRESFOR);
-  assert.strictEqual(hit, null);
+test('indexacion: buscarPct — fecha en un hueco real del Excel (2026-05-16, entre 05-15 y 05-18) -> sin_tramo', () => {
+  const hit = buscarPct('FORESA-BRESFOR', '2026-05-16', TRAMOS_FORESA_BRESFOR);
+  assert.strictEqual(hit.estado, 'sin_tramo');
+  assert.strictEqual(hit.pct, null);
+});
+
+test('indexacion: buscarPct — dia de corte con % DISTINTO (2026-05-01: 0.1838 vs 0.1717) -> ambiguo con los candidatos', () => {
+  const hit = buscarPct('FORESA-BRESFOR', '2026-05-01', TRAMOS_FORESA_BRESFOR);
+  assert.strictEqual(hit.estado, 'ambiguo');
+  assert.strictEqual(hit.pct, null);
+  assert.deepStrictEqual(hit.candidatos.slice().sort(), [0.1717, 0.1838]);
+});
+
+test('indexacion: buscarPct — dia de corte con MISMO % (2026-06-07: 0.1452/0.1452) NO es ambiguo', () => {
+  const hit = buscarPct('FORESA-BRESFOR', '2026-06-07', TRAMOS_FORESA_BRESFOR);
+  assert.strictEqual(hit.estado, 'ok');
+  assert.strictEqual(hit.pct, 0.1452);
 });
 
 test('indexacion: buscarPct respeta el tramo abierto (HELM hasta 2099-12-31)', () => {
   const hit = buscarPct('HELM', '2026-09-01', TRAMOS_HELM);
+  assert.strictEqual(hit.estado, 'ok');
   assert.strictEqual(hit.pct, 0.039);
 });
 
@@ -118,12 +147,33 @@ test('indexacion: sin regimen (cliente no reconocido) no calcula ni marca un reg
   assert.strictEqual(r.importe, null);
 });
 
-test('indexacion: linea sin tramo vigente para la fecha -> sin_regimen, no inventa pct', () => {
-  const viaje = { cliente: 'FORESA', fecha: '2026-06-25', regimen_indexacion: 'linea' };
+test('indexacion §4.4: linea con fecha NO cubierta (hueco 2026-05-16) -> REVISAR, no null mudo, no 0, no vecino', () => {
+  const viaje = { cliente: 'FORESA', fecha: '2026-05-16', regimen_indexacion: 'linea' };
   const r = indexacionDeFila(viaje, 1000, TRAMOS_FORESA_BRESFOR);
-  assert.strictEqual(r.modo, 'sin_regimen');
-  assert.strictEqual(r.importe, null);
-  assert.match(r.motivo, /sin_tramo_vigente/);
+  assert.strictEqual(r.modo, 'revisar');
+  assert.strictEqual(r.pct, null);
+  assert.strictEqual(r.importe, null, 'no aplica 0 ni el tramo vecino');
+  assert.match(r.motivo, /indexacion_sin_tramo/);
+  assert.match(r.motivo, /2026-05-16/, 'el motivo trae la fecha del viaje');
+});
+
+test('indexacion §4.4: linea en dia de corte con % distinto (2026-05-01) -> REVISAR con los pct candidatos y la fecha', () => {
+  const viaje = { cliente: 'FORESA', fecha: '2026-05-01', regimen_indexacion: 'linea' };
+  const r = indexacionDeFila(viaje, 1000, TRAMOS_FORESA_BRESFOR);
+  assert.strictEqual(r.modo, 'revisar');
+  assert.strictEqual(r.pct, null);
+  assert.strictEqual(r.importe, null, 'no elige un tramo en silencio');
+  assert.match(r.motivo, /indexacion_ambigua/);
+  assert.match(r.motivo, /2026-05-01/, 'el motivo trae la fecha del viaje');
+  assert.match(r.motivo, /18\.38%/, 'el motivo trae los pct candidatos');
+  assert.match(r.motivo, /17\.17%/);
+});
+
+test('indexacion §4.4: el dia de corte con MISMO % NO va a REVISAR (2026-06-07 -> calculada 14.52%)', () => {
+  const viaje = { cliente: 'FORESA', fecha: '2026-06-07', regimen_indexacion: 'linea' };
+  const r = indexacionDeFila(viaje, 1000, TRAMOS_FORESA_BRESFOR);
+  assert.strictEqual(r.modo, 'calculada');
+  assert.strictEqual(r.pct, 0.1452);
 });
 
 test('indexacion: linea sin importe de base (kg_documento null) -> pct visible, importe null (no 0 falso)', () => {

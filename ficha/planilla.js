@@ -90,6 +90,7 @@ function armarFila(viaje, tarifasRows, indexacionRows) {
   if (v.estado_lectura === 'REVISAR') { motivos.push('REVISAR: ' + (v.motivo_revision || '')); }
   if (resultadoTarifa.estado === 'SIN_TARIFA') { motivos.push('SIN_TARIFA: ' + (resultadoTarifa.motivo || '')); }
   if (idx.modo === 'regimen_pendiente') { motivos.push('indexacion sin cerrar: ' + idx.etiqueta); }
+  if (idx.modo === 'revisar') { motivos.push('INDEXACION REVISAR: ' + (idx.motivo || '')); }
 
   return {
     id: v.id,

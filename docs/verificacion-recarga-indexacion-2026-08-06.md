@@ -50,33 +50,33 @@ contra la tabla es por `tipo`. Un cliente no nombrado cae en OTROS con aviso
   `indexacionDeFila` modo `sin_regimen`, pct `null`, motivo `sin_tramo_vigente`.
   **No inventa 0, no toma el tramo vecino.** ✓
 
-## Hallazgos §4.4 (regla de borde) — NO resueltos en este encargo
+## Regla de borde §4.4 — IMPLEMENTADA (aprobada por Julio en el mismo encargo)
 
-El encargo pedía *confirmar* el comportamiento de borde. La confirmación real
-destapa dos gaps del consumidor respecto de `docs/dominio-facturacion.md §4.4`
-("cualquier hueco, tramo vacío o fecha no cubierta → REVISAR; solape en día de
-corte con % distinto → REVISAR"). **Ninguno afecta a los viajes vivos de hoy**
-(todos julio 2026, cubiertos y sin caer en día ambiguo), pero son reales:
+La confirmación real destapó dos gaps del consumidor respecto de
+`docs/dominio-facturacion.md §4.4`. Julio aprobó resolverlos acá mismo. Ninguno
+afectaba viajes vivos (todos julio 2026, cubiertos y sin día ambiguo), pero son
+reales y ahora **fallan ruidoso**:
 
-1. **Fecha no cubierta → hoy NO marca REVISAR.** `indexacionDeFila` devuelve
-   modo `sin_regimen` con etiqueta `-`, y `planilla.js` sólo resalta
-   `regimen_pendiente`. O sea: no da 0 ni vecino (bien), pero el viaje **no se
-   marca REVISAR** — queda con `-` sin resaltar. §4.4 pide REVISAR explícito.
-   (Ejemplo real de hueco en el Excel: 2026-05-16/17, sin tramo en ninguna
-   categoría.)
+1. **Fecha no cubierta → REVISAR** (antes quedaba `-` mudo). `buscarPct` devuelve
+   `estado:'sin_tramo'` e `indexacionDeFila` → `modo:'revisar'`, con la fecha en
+   el motivo (`indexacion_sin_tramo: <grupo> @ <fecha> fuera de los tramos
+   cargados`). `planilla.js` lo resalta. No aplica 0 ni el tramo vecino.
+   Ejemplo real (hueco del Excel 2026-05-15→05-18): FORESA @ 2026-05-16 → REVISAR.
 
-2. **Solape en día de corte con % distinto → hoy elige el primero en silencio.**
-   Los tramos del Excel comparten el día de corte (`hasta` de uno = `desde` del
-   siguiente). Donde el % cambia, ese día pertenece a dos tramos:
-   - FORESA-BRESFOR: 2026-05-01 (0.1838 vs 0.1717) y 2026-06-15 (0.1452 vs 0.1279).
-   - HELM: 2026-05-01 (0.0802 vs 0.1385), 2026-06-07 (0.1256 vs 0.1141), 2026-06-15 (0.1141 vs 0.1036).
-   `buscarPct` devuelve el **primero** (ej. FORESA @ 05-01 → 0.1838) en silencio.
-   §4.4 pide REVISAR hasta que la oficina defina convención.
+2. **Solape en día de corte con % distinto → REVISAR** (antes elegía el primero
+   en silencio). Los tramos comparten el día de corte (`hasta` de uno = `desde`
+   del siguiente); donde el % cambia, ese día es ambiguo. `buscarPct` devuelve
+   `estado:'ambiguo'` con los candidatos, e `indexacionDeFila` → `modo:'revisar'`
+   con **los pct candidatos y la fecha** en el motivo (`indexacion_ambigua:
+   <grupo> @ <fecha> cae en tramos con % distinto (18.38% / 17.17%); definir
+   convencion de dia de corte`). Días de corte con **mismo %** (ej. 2026-06-07:
+   0.1452/0.1452) NO van a REVISAR — no hay ambigüedad. Casos reales verificados:
+   FORESA @ 2026-05-01 (18.38% / 17.17%) y @ 2026-06-15 (14.52% / 12.79%).
 
-**Ambos son cambios de comportamiento del consumidor, fuera del alcance aprobado
-(match por `tipo`).** Se dejan documentados para que Julio decida si van como
-ajuste chico en un encargo siguiente. La recomendación es implementarlos (es la
-disciplina "fallar ruidoso" del proyecto), pero no se tocó sin OK.
+Corrida real post-fix: los 3 viajes vivos siguen resolviendo igual
+(FORESA 0.1064, RNM 0.08, ASTURIANO ZINC 0.08) — sin regresión. Tests nuevos
+cubren ambos casos con datos reales del Excel (hueco 05-16, cortes 05-01/06-15).
+177/177 verde.
 
 ## Deploy pendiente (acoplamiento código ↔ tabla)
 

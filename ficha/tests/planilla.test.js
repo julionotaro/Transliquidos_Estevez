@@ -126,6 +126,17 @@ test('planilla: viaje SIN_TARIFA (ruta no cubierta por el tarifario) -> resaltar
   assert.strictEqual(fila.importe, null, 'sin tarifa no hay importe que calcular');
 });
 
+test('planilla §4.4: viaje linea con fecha de indexacion NO cubierta -> resaltar true (INDEXACION REVISAR)', () => {
+  // fecha 2026-05-16 no cae en el unico tramo del fixture (07-01..07-15); la
+  // tarifa TERUEL sigue resolviendo, asi que el resaltado viene SOLO de la
+  // indexacion sin tramo.
+  const fila = armarFila(viajeBase({ fecha: '2026-05-16' }), TARIFAS, INDEXACION);
+  assert.strictEqual(fila.resaltar, true);
+  assert.ok(fila.motivos_resaltado.some(m => m.indexOf('INDEXACION REVISAR') === 0),
+    'la indexacion sin tramo marca la fila REVISAR, no queda muda');
+  assert.strictEqual(fila.pct_indexacion, 'REVISAR');
+});
+
 test('planilla: viaje normal, sin ningun motivo -> resaltar false', () => {
   const fila = armarFila(viajeBase(), TARIFAS, INDEXACION);
   assert.strictEqual(fila.resaltar, false);
