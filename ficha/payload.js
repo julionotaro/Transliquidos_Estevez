@@ -35,6 +35,7 @@
 // Barrido: modelos candidatos para MODELO_FICHAS. La eleccion final la hace el
 // operador con la tabla comparativa (fase PRUEBA); no cambiar el default sin OK.
 var MODELOS_BARRIDO = [
+  { id: 'gpt-5.6-sol', proveedor: 'openai', wired: true, nota: 'GPT-5 vision; default de FICHAS desde 2026-08-07' },
   { id: 'gpt-4o-mini', proveedor: 'openai', wired: true },
   { id: 'gemini-flash', proveedor: 'google', wired: false, nota: 'requiere credencial Google AI Studio; ver README' },
   { id: 'gpt-4o', proveedor: 'openai', wired: true },

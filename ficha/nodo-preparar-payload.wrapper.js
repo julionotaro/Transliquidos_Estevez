@@ -14,13 +14,21 @@
 // "Formatear Linea Gesruta" reagrupa por indice contra $('Preparar Payload').
 
 // ===== MODELO DE FICHAS =====
-// gpt-4o es el lector de produccion desde el §8 del encargo lectura-confiable
-// (29/07/2026): sobre banda ampliada (B.1) lee 5/9 OK todos correctos y sus
-// misreads rompen la consistencia -> los caza la guarda, cero OK malo oculto.
-// mini quedo fuera del proceso: sobre banda igual leia mal digitos legibles
-// (techo de capacidad del modelo). Se puede pisar por corrida con `modelo_fichas`
-// en el body del webhook (lo usa el barrido/pruebas de idoneidad).
-const MODELO_FICHAS = 'gpt-4o';
+// Swap 2026-08-07 (encargo swap-modelo-lectura-gpt5): el lector de FICHAS
+// manuscritas pasa de gpt-4o a GPT-5 con vision. gpt-4o (y 4o-mini, 4.1) fallan
+// el origen/destino manuscrito -> factura no emitible ("Avello/Becerra" por
+// "Aveiro/Begega"). Elegido: gpt-5.6-sol, el GPT-5 con vision mas capaz al que
+// la cuenta tiene acceso (verificado con /v1/models + llamada de prueba de vision
+// 2026-08-07: acepta el mismo shape chat/completions con image_url,
+// max_completion_tokens y response_format json_object). El esquema de salida NO
+// cambia; mkPayloadOpenAI ya rutea gpt-5* por max_completion_tokens (esRazonadorOpenAI).
+// Se puede pisar por corrida con `modelo_fichas` en el body del webhook (barrido
+// / A-B de idoneidad y de costo). El nodo HTTP en la UI se sigue llamando
+// "Extraer GPT-4o" -- es solo el nombre, el modelo lo define este payload.
+//
+// DOCS (impresos) siguen en gpt-4o: leen bien lo impreso; el bloqueante era el
+// manuscrito. Se puede subir aparte si hiciera falta.
+const MODELO_FICHAS = 'gpt-5.6-sol';
 const MODELO_DOCS = 'gpt-4o';
 
 const hook = $('Hook Viaje').first();

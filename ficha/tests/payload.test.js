@@ -245,10 +245,24 @@ test('MODELO_FICHAS conmuta entre gpt-4o-mini y gpt-4o dejando igual el resto', 
   assert.strictEqual(mini.max_tokens, full.max_tokens);
 });
 
-test('los modelos del barrido cableados son gpt-4o-mini y gpt-4o', () => {
+test('los modelos del barrido cableados son gpt-5.6-sol (default), gpt-4o-mini y gpt-4o', () => {
   const wired = MODELOS_BARRIDO.filter(function (m) { return m.wired; }).map(function (m) { return m.id; });
 
-  assert.deepStrictEqual(wired, ['gpt-4o-mini', 'gpt-4o']);
+  assert.deepStrictEqual(wired, ['gpt-5.6-sol', 'gpt-4o-mini', 'gpt-4o']);
+});
+
+test('swap GPT-5: gpt-5.6-sol arma payload de razonador (max_completion_tokens, sin temperature) y mismo esquema de salida', () => {
+  const adj = adjuntosImagenesDesdePng([PNG_1PX]);
+  const sol = armarPayloadFichas('gpt-5.6-sol', adj, '');
+  const full = armarPayloadFichas('gpt-4o', adj, '');
+
+  assert.strictEqual(sol.model, 'gpt-5.6-sol');
+  assert.ok(sol.max_completion_tokens > 0, 'reasoner usa max_completion_tokens');
+  assert.strictEqual(sol.max_tokens, undefined, 'reasoner NO manda max_tokens');
+  assert.strictEqual(sol.temperature, undefined, 'reasoner NO manda temperature');
+  // El esquema de salida y el contenido (prompt+imagen) no cambian con el modelo.
+  assert.deepStrictEqual(sol.response_format, full.response_format);
+  assert.deepStrictEqual(sol.messages, full.messages);
 });
 
 test('el slot Gemini esta declarado pero NO cableado, y falla con mensaje claro', () => {
