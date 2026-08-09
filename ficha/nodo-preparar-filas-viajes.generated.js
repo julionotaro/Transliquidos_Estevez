@@ -88,6 +88,10 @@ for (const v of viajes) {
     origen_campos: v.origen_campos ? JSON.stringify(v.origen_campos) : '',
     pendiente_falta: s(v.pendiente_falta),
     pendiente_reclamar_a: s(v.pendiente_reclamar_a),
+    // CAMBIO 3: ciclo de carga (eje distinto de `estado`=documentacion). Default
+    // al ingresar. Regla de oro: mapear tambien en "Guardar Viajes". El robot
+    // Gesruta (Pieza C) escribira 'cargada_gesruta'; aca solo el default.
+    estado_carga: 'pendiente_revision',
     factura_id: '',
     detalle: JSON.stringify(v)
   } });

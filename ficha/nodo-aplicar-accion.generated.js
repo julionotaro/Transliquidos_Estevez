@@ -333,6 +333,98 @@ function incidenciasDe(historialStr) {
     .map(function (h) { return h.valor_nuevo; });
 }
 
+// ===== CAMBIO 2/3: correccion de celda SIN revalidar =======================
+//
+// aplicarCorregirCelda es el verbo nuevo de la tabla editable. A diferencia de
+// aplicarCorregir (que revalida regimen/estado_lectura y solo acepta 'cliente'),
+// este NO revalida: acepta el valor humano como verdad final, escribe la celda y
+// listo. El "!" de esa celda desaparece solo, porque el "!" se recomputa en el
+// render (validaciones de forma) contra el nuevo valor.
+//
+// EXCEPCION CRITICA (decision E): `cliente` NO se corrige por aca. Corregir el
+// cliente arrastra recalculos (regimen de indexacion, pais de facturacion); sin
+// revalidar quedarian calculados sobre el cliente equivocado -> misbilling
+// silencioso. `cliente` sigue yendo por aplicarCorregir (que revalida).
+//
+// Ademas de `cambios` (lo que se persiste en Viajes), devuelve `correccion`: la
+// fila para la tabla `correcciones` (opcion 2), que preserva el valor original
+// del modelo para medir calidad de extraccion en el tiempo.
+
+var CAMPOS_CELDA_CORREGIBLES = [
+  'tractora', 'semi', 'conductor', 'origen', 'destino', 'material', 'referencia',
+  'fecha', 'fecha_descarga', 'km_cargados', 'km_vacios', 'kg_documento', 'kg_hoja'
+];
+var CAMPOS_CELDA_NUMERICOS = ['km_cargados', 'km_vacios', 'kg_documento', 'kg_hoja'];
+
+function coercerValorCelda(campo, valor) {
+  if (CAMPOS_CELDA_NUMERICOS.indexOf(campo) >= 0) {
+    var n = (typeof valor === 'number') ? valor : Number(String(valor == null ? '' : valor).replace(',', '.'));
+    return isFinite(n) ? n : null;
+  }
+  return (valor == null) ? '' : String(valor).trim();
+}
+
+/**
+ * Corrige UNA celda sin revalidar. El humano es la autoridad: el valor se acepta
+ * tal cual, sin re-chequear catalogo ni forma.
+ * @param {object} viaje          fila actual de Viajes.
+ * @param {string} campo          columna real de Viajes; NO 'cliente'.
+ * @param {*}      valorNuevo     valor escrito por el humano.
+ * @param {string} usuario        identidad del operador (o canal).
+ * @param {string} [motivoOriginal]  el/los motivo(s) de "!" que tenia la celda.
+ * @returns {{ok:boolean, motivo?:string, cambios?:object, correccion?:object}}
+ */
+function aplicarCorregirCelda(viaje, campo, valorNuevo, usuario, motivoOriginal) {
+  if (campo === 'cliente') {
+    return { ok: false, motivo: 'cliente_no_se_corrige_por_celda: usa aplicarCorregir (revalida regimen/pais)' };
+  }
+  if (CAMPOS_CELDA_CORREGIBLES.indexOf(campo) === -1) {
+    return { ok: false, motivo: 'campo_no_corregible_por_celda: ' + campo };
+  }
+  var nuevo = coercerValorCelda(campo, valorNuevo);
+  if (nuevo === null || nuevo === '') {
+    return { ok: false, motivo: 'valor_nuevo vacio o no numerico para ' + campo };
+  }
+  var anterior = (viaje[campo] === undefined) ? null : viaje[campo];
+
+  var cambios = {};
+  cambios[campo] = nuevo;
+  // NO se tocan estado_lectura ni motivo_revision: no hay revalidacion.
+  cambios.historial_correcciones = appendHistorial(
+    viaje.historial_correcciones,
+    entradaBase('corregir_celda', usuario, campo, anterior, nuevo)
+  );
+
+  var correccion = {
+    viaje_id: (viaje.id === undefined || viaje.id === null) ? '' : String(viaje.id),
+    campo: campo,
+    valor_original: (anterior === null || anterior === undefined) ? '' : String(anterior),
+    valor_corregido: String(nuevo),
+    motivo_original: (motivoOriginal == null) ? '' : String(motivoOriginal),
+    editado_por: (usuario || '').toString().trim() || 'web-pendientes',
+    editado_en: new Date().toISOString()
+  };
+
+  return { ok: true, cambios: cambios, correccion: correccion };
+}
+
+/**
+ * Confirma la fila: el humano reviso/corrigio y la da por lista para Gesruta.
+ * Transiciona estado_carga pendiente_revision -> confirmada. NUNCA escribe
+ * cargada_gesruta (eso es la Pieza C, con acuse de Gesruta).
+ */
+function aplicarConfirmar(viaje, usuario) {
+  var anterior = viaje.estado_carga || 'pendiente_revision';
+  var cambios = {
+    estado_carga: 'confirmada',
+    historial_correcciones: appendHistorial(
+      viaje.historial_correcciones,
+      entradaBase('confirmar', usuario, 'estado_carga', anterior, 'confirmada')
+    )
+  };
+  return { ok: true, cambios: cambios };
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     CAMPOS_CORREGIBLES: CAMPOS_CORREGIBLES,
@@ -342,7 +434,10 @@ if (typeof module !== 'undefined' && module.exports) {
     aplicarCorregir: aplicarCorregir,
     aplicarResolver: aplicarResolver,
     aplicarIncidencia: aplicarIncidencia,
-    incidenciasDe: incidenciasDe
+    incidenciasDe: incidenciasDe,
+    CAMPOS_CELDA_CORREGIBLES: CAMPOS_CELDA_CORREGIBLES,
+    aplicarCorregirCelda: aplicarCorregirCelda,
+    aplicarConfirmar: aplicarConfirmar
   };
 }
 
@@ -350,11 +445,26 @@ if (typeof module !== 'undefined' && module.exports) {
 //
 // Entrada: la fila de Viajes que matcheo el id del POST (nodo dataTable
 // "Leer Viaje Accion"), mas el body del webhook "Hook Accion"
-// ($('Hook Accion').first().json.body: id, accion, usuario, valor).
-// Aplica la accion pedida (corregir/resolver/incidencia; logica en
-// acciones-pendientes.js) y emite el SNAPSHOT COMPLETO del viaje ya
-// actualizado, para que "Actualizar Viaje" escriba de vuelta sin tener que
-// razonar sobre que cambio y que no.
+// ($('Hook Accion').first().json.body: id, accion, usuario, valor, campo, motivo).
+// Aplica la accion pedida (logica en acciones-pendientes.js) y emite el SNAPSHOT
+// COMPLETO del viaje ya actualizado, para que "Actualizar Viaje" escriba de
+// vuelta sin tener que razonar sobre que cambio y que no.
+//
+// CAMBIO 2/3: dos verbos nuevos sobre el MISMO webhook (no hay canal nuevo):
+//   - corregir_celda: corrige una celda SIN revalidar (todo menos `cliente`).
+//     Ademas del snapshot, adjunta `_correccion`: la fila para la tabla nueva
+//     `correcciones` (opcion 2, preserva el valor original del modelo).
+//   - confirmar: transiciona estado_carga pendiente_revision -> confirmada.
+// `cliente` sigue yendo por el verbo `corregir` (aplicarCorregir, que revalida).
+//
+// RUTEO DE `_correccion` EN EL GRAFO (deploy manual, ver instructivo):
+//   Aplicar Accion  --main-->  Actualizar Viaje        (escribe columnas de Viajes;
+//                                                        ignora `_correccion`)
+//   Aplicar Accion  --main-->  IF "¿Hay correccion?"   (condicion: $json._correccion
+//                                 --true--> Insertar Correccion (dataTable insert
+//                                           en `correcciones`, mapea $json._correccion.*)
+// Asi una correccion de celda escribe en Viajes Y en correcciones; el resto de
+// las acciones solo tocan Viajes (la rama IF no dispara).
 
 const filas = $input.all();
 if (filas.length === 0) {
@@ -367,16 +477,26 @@ const accion = (body.accion || '').toString();
 let resultado;
 if (accion === 'corregir') {
   resultado = aplicarCorregir(viaje, 'cliente', body.valor, body.usuario);
+} else if (accion === 'corregir_celda') {
+  resultado = aplicarCorregirCelda(viaje, (body.campo || '').toString(), body.valor, body.usuario, body.motivo);
+} else if (accion === 'confirmar') {
+  resultado = aplicarConfirmar(viaje, body.usuario);
 } else if (accion === 'resolver') {
   resultado = aplicarResolver(viaje, body.usuario);
 } else if (accion === 'incidencia') {
   resultado = aplicarIncidencia(viaje, body.valor, body.usuario);
 } else {
-  throw new Error('Aplicar Accion: accion desconocida "' + accion + '" (esperada corregir/resolver/incidencia).');
+  throw new Error('Aplicar Accion: accion desconocida "' + accion + '" (esperada corregir/corregir_celda/confirmar/resolver/incidencia).');
 }
 if (!resultado.ok) {
   throw new Error('Aplicar Accion: ' + resultado.motivo);
 }
 
 const actualizado = Object.assign({}, viaje, resultado.cambios);
+// La fila para `correcciones` viaja adjunta; la rama IF del grafo la enruta a la
+// tabla nueva. Las columnas de Viajes no incluyen `_correccion`, asi que
+// "Actualizar Viaje" la ignora.
+if (resultado.correccion) {
+  actualizado._correccion = resultado.correccion;
+}
 return [{ json: actualizado }];

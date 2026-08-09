@@ -100,3 +100,75 @@ test('v1.1 historial acumula: dos correcciones sobre el mismo viaje -> dos entra
   assert.strictEqual(histFinal[0].accion, 'incidencia');
   assert.strictEqual(histFinal[1].accion, 'corregir');
 });
+
+// ============================================================================
+// CAMBIO 2/3 — correccion de celda SIN revalidar + tabla correcciones
+// ============================================================================
+test('CAMBIO 3 corregir_celda: Aveira->Aveiro escribe la celda y produce UNA fila de correccion con el original', () => {
+  const v = viajeBase({ id: 7, origen: 'Aveira', estado_lectura: 'OK', motivo_revision: '' });
+  const r = acciones.aplicarCorregirCelda(v, 'origen', 'Aveiro', 'julio', 'origen dudoso');
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.cambios.origen, 'Aveiro', 'viajes.origen queda con el valor corregido');
+  assert.ok(r.correccion, 'produce fila para tabla correcciones');
+  assert.strictEqual(r.correccion.viaje_id, '7');
+  assert.strictEqual(r.correccion.campo, 'origen');
+  assert.strictEqual(r.correccion.valor_original, 'Aveira', 'el original se preserva');
+  assert.strictEqual(r.correccion.valor_corregido, 'Aveiro');
+  assert.strictEqual(r.correccion.motivo_original, 'origen dudoso');
+  assert.strictEqual(r.correccion.editado_por, 'julio');
+  assert.ok(r.correccion.editado_en, 'timestamp ISO');
+});
+
+test('CAMBIO 3 corregir_celda: NO revalida (no toca estado_lectura ni motivo_revision)', () => {
+  const v = viajeBase({ id: 7, origen: 'Aveira', estado_lectura: 'REVISAR', motivo_revision: 'km cargados no positivos' });
+  const r = acciones.aplicarCorregirCelda(v, 'origen', 'Avero', 'julio'); // valor fuera de catalogo: se acepta igual
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.cambios.origen, 'Avero', 'valor humano aceptado como verdad, sin re-chequear catalogo');
+  assert.strictEqual(r.cambios.estado_lectura, undefined, 'no revalida estado_lectura');
+  assert.strictEqual(r.cambios.motivo_revision, undefined, 'no revalida motivo_revision');
+});
+
+test('CAMBIO 3 corregir_celda: dos campos de la misma fila -> dos filas de correccion (dos llamadas)', () => {
+  const v = viajeBase({ id: 8, origen: 'Aveira', destino: 'Terel' });
+  const r1 = acciones.aplicarCorregirCelda(v, 'origen', 'Aveiro', 'julio');
+  const v2 = Object.assign({}, v, r1.cambios);
+  const r2 = acciones.aplicarCorregirCelda(v2, 'destino', 'Teruel', 'julio');
+  assert.ok(r1.correccion && r2.correccion);
+  assert.strictEqual(r1.correccion.campo, 'origen');
+  assert.strictEqual(r2.correccion.campo, 'destino');
+  assert.strictEqual(r2.correccion.valor_original, 'Terel');
+  const hist = JSON.parse(r2.cambios.historial_correcciones);
+  assert.strictEqual(hist.length, 2, 'historial acumula ambas');
+});
+
+test('CAMBIO 3 corregir_celda: campo numerico se coerce (km_vacios)', () => {
+  const v = viajeBase({ id: 9, km_vacios: 120 });
+  const r = acciones.aplicarCorregirCelda(v, 'km_vacios', '135', 'julio');
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.cambios.km_vacios, 135);
+  assert.strictEqual(typeof r.cambios.km_vacios, 'number');
+});
+
+test('CAMBIO 3 corregir_celda: cliente NO se corrige por aca (va por corregir, que revalida)', () => {
+  const v = viajeBase({ id: 10, cliente: 'FORBA' });
+  const r = acciones.aplicarCorregirCelda(v, 'cliente', 'FORESA', 'julio');
+  assert.strictEqual(r.ok, false);
+  assert.match(r.motivo, /cliente_no_se_corrige_por_celda/);
+});
+
+test('CAMBIO 3 corregir_celda: campo desconocido se rechaza', () => {
+  const v = viajeBase({ id: 11 });
+  const r = acciones.aplicarCorregirCelda(v, 'factura_id', 'X', 'julio');
+  assert.strictEqual(r.ok, false);
+  assert.match(r.motivo, /campo_no_corregible_por_celda/);
+});
+
+test('CAMBIO 3 confirmar: estado_carga pendiente_revision -> confirmada; nunca cargada_gesruta', () => {
+  const v = viajeBase({ id: 12, estado_carga: 'pendiente_revision' });
+  const r = acciones.aplicarConfirmar(v, 'julio');
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.cambios.estado_carga, 'confirmada');
+  assert.notStrictEqual(r.cambios.estado_carga, 'cargada_gesruta');
+  const hist = JSON.parse(r.cambios.historial_correcciones);
+  assert.strictEqual(hist[hist.length - 1].accion, 'confirmar');
+});

@@ -2,11 +2,26 @@
 //
 // Entrada: la fila de Viajes que matcheo el id del POST (nodo dataTable
 // "Leer Viaje Accion"), mas el body del webhook "Hook Accion"
-// ($('Hook Accion').first().json.body: id, accion, usuario, valor).
-// Aplica la accion pedida (corregir/resolver/incidencia; logica en
-// acciones-pendientes.js) y emite el SNAPSHOT COMPLETO del viaje ya
-// actualizado, para que "Actualizar Viaje" escriba de vuelta sin tener que
-// razonar sobre que cambio y que no.
+// ($('Hook Accion').first().json.body: id, accion, usuario, valor, campo, motivo).
+// Aplica la accion pedida (logica en acciones-pendientes.js) y emite el SNAPSHOT
+// COMPLETO del viaje ya actualizado, para que "Actualizar Viaje" escriba de
+// vuelta sin tener que razonar sobre que cambio y que no.
+//
+// CAMBIO 2/3: dos verbos nuevos sobre el MISMO webhook (no hay canal nuevo):
+//   - corregir_celda: corrige una celda SIN revalidar (todo menos `cliente`).
+//     Ademas del snapshot, adjunta `_correccion`: la fila para la tabla nueva
+//     `correcciones` (opcion 2, preserva el valor original del modelo).
+//   - confirmar: transiciona estado_carga pendiente_revision -> confirmada.
+// `cliente` sigue yendo por el verbo `corregir` (aplicarCorregir, que revalida).
+//
+// RUTEO DE `_correccion` EN EL GRAFO (deploy manual, ver instructivo):
+//   Aplicar Accion  --main-->  Actualizar Viaje        (escribe columnas de Viajes;
+//                                                        ignora `_correccion`)
+//   Aplicar Accion  --main-->  IF "¿Hay correccion?"   (condicion: $json._correccion
+//                                 --true--> Insertar Correccion (dataTable insert
+//                                           en `correcciones`, mapea $json._correccion.*)
+// Asi una correccion de celda escribe en Viajes Y en correcciones; el resto de
+// las acciones solo tocan Viajes (la rama IF no dispara).
 
 const filas = $input.all();
 if (filas.length === 0) {
@@ -19,16 +34,26 @@ const accion = (body.accion || '').toString();
 let resultado;
 if (accion === 'corregir') {
   resultado = aplicarCorregir(viaje, 'cliente', body.valor, body.usuario);
+} else if (accion === 'corregir_celda') {
+  resultado = aplicarCorregirCelda(viaje, (body.campo || '').toString(), body.valor, body.usuario, body.motivo);
+} else if (accion === 'confirmar') {
+  resultado = aplicarConfirmar(viaje, body.usuario);
 } else if (accion === 'resolver') {
   resultado = aplicarResolver(viaje, body.usuario);
 } else if (accion === 'incidencia') {
   resultado = aplicarIncidencia(viaje, body.valor, body.usuario);
 } else {
-  throw new Error('Aplicar Accion: accion desconocida "' + accion + '" (esperada corregir/resolver/incidencia).');
+  throw new Error('Aplicar Accion: accion desconocida "' + accion + '" (esperada corregir/corregir_celda/confirmar/resolver/incidencia).');
 }
 if (!resultado.ok) {
   throw new Error('Aplicar Accion: ' + resultado.motivo);
 }
 
 const actualizado = Object.assign({}, viaje, resultado.cambios);
+// La fila para `correcciones` viaja adjunta; la rama IF del grafo la enruta a la
+// tabla nueva. Las columnas de Viajes no incluyen `_correccion`, asi que
+// "Actualizar Viaje" la ignora.
+if (resultado.correccion) {
+  actualizado._correccion = resultado.correccion;
+}
 return [{ json: actualizado }];
