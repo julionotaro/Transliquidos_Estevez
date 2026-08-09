@@ -121,3 +121,80 @@ test('v1.1 render: las notas (incidencias) del historial se muestran en la fila'
   const html = renderHTML(out);
   assert.match(html, /Cliente confirmo por telefono/);
 });
+
+// ============================================================================
+// CAMBIO 2 — tabla editable, "!" por celda, faltante prominente, confirmar
+// ============================================================================
+function viajeReal(campos) {
+  return viajeBase(Object.assign({
+    estado: 'con_documentacion', estado_lectura: 'REVISAR', motivo_revision: 'algo a revisar',
+    tractora: '2498KZL', semi: 'R1007BCV', material: 'Tobera', referencia: '2002854',
+    fecha: '2026-07-07', fecha_descarga: '2026-07-08', kg_documento: 23140, kg_hoja: 23000,
+    regimen_indexacion: 'linea', km_cargados: 800, km_vacios: 120
+  }, campos));
+}
+
+test('CAMBIO 2: la tabla trae las columnas reales (no codigos Gesruta) + Dieta + Estado carga + Confirmar', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  ['Matricula tractora', 'Remolque', 'Chofer', 'Cliente', 'Origen', 'Destino',
+   'Material', 'Referencia', 'Fecha de carga', 'Fecha de descarga', 'Cantidad',
+   'Regimen indexacion', 'Km cargado', 'Km vacio', 'Dieta', 'Estado carga'].forEach(t => {
+    assert.ok(html.indexOf('>' + t + '<') >= 0, 'columna ' + t);
+  });
+  assert.match(html, /name="accion" value="confirmar"/);
+  // no debe existir columna de codigo Gesruta
+  assert.ok(html.indexOf('Cod ') === -1 && html.indexOf('cod_') === -1, 'no hay codigos Gesruta');
+});
+
+test('CAMBIO 2 (a): matricula tractora invalida -> celda con "!" y form corregir_celda campo=tractora', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({ tractora: 'AVEIRO' })]));
+  assert.match(html, /class="warn"/);
+  assert.match(html, /name="campo" value="tractora"/);
+  assert.match(html, /name="accion" value="corregir_celda"/);
+});
+
+test('CAMBIO 2 (b): fecha descarga < carga -> ambas celdas de fecha marcadas', () => {
+  const p = filtrarPendientes([viajeReal({ fecha: '2026-07-07', fecha_descarga: '2026-07-05' })])[0];
+  assert.ok(p.marcas.fecha && p.marcas.fecha_descarga, 'ambas fechas marcadas en el modelo de fila');
+});
+
+test('CAMBIO 2 (c): cantidad 0 -> celda cantidad marcada; sin doc alguno, la correccion apunta a kg_hoja', () => {
+  // kg_documento=0 esta PRESENTE (es el 0 malo que se ve): corregir apunta ahi.
+  const conDoc = filtrarPendientes([viajeReal({ kg_documento: 0, kg_hoja: null })])[0];
+  assert.ok(conDoc.marcas.cantidad, 'cantidad 0 marcada');
+  assert.strictEqual(conDoc.cantidad_campo, 'kg_documento', 'el 0 vive en kg_documento; se corrige ahi');
+  // sin kg_documento (null), la cantidad y su correccion caen en kg_hoja
+  const sinDoc = filtrarPendientes([viajeReal({ kg_documento: null, kg_hoja: null })])[0];
+  assert.ok(sinDoc.marcas.cantidad, 'cantidad ausente marcada');
+  assert.strictEqual(sinDoc.cantidad_campo, 'kg_hoja');
+});
+
+test('CAMBIO 2: faltante de documentacion se muestra PROMINENTE (FALTA DOC + que falta + a quien)', () => {
+  const v = viajeReal({ estado: 'PENDIENTE_DOCUMENTACION', estado_lectura: 'OK',
+    pendiente_falta: 'albaran/CMR', pendiente_reclamar_a: 'chofer' });
+  const html = renderHTML(filtrarPendientes([v]));
+  assert.match(html, /FALTA DOC/);
+  assert.match(html, /albaran\/CMR/);
+  assert.match(html, /chofer/);
+});
+
+test('CAMBIO 2 (D conservador): REVISAR se muestra a nivel fila (motivo como observacion), NO atribuido a una celda', () => {
+  const v = viajeReal({ estado_lectura: 'REVISAR', motivo_revision: 'cliente_no_reconocido: FORBA (origen dudoso)' });
+  const p = filtrarPendientes([v])[0];
+  // no hay marca de forma sobre origen (no se inventa atribucion por celda)
+  assert.strictEqual(p.marcas.origen, undefined);
+  const html = renderHTML([p]);
+  assert.match(html, /REVISAR: cliente_no_reconocido: FORBA/);
+});
+
+test('CAMBIO 2: cliente NO se edita por celda (va por la barra, verbo corregir que revalida)', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  assert.ok(html.indexOf('name="campo" value="cliente"') === -1, 'ninguna celda corrige cliente por corregir_celda');
+  assert.match(html, /name="accion" value="corregir"/, 'cliente se corrige por el verbo corregir en la barra');
+});
+
+test('CAMBIO 2: dieta leida del JSON detalle se muestra', () => {
+  const v = viajeReal({ detalle: JSON.stringify({ gastos: [{ tipo: 'dieta', importe: 45 }] }) });
+  const p = filtrarPendientes([v])[0];
+  assert.strictEqual(p.dieta, 45);
+});

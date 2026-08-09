@@ -41,7 +41,7 @@ const TARGETS = [
   },
   {
     nodo: 'Pendientes',
-    logica: ['pendientes.js'],
+    logica: ['validaciones-forma.js', 'pendientes.js'],
     wrapper: 'nodo-vista-pendientes.wrapper.js',
     salida: 'nodo-vista-pendientes.generated.js',
     workflowId: '[ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)',

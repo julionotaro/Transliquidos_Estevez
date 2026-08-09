@@ -1,22 +1,39 @@
-// ===== VISTA DE PENDIENTES — filtro y render (Cierre v1 pieza 2 + v1.1 pieza 1) =====
+// ===== VISTA DE PENDIENTES — filtro y render =====
 //
-// Lista minima y consultable de todo lo que quedo esperando algo: falta
-// documentacion (estado === 'PENDIENTE_DOCUMENTACION') o la lectura fue dudosa
+// Cierre v1 pieza 2 + v1.1 pieza 1 + CAMBIO 2 (tabla de resultado editable).
+//
+// Lista consultable de todo lo que quedo esperando algo: falta documentacion
+// (estado === 'PENDIENTE_DOCUMENTACION') o la lectura fue dudosa
 // (estado_lectura === 'REVISAR', incluye el cliente_no_reconocido de cierre-v1).
-// Son DOS EJES independientes (un viaje puede estar en uno, el otro, los dos,
-// o ninguno) — por eso el filtro es OR, no AND.
+// Son DOS EJES independientes (un viaje puede estar en uno, el otro, los dos, o
+// ninguno) — el filtro es OR, no AND.
 //
-// v1.1: cada fila tiene acciones (corregir/resolver/anotar incidencia) que
-// postean a /webhook/viajes-accion (misma pantalla, sin canal externo -- la
-// correccion tiene que quedar conectada a la base para ser trazable). La logica
-// de esas acciones vive en acciones-pendientes.js; este archivo solo LEE el
-// historial para mostrar las notas (incidencias) en la fila.
+// CAMBIO 2: cada viaje se muestra como una fila editable con las columnas reales
+// de `viajes` (nombres resueltos; los codigos Gesruta son de la Pieza C, no van).
+//   - "!" por celda = validaciones de FORMA (validaciones-forma.js): patron de
+//     matricula, fecha descarga >= carga, cantidad > 0. Marca la celda concreta.
+//   - Resaltado a nivel FILA: estado_lectura=REVISAR muestra el motivo como
+//     observacion (no se puede atribuir a una celda sin campos_dudosos, que es
+//     encargo futuro — decision D del addendum).
+//   - Faltante de documentacion: marcado PROMINENTE (banda ⚠) con que falta y a
+//     quien reclamar (dato ya en la base: PENDIENTE_DOCUMENTACION + pendiente_*).
+//   - dieta: se lee del JSON `detalle`/gastos (dato de lectura, no columna); si
+//     el viaje no la trae, celda vacia.
+//   - Edicion de celda: postea a /webhook/viajes-accion. `cliente` va por el
+//     verbo `corregir` (revalida regimen/pais); el resto por `corregir_celda`
+//     (sin revalidar, el humano es la autoridad). `confirmar` marca la fila
+//     lista para Gesruta (estado_carga -> confirmada).
 //
-// Esto NO es el tablero de Fase 4: no hay flujo de resolucion con estados
-// intermedios, solo accion directa + registro. Lee directo de la tabla
-// `Viajes` (lrBxWpTUxMtO8U48) via el nodo dataTable "Leer Viajes".
+// Lee directo de la tabla `Viajes` (lrBxWpTUxMtO8U48) via el nodo dataTable
+// "Leer Viajes".
 
 'use strict';
+
+// Modulo de validaciones de forma: inlineado antes que este archivo en el nodo
+// (build-nodo.js), o require en tests.
+var VF = (typeof marcasForma === 'function')
+  ? { marcasForma: marcasForma, cantidadDe: cantidadDe, dietaDeDetalle: dietaDeDetalle }
+  : require('./validaciones-forma.js');
 
 /** Dias transcurridos desde createdAt, redondeados hacia abajo, nunca negativo. */
 function diasEsperando(createdAt, ahoraMs) {
@@ -35,12 +52,9 @@ function esPendiente(v) {
   return v.estado === 'PENDIENTE_DOCUMENTACION' || v.estado_lectura === 'REVISAR';
 }
 
-// Lectura de historial_correcciones SOLO para mostrar notas (incidencias) en
-// la fila. Copia deliberadamente chica de la logica de parseo que vive en
-// acciones-pendientes.js (que es quien ESCRIBE el historial): mantiene este
-// nodo (solo lectura/render) sin depender de la logica de escritura de
-// acciones, que a su vez depende de cruce.js. Evita inflar este nodo con
-// codigo que no usa.
+// Lectura de historial_correcciones SOLO para mostrar notas (incidencias) en la
+// fila. Copia deliberadamente chica de la logica que vive en
+// acciones-pendientes.js (que ESCRIBE el historial), para no inflar este nodo.
 function notasDeHistorial(historialStr) {
   if (!historialStr) { return []; }
   var lista;
@@ -55,9 +69,9 @@ function notasDeHistorial(historialStr) {
 }
 
 /**
- * Filtra los viajes pendientes de la tabla Viajes, calcula dias_esperando y
- * ordena por antiguedad descendente (lo mas viejo primero — lo que mas urge
- * reclamar).
+ * Filtra los viajes pendientes, enriquece cada uno con lo que la tabla editable
+ * necesita (celdas + marcas de forma + dieta + faltante), calcula dias_esperando
+ * y ordena por antiguedad descendente (lo mas viejo primero).
  * @param {Array<object>} viajes  filas crudas de la tabla Viajes.
  * @param {number} [ahoraMs]      instante de referencia (tests deterministas).
  * @returns {Array<object>}
@@ -68,8 +82,10 @@ function filtrarPendientes(viajes, ahoraMs) {
   for (var i = 0; i < lista.length; i++) {
     var v = lista[i] || {};
     if (!esPendiente(v)) { continue; }
+    var cant = VF.cantidadDe(v);
     out.push({
       id: v.id,
+      // --- resumen (compat cierre-v1) ---
       fecha_carga: v.fecha || null,
       chofer: v.conductor || null,
       cliente: v.cliente || null,
@@ -78,7 +94,31 @@ function filtrarPendientes(viajes, ahoraMs) {
       reclamar_a: v.pendiente_reclamar_a || null,
       motivo_revision: v.motivo_revision || null,
       dias_esperando: diasEsperando(v.createdAt, ahoraMs),
-      notas: notasDeHistorial(v.historial_correcciones)
+      notas: notasDeHistorial(v.historial_correcciones),
+      // --- ejes de atencion ---
+      falta_doc: v.estado === 'PENDIENTE_DOCUMENTACION',
+      revisar: v.estado_lectura === 'REVISAR',
+      // --- celdas de la tabla editable (valores crudos) ---
+      tractora: v.tractora || '',
+      semi: v.semi || '',
+      conductor: v.conductor || '',
+      origen: v.origen || '',
+      destino: v.destino || '',
+      material: v.material || '',
+      referencia: v.referencia || '',
+      fecha: v.fecha || '',
+      fecha_descarga: v.fecha_descarga || '',
+      cantidad_valor: cant.valor,
+      cantidad_um: cant.um,
+      // que columna real corrige la celda "cantidad" (el doc manda; si no, la hoja)
+      cantidad_campo: (typeof v.kg_documento === 'number' && isFinite(v.kg_documento)) ? 'kg_documento' : 'kg_hoja',
+      regimen_indexacion: v.regimen_indexacion || '',
+      km_cargados: (v.km_cargados === null || v.km_cargados === undefined) ? '' : v.km_cargados,
+      km_vacios: (v.km_vacios === null || v.km_vacios === undefined) ? '' : v.km_vacios,
+      dieta: VF.dietaDeDetalle(v.detalle),
+      estado_carga: v.estado_carga || 'pendiente_revision',
+      // marcas de forma por celda { campo: [motivos] }
+      marcas: VF.marcasForma(v)
     });
   }
   out.sort(function (a, b) {
@@ -90,87 +130,174 @@ function filtrarPendientes(viajes, ahoraMs) {
   return out;
 }
 
-// --- HTML minimo: sin framework, sin build, sin JS de cliente ---------------
+// --- HTML: server-rendered, sin framework, sin JS de cliente ----------------
 function escHtml(s) {
   return String(s === null || s === undefined ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+/** Motivo(s) de forma de una celda (unido), o '' si esta limpia. */
+function marcaDe(p, campo) {
+  var m = p.marcas && p.marcas[campo];
+  return (m && m.length) ? m.join('; ') : '';
+}
+
 /**
- * Acciones de la fila (v1.1): UN form con id oculto, "usuario" y "valor"
- * compartidos, y 3 botones submit (accion=corregir|resolver|incidencia). El
- * backend (nodo "Aplicar Accion") decide que hacer con "valor" segun accion:
- * nuevo cliente para corregir, texto de la nota para incidencia, ignorado
- * para resolver. Plain HTML POST -- funciona sin JS, recarga sobre la misma
- * pantalla via redirect del webhook.
+ * Celda EDITABLE: valor + form inline [input][✓] que postea al webhook. `cliente`
+ * usa el verbo `corregir` (revalida); el resto `corregir_celda` (sin revalidar).
+ * El "!" (marca de forma) es una pista visual; corregir el valor lo limpia solo
+ * en el proximo render.
+ */
+function celdaEditable(p, campo, valor, accion, marcaKey) {
+  var marca = marcaDe(p, marcaKey || campo); // marcas indexadas por su clave real
+  var warn = marca ? ' class="warn"' : '';
+  var bang = marca ? '<span class="bang" title="' + escHtml(marca) + '">!</span> ' : '';
+  var motivoHidden = marca ? '<input type="hidden" name="motivo" value="' + escHtml(marca) + '">' : '';
+  return '<td' + warn + '>' + bang +
+    '<form method="post" action="/webhook/viajes-accion" class="cell">' +
+    '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
+    '<input type="hidden" name="accion" value="' + accion + '">' +
+    '<input type="hidden" name="campo" value="' + escHtml(campo) + '">' +
+    motivoHidden +
+    '<input type="text" name="valor" value="' + escHtml(valor) + '" size="9">' +
+    '<button type="submit" title="Guardar (se acepta como verdad, sin revalidar)">✓</button>' +
+    '</form></td>';
+}
+
+/** Celda de cantidad: input editable (columna real) + U.M. al lado. */
+function celdaCantidad(p) {
+  var marca = marcaDe(p, 'cantidad');
+  var warn = marca ? ' class="warn"' : '';
+  var bang = marca ? '<span class="bang" title="' + escHtml(marca) + '">!</span> ' : '';
+  var motivoHidden = marca ? '<input type="hidden" name="motivo" value="' + escHtml(marca) + '">' : '';
+  var valor = (p.cantidad_valor === null || p.cantidad_valor === undefined) ? '' : p.cantidad_valor;
+  return '<td' + warn + '>' + bang +
+    '<form method="post" action="/webhook/viajes-accion" class="cell">' +
+    '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
+    '<input type="hidden" name="accion" value="corregir_celda">' +
+    '<input type="hidden" name="campo" value="' + escHtml(p.cantidad_campo) + '">' +
+    motivoHidden +
+    '<input type="text" name="valor" value="' + escHtml(valor) + '" size="7">' +
+    '<span class="um"> ' + escHtml(p.cantidad_um) + '</span>' +
+    '<button type="submit" title="Guardar (sin revalidar)">✓</button>' +
+    '</form></td>';
+}
+
+/** Celda de solo lectura (valor derivado o dato de lectura). */
+function celdaDisplay(valor) {
+  return '<td>' + escHtml((valor === null || valor === undefined || valor === '') ? '-' : valor) + '</td>';
+}
+
+/**
+ * Acciones de fila: usuario compartido + valor (cliente/nota) + botones. El
+ * cliente va por `corregir` (revalida); resolver/incidencia/confirmar completan.
  */
 function accionesHTML(p) {
   return '<form method="post" action="/webhook/viajes-accion" class="acc">' +
     '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
-    '<input type="text" name="usuario" placeholder="Tu nombre" required size="10">' +
-    '<input type="text" name="valor" placeholder="Cliente correcto / nota" size="16">' +
-    '<button type="submit" name="accion" value="corregir" title="Corrige el cliente y re-evalua el regimen">Corregir cliente</button>' +
+    '<input type="text" name="usuario" placeholder="Tu nombre" size="9">' +
+    '<input type="text" name="valor" placeholder="Cliente correcto / nota" size="14">' +
+    '<button type="submit" name="accion" value="corregir" title="Corrige el cliente y re-evalua el regimen (revalida)">Corregir cliente</button>' +
     '<button type="submit" name="accion" value="resolver" title="La documentacion llego por otra via">Marcar resuelto</button>' +
     '<button type="submit" name="accion" value="incidencia" title="Nota libre, no saca el viaje de la lista">Anotar incidencia</button>' +
+    '<button type="submit" name="accion" value="confirmar" title="Revisado/ok: lista para Gesruta (estado_carga -> confirmada)">Confirmar viaje</button>' +
     '</form>';
 }
 
+var COLS_TABLA = [
+  'Matricula tractora', 'Remolque', 'Chofer', 'Cliente', 'Origen', 'Destino',
+  'Material', 'Referencia', 'Fecha de carga', 'Fecha de descarga', 'Cantidad',
+  'Regimen indexacion', 'Km cargado', 'Km vacio', 'Dieta', 'Estado carga', 'Acciones'
+];
+
+/** Fila principal (celdas) + fila de observaciones (faltante/motivo/notas). */
+function filasDeViaje(p) {
+  var main = '<tr>' +
+    celdaEditable(p, 'tractora', p.tractora, 'corregir_celda') +
+    celdaEditable(p, 'semi', p.semi, 'corregir_celda') +
+    celdaEditable(p, 'conductor', p.conductor, 'corregir_celda') +
+    // cliente: no inline por celda; se corrige por la barra de acciones (verbo
+    // corregir, que revalida regimen/pais). Aca solo se muestra el valor.
+    '<td class="cli">' + escHtml(p.cliente || '-') + '</td>' +
+    celdaEditable(p, 'origen', p.origen, 'corregir_celda') +
+    celdaEditable(p, 'destino', p.destino, 'corregir_celda') +
+    celdaEditable(p, 'material', p.material, 'corregir_celda') +
+    celdaEditable(p, 'referencia', p.referencia, 'corregir_celda') +
+    celdaEditable(p, 'fecha', p.fecha, 'corregir_celda') +
+    celdaEditable(p, 'fecha_descarga', p.fecha_descarga, 'corregir_celda') +
+    // cantidad: corrige la columna real (kg_documento o kg_hoja); muestra la
+    // U.M. al lado (el numero sin unidad miente). Marca indexada por 'cantidad'.
+    celdaCantidad(p) +
+    celdaDisplay(p.regimen_indexacion) +
+    celdaEditable(p, 'km_cargados', p.km_cargados, 'corregir_celda') +
+    celdaEditable(p, 'km_vacios', p.km_vacios, 'corregir_celda') +
+    celdaDisplay(p.dieta === null ? '' : p.dieta) +
+    '<td class="ecarga">' + escHtml(p.estado_carga) + '</td>' +
+    '<td>' + accionesHTML(p) + '</td>' +
+    '</tr>';
+
+  // Fila de observaciones: faltante de doc PROMINENTE + motivo de revision + notas.
+  var obs = [];
+  if (p.falta_doc) {
+    obs.push('<span class="falta">⚠ FALTA DOC: ' + escHtml(p.que_falta || 'documentacion del viaje') +
+      ' — reclamar a: ' + escHtml(p.reclamar_a || '?') + '</span>');
+  }
+  if (p.revisar && p.motivo_revision) {
+    obs.push('<span class="rev">REVISAR: ' + escHtml(p.motivo_revision) + '</span>');
+  }
+  if (p.notas && p.notas.length) {
+    obs.push('<span class="notas">Notas: ' + p.notas.map(escHtml).join(' | ') + '</span>');
+  }
+  var obsRow = obs.length
+    ? '<tr class="obs"><td colspan="' + COLS_TABLA.length + '">' + obs.join(' &nbsp; ') + '</td></tr>'
+    : '';
+  return main + obsRow;
+}
+
 /**
- * Pagina HTML autocontenida: tabla legible, ordenada por dias_esperando desc,
- * con acciones de correccion por fila (v1.1). Lista vacia -> mensaje claro,
- * no una tabla rota ni un error.
- * @param {Array<object>} pendientes  salida de filtrarPendientes().
+ * Pagina HTML autocontenida: tabla editable ordenada por dias_esperando desc.
+ * Lista vacia -> mensaje claro. @param {Array<object>} pendientes salida de
+ * filtrarPendientes().
  */
 function renderHTML(pendientes) {
   var lista = Array.isArray(pendientes) ? pendientes : [];
-  var filas;
+  var cuerpo;
   if (lista.length === 0) {
-    filas = '<tr><td colspan="10" class="vacio">No hay viajes pendientes ni en revision. Todo al dia.</td></tr>';
+    cuerpo = '<tr><td colspan="' + COLS_TABLA.length + '" class="vacio">No hay viajes pendientes ni en revision. Todo al dia.</td></tr>';
   } else {
-    filas = lista.map(function (p) {
-      var notasHtml = p.notas.length
-        ? '<ul class="notas">' + p.notas.map(function (n) { return '<li>' + escHtml(n) + '</li>'; }).join('') + '</ul>'
-        : '-';
-      return '<tr>' +
-        '<td>' + escHtml(p.fecha_carga || '-') + '</td>' +
-        '<td>' + escHtml(p.chofer || '-') + '</td>' +
-        '<td>' + escHtml(p.cliente || '-') + '</td>' +
-        '<td>' + escHtml(p.ruta) + '</td>' +
-        '<td>' + escHtml(p.que_falta || '-') + '</td>' +
-        '<td>' + escHtml(p.reclamar_a || '-') + '</td>' +
-        '<td class="dias">' + (p.dias_esperando === null ? '-' : p.dias_esperando) + '</td>' +
-        '<td>' + escHtml(p.motivo_revision || '-') + '</td>' +
-        '<td>' + notasHtml + '</td>' +
-        '<td>' + accionesHTML(p) + '</td>' +
-        '</tr>';
-    }).join('');
+    cuerpo = lista.map(filasDeViaje).join('');
   }
+  var ths = COLS_TABLA.map(function (t) { return '<th>' + escHtml(t) + '</th>'; }).join('');
   return [
     '<!doctype html><html lang="es"><head><meta charset="utf-8">',
     '<title>Pendientes - Transliquidos Estevez</title>',
     '<style>',
-    'body{font-family:system-ui,Arial,sans-serif;margin:2rem;background:#f7f7f7;color:#222}',
+    'body{font-family:system-ui,Arial,sans-serif;margin:1.5rem;background:#f7f7f7;color:#222}',
     'h1{font-size:1.3rem;margin-bottom:.2rem}',
     'p.sub{color:#555;margin-top:0}',
     'table{border-collapse:collapse;width:100%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1)}',
-    'th,td{border:1px solid #ddd;padding:.5rem .6rem;text-align:left;font-size:.9rem;vertical-align:top}',
+    'th,td{border:1px solid #ddd;padding:.35rem .45rem;text-align:left;font-size:.82rem;vertical-align:top}',
     'th{background:#333;color:#fff;position:sticky;top:0}',
-    'tr:nth-child(even){background:#fafafa}',
-    '.dias{text-align:right;font-weight:bold;white-space:nowrap}',
     '.vacio{text-align:center;padding:2rem;color:#666}',
-    '.notas{margin:0;padding-left:1rem}',
-    'form.acc{display:flex;flex-wrap:wrap;gap:.25rem;min-width:260px}',
-    'form.acc input{padding:.2rem;font-size:.8rem}',
-    'form.acc button{font-size:.75rem;padding:.2rem .4rem;cursor:pointer}',
+    'td.warn{background:#fff5d6}',
+    '.bang{color:#b34700;font-weight:bold}',
+    'td.cli{font-weight:bold}',
+    'td.ecarga{white-space:nowrap;color:#555}',
+    'form.cell{display:flex;gap:2px;margin:0}',
+    'form.cell input[type=text]{padding:.1rem;font-size:.78rem;width:6.5rem}',
+    'form.cell button{font-size:.75rem;padding:0 .3rem;cursor:pointer}',
+    'form.acc{display:flex;flex-wrap:wrap;gap:.2rem;min-width:230px}',
+    'form.acc input{padding:.15rem;font-size:.75rem}',
+    'form.acc button{font-size:.72rem;padding:.15rem .35rem;cursor:pointer}',
+    'tr.obs td{background:#fbfbfb;font-size:.8rem}',
+    '.falta{color:#a11;font-weight:bold}',
+    '.rev{color:#b34700}',
+    '.notas{color:#555}',
     '</style></head><body>',
     '<h1>Pendientes (' + lista.length + ')</h1>',
-    '<p class="sub">Documentacion faltante o lectura a revisar. Ordenado por antiguedad, lo mas viejo primero.</p>',
-    '<table><thead><tr>',
-    '<th>Fecha de carga</th><th>Chofer</th><th>Cliente</th><th>Ruta</th>',
-    '<th>Que falta</th><th>A quien reclamar</th><th>Dias esperando</th><th>Motivo de revision</th>',
-    '<th>Notas</th><th>Acciones</th>',
-    '</tr></thead><tbody>',
-    filas,
+    '<p class="sub">Documentacion faltante o lectura a revisar. Celdas con ! fallan una validacion de forma; corregilas y confirma. Ordenado por antiguedad, lo mas viejo primero.</p>',
+    '<table><thead><tr>', ths, '</tr></thead><tbody>',
+    cuerpo,
     '</tbody></table>',
     '</body></html>'
   ].join('\n');
@@ -184,6 +311,7 @@ if (typeof module !== 'undefined' && module.exports) {
     filtrarPendientes: filtrarPendientes,
     escHtml: escHtml,
     accionesHTML: accionesHTML,
-    renderHTML: renderHTML
+    renderHTML: renderHTML,
+    COLS_TABLA: COLS_TABLA
   };
 }
