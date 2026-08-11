@@ -114,16 +114,36 @@ test('cierre-v1: cliente null (no se leyo) -> mismo tratamiento, motivo indica q
   assert.strictEqual(r.motivo, 'cliente_no_reconocido: (no se leyo)');
 });
 
-test('cierre-v1 end-to-end: bloque con cliente "FORBA" -> REVISAR con el valor leido visible en el motivo, sin abrir el escaneo', () => {
+// CAMBIO 3 (2026-08-11): el cliente viene del EMISOR del documento, nunca de la
+// ficha. El caso cierre-v1 "FORBA" (misread de FORESA) se TRASLADA: el fail-loud
+// del cliente no reconocido ahora sale del emisor del DOCUMENTO, no del
+// nombre_carga de la ficha. El cambio es intencional -- la ficha ya nos fallo
+// (matricula y cliente=lugar de carga), no se la usa como fuente de cliente.
+test('cierre-v1 (CAMBIO 3): documento con emisor no reconocido ("FORBA") -> REVISAR con el emisor visible', () => {
+  const h = hoja({ tractora: '9999FRB' }, [bloque({
+    nombre_carga: 'FORBA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE',
+    cantidad_kg: 22540, km_inicio: 100000, km_final: 100183, km_recorridos: 183,
+  })]);
+  const d = albaran({ matricula_tractor: '9999FRB', emisor: 'FORBA', cliente_probable: null,
+    origen: 'CALDAS', destino: 'ORENSE', kg_neto: 22540, referencia: '2009901' });
+  const res = correr([h], [d]);
+  const v = res.viajes[0];
+  assert.strictEqual(v.regimen_indexacion, null, 'cliente no reconocido -> sin regimen (no en silencio)');
+  assert.strictEqual(v.estado_lectura, 'REVISAR');
+  assert.match(v.motivo_revision, /emisor FORBA no resuelto a cliente conocido/);
+});
+
+test('cierre-v1 (CAMBIO 3): un misread de cliente en la FICHA no se usa; sin documento es PENDIENTE_DOCUMENTACION, no cliente_no_reconocido', () => {
   const h = hoja({ tractora: '9999FRB' }, [bloque({
     nombre_carga: 'FORBA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE',
     cantidad_kg: 22540, km_inicio: 100000, km_final: 100183, km_recorridos: 183,
   })]);
   const res = correr([h], []);
   const v = res.viajes[0];
-  assert.strictEqual(v.regimen_indexacion, null, 'no se asigna regimen a un cliente no reconocido');
-  assert.strictEqual(v.estado_lectura, 'REVISAR');
-  assert.match(v.motivo_revision, /cliente_no_reconocido: FORBA/);
+  assert.strictEqual(v.cliente, null, 'la ficha (nombre_carga="FORBA") NO es fuente de cliente');
+  assert.strictEqual(v.estado, 'PENDIENTE_DOCUMENTACION', 'falta el documento');
+  assert.ok(!/cliente_no_reconocido|FORBA/.test(v.motivo_revision || ''),
+    'sin documento no es cliente_no_reconocido: es falta de documento (eje distinto)');
 });
 
 // ============================================================================
@@ -286,8 +306,14 @@ test('§5 regimen: Villagarcia->Caldas=mensual, general=linea', () => {
   const resMulti = correr([hMulti], [albaran({ pagina: 2 }), albaran({ pagina: 3 })]);
   assert.strictEqual(resMulti.viajes[0].regimen_indexacion, 'agregada_mensual');
 
+  // CAMBIO 3 (2026-08-11): el cliente (y por ende el regimen) sale del documento,
+  // no de la ficha. Antes este caso resolvia QUIMIDROGA desde nombre_carga sin
+  // papel; ahora se le da su orden de transporte (emisor Quimidroga) para probar
+  // el ruteo de regimen "linea" del caso general.
   const hGen = hoja({ tractora: '3333CCC' }, [bloque({ nombre_carga: 'QUIMIDROGA', lugar_carga: 'BARCELONA', lugar_descarga: 'LEIRIA', cantidad_kg: 23820, km_inicio: 5000, km_final: 5100, km_recorridos: 100 })]);
-  const resGen = correr([hGen], []);
+  const dGen = albaran({ matricula_tractor: '3333CCC', tipo_doc: 'orden_transporte', emisor: 'Quimidroga', cliente_probable: 'QUIMIDROGA', origen: 'BARCELONA', destino: 'LEIRIA', kg_neto: 23820, referencia: '706100' });
+  const resGen = correr([hGen], [dGen]);
+  assert.strictEqual(resGen.viajes[0].cliente, 'QUIMIDROGA');
   assert.strictEqual(resGen.viajes[0].regimen_indexacion, 'linea');
 });
 
@@ -299,4 +325,34 @@ test('§5 reparto no exacto: km_bloque=895, N=6 -> seis enteros que suman 895', 
   assert.strictEqual(r.length, 6);
   assert.ok(r.every(Number.isInteger));
   assert.strictEqual(r.reduce((a, b) => a + b, 0), 895);
+});
+
+// ============================================================================
+// CAMBIO 2 (2026-08-11) — kg del documento de PESO, NUNCA de la orden (D-01).
+// La orden es doc de planificacion (kg pedido/nominal). El caso real: la orden
+// Quimidroga traia 24000 y el albaran/recepcion 24400; el sistema facturaba
+// 24000. Ahora la orden se excluye como fuente de kg.
+// ============================================================================
+test('CAMBIO 2: orden 24000 + albaran 24400 -> se factura 24400 (kg del documento de peso, no de la orden)', () => {
+  const h = hoja({ tractora: '7777KGX' }, [bloque({ nombre_carga: 'QUIMIDROGA', lugar_carga: 'BARCELONA', lugar_descarga: 'MORALEJA', cantidad_kg: 24400, km_inicio: 1000, km_final: 1100, km_recorridos: 100 })]);
+  const dOrden = albaran({ matricula_tractor: '7777KGX', tipo_doc: 'orden_transporte', emisor: 'Quimidroga', cliente_probable: 'QUIMIDROGA', kg_neto: 24000, referencia: '706013', origen: 'BARCELONA', destino: 'MORALEJA' });
+  const dPeso = albaran({ pagina: 3, matricula_tractor: '7777KGX', tipo_doc: 'albaran', emisor: null, cliente_probable: null, kg_neto: 24400, referencia: '624300', origen: 'BARCELONA', destino: 'MORALEJA' });
+  const v = correr([h], [dOrden, dPeso]).viajes[0];
+  assert.strictEqual(v.kg_documento, 24400, 'gana el documento de peso, no la orden (24000)');
+  assert.notStrictEqual(v.fuente_peso, 'orden_transporte');
+});
+
+test('CAMBIO 2: si el UNICO kg viene de la orden -> no se factura, REVISAR (falta documento de peso)', () => {
+  const h = hoja({ tractora: '7777KGX' }, [bloque({ nombre_carga: 'QUIMIDROGA', lugar_carga: 'BARCELONA', lugar_descarga: 'MORALEJA', cantidad_kg: 24000, km_inicio: 1000, km_final: 1100, km_recorridos: 100 })]);
+  const dOrden = albaran({ matricula_tractor: '7777KGX', tipo_doc: 'orden_transporte', emisor: 'Quimidroga', cliente_probable: 'QUIMIDROGA', kg_neto: 24000, referencia: '706013', origen: 'BARCELONA', destino: 'MORALEJA' });
+  const v = correr([h], [dOrden]).viajes[0];
+  assert.strictEqual(v.kg_documento, null, 'no hace fallback al kg de la orden');
+  assert.strictEqual(v.estado_lectura, 'REVISAR');
+  assert.match(v.motivo_revision, /solo la orden trae kg|falta documento de peso/);
+});
+
+test('CAMBIO 2: kg con decimal de tonelada (21350) se preserva exacto (no se redondea a miles)', () => {
+  const h = hoja({ tractora: '7777KGX' }, [bloque({ nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'CELLA', cantidad_kg: 21350, km_inicio: 1000, km_final: 1100, km_recorridos: 100 })]);
+  const d = albaran({ matricula_tractor: '7777KGX', tipo_doc: 'albaran', cliente_probable: 'FORESA', kg_neto: 21350, referencia: '2001234', origen: 'CALDAS', destino: 'CELLA' });
+  assert.strictEqual(correr([h], [d]).viajes[0].kg_documento, 21350, 'valor exacto, no 21000');
 });

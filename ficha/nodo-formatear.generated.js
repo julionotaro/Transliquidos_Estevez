@@ -555,20 +555,47 @@ function correlacionar(rA, rB, opts) {
       for (const d of v.docs) { if (nz(d[campo]) !== null) { return d; } }
       return null;
     };
+    // ---- CAMBIO 3: cliente facturable = EMISOR de la orden/documento de transporte ----
+    // NUNCA el lugar de carga (nombre_carga de la ficha). El `emisor` del documento
+    // de transporte (orden primero, luego CMR/albaran) identifica al cliente
+    // facturable; cliente_probable (guess del modelo) queda de respaldo. Si no hay
+    // emisor ni cliente_probable, `cliente` queda null -> REVISAR (fail-loud), sin
+    // inventar cliente desde el lugar de carga.
+    const TIPOS_EMISOR_CLIENTE = ['orden_transporte', 'orden_carga', 'cmr', 'albaran', 'carta_porte', 'guia'];
+    let clienteEmisor = null;
+    for (const t of TIPOS_EMISOR_CLIENTE) {
+      for (const d of v.docs) { if ((d.tipo_doc || '') === t && nz(d.emisor)) { clienteEmisor = upp(nz(d.emisor)); break; } }
+      if (clienteEmisor) { break; }
+    }
     const votos = {};
     for (const d of v.docs) { const c = nz(d.cliente_probable); if (c) { votos[upp(c)] = (votos[upp(c)] || 0) + 1; } }
-    let cliente = null; let mx = 0;
-    for (const k of Object.keys(votos)) { if (votos[k] > mx) { mx = votos[k]; cliente = k; } }
-    if (!cliente && v.nombre_carga) { cliente = upp(v.nombre_carga); avisos.push('Viaje ' + (i + 1) + ': cliente tomado de la ficha ("' + v.nombre_carga + '"), sin confirmacion documental.'); }
+    let clienteProbable = null; let mx = 0;
+    for (const k of Object.keys(votos)) { if (votos[k] > mx) { mx = votos[k]; clienteProbable = k; } }
+    const cliente = clienteEmisor || clienteProbable || null;
     v.cliente = cliente;
+    const clienteFuente = clienteEmisor ? 'documento:emisor' : (clienteProbable ? 'documento:cliente_probable' : null);
     const esForesa = cliente ? (cliente.indexOf('FORESA') >= 0 || cliente.indexOf('BRESFOR') >= 0) : false;
     const dRef = pick(esForesa ? ['albaran', 'cmr'] : ['orden_transporte', 'orden_carga', 'guia', 'cmr', 'carta_porte', 'albaran'], 'referencia');
     v.referencia = dRef ? nz(dRef.referencia) : null;
     v.tipo_doc = dRef ? nz(dRef.tipo_doc) : null;
     v.fecha_documento = dRef ? nz(dRef.fecha) : null;
-    const dKg = pick(esForesa ? ['albaran', 'cmr', 'bascula'] : ['cmr', 'carta_porte', 'guia', 'bascula', 'albaran'], 'kg_neto');
+    // ---- CAMBIO 2: kg SIEMPRE del documento de peso, NUNCA de la orden (D-01) ----
+    // La orden es doc de planificacion: su kg puede ser el pedido/nominal, no el
+    // peso real cargado. Se EXCLUYE orden_transporte/orden_carga como fuente de kg.
+    const esOrden = function (d) { return d && (d.tipo_doc === 'orden_transporte' || d.tipo_doc === 'orden_carga'); };
+    const pickPeso = function (tipos) {
+      for (const t of tipos) { for (const d of v.docs) { if (!esOrden(d) && (d.tipo_doc || '') === t && nz(d.kg_neto) !== null) { return d; } } }
+      for (const d of v.docs) { if (!esOrden(d) && nz(d.kg_neto) !== null) { return d; } }
+      return null;
+    };
+    const dKg = pickPeso(esForesa ? ['albaran', 'cmr', 'bascula'] : ['cmr', 'carta_porte', 'guia', 'bascula', 'albaran']);
     v.kg_documento = dKg ? num(dKg.kg_neto) : null;
     v.fuente_peso = dKg ? nz(dKg.tipo_doc) : null;
+    // D-01 fail-loud: si el UNICO kg disponible venia de una orden, no se factura;
+    // falta documento de peso -> REVISAR (nunca fallback al kg de la orden).
+    if (v.kg_documento === null && v.docs.some(function (d) { return esOrden(d) && num(d.kg_neto) !== null; })) {
+      marcar(v, 'solo la orden trae kg; falta documento de peso (albaran/bascula) — no se factura el kg de la orden');
+    }
     const dOD = pick(['cmr', 'carta_porte', 'albaran', 'orden_transporte', 'guia'], 'destino');
     v.origen = (dOD && nz(dOD.origen)) ? nz(dOD.origen) : v.lugar_carga;
     v.destino = (dOD && nz(dOD.destino)) ? nz(dOD.destino) : v.lugar_descarga;
@@ -625,7 +652,13 @@ function correlacionar(rA, rB, opts) {
     // leido en el motivo, visible sin abrir el escaneo. NO es un alias de FORBA.
     const ridx = CRUCE.regimenIndexacion(v.cliente, v.origen, v.destino, clientes);
     v.regimen_indexacion = ridx.regimen;
-    if (ridx.motivo) { marcar(v, ridx.motivo); }
+    // Fail-loud del cliente: si vino de un emisor pero no se resolvio a un cliente
+    // conocido, decirlo con el emisor a la vista (CAMBIO 3), asi el operador sabe
+    // que es. Si no habia emisor, se conserva el motivo generico (no leido).
+    // Guard: un viaje SIN documento no marca cliente_no_reconocido -- su cliente no
+    // se puede resolver sin doc, y eso ya lo cubre el eje PENDIENTE_DOCUMENTACION
+    // (no es un problema de LECTURA). Solo se exige cliente cuando hay documento.
+    if (ridx.motivo && v.docs.length > 0) { marcar(v, clienteEmisor ? ('emisor ' + clienteEmisor + ' no resuelto a cliente conocido') : ridx.motivo); }
     // Estado de documentacion (§3): un unico estado para lo incompleto, con QUE
     // falta y a QUIEN reclamar. Es un eje distinto del de LECTURA (estado_lectura).
     if (v.docs.length === 0) {
@@ -638,7 +671,7 @@ function correlacionar(rA, rB, opts) {
     // Audit trail (§4): de que papel/pagina salio cada campo. kg y referencia
     // vienen del documento (D-01); km, de la ficha; el resto, del que gano el pick.
     v.origen_campos = {
-      cliente: (mx > 0) ? 'documento:cliente_probable' : (v.nombre_carga ? 'ficha:nombre_carga' : null),
+      cliente: clienteFuente,
       referencia: v.referencia ? fuenteDoc(dRef) : null,
       kg_documento: (v.kg_documento !== null) ? fuenteDoc(dKg) : null,
       origen: (dOD && nz(dOD.origen)) ? fuenteDoc(dOD) : (v.lugar_carga ? 'ficha:lugar_carga' : null),

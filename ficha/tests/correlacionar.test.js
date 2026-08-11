@@ -147,7 +147,18 @@ const CASOS = {
 // 1. REGRESION contra el fuente original
 // ============================================================================
 
+// CAMBIO 3 (2026-08-11): el cliente pasa a salir SIEMPRE del documento (emisor /
+// cliente_probable), NUNCA de la ficha. En los fixtures sin documento
+// correlacionado el cliente cambia de "RNM" (tomado del nombre_carga de la ficha,
+// modelo viejo) a null (modelo nuevo: sin documento no hay cliente ni regimen,
+// D-01). Esa divergencia respecto de v3.1 es INTENCIONAL -- NO es un ajuste para
+// que pase el test: es la decision de dominio de que la ficha manuscrita no es
+// fuente de cliente. Por eso estos casos SALEN de la regresion "identico a v3.1"
+// y tienen tests propios que afirman el comportamiento nuevo (ver "CAMBIO 3" abajo).
+const REGRESION_EXCLUIDOS = ['odometros_uniformes', 'sin_docs'];
+
 for (const nombre of Object.keys(CASOS)) {
+  if (REGRESION_EXCLUIDOS.indexOf(nombre) >= 0) { continue; }
   test('regresion ' + nombre + ': informe identico al fuente original v3.1', () => {
     const original = correrOriginal(CASOS[nombre]);
     const nuevo = nucleoV32(CASOS[nombre]);
@@ -189,6 +200,33 @@ for (const nombre of Object.keys(CASOS)) {
     }
   });
 }
+
+// ============================================================================
+// CAMBIO 3 (2026-08-11) — cliente SIEMPRE del documento, NUNCA de la ficha.
+// Estos tests reemplazan la regresion de los fixtures sin documento: documentan
+// que el cambio de cliente ("RNM" de la ficha -> null) es INTENCIONAL. El modelo
+// viejo usaba nombre_carga de la ficha como cliente de respaldo; el nuevo NO
+// (D-01: sin documento no hay cliente ni regimen). La ficha ya fallo dos veces
+// (matricula y cliente=lugar de carga): no se la reintroduce como fuente de cliente.
+// ============================================================================
+test('CAMBIO 3: sin_docs -> viaje SIN cliente ni regimen, PENDIENTE_DOCUMENTACION (antes tomaba "RNM" de la ficha)', () => {
+  const nuevo = JSON.parse(nucleoV32(CASOS.sin_docs).datos_json);
+  const v = nuevo.viajes[0];
+  assert.strictEqual(v.cliente, null, 'la ficha (nombre_carga) NO es fuente de cliente');
+  assert.strictEqual(v.regimen_indexacion, null, 'sin cliente no hay regimen');
+  assert.strictEqual(v.estado, 'PENDIENTE_DOCUMENTACION', 'falta el documento');
+  // guard: un viaje SIN documento NO es cliente_no_reconocido (eje distinto).
+  assert.ok(!/cliente_no_reconocido/.test(v.motivo_revision || ''),
+    'sin documento es PENDIENTE_DOCUMENTACION, no cliente_no_reconocido');
+});
+
+test('CAMBIO 3: odometros_uniformes -> el viaje que quedo sin documento no hereda el cliente de la ficha', () => {
+  const nuevo = JSON.parse(nucleoV32(CASOS.odometros_uniformes).datos_json);
+  const sinDoc = nuevo.viajes.find(function (v) { return v.docs.length === 0; });
+  assert.ok(sinDoc, 'este fixture deja un viaje sin documento (docs ambiguos no se prestan)');
+  assert.strictEqual(sinDoc.cliente, null, 'sin documento propio -> sin cliente (antes "RNM" de la ficha)');
+  assert.strictEqual(sinDoc.estado, 'PENDIENTE_DOCUMENTACION');
+});
 
 // ============================================================================
 // 2. BLINDAJE: estado_lectura por fila
