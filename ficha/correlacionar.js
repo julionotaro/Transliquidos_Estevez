@@ -48,6 +48,10 @@ var dias = function (a, b) { if (!a || !b) { return null; } const da = Date.pars
 //   Convergencia (salvaguarda anti "dos camiones"): TODAS las matriculas de tractor
 //   legibles de los documentos deben coincidir en una sola. Si divergen, jamas se
 //   correlaciona por cercania.
+// NOTA (decidir con datos, NO ahora): la convergencia por UNANIMIDAD es el lado
+// seguro para arrancar. Si en operacion real un solo documento con OCR sucio
+// rompe la unanimidad seguido, aflojar a "mayoria clara" (que domine una
+// matricula) -- se decide con datos, no por diseno anticipado.
 var MATRICULA_DIST_MAX = 1;
 
 // Distancia de edicion (Levenshtein). Matriculas cortas, sin optimizacion agresiva.
