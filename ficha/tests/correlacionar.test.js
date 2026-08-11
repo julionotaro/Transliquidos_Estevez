@@ -177,7 +177,9 @@ for (const nombre of Object.keys(CASOS)) {
       'cantidad_declarada', 'modo_cantidad', 'es_multiviaje', 'n_viajes_declarado',
       'origen_km', 'regimen_indexacion', 'estado', 'pendiente_falta', 'pendiente_reclamar_a', 'origen_campos',
       // Fix contaminacion entre patas del mismo camion (2026-08-04):
-      'docs_ambiguos'];
+      'docs_ambiguos',
+      // Reconciliacion de matricula ficha<->documento (2026-08-10): lectura original.
+      'tractora_original', 'tractoraN_original'];
 
     for (let i = 0; i < original.viajes.length; i++) {
       const vo = original.viajes[i];

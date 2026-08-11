@@ -229,6 +229,162 @@ var mat = function (x) { return (x || '').toString().toUpperCase().replace(/[^A-
 var upp = function (x) { return (x || '').toString().toUpperCase(); };
 var dias = function (a, b) { if (!a || !b) { return null; } const da = Date.parse(a + 'T00:00:00Z'); const db = Date.parse(b + 'T00:00:00Z'); if (!isFinite(da) || !isFinite(db)) { return null; } return Math.round((db - da) / 86400000); };
 
+// --- Reconciliacion de matricula ficha <-> documento (correlacion robusta) ----
+// El documento IMPRESO es la fuente CONFIABLE de la matricula; la ficha
+// MANUSCRITA es la SOSPECHOSA. La relacion es ASIMETRICA: cuando los documentos
+// del envio convergen en UNA matricula y hay UNA sola ficha a distancia <= umbral,
+// se corrige la FICHA (nunca al reves). Parametros configurables (endurecer o
+// aflojar sin reescribir la logica):
+//   MATRICULA_DIST_MAX  distancia de edicion maxima ficha<->documento del fallback.
+//   Convergencia (salvaguarda anti "dos camiones"): TODAS las matriculas de tractor
+//   legibles de los documentos deben coincidir en una sola. Si divergen, jamas se
+//   correlaciona por cercania.
+var MATRICULA_DIST_MAX = 1;
+
+// Distancia de edicion (Levenshtein). Matriculas cortas, sin optimizacion agresiva.
+function distanciaEdicion(a, b) {
+  a = a || ''; b = b || '';
+  if (a === b) { return 0; }
+  var la = a.length, lb = b.length;
+  if (la === 0) { return lb; }
+  if (lb === 0) { return la; }
+  var prev = []; var i, j;
+  for (j = 0; j <= lb; j++) { prev[j] = j; }
+  for (i = 1; i <= la; i++) {
+    var cur = [i];
+    var ca = a.charAt(i - 1);
+    for (j = 1; j <= lb; j++) {
+      var cost = (ca === b.charAt(j - 1)) ? 0 : 1;
+      var m = prev[j] + 1;
+      if (cur[j - 1] + 1 < m) { m = cur[j - 1] + 1; }
+      if (prev[j - 1] + cost < m) { m = prev[j - 1] + cost; }
+      cur[j] = m;
+    }
+    prev = cur;
+  }
+  return prev[lb];
+}
+
+/**
+ * Reconcilia la matricula de la ficha (manuscrita, sospechosa) contra la de los
+ * documentos (impresos, confiables) ANTES del match documento->viaje. Muta los
+ * viajes IN PLACE. Asimetrica (el documento manda) y con salvaguarda de
+ * convergencia (no adivina si los documentos no coinciden entre si).
+ *
+ * Cascada:
+ *   - Si algun documento no matchea exacto ninguna ficha Y los documentos
+ *     convergen en UNA matricula que esta a distancia <= MATRICULA_DIST_MAX de
+ *     EXACTAMENTE UNA ficha: se corrige esa ficha (tractora/tractoraN <- matricula
+ *     del documento), se guarda la lectura original en tractora_original /
+ *     tractoraN_original (auditoria; viaja en `detalle`) y se marca REVISAR. Luego
+ *     el match exacto de mas abajo los correlaciona solo.
+ *   - Si los documentos NO convergen, o el candidato no es unico, o la distancia
+ *     es > umbral: NO se toca nada, pero se agrega un motivo_revision que EXPLICA
+ *     por que no se correlaciono (no un PENDIENTE_DOC mudo).
+ *
+ * @param {Array} viajes   viajes de las fichas (se mutan).
+ * @param {Array} docsRaw  documentos del envio (impresos).
+ * @param {function} marcar  marcar(v, motivo) para acumular motivos de REVISAR.
+ */
+function reconciliarMatriculaFicha(viajes, docsRaw, marcar) {
+  if (!viajes.length || !docsRaw.length) { return; }
+
+  // Matriculas de tractor legibles de los documentos (sin duplicados de pagina).
+  var docMats = [];
+  var remolqueDocs = {};
+  for (var di = 0; di < docsRaw.length; di++) {
+    var d = docsRaw[di];
+    if (d.duplicado_de) { continue; }
+    var dm = mat(d.matricula_tractor);
+    if (dm) { docMats.push(dm); }
+    var rm = mat(d.matricula_remolque);
+    if (rm) { remolqueDocs[rm] = true; }
+  }
+  if (docMats.length === 0) { return; } // ningun documento con matricula legible
+
+  // Fichas del envio agrupadas por matricula normalizada.
+  var fichas = {};
+  for (var vi = 0; vi < viajes.length; vi++) {
+    var v = viajes[vi];
+    if (!v.tractoraN) { continue; }
+    if (!fichas[v.tractoraN]) { fichas[v.tractoraN] = []; }
+    fichas[v.tractoraN].push(v);
+  }
+  var fichaMats = Object.keys(fichas);
+  if (fichaMats.length === 0) { return; }
+
+  // ¿Algun documento NO matchea exacto ninguna ficha? Solo entonces hay algo que
+  // reconciliar; si todos matchean exacto es el camino feliz y no se toca.
+  var hayHuerfano = false;
+  for (var hi = 0; hi < docMats.length; hi++) { if (fichaMats.indexOf(docMats[hi]) === -1) { hayHuerfano = true; break; } }
+  if (!hayHuerfano) { return; }
+
+  var marcarFicha = function (fm, motivo) { var a = fichas[fm]; for (var k = 0; k < a.length; k++) { marcar(a[k], motivo); } };
+
+  // Convergencia: ¿los documentos legibles coinciden todos en UNA matricula?
+  var distintas = {};
+  for (var ci = 0; ci < docMats.length; ci++) { distintas[docMats[ci]] = true; }
+  var convergen = Object.keys(distintas);
+
+  if (convergen.length > 1) {
+    // SALVAGUARDA DURA: los documentos NO convergen -> posible envio de dos
+    // camiones (matriculas de lote consecutivas). Nunca correlacionar por cercania.
+    var lista = convergen.join(' vs ');
+    for (var fi = 0; fi < fichaMats.length; fi++) {
+      var fm = fichaMats[fi];
+      for (var cj = 0; cj < convergen.length; cj++) {
+        if (fm !== convergen[cj] && distanciaEdicion(fm, convergen[cj]) <= MATRICULA_DIST_MAX) {
+          marcarFicha(fm, 'documentos del envio no coinciden entre si en la matricula (' + lista + ') — posible envio de dos camiones, revisar manualmente');
+          break;
+        }
+      }
+    }
+    return;
+  }
+
+  // Convergen en UNA matricula que no matchea exacto ninguna ficha.
+  var dmConv = convergen[0];
+  var candidatas = [];
+  for (var fj = 0; fj < fichaMats.length; fj++) {
+    if (distanciaEdicion(fichaMats[fj], dmConv) <= MATRICULA_DIST_MAX) { candidatas.push(fichaMats[fj]); }
+  }
+
+  if (candidatas.length === 0) {
+    // Distancia > umbral: no se puede afirmar que sea el mismo camion.
+    for (var fk = 0; fk < fichaMats.length; fk++) {
+      marcarFicha(fichaMats[fk], 'documentos con matricula ' + dmConv + ' no correlacionados: la ficha dice ' + fichaMats[fk] + ' (distancia > ' + MATRICULA_DIST_MAX + '), no se puede afirmar que sea el mismo camion');
+    }
+    return;
+  }
+  if (candidatas.length > 1) {
+    // Candidato NO unico: dmConv a distancia <= umbral de dos o mas fichas (par
+    // peligroso de matriculas de lote). Ambiguo: no adivinar.
+    for (var fl = 0; fl < candidatas.length; fl++) {
+      marcarFicha(candidatas[fl], 'documentos con matricula ' + dmConv + ' no correlacionados: ' + candidatas.length + ' fichas candidatas a distancia ' + MATRICULA_DIST_MAX + ' (' + candidatas.join(', ') + ') — revisar cual camion es');
+    }
+    return;
+  }
+
+  // ---- Candidato UNICO a distancia <= umbral: corregir la ficha (documento manda) ----
+  var fmUnica = candidatas[0];
+  var arr = fichas[fmUnica];
+  // Refuerzo por remolque (senal secundaria, NO puerta): si el remolque de la ficha
+  // tambien difiere del de los documentos, refuerza que la ficha se leyo mal. Si el
+  // remolque coincide exacto pero la tractora no, se corrige igual (convergencia +
+  // candidato unico mandan) pero se deja constancia para mirarlo con mas atencion.
+  var remolqueFichaN = arr[0].remolque ? mat(arr[0].remolque) : '';
+  var remolqueCoincide = remolqueFichaN && remolqueDocs[remolqueFichaN];
+  var nota = remolqueCoincide ? ' (el remolque si coincide, verificar con atencion)' : '';
+  for (var ai = 0; ai < arr.length; ai++) {
+    var vv = arr[ai];
+    vv.tractora_original = vv.tractora;
+    vv.tractoraN_original = vv.tractoraN;
+    vv.tractora = dmConv;
+    vv.tractoraN = dmConv;
+    marcar(vv, 'matricula ficha ' + (vv.tractora_original || fmUnica) + ' corregida a ' + dmConv + ' segun ' + docMats.length + ' documento(s) coincidente(s) — verificar que sea el mismo camion' + nota);
+  }
+}
+
 // --- Reglas del modelo albaran=unidad (Fase 2, ficha/cruce.js) ---------------
 // En n8n el build (build-nodo.js) concatena cruce.js ANTES que este archivo, asi
 // que sus funciones quedan globales; en node/test se requieren. `typeof X ===
@@ -333,6 +489,14 @@ function correlacionar(rA, rB, opts) {
       v.fecha_descarga = null;
     }
   }
+
+  // ---- Reconciliacion de matricula de ficha mal leida (asimetrica + convergencia) ----
+  // Corrige la matricula de la ficha ANTES del match cuando los documentos impresos
+  // convergen en una matricula a distancia <= MATRICULA_DIST_MAX de una UNICA ficha
+  // (el documento manda sobre la ficha manuscrita). Los casos inseguros (no
+  // convergen / candidato no unico / distancia mayor) quedan sin correlacionar, con
+  // motivo_revision explicito. Ver reconciliarMatriculaFicha.
+  reconciliarMatriculaFicha(viajes, docsRaw, marcar);
 
   // ---- Match documento -> viaje (N docs : 1 viaje) ----
   const docsHuerfanos = [];
