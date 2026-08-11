@@ -101,7 +101,7 @@ test('v1.1 render: cada fila trae un form que postea a /webhook/viajes-accion co
   const v = viajeBase({ id: 42, estado: 'PENDIENTE_DOCUMENTACION' });
   const out = filtrarPendientes([v]);
   const html = renderHTML(out);
-  assert.match(html, /action="\/webhook\/viajes-accion"/);
+  assert.match(html, /action="https:\/\/studio-julio\.duckdns\.org\/webhook\/viajes-accion"/);
   assert.match(html, /method="post"/);
   assert.match(html, /value="42"/, 'id del viaje va en un campo oculto');
   assert.match(html, /name="accion" value="corregir"/);
@@ -197,4 +197,17 @@ test('CAMBIO 2: dieta leida del JSON detalle se muestra', () => {
   const v = viajeReal({ detalle: JSON.stringify({ gastos: [{ tipo: 'dieta', importe: 45 }] }) });
   const p = filtrarPendientes([v])[0];
   assert.strictEqual(p.dieta, 45);
+});
+
+// ============================================================================
+// CAMBIO 1 (correcciones-url) — la URL de accion debe ser ABSOLUTA
+// (relativa da DNS_PROBE_FINISHED_NXDOMAIN y no guarda nada). Guard de regresion.
+// ============================================================================
+test('CAMBIO 1: las acciones postean a la URL ABSOLUTA (no relativa)', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  // todas las acciones apuntan a la URL absoluta
+  assert.match(html, /action="https:\/\/studio-julio\.duckdns\.org\/webhook\/viajes-accion"/);
+  // y NINGUNA usa ruta relativa (raiz-relativa o path-relativa)
+  assert.ok(!/action="\/webhook\/viajes-accion"/.test(html), 'no debe quedar action raiz-relativa');
+  assert.ok(!/action="webhook\/viajes-accion"/.test(html), 'no debe quedar action path-relativa');
 });

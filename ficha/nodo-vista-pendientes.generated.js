@@ -190,6 +190,13 @@ var VF = (typeof marcasForma === 'function')
   ? { marcasForma: marcasForma, cantidadDe: cantidadDe, dietaDeDetalle: dietaDeDetalle }
   : require('./validaciones-forma.js');
 
+// URL del webhook de acciones. DEBE ser ABSOLUTA: la pagina se sirve desde
+// studio-julio.duckdns.org/webhook/viajes-pendientes; una ruta relativa
+// ("webhook/viajes-accion") resuelve mal en el navegador (DNS_PROBE_FINISHED_
+// NXDOMAIN) y ninguna correccion/confirmacion se guarda. Igual que el HTML de
+// ingesta, que postea a su webhook por URL absoluta.
+var WEBHOOK_ACCION = 'https://studio-julio.duckdns.org/webhook/viajes-accion';
+
 /** Dias transcurridos desde createdAt, redondeados hacia abajo, nunca negativo. */
 function diasEsperando(createdAt, ahoraMs) {
   if (!createdAt) { return null; }
@@ -309,7 +316,7 @@ function celdaEditable(p, campo, valor, accion, marcaKey) {
   var bang = marca ? '<span class="bang" title="' + escHtml(marca) + '">!</span> ' : '';
   var motivoHidden = marca ? '<input type="hidden" name="motivo" value="' + escHtml(marca) + '">' : '';
   return '<td' + warn + '>' + bang +
-    '<form method="post" action="/webhook/viajes-accion" class="cell">' +
+    '<form method="post" action="' + WEBHOOK_ACCION + '" class="cell">' +
     '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
     '<input type="hidden" name="accion" value="' + accion + '">' +
     '<input type="hidden" name="campo" value="' + escHtml(campo) + '">' +
@@ -327,7 +334,7 @@ function celdaCantidad(p) {
   var motivoHidden = marca ? '<input type="hidden" name="motivo" value="' + escHtml(marca) + '">' : '';
   var valor = (p.cantidad_valor === null || p.cantidad_valor === undefined) ? '' : p.cantidad_valor;
   return '<td' + warn + '>' + bang +
-    '<form method="post" action="/webhook/viajes-accion" class="cell">' +
+    '<form method="post" action="' + WEBHOOK_ACCION + '" class="cell">' +
     '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
     '<input type="hidden" name="accion" value="corregir_celda">' +
     '<input type="hidden" name="campo" value="' + escHtml(p.cantidad_campo) + '">' +
@@ -348,7 +355,7 @@ function celdaDisplay(valor) {
  * cliente va por `corregir` (revalida); resolver/incidencia/confirmar completan.
  */
 function accionesHTML(p) {
-  return '<form method="post" action="/webhook/viajes-accion" class="acc">' +
+  return '<form method="post" action="' + WEBHOOK_ACCION + '" class="acc">' +
     '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
     '<input type="text" name="usuario" placeholder="Tu nombre" size="9">' +
     '<input type="text" name="valor" placeholder="Cliente correcto / nota" size="14">' +
