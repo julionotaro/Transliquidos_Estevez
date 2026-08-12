@@ -499,4 +499,20 @@ const actualizado = Object.assign({}, viaje, resultado.cambios);
 if (resultado.correccion) {
   actualizado._correccion = resultado.correccion;
 }
+// Status JSON para "Responder Accion" (CAMBIO fetch-acciones): el webhook
+// responde ESTO (no HTML ni redirect), y el front actualiza la fila in-place sin
+// navegar. Se arma DESPUES de aplicar la accion, asi refleja el estado real que
+// se va a persistir. `Responder Accion` responde con {{ $('Aplicar Accion').first().json._status }}.
+// Como _status no es columna de Viajes, "Actualizar Viaje" lo ignora (igual que _correccion).
+actualizado._status = {
+  ok: true,
+  viaje_id: (actualizado.id === undefined || actualizado.id === null) ? null : String(actualizado.id),
+  accion: accion || null,
+  campo: (body.campo === undefined || body.campo === null || body.campo === '') ? null : String(body.campo),
+  valor: (body.valor === undefined) ? null : body.valor,
+  estado_carga: actualizado.estado_carga || null,
+  cliente: (actualizado.cliente === undefined) ? null : actualizado.cliente,
+  estado_lectura: actualizado.estado_lectura || null,
+  motivo_revision: actualizado.motivo_revision || null
+};
 return [{ json: actualizado }];
