@@ -315,8 +315,8 @@ function celdaEditable(p, campo, valor, accion, marcaKey) {
   var warn = marca ? ' class="warn"' : '';
   var bang = marca ? '<span class="bang" title="' + escHtml(marca) + '">!</span> ' : '';
   var motivoHidden = marca ? '<input type="hidden" name="motivo" value="' + escHtml(marca) + '">' : '';
-  return '<td' + warn + '>' + bang +
-    '<form method="post" action="' + WEBHOOK_ACCION + '" class="cell">' +
+  return '<td' + warn + ' data-campo="' + escHtml(campo) + '">' + bang +
+    '<form class="cell">' +
     '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
     '<input type="hidden" name="accion" value="' + accion + '">' +
     '<input type="hidden" name="campo" value="' + escHtml(campo) + '">' +
@@ -333,8 +333,8 @@ function celdaCantidad(p) {
   var bang = marca ? '<span class="bang" title="' + escHtml(marca) + '">!</span> ' : '';
   var motivoHidden = marca ? '<input type="hidden" name="motivo" value="' + escHtml(marca) + '">' : '';
   var valor = (p.cantidad_valor === null || p.cantidad_valor === undefined) ? '' : p.cantidad_valor;
-  return '<td' + warn + '>' + bang +
-    '<form method="post" action="' + WEBHOOK_ACCION + '" class="cell">' +
+  return '<td' + warn + ' data-campo="' + escHtml(p.cantidad_campo) + '">' + bang +
+    '<form class="cell">' +
     '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
     '<input type="hidden" name="accion" value="corregir_celda">' +
     '<input type="hidden" name="campo" value="' + escHtml(p.cantidad_campo) + '">' +
@@ -355,7 +355,7 @@ function celdaDisplay(valor) {
  * cliente va por `corregir` (revalida); resolver/incidencia/confirmar completan.
  */
 function accionesHTML(p) {
-  return '<form method="post" action="' + WEBHOOK_ACCION + '" class="acc">' +
+  return '<form class="acc">' +
     '<input type="hidden" name="id" value="' + escHtml(p.id) + '">' +
     '<input type="text" name="usuario" placeholder="Tu nombre" size="9">' +
     '<input type="text" name="valor" placeholder="Cliente correcto / nota" size="14">' +
@@ -374,7 +374,7 @@ var COLS_TABLA = [
 
 /** Fila principal (celdas) + fila de observaciones (faltante/motivo/notas). */
 function filasDeViaje(p) {
-  var main = '<tr>' +
+  var main = '<tr data-viaje="' + escHtml(p.id) + '">' +
     celdaEditable(p, 'tractora', p.tractora, 'corregir_celda') +
     celdaEditable(p, 'semi', p.semi, 'corregir_celda') +
     celdaEditable(p, 'conductor', p.conductor, 'corregir_celda') +
@@ -416,6 +416,49 @@ function filasDeViaje(p) {
   return main + obsRow;
 }
 
+// JS de cliente: envia las acciones por FETCH (no por form nativo), asi la
+// pagina NO navega al guardar. El webhook responde JSON {ok, ...} y este script
+// actualiza la fila IN-PLACE (quita el "!", refleja estado_carga/cliente). Ante
+// error (HTTP !ok, ok:false o red) marca la celda sin navegar ni perder lo
+// tipeado. Sin localStorage/sessionStorage/clipboard/createObjectURL: todo el
+// estado vive en el DOM durante la sesion.
+var SCRIPT_ACCIONES = [
+  '(function(){',
+  '  var WEBHOOK=' + JSON.stringify(WEBHOOK_ACCION) + ';',
+  '  function filaDe(el){while(el&&el.tagName!=="TR"){el=el.parentNode;}return el;}',
+  '  function flash(el,cls){if(!el)return;el.classList.add(cls);setTimeout(function(){el.classList.remove(cls);},1600);}',
+  '  function limpiarErr(el){if(el){el.classList.remove("err");el.removeAttribute("title");}}',
+  '  function aplicar(form,data){',
+  '    var tr=filaDe(form), td=form.parentNode;',
+  '    if(form.className.indexOf("cell")>=0){',
+  '      td.classList.remove("warn");',
+  '      var b=td.querySelector(".bang");if(b){b.parentNode.removeChild(b);}',
+  '      var mv=form.querySelector(\'[name="motivo"]\');if(mv){mv.parentNode.removeChild(mv);}',
+  '      limpiarErr(td);flash(td,"ok");',
+  '    }',
+  '    if(tr&&data){',
+  '      if(data.estado_carga){var ec=tr.querySelector("td.ecarga");if(ec)ec.textContent=data.estado_carga;}',
+  '      if(data.accion==="corregir"){var cc=tr.querySelector("td.cli");if(cc)cc.textContent=data.cliente||"-";}',
+  '      if(form.className.indexOf("acc")>=0){limpiarErr(td);flash(tr,"ok");}',
+  '    }',
+  '  }',
+  '  function error(form,msg){var td=form.parentNode;td.classList.add("err");td.setAttribute("title",msg||"Error al guardar");}',
+  '  document.addEventListener("submit",function(e){',
+  '    var form=e.target;',
+  '    if(!form||!form.className||(form.className.indexOf("cell")<0&&form.className.indexOf("acc")<0)){return;}',
+  '    e.preventDefault();',
+  '    var fd=new FormData(form);',
+  '    if(e.submitter&&e.submitter.name){fd.append(e.submitter.name,e.submitter.value);}',
+  '    var body=new URLSearchParams();fd.forEach(function(v,k){body.append(k,v);});',
+  '    if(!body.get("accion")){return;}',
+  '    fetch(WEBHOOK,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:body.toString()})',
+  '      .then(function(r){if(!r.ok){throw new Error("HTTP "+r.status);}return r.json().catch(function(){return {ok:true};});})',
+  '      .then(function(d){if(d&&d.ok===false){throw new Error(d.error||"accion rechazada");}aplicar(form,d||{});})',
+  '      .catch(function(err){error(form,err&&err.message);});',
+  '  });',
+  '})();'
+].join('\n');
+
 /**
  * Pagina HTML autocontenida: tabla editable ordenada por dias_esperando desc.
  * Lista vacia -> mensaje claro. @param {Array<object>} pendientes salida de
@@ -455,12 +498,17 @@ function renderHTML(pendientes) {
     '.falta{color:#a11;font-weight:bold}',
     '.rev{color:#b34700}',
     '.notas{color:#555}',
+    // feedback in-place del fetch (CAMBIO fetch-acciones): guardado / error.
+    'td.ok{background:#d7f5dd !important;transition:background .25s}',
+    'tr.ok>td{background:#eafaef}',
+    'td.err{outline:2px solid #d11;outline-offset:-2px}',
     '</style></head><body>',
     '<h1>Pendientes (' + lista.length + ')</h1>',
     '<p class="sub">Documentacion faltante o lectura a revisar. Celdas con ! fallan una validacion de forma; corregilas y confirma. Ordenado por antiguedad, lo mas viejo primero.</p>',
     '<table><thead><tr>', ths, '</tr></thead><tbody>',
     cuerpo,
     '</tbody></table>',
+    '<script>' + SCRIPT_ACCIONES + '</script>',
     '</body></html>'
   ].join('\n');
 }

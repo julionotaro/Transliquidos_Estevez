@@ -87,22 +87,25 @@ test('cierre-v1 pendientes: viaje con ambos ejes (pendiente Y revisar) aparece u
 });
 
 test('cierre-v1 pendientes: HTML escapa contenido (motivo con caracteres especiales no rompe el markup)', () => {
-  const v = viajeBase({ estado_lectura: 'REVISAR', motivo_revision: 'cliente_no_reconocido: <script>&"test"' });
+  const v = viajeBase({ estado_lectura: 'REVISAR', motivo_revision: 'cliente_no_reconocido: <script>alert(1)</script>&"test"' });
   const out = filtrarPendientes([v]);
   const html = renderHTML(out);
-  assert.ok(!html.includes('<script>'), 'no debe inyectar HTML sin escapar');
-  assert.ok(html.includes('&lt;script&gt;'));
+  // el contenido INYECTADO se escapa (no inyecta un <script> del dato)
+  assert.ok(!html.includes('<script>alert(1)'), 'no debe inyectar el <script> del motivo sin escapar');
+  assert.ok(html.includes('&lt;script&gt;alert(1)&lt;/script&gt;'), 'el motivo va escapado');
+  // el unico <script> permitido es el bloque propio de la pagina (fetch de acciones)
+  assert.strictEqual((html.match(/<script>/g) || []).length, 1, 'solo el script propio de la pagina');
 });
 
 // ============================================================================
 // v1.1 pieza 1 — acciones en la misma pantalla (render)
 // ============================================================================
-test('v1.1 render: cada fila trae un form que postea a /webhook/viajes-accion con los 3 botones', () => {
+test('v1.1 render: cada fila trae los botones de accion (corregir/resolver/incidencia) que postean por fetch', () => {
   const v = viajeBase({ id: 42, estado: 'PENDIENTE_DOCUMENTACION' });
   const out = filtrarPendientes([v]);
   const html = renderHTML(out);
-  assert.match(html, /action="https:\/\/studio-julio\.duckdns\.org\/webhook\/viajes-accion"/);
-  assert.match(html, /method="post"/);
+  // el POST lo hace el fetch al webhook absoluto (no el form nativo)
+  assert.match(html, /studio-julio\.duckdns\.org\/webhook\/viajes-accion/);
   assert.match(html, /value="42"/, 'id del viaje va en un campo oculto');
   assert.match(html, /name="accion" value="corregir"/);
   assert.match(html, /name="accion" value="resolver"/);
@@ -203,11 +206,34 @@ test('CAMBIO 2: dieta leida del JSON detalle se muestra', () => {
 // CAMBIO 1 (correcciones-url) — la URL de accion debe ser ABSOLUTA
 // (relativa da DNS_PROBE_FINISHED_NXDOMAIN y no guarda nada). Guard de regresion.
 // ============================================================================
-test('CAMBIO 1: las acciones postean a la URL ABSOLUTA (no relativa)', () => {
+test('CAMBIO 1: la URL de accion es ABSOLUTA (no relativa)', () => {
   const html = renderHTML(filtrarPendientes([viajeReal({})]));
-  // todas las acciones apuntan a la URL absoluta
-  assert.match(html, /action="https:\/\/studio-julio\.duckdns\.org\/webhook\/viajes-accion"/);
-  // y NINGUNA usa ruta relativa (raiz-relativa o path-relativa)
-  assert.ok(!/action="\/webhook\/viajes-accion"/.test(html), 'no debe quedar action raiz-relativa');
-  assert.ok(!/action="webhook\/viajes-accion"/.test(html), 'no debe quedar action path-relativa');
+  // la URL absoluta esta presente (ahora en el fetch del script, no en un action)
+  assert.match(html, /https:\/\/studio-julio\.duckdns\.org\/webhook\/viajes-accion/);
+  // y NINGUNA ruta relativa
+  assert.ok(!/["'(]\/webhook\/viajes-accion/.test(html), 'no debe quedar ruta raiz-relativa');
+  assert.ok(!/["'(]webhook\/viajes-accion/.test(html), 'no debe quedar ruta path-relativa');
+});
+
+// ============================================================================
+// CAMBIO fetch-acciones — las acciones se envian por FETCH (preventDefault),
+// no por <form> nativo: la pagina NO navega al guardar. Guard del patron.
+// ============================================================================
+test('fetch-acciones: los forms de accion NO tienen action= (no submit nativo); el envio es por fetch con preventDefault', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  // ningun <form> de accion navega de forma nativa (sin atributo action)
+  assert.ok(!/<form[^>]*\baction=/.test(html), 'ningun form de accion debe tener action= (navegaria)');
+  // el transporte es fetch, interceptando el submit
+  assert.match(html, /preventDefault\(\)/);
+  assert.match(html, /fetch\(WEBHOOK/);
+  // sigue habiendo forms (para agrupar inputs) y los botones de accion
+  assert.match(html, /<form class="cell">/);
+  assert.match(html, /<form class="acc">/);
+});
+
+test('fetch-acciones: sin localStorage / sessionStorage / clipboard / createObjectURL (restriccion del estudio)', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  ['localStorage', 'sessionStorage', 'navigator.clipboard', 'createObjectURL'].forEach(function (prohibido) {
+    assert.ok(html.indexOf(prohibido) === -1, 'no debe usar ' + prohibido);
+  });
 });
