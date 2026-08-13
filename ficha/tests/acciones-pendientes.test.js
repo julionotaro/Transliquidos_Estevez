@@ -172,3 +172,16 @@ test('CAMBIO 3 confirmar: estado_carga pendiente_revision -> confirmada; nunca c
   const hist = JSON.parse(r.cambios.historial_correcciones);
   assert.strictEqual(hist[hist.length - 1].accion, 'confirmar');
 });
+
+test('CAMBIO cliente->correcciones: aplicarCorregir(cliente) tambien produce fila de correccion con el original preservado', () => {
+  const v = viajeBase({ id: 20, cliente: null, motivo_revision: 'emisor BALTRANSA no resuelto a cliente conocido' });
+  const r = acciones.aplicarCorregir(v, 'cliente', 'BALTRANSA', 'julio');
+  assert.strictEqual(r.ok, true);
+  assert.ok(r.correccion, 'la correccion de cliente ahora va a la tabla correcciones');
+  assert.strictEqual(r.correccion.viaje_id, '20');
+  assert.strictEqual(r.correccion.campo, 'cliente');
+  assert.strictEqual(r.correccion.valor_original, '', 'cliente era null -> original vacio');
+  assert.strictEqual(r.correccion.valor_corregido, 'BALTRANSA');
+  assert.match(r.correccion.motivo_original, /emisor BALTRANSA/);
+  assert.strictEqual(r.correccion.editado_por, 'julio');
+});

@@ -104,7 +104,20 @@ function aplicarCorregir(viaje, campo, valorNuevo, usuario, clientes) {
     viaje.historial_correcciones,
     entradaBase('corregir', usuario, campo, anterior, nuevo)
   );
-  return { ok: true, cambios: cambios };
+  // El cliente es campo critico de extraccion: su correccion tambien va a la
+  // tabla `correcciones` (opcion 2, preserva el valor original del modelo para
+  // medir calidad). El grafo "¿Hay correccion? -> Insertar Correccion" ya la
+  // enruta cuando el item trae `_correccion`; no hay cambio de grafo.
+  var correccion = {
+    viaje_id: (viaje.id === undefined || viaje.id === null) ? '' : String(viaje.id),
+    campo: campo,
+    valor_original: (anterior === null || anterior === undefined) ? '' : String(anterior),
+    valor_corregido: String(nuevo),
+    motivo_original: (viaje.motivo_revision == null) ? '' : String(viaje.motivo_revision),
+    editado_por: (usuario || '').toString().trim() || 'web-pendientes',
+    editado_en: new Date().toISOString()
+  };
+  return { ok: true, cambios: cambios, correccion: correccion };
 }
 
 /** Marca resuelto: la documentacion llego por otra via. No toca otros campos. */
