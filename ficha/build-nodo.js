@@ -35,7 +35,7 @@ const TARGETS = [
   },
   {
     nodo: 'Preparar Filas Viajes',
-    logica: [],
+    logica: ['dedup.js'],
     wrapper: 'nodo-preparar-filas-viajes.wrapper.js',
     salida: 'nodo-preparar-filas-viajes.generated.js',
   },

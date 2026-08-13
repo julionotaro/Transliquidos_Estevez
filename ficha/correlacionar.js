@@ -38,6 +38,30 @@ var mat = function (x) { return (x || '').toString().toUpperCase().replace(/[^A-
 var upp = function (x) { return (x || '').toString().toUpperCase(); };
 var dias = function (a, b) { if (!a || !b) { return null; } const da = Date.parse(a + 'T00:00:00Z'); const db = Date.parse(b + 'T00:00:00Z'); if (!isFinite(da) || !isFinite(db)) { return null; } return Math.round((db - da) / 86400000); };
 
+// --- Coincidencia laxa de nombres de empresa/lugar ---------------------------
+// Se usa SOLO para inferir el ROL de un documento de peso (carga=origen vs
+// descarga=destino) via heuristica emisor<->ficha (CAMBIO 2, §4). Normaliza
+// (mayusculas, sin acentos, sin formas societarias) y acepta inclusion o un
+// token significativo compartido. Objetivo: robustez, no exactitud milimetrica.
+function normNombre(x) {
+  return upp(x).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Z0-9 ]/g, ' ')
+    .replace(/\b(SA|SL|SLU|SAU|SCA|SC|CB|SLL|SLNE|LDA|SARL)\b/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function coincideNombre(a, b) {
+  var na = normNombre(a), nb = normNombre(b);
+  if (!na || !nb) { return false; }
+  if (na === nb || na.indexOf(nb) >= 0 || nb.indexOf(na) >= 0) { return true; }
+  var ta = na.split(' ').filter(function (t) { return t.length >= 4; });
+  var sb = {}; nb.split(' ').forEach(function (t) { if (t.length >= 4) { sb[t] = true; } });
+  for (var i = 0; i < ta.length; i++) { if (sb[ta[i]]) { return true; } }
+  return false;
+}
+// "Difieren" el peso de carga y el de descarga: tolerancia en kg (bascula/merma).
+// Configurable sin reescribir la logica.
+var PESO_TOL_DIFIEREN_KG = 100;
+
 // --- Reconciliacion de matricula ficha <-> documento (correlacion robusta) ----
 // El documento IMPRESO es la fuente CONFIABLE de la matricula; la ficha
 // MANUSCRITA es la SOSPECHOSA. La relacion es ASIMETRICA: cuando los documentos
@@ -388,16 +412,61 @@ function correlacionar(rA, rB, opts) {
     v.referencia = dRef ? nz(dRef.referencia) : null;
     v.tipo_doc = dRef ? nz(dRef.tipo_doc) : null;
     v.fecha_documento = dRef ? nz(dRef.fecha) : null;
-    // ---- CAMBIO 2: kg SIEMPRE del documento de peso, NUNCA de la orden (D-01) ----
-    // La orden es doc de planificacion: su kg puede ser el pedido/nominal, no el
-    // peso real cargado. Se EXCLUYE orden_transporte/orden_carga como fuente de kg.
+    // ---- CAMBIO 2 (§4, D-01): peso facturable — precedencia ORIGEN > DESTINO ----
+    // Dos reglas encadenadas:
+    //  (a) El kg SIEMPRE sale del DOCUMENTO de peso, NUNCA de la orden (la orden es
+    //      planificacion: kg pedido/nominal, no real). Se EXCLUYE la orden.
+    //  (b) Refinamiento §4: cuando hay peso de carga (ORIGEN) y de descarga (DESTINO)
+    //      y DIFIEREN, manda el de ORIGEN (CMR/albaran de carga). Precedencia:
+    //      origen > descarga > (nunca) orden.
+    // La FICHA aporta SOLO EL ROL del documento (¿carga o descarga?), NUNCA el kg:
+    // el kg sale del documento. El rol se infiere por heuristica emisor<->ficha
+    // (el emisor del doc de peso se compara con nombre_carga=cargador y
+    // nombre_descarga=receptor de la ficha):
+    //      emisor ~ carga   (y no descarga) -> ORIGEN
+    //      emisor ~ descarga (y no carga)   -> DESTINO
+    //      ambos / ninguno                  -> INCIERTO
+    // Salvaguarda dura (P2): NO se factura el peso de un documento de rol incierto
+    // cuando eso obligaria a ADIVINAR entre pesos que difieren -> REVISAR. Si hay un
+    // solo peso (o todos coinciden) no hay nada que adivinar: se factura (no se
+    // pierde el viaje por un rol que no cambia el importe).
     const esOrden = function (d) { return d && (d.tipo_doc === 'orden_transporte' || d.tipo_doc === 'orden_carga'); };
-    const pickPeso = function (tipos) {
-      for (const t of tipos) { for (const d of v.docs) { if (!esOrden(d) && (d.tipo_doc || '') === t && nz(d.kg_neto) !== null) { return d; } } }
-      for (const d of v.docs) { if (!esOrden(d) && nz(d.kg_neto) !== null) { return d; } }
-      return null;
+    const pesos = v.docs.filter(function (d) { return !esOrden(d) && num(d.kg_neto) !== null; });
+    const rolPeso = function (d) {
+      const em = nz(d.emisor);
+      const enCarga = !!(em && coincideNombre(em, v.nombre_carga));
+      const enDescarga = !!(em && coincideNombre(em, v.nombre_descarga));
+      if (enCarga && !enDescarga) { return 'origen'; }
+      if (enDescarga && !enCarga) { return 'destino'; }
+      return 'incierto';
     };
-    const dKg = pickPeso(esForesa ? ['albaran', 'cmr', 'bascula'] : ['cmr', 'carta_porte', 'guia', 'bascula', 'albaran']);
+    const tiposPref = esForesa ? ['albaran', 'cmr', 'bascula'] : ['cmr', 'carta_porte', 'guia', 'bascula', 'albaran'];
+    const elegirPorTipo = function (lista) {
+      for (const t of tiposPref) { for (const d of lista) { if ((d.tipo_doc || '') === t) { return d; } } }
+      return lista.length ? lista[0] : null;
+    };
+    const porRol = { origen: [], destino: [], incierto: [] };
+    for (const d of pesos) { porRol[rolPeso(d)].push(d); }
+    let dKg = null;
+    if (porRol.origen.length) {
+      dKg = elegirPorTipo(porRol.origen); // §4: el peso de carga manda
+      const dDest = elegirPorTipo(porRol.destino);
+      if (dDest && Math.abs(num(dDest.kg_neto) - num(dKg.kg_neto)) > PESO_TOL_DIFIEREN_KG) {
+        avisos.push('Viaje ' + (i + 1) + ': peso origen ' + num(dKg.kg_neto) + ' kg manda sobre descarga ' + num(dDest.kg_neto) + ' kg (difieren) — §4.');
+      }
+    } else if (porRol.destino.length) {
+      dKg = elegirPorTipo(porRol.destino); // sin origen: la descarga es la mejor fuente disponible
+    } else if (porRol.incierto.length) {
+      const kgs = porRol.incierto.map(function (d) { return num(d.kg_neto); });
+      const spread = Math.max.apply(null, kgs) - Math.min.apply(null, kgs);
+      if (porRol.incierto.length > 1 && spread > PESO_TOL_DIFIEREN_KG) {
+        // Varios pesos de rol indeterminado que difieren: adivinar cual es el de
+        // carga seria facturar a ciegas. No se factura -> el humano decide (§4, P2).
+        marcar(v, 'pesos de documentos con rol indeterminado que difieren (' + kgs.join('/') + ' kg): no se factura sin saber cual es el de carga (§4)');
+      } else {
+        dKg = elegirPorTipo(porRol.incierto); // uno solo, o todos coinciden: sin ambiguedad
+      }
+    }
     v.kg_documento = dKg ? num(dKg.kg_neto) : null;
     v.fuente_peso = dKg ? nz(dKg.tipo_doc) : null;
     // D-01 fail-loud: si el UNICO kg disponible venia de una orden, no se factura;

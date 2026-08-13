@@ -356,3 +356,65 @@ test('CAMBIO 2: kg con decimal de tonelada (21350) se preserva exacto (no se red
   const d = albaran({ matricula_tractor: '7777KGX', tipo_doc: 'albaran', cliente_probable: 'FORESA', kg_neto: 21350, referencia: '2001234', origen: 'CALDAS', destino: 'CELLA' });
   assert.strictEqual(correr([h], [d]).viajes[0].kg_documento, 21350, 'valor exacto, no 21000');
 });
+
+// ============================================================================
+// CAMBIO 2 refinamiento (2026-08-13) — peso ORIGEN > DESTINO (§4, D-01).
+// Refinamiento confirmado con cliente: cuando hay peso de carga (origen) y de
+// descarga (destino) y difieren, manda el de ORIGEN. La ficha aporta SOLO EL
+// ROL del documento (via emisor<->nombre_carga/nombre_descarga), NUNCA el kg:
+// el kg sale del documento. Salvaguarda dura: rol indeterminado + pesos que
+// difieren -> no se factura, REVISAR (no se adivina cual es la carga).
+// POR QUE estos tests: sin el refinamiento el sistema facturaba el primer peso
+// que encontraba (a veces el de descarga, con merma), una incorreccion de
+// facturacion silenciosa. El rol lo fija la ficha; el numero, el documento.
+// ============================================================================
+test('§4 origen>destino: peso de carga (origen) y de descarga difieren -> se factura el de ORIGEN', () => {
+  const h = hoja({ tractora: '4444ODS' }, [bloque({
+    nombre_carga: 'QUIMIDROGA', nombre_descarga: 'RELISA', lugar_carga: 'BARCELONA', lugar_descarga: 'MORALEJA',
+    cantidad_kg: 24000, km_inicio: 1000, km_final: 1100, km_recorridos: 100,
+  })]);
+  // emisor=nombre_carga -> ORIGEN; emisor=nombre_descarga -> DESTINO. Difieren 400 kg.
+  const dOrigen = albaran({ matricula_tractor: '4444ODS', tipo_doc: 'albaran', emisor: 'QUIMIDROGA', cliente_probable: 'QUIMIDROGA', kg_neto: 24000, referencia: 'ORI-1', origen: 'BARCELONA', destino: 'MORALEJA' });
+  const dDestino = albaran({ pagina: 3, matricula_tractor: '4444ODS', tipo_doc: 'albaran', emisor: 'RELISA', cliente_probable: null, kg_neto: 23600, referencia: 'DES-1', origen: 'BARCELONA', destino: 'MORALEJA' });
+  const res = correr([h], [dOrigen, dDestino]);
+  const v = res.viajes[0];
+  assert.strictEqual(v.kg_documento, 24000, 'manda el peso de carga (origen), no el de descarga (23600)');
+  assert.ok(res.avisos.some(a => /peso origen 24000 kg manda sobre descarga 23600/.test(a)), 'se avisa que origen mando sobre descarga');
+});
+
+test('§4 solo descarga: sin doc de origen, la descarga es la mejor fuente disponible -> se factura', () => {
+  const h = hoja({ tractora: '4445DES' }, [bloque({
+    nombre_carga: 'QUIMIDROGA', nombre_descarga: 'RELISA', lugar_carga: 'BARCELONA', lugar_descarga: 'MORALEJA',
+    cantidad_kg: 23600, km_inicio: 1000, km_final: 1100, km_recorridos: 100,
+  })]);
+  const dDestino = albaran({ matricula_tractor: '4445DES', tipo_doc: 'albaran', emisor: 'RELISA', cliente_probable: 'RELISA', kg_neto: 23600, referencia: 'DES-2', origen: 'BARCELONA', destino: 'MORALEJA' });
+  const v = correr([h], [dDestino]).viajes[0];
+  assert.strictEqual(v.kg_documento, 23600, 'sin origen, se usa la descarga (precedencia origen>descarga>orden)');
+});
+
+test('§4 salvaguarda dura: dos pesos de rol INDETERMINADO que difieren -> no se factura, REVISAR', () => {
+  const h = hoja({ tractora: '4446INC' }, [bloque({
+    nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE',
+    cantidad_kg: 24000, km_inicio: 1000, km_final: 1100, km_recorridos: 100,
+  })]);
+  // Ambos sin emisor -> rol incierto; kg difieren 400 (>100). No se adivina.
+  const dA = albaran({ matricula_tractor: '4446INC', emisor: null, kg_neto: 24000, referencia: 'INC-1', origen: 'CALDAS', destino: 'ORENSE' });
+  const dB = albaran({ pagina: 3, matricula_tractor: '4446INC', emisor: null, kg_neto: 24400, referencia: 'INC-2', origen: 'CALDAS', destino: 'ORENSE' });
+  const v = correr([h], [dA, dB]).viajes[0];
+  assert.strictEqual(v.kg_documento, null, 'no se factura un peso de rol incierto entre pesos que difieren');
+  assert.strictEqual(v.estado_lectura, 'REVISAR');
+  assert.match(v.motivo_revision, /rol indeterminado que difieren/);
+});
+
+test('§4 rol incierto pero pesos COINCIDEN -> no hay nada que adivinar, se factura', () => {
+  const h = hoja({ tractora: '4447COI' }, [bloque({
+    nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE',
+    cantidad_kg: 24000, km_inicio: 1000, km_final: 1100, km_recorridos: 100,
+  })]);
+  // Rol incierto (sin emisor) pero kg dentro de tolerancia (20 kg): no hay conflicto.
+  const dA = albaran({ matricula_tractor: '4447COI', emisor: null, kg_neto: 24000, referencia: 'COI-1', origen: 'CALDAS', destino: 'ORENSE' });
+  const dB = albaran({ pagina: 3, matricula_tractor: '4447COI', emisor: null, kg_neto: 24020, referencia: 'COI-2', origen: 'CALDAS', destino: 'ORENSE' });
+  const v = correr([h], [dA, dB]).viajes[0];
+  assert.strictEqual(v.kg_documento, 24000, 'un solo criterio de peso (coinciden): se factura sin marca de rol');
+  assert.ok(!/rol indeterminado/.test(v.motivo_revision || ''), 'no se marca por rol cuando los pesos coinciden');
+});

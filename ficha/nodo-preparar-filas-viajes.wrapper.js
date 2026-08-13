@@ -43,9 +43,9 @@ const paisDe = function (cli, ref) {
   }
   return 'ES';
 };
-const out = [];
+const filas = [];
 for (const v of viajes) {
-  out.push({ json: {
+  filas.push({
     hoja_id: idDe(v.hoja_idx),
     orden: n(v.orden),
     fecha: s(v.fecha_carga),
@@ -90,6 +90,45 @@ for (const v of viajes) {
     estado_carga: 'pendiente_revision',
     factura_id: '',
     detalle: JSON.stringify(v)
-  } });
+  });
 }
+
+// ---- Deduplicacion (§5.1) ---------------------------------------------------
+// Idempotencia al reingestar: NO crear una segunda fila de un viaje ya guardado.
+// Llave de identidad = matricula_tractora + km_inicio (odometro estrictamente
+// creciente; distingue rotaciones del mismo dia/ruta, §7). La logica pura vive en
+// dedup.js (inlineada por build-nodo.js). Lee los viajes ya en la tabla del nodo
+// "Leer Viajes Existentes". Si ese nodo aun no existe (deploy parcial), degrada a
+// "insertar todo" en vez de romper el pipeline — mismo patron defensivo que
+// "Guardar Hoja" arriba.
+let existentes = [];
+try {
+  existentes = $('Leer Viajes Existentes').all().map(function (it) { return (it && it.json) ? it.json : {}; });
+} catch (e) { existentes = []; }
+
+const ded = (typeof dedupViajes === 'function')
+  ? dedupViajes(filas, existentes)
+  : { insertar: filas, actualizarMotivo: [], omitidos: [] };
+
+const out = [];
+// (1) Filas NUEVAS -> se insertan (van al IF por la rama "no update" -> Guardar
+// Viajes). Si la dedup sospecha km_inicio mal leido (misma ruta, km por poco),
+// se suma el motivo y se fuerza REVISAR: se inserta pero visible, no encubierto.
+for (const f of ded.insertar) {
+  if (f._motivo_dedup) {
+    f.motivo_revision = f.motivo_revision ? (f.motivo_revision + '; ' + f._motivo_dedup) : f._motivo_dedup;
+    f.estado_lectura = 'REVISAR';
+  }
+  delete f._motivo_dedup;
+  out.push({ json: f });
+}
+// (2) Reingresos con datos que DIFIEREN -> NO se insertan; se actualiza (ADITIVO)
+// el motivo_revision de la fila existente. Tag `_dedup_update` para que el IF los
+// enrute al dataTable "Actualizar Motivo Viaje" (update por id). Solo se tocan
+// motivo_revision y estado_lectura: ningun otro dato de la fila (el humano pudo
+// haber corregido algo ahi).
+for (const u of ded.actualizarMotivo) {
+  out.push({ json: { _dedup_update: true, id: u.id, motivo_revision: u.motivo_revision, estado_lectura: u.estado_lectura } });
+}
+// (3) ded.omitidos = reingresos identicos (duplicado puro): no se emiten.
 return out;
