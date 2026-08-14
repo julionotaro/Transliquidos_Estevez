@@ -1,113 +1,114 @@
-# ONBOARDING — Oficina Agentica Transliquidos Estevez
-Punto de arranque para continuar el proyecto en un chat nuevo. Resume todo el conocimiento construido.
+# ONBOARDING — Transliquidos Estévez
 
-## Contexto
-Julio es administrativo (con proyeccion a trafico y facturacion) en un grupo transportista de liquidos
-de Villagarcia de Arousa: dos firmas, **Trans. Liquidos Estevez S.L. (TLE, CIF B36532802)** y
-**Hermanos Estevez Casal (HEC)**. Se automatiza el puesto administrativo como primera validacion real
-de la Oficina de Agentes. Repo cliente: `julionotaro/transliquidos_Estevez`.
+> **PASO 1 OBLIGATORIO: leer `docs/INDICE.md`.**
+> Ese archivo es el mapa de toda la documentación. Sin él no se sabe qué existe, y las reglas de
+> negocio quedan enterradas en documentos que nadie abre. Ha pasado.
 
-Regla de aislamiento: el dominio (clientes, tarifas, Gesruta, rutas) vive SOLO en el repo del cliente.
-A `estudio-ia` solo vuelven patrones estructurales validados.
+---
 
-## Restriccion tecnica
-Gesruta (sistema de gestion) es **Windows desktop en el ordenador de la empresa**: sin API ni RPA web.
-La automatizacion termina en "carga asistida": el sistema entrega la linea lista para tipear.
+## Regla de oro de este repo
 
-## Lo construido y PUBLICADO (funciona)
+**Las reglas de dominio NO se copian acá.** Viven en `docs/`, y `docs/INDICE.md` dice cuál está en
+cuál. Una regla copiada en dos sitios queda vieja en uno de los dos y genera contradicciones.
+Este archivo solo explica **qué es el proyecto y cómo se trabaja**. Nada más.
 
-### 1. Ingesta de viajes — `WD0q9Ic0oDvUoJwp`
-URL: https://studio-julio.duckdns.org/form/ingesta-viaje
-Formulario: sube PDF/fotos de la hoja del chofer + documentos -> gpt-4o extrae -> devuelve una
-"linea Gesruta" por viaje. Hoja = N viajes independientes (un chofer, varios clientes por semana).
+---
 
-### 2. Validador de facturas — `IlIod0DlephaLmAV` (patron webhook, el que funciona)
-Webhook: https://studio-julio.duckdns.org/webhook/auditar-factura
-Pagina HTML propia (auditar-factura.html) que hace fetch al webhook y pinta el informe.
-ESTE es el patron correcto para procesos largos: Webhook + Respond to Webhook + pagina propia con fetch.
-NO usar el nodo Form de completion para procesos >15s: se cuelga en waiting/3000.
-Audita: importe=cantidad x precio, indexacion (% por cliente+fecha), minimo 23t, matriculas,
-regimen agregado (Orember) vs por linea, cuadre base/IVA/total.
+## Qué es el proyecto
 
-## Reglas de dominio confirmadas
+Julio es administrativo (con proyección a tráfico y facturación) en un grupo transportista de
+líquidos de Villagarcía de Arousa: dos firmas, **Trans. Líquidos Estévez S.L. (TLE, CIF B36532802)**
+y **Hermanos Estévez Casal (HEC)**.
 
-### Emisor vs Cliente
-Emisor = quien cobra (grupo Estevez: TLE o HEC). Cliente = destinatario a quien se factura.
-Se distingue por ROL en el documento, nunca por nombre fijo.
+Se automatiza el puesto administrativo: leer fichas de chófer y documentación de transporte, extraer
+los datos que facturan, y dejarlos listos para cargar en Gesruta y para auditar la factura.
 
-### Cliente = contratante, no destinatario de la mercancia
-RNM carga en Aveiro y descarga en Drogas Vigo: el cliente es RNM. TEPSA es planta de Quimidroga.
-MILADERTO es planta de Helm. Finsa/Orember/Cella son destinos de Foresa.
+Repo: `julionotaro/transliquidos_Estevez`.
 
-### Porte / IVA por entidad facturada (no por geografia)
-- RNM: siempre internacional sin IVA (empresa portuguesa), aunque origen y destino sean espanoles.
-- QUIMIDROGA: por prefijo de Referencia en factura. 70xxxx -> Espana, nacional con IVA. 100xxxx -> Portugal, sin IVA.
-- FORESA / HELM / BRESFOR: nacional con IVA.
+**Restricción de fondo:** Gesruta es un programa de escritorio Windows en el ordenador de la empresa.
+No tiene API. La automatización termina en "carga asistida": el sistema entrega la línea lista para
+tipear. El robot que teclea en Gesruta es una pieza futura, todavía no construida.
 
-### Peso a facturar (fuente por cliente)
-- FORESA: siempre el peso del ALBARAN.
-- Resto: peso NETO del CMR; si no hay, documento de bascula.
-- Cantidad del documento de origen manda sobre la hoja y sobre la orden (que es estimacion).
-- Minimo facturable: si el peso real < 23 t, se factura 23 t.
-- HELM: precio CERRADO del documento (campo Coste de transporte). NO se calcula por peso; el peso es informativo. Solo se le agrega indexacion.
+**Aislamiento:** el dominio (clientes, tarifas, rutas, Gesruta) vive SOLO en este repo.
+A `estudio-ia` solo vuelven patrones estructurales, nunca reglas de este cliente.
 
-### Referencia por cliente
-- FORESA: referencia corta que empieza por 20 (arriba dcha del albaran). NO el numero largo 5030xxxxx. Villagarcia->otros destinos usa el n de Orden de Carga del mail.
-- QUIMIDROGA: "Referencia en factura" (704061...).
-- RNM: Albaran No (0941026143).
-- HELM: numero de pago de la OC (6100295057).
+---
 
-### Indexacion (suplemento gasoleo)
-El % sale de la solapa del cliente + RANGO de fechas (no siempre quincenas; a veces tramos de dias).
-Seis solapas cargadas en el validador: FORESA-BRESFOR, HELM, QUIMIDROGA, OTROS, AGENCIA, AUTONOMOS.
-Cliente sin solapa propia -> OTROS. RNM -> OTROS.
-Regimenes por tipo de servicio:
-- Foresa Caldas->Ourense (Orember): AGREGADA quincenal (sobre el total del rango). Puede mezclar 2 quincenas.
-- Foresa Villagarcia->Caldas (metanol): AGREGADA mensual. Puede mezclar 2 meses.
-- Baltransa: INCLUIDA en el precio (no se agrega linea).
-- Todo lo demas (incluido Foresa a otros destinos): POR LINEA.
+## Cómo se trabaja
 
-### Fecha de carga
-Si hoja del chofer y documento discrepan, prevalece la ficha del chofer.
+| Quién | Hace |
+|---|---|
+| **Julio** | Todas las decisiones de negocio y de dominio |
+| **Chat** | Diseño, arquitectura, dominio, operar n8n, redactar encargos |
+| **Claude Code** | Implementar en rama. Nunca decide diseño |
 
-### HEC
-No se calculan km de unidad tractora en cargas de HEC.
+**Reglas operativas:**
 
-## Errores reales detectados en facturas (casos de prueba validados)
-- 2026/315 (Foresa): indexacion 0.1517 y 0.1064 mal aplicadas (correcto 0.1279); Termolan sin indexacion; una linea sin matricula.
-- 2026/313 (Foresa Orember, agregada): base de indexacion 1a quincena julio inflada (declara 12.802,40, real 10.989,73; cobra 192,87 de mas).
-- 2026/317 (Quimidroga): ref 703224 (0.1517) y 703194 (0.1064) mal, correcto 0.1171 julio; totales descuadrados.
+- **"Inspeccioná primero"**: leer el estado actual antes de modificar nada. Siempre.
+- **Fallar ruidoso antes que en silencio.** Null antes que invención plausible. Revisión humana antes
+  que corrección automática de un dato incierto.
+- **"Se ve bien" no cuenta.** Un cambio no está verificado hasta leer las tablas con dato real.
+- **Los deploys de n8n son manuales.** El conector puede cambiar el grafo (nodos, cableado), pero el
+  código de los nodos lo pega Julio a mano, y las credenciales se asignan a mano en la interfaz.
+- **Toda lógica se versiona en el repo**, nunca solo dentro de un nodo de n8n.
+- Si la realidad contradice un encargo, **parar y reportar**. No adaptar el encargo a lo que se encuentra.
 
-## PENDIENTES
+**Formato de encargo a Claude Code:** Contexto / "inspeccioná primero" / cambios numerados / tests /
+commit / verificación manual.
 
-### De Julio (dominio)
-- Criterio base indexacion con linea REPARTOS (D-08): incluye o no los 90 EUR.
-- Tarifa Quimidroga Barcelona->Leiria (a verificar).
-- Datos completos de Baltransa (porte, peso, referencia, tarifa).
+---
 
-### De Julio (infraestructura)
-- Crear data tables en n8n y pasar IDs: `viajes`, `tarifas`, `indexacion`, `ultimo_km_tractora`, `facturacion_reglas`.
-  (Las data tables se crean por UI, no por MCP.)
+## Estado actual
 
-### Tecnicos (Claude, cuando existan las tablas)
-- Migrar las 6 tablas de indexacion embebidas en el validador a la data table `indexacion`.
-- Conectar persistencia de la ingesta (guardar viajes, actualizar ultimo_km_tractora).
-- Loop de aprobacion humana por Telegram en la ingesta.
-- Front propio para ingesta y validador (patron dashboard+webhook+fetch), reemplazando los formularios.
-- Cargar tablas `tarifas` (Foresa/Quimidroga/RNM/HELM) para calcular importes, no solo validarlos.
+Rama vigente: **`claude/dedup-viajes-peso-origen`**.
 
-## Aprendizajes tecnicos clave
-- Nodo Form de n8n NO sirve para procesos largos (se cuelga waiting/3000). Usar Webhook + Respond to Webhook + pagina propia con fetch (patron Tyrion).
-- Credencial OpenAI para nodos HTTP: tipo Bearer Auth (`OpenAI Bearer`, MJD7lLvCk947vvMl), no la credencial OpenAI nativa. Se asigna por updateNodeParameters con bloque credentials, no por setNodeCredential.
-- nginx: el path /form/ y /webhook/ deben estar ruteados en mcp-ssl.conf. Ya estan.
-- create_workflow_from_code no auto-asigna credenciales a nodos HTTP: reasignar tras crear.
+Lo construido y funcionando:
+
+| Pieza | ID n8n | Qué hace |
+|---|---|---|
+| Ingesta de viajes | `WD0q9Ic0oDvUoJwp` | Sube ficha + documentos → extrae → devuelve línea Gesruta |
+| Vista pendientes | `C3eZ1RteNAZDdaCV` | Tabla editable de viajes con datos a revisar |
+| Auditor de facturas | `IlIod0DlephaLmAV` | Audita una factura emitida antes de enviarla |
+| Export a Excel | `ObSZK7wHv4k9oFi6` | Histórico de lo extraído |
+
+Para el estado operativo al día, ver `docs/ESTADO-Y-TRASPASO.md` y el ROADMAP.
+
+---
+
+## Aprendizajes técnicos
+
+- El nodo **Form** de n8n no sirve para procesos largos (se cuelga). Patrón correcto:
+  **Webhook + Respond to Webhook + página HTML propia con `fetch()`**.
+- Formularios HTML nativos (`<form>`) navegan y pierden la página: usar `fetch()` con `preventDefault`.
+- Credencial OpenAI para nodos HTTP: tipo **Bearer Auth** (`OpenAI Bearer`, `MJD7lLvCk947vvMl`),
+  no la credencial nativa de OpenAI. Se asigna a mano tras crear el nodo.
+- El **ESCRITOR de GitHub** solo sirve para archivos pequeños (menos de ~8 KB). Archivos grandes y
+  CSV van por Claude Code con git real.
+- `truncateData:5` al inspeccionar ejecuciones **oculta el último elemento**. No es un fallo del pipeline.
+- nginx: los paths `/form/` y `/webhook/` ya están ruteados en `mcp-ssl.conf`.
+
+---
 
 ## Recursos
+
 | Recurso | ID |
 |---|---|
-| Ingesta viaje | WD0q9Ic0oDvUoJwp |
-| Validador factura (webhook) | IlIod0DlephaLmAV |
-| GitHub Write | 05hNhH7nbtXsXL9M |
-| GitHub Read | OtNo3Tk6Qu2R91rp |
-| Credencial OpenAI Bearer | MJD7lLvCk947vvMl |
-| Repo cliente | julionotaro/transliquidos_Estevez |
+| Proyecto n8n | `grgBpWySVCpXvuii` |
+| Ingesta viaje | `WD0q9Ic0oDvUoJwp` |
+| Vista pendientes | `C3eZ1RteNAZDdaCV` |
+| Auditor de facturas | `IlIod0DlephaLmAV` |
+| GitHub Read | `OtNo3Tk6Qu2R91rp` |
+| GitHub Write | `05hNhH7nbtXsXL9M` |
+| Credencial OpenAI Bearer | `MJD7lLvCk947vvMl` |
+| Tabla `viajes` | `lrBxWpTUxMtO8U48` |
+| Tabla `tarifas` | `Siwhv2AUWTSeFlrJ` |
+| Tabla `indexacion` | `or1otD9WsjJ3V8Cr` |
+| VPS | Hostinger KVM2, Ubuntu 24.04 |
+
+---
+
+## Nota de contexto
+
+Este proyecto pasó semanas "sin lanzar la versión básica". Ese tiempo fue formalizar un dominio que
+solo Julio tenía en la cabeza y nadie había escrito. El resultado es el modelo de dominio versionado,
+que es el activo que permite que lo que sigue vaya rápido. No es atraso; es la base.
