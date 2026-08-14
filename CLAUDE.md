@@ -78,3 +78,20 @@ normalización. El byte `0xA5` es `Ñ`.
 Criterio de éxito: la suite en verde. Los tests de dominio (rotaciones Foresa, deduplicación, peso de
 origen) son regresiones críticas: si uno rompe, **parar y reportar** — puede ser una regla correcta
 que el encargo nuevo no contempló.
+
+---
+
+## Hooks
+
+Este repo tiene controles automáticos antes de cada commit:
+
+- **Guardián del índice**: bloquea si se modifica docs/ sin actualizar docs/INDICE.md
+- **Guardián de credenciales**: bloquea si detecta claves o tokens en el código
+
+En una máquina nueva, instalarlos una vez:
+
+    bash scripts/instalar-hooks.sh
+
+Para saltar los controles en un caso justificado: git commit --no-verify
+
+Detalle de cada guardián y cómo agregar uno nuevo: `docs/hooks.md`.

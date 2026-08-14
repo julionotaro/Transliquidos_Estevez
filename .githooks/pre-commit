@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Hook pre-commit VERSIONADO (core.hooksPath=.githooks).
+# No se copia a .git/hooks: se versiona y se actualiza solo con cada git pull.
+# Instalar una vez por clon: bash scripts/instalar-hooks.sh
+set -uo pipefail
+
+DIR="$(git rev-parse --show-toplevel)"
+
+bash "$DIR/scripts/guardian-indice.sh"      || exit 1
+bash "$DIR/scripts/guardian-credenciales.sh" || exit 1
+
+exit 0
