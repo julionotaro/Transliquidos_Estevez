@@ -40,6 +40,7 @@ Si encontrás una contradicción que no está listada abajo, **no la resuelvas p
 |---|---|---|
 | `grafo-ingesta-dedup.md` | Tramo nuevo de la ingesta: deduplicación, peso de origen, los 3 nodos nuevos | Al tocar la ingesta |
 | `hooks.md` | Guardianes de git (índice de documentación y credenciales): qué hacen, cómo se instalan, cómo se agrega uno | Al tocar los hooks o `scripts/` |
+| `portal.md` | Portal único TLE (`/webhook/tle`): menú a ingesta/pendientes/auditor, cómo se sirve el HTML, `main` vs rama | Al tocar el portal o las páginas que sirve |
 | `contrato-viaje-v1.md` | Estructura de datos de un viaje, versión actual | Al cambiar campos de un viaje |
 | `contrato-viaje.md` | Versión anterior | Solo histórico |
 | `validador-factura.md` | Documentación del auditor de facturas | Al tocar el auditor |

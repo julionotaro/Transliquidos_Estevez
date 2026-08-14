@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditar factura — Trans. Líquidos Estévez</title>
+<!--
+  Front-end mínimo del auditor de facturas. El workflow [ESTEVEZ] Auditar Factura
+  (webhook) expone POST /webhook/auditar-factura y "está pensado para llamarse
+  desde una página HTML propia via fetch" (su propia descripción). Esta es esa
+  página: sube el PDF, lo POSTea y muestra el informe que devuelve.
+
+  v0 deliberadamente simple: renderiza la respuesta tal cual (JSON formateado o
+  texto). El Encargo 4 reescribe el auditor; cuando cambie el formato del
+  informe, esta pantalla lo sigue mostrando sin tocarla.
+
+  Restricciones de artefacto del estudio: sin dependencias externas, sin
+  frameworks, sin fuentes remotas.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; padding:32px 16px; background:#0d1117; color:#e6edf3;
+         font-family:"Segoe UI",system-ui,Arial,sans-serif; line-height:1.5; }
+  .wrap { max-width:820px; margin:0 auto; }
+  a.volver { color:#58a6ff; text-decoration:none; font-size:.9rem; }
+  h1 { font-size:1.35rem; margin:12px 0 20px; }
+  .card { background:#161b22; border:1px solid #30363d; border-radius:10px; padding:24px; }
+  label { display:block; margin:0 0 6px; font-weight:600; font-size:.92rem; }
+  input[type=file] { width:100%; background:#0d1117; color:#e6edf3;
+         border:1px solid #30363d; border-radius:6px; padding:8px; }
+  button { margin-top:18px; background:#1f6feb; color:#fff; border:0; border-radius:6px;
+           padding:10px 22px; font-size:1rem; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:wait; }
+  #estado { margin-top:18px; font-size:.92rem; color:#8b949e; }
+  pre#informe { margin-top:18px; white-space:pre-wrap; word-break:break-word;
+           background:#0d1117; border:1px solid #30363d; border-radius:6px;
+           padding:16px; font-size:.86rem; display:none; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="volver" href="/webhook/tle">&larr; Volver al portal</a>
+    <h1>Auditar factura</h1>
+    <div class="card">
+      <label for="pdf">Factura emitida (PDF)</label>
+      <input type="file" id="pdf" accept="application/pdf">
+      <button id="btn" type="button">Auditar</button>
+      <div id="estado"></div>
+      <pre id="informe"></pre>
+    </div>
+  </div>
+<script>
+  var WEBHOOK = 'https://studio-julio.duckdns.org/webhook/auditar-factura';
+  var btn = document.getElementById('btn');
+  var estado = document.getElementById('estado');
+  var informe = document.getElementById('informe');
+
+  btn.addEventListener('click', function () {
+    var f = document.getElementById('pdf').files[0];
+    if (!f) { estado.textContent = 'Elegí un PDF primero.'; return; }
+    btn.disabled = true;
+    estado.textContent = 'Auditando… (puede tardar unos segundos)';
+    informe.style.display = 'none';
+
+    var fd = new FormData();
+    fd.append('data', f, f.name);
+
+    fetch(WEBHOOK, { method: 'POST', body: fd })
+      .then(function (res) { return res.text().then(function (t) { return { ok: res.ok, status: res.status, body: t }; }); })
+      .then(function (r) {
+        var texto = r.body;
+        try { texto = JSON.stringify(JSON.parse(r.body), null, 2); } catch (e) { /* no era JSON: se muestra tal cual */ }
+        estado.textContent = r.ok ? 'Informe recibido (HTTP ' + r.status + '):'
+                                  : 'El auditor respondió con error (HTTP ' + r.status + '):';
+        informe.textContent = texto;
+        informe.style.display = 'block';
+      })
+      .catch(function (err) {
+        estado.textContent = 'No se pudo contactar al auditor: ' + err.message;
+      })
+      .then(function () { btn.disabled = false; });
+  });
+</script>
+</body>
+</html>

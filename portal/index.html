@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal TLE — Trans. Líquidos Estévez</title>
+<!--
+  Portal único TLE: un menú con las tres herramientas de la oficina.
+  El HTML se versiona en el repo (portal/index.html) y lo sirve el workflow
+  [ESTEVEZ] Portal por GET /webhook/tle (fuente: GitHub, patrón Dashboard v0).
+  Para actualizar el menú: editar este archivo en el repo — recarga sola, sin
+  republicar el workflow. Ver docs/portal.md.
+
+  Restricciones de artefacto del estudio: sin dependencias externas, sin
+  frameworks, sin fuentes remotas. Debe abrir en un navegador de oficina viejo.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 16px;
+    background: #0d1117; color: #e6edf3;
+    font-family: "Segoe UI", system-ui, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  header { margin-bottom: 8px; }
+  h1 { font-size: 1.5rem; margin: 0; }
+  .sub { color: #8b949e; font-size: .95rem; margin: 4px 0 28px; }
+  .grid {
+    display: flex; flex-wrap: wrap; gap: 18px;
+  }
+  .card {
+    flex: 1 1 280px;
+    display: flex; flex-direction: column;
+    background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+    padding: 24px; text-decoration: none; color: inherit;
+    transition: border-color .15s, transform .15s;
+  }
+  .card:hover, .card:focus {
+    border-color: #1f6feb; transform: translateY(-2px); outline: none;
+  }
+  .card h2 { font-size: 1.15rem; margin: 0 0 8px; color: #e6edf3; }
+  .card p { margin: 0 0 18px; color: #8b949e; font-size: .92rem; flex: 1; }
+  .card .go {
+    display: inline-block; align-self: flex-start;
+    background: #1f6feb; color: #fff; border-radius: 6px;
+    padding: 8px 18px; font-size: .95rem; font-weight: 600;
+  }
+  .ico { font-size: 1.6rem; margin-bottom: 10px; }
+  footer {
+    margin-top: 36px; color: #6e7681; font-size: .82rem;
+    border-top: 1px solid #21262d; padding-top: 14px;
+  }
+  @media (max-width: 620px) {
+    body { padding: 20px 12px; }
+    .grid { flex-direction: column; }
+    .card { flex-basis: auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Trans. Líquidos Estévez</h1>
+      <p class="sub">Portal de la oficina — elegí una herramienta</p>
+    </header>
+
+    <div class="grid">
+      <a class="card" href="/webhook/tle-ingesta">
+        <div class="ico">📄</div>
+        <h2>Ingesta de viaje</h2>
+        <p>Subir ficha de chófer y documentación de un viaje.</p>
+        <span class="go">Abrir</span>
+      </a>
+
+      <a class="card" href="/webhook/viajes-pendientes">
+        <div class="ico">📋</div>
+        <h2>Viajes pendientes</h2>
+        <p>Revisar viajes con datos pendientes o marcados REVISAR.</p>
+        <span class="go">Abrir</span>
+      </a>
+
+      <a class="card" href="/webhook/tle-auditar">
+        <div class="ico">🧾</div>
+        <h2>Auditar factura</h2>
+        <p>Auditar una factura emitida antes de enviarla al cliente.</p>
+        <span class="go">Abrir</span>
+      </a>
+    </div>
+
+    <footer>
+      Trans. Líquidos Estévez · Portal de oficina · build 2026-08-14
+    </footer>
+  </div>
+</body>
+</html>
