@@ -1,0 +1,68 @@
+[
+  {
+    "id_punto": "OURENSE",
+    "nombre_canonico": "Ourense",
+    "alias": "OREMBER|OREMBER (OURENSE)",
+    "municipio": "Ourense",
+    "provincia": "Ourense",
+    "pais": "ES",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "_nota": "OREMBER es un punto geografico legitimo (=Ourense), confirmado en dominio. NO es un cliente."
+  },
+  {
+    "id_punto": "AVEIRO",
+    "nombre_canonico": "Aveiro",
+    "alias": "PUERTO DE AVEIRO|AVEIRO (PT)",
+    "municipio": "Aveiro",
+    "provincia": "Aveiro",
+    "pais": "PT",
+    "tipo": "puerto",
+    "empresa_sede": "",
+    "_nota": "Puerto. Es ORIGEN de carga en Bresfor (no destino), §8."
+  },
+  {
+    "id_punto": "RELISA",
+    "nombre_canonico": "Relisa",
+    "alias": "",
+    "municipio": "Barcelona",
+    "provincia": "Barcelona",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Relisa",
+    "_nota": "Lugar de carga, NO cliente (§3). Quimidroga carga en Relisa."
+  },
+  {
+    "id_punto": "DIVERSEY",
+    "nombre_canonico": "Diversey",
+    "alias": "DIVERSEY ESPANA|DIVERSEY ESPANA PRODUCTION",
+    "municipio": "Valdemoro",
+    "provincia": "Madrid",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Diversey",
+    "_nota": "Lugar de carga, NO cliente (§3). Baltransa carga en Diversey."
+  },
+  {
+    "id_punto": "TEPSA",
+    "nombre_canonico": "Tepsa",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Tepsa",
+    "_nota": "Planta cargadora (§8, Quimidroga). Marcarla explicita es la vacuna contra confundir lugar de carga con cliente (§3)."
+  },
+  {
+    "id_punto": "BRESFOR",
+    "nombre_canonico": "Bresfor",
+    "alias": "BREDFOR",
+    "municipio": "Aveiro",
+    "provincia": "Aveiro",
+    "pais": "PT",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Bresfor",
+    "_nota": "BREDFOR es la variante MAL ESCRITA en nuestro propio docs/catalogo-maestro.md."
+  }
+]

@@ -39,6 +39,7 @@ Si encontrás una contradicción que no está listada abajo, **no la resuelvas p
 | Documento | Qué contiene | Cuándo leerlo |
 |---|---|---|
 | `grafo-ingesta-dedup.md` | Tramo nuevo de la ingesta: deduplicación, peso de origen, los 3 nodos nuevos | Al tocar la ingesta |
+| `catalogo-puntos.md` | Catálogo canónico de puntos + resolvedor (`catalogo/`): cascada, precedencia doc/ficha, aprendizaje de alias, bootstrap | Al tocar puntos, tarifas o correlación de ruta |
 | `contrato-viaje-v1.md` | Estructura de datos de un viaje, versión actual | Al cambiar campos de un viaje |
 | `contrato-viaje.md` | Versión anterior | Solo histórico |
 | `validador-factura.md` | Documentación del auditor de facturas | Al tocar el auditor |

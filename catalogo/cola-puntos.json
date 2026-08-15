@@ -1,0 +1,856 @@
+[
+  {
+    "literal": "VILLAGARCIA",
+    "frecuencia": 421,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VILLAGARCIA\""
+  },
+  {
+    "literal": "UTISA TERUEL",
+    "frecuencia": 358,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"UTISA TERUEL\""
+  },
+  {
+    "literal": "TORDESILLAS",
+    "frecuencia": 330,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TORDESILLAS\""
+  },
+  {
+    "literal": "TARRAGONA",
+    "frecuencia": 127,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TARRAGONA\""
+  },
+  {
+    "literal": "IP DECOR SPAIN, SAU",
+    "frecuencia": 91,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"IP DECOR SPAIN, SAU\""
+  },
+  {
+    "literal": "MADRID",
+    "frecuencia": 89,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MADRID\""
+  },
+  {
+    "literal": "GETAFE",
+    "frecuencia": 62,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"GETAFE\""
+  },
+  {
+    "literal": "VALDEMORO",
+    "frecuencia": 60,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VALDEMORO\""
+  },
+  {
+    "literal": "MIRANDA DE EBRO",
+    "frecuencia": 57,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MIRANDA DE EBRO\""
+  },
+  {
+    "literal": "ORENSE",
+    "frecuencia": 56,
+    "candidatos": [
+      {
+        "id_punto": "OURENSE",
+        "nombre_canonico": "Ourense",
+        "metodo": "distancia",
+        "confianza": "media"
+      }
+    ],
+    "sugerido": "OURENSE",
+    "motivo": "punto \"ORENSE\" -> Ourense (distancia, confianza media); lectura parecida a un canonico (distancia 1) — verificar"
+  },
+  {
+    "literal": "TERMOLAN, S.A.",
+    "frecuencia": 49,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TERMOLAN, S.A.\""
+  },
+  {
+    "literal": "HUELVA",
+    "frecuencia": 44,
+    "candidatos": [
+      {
+        "id_punto": "GES-BIOHU",
+        "nombre_canonico": "BIO OILS HUELVA SL",
+        "metodo": "contencion",
+        "confianza": "media"
+      }
+    ],
+    "sugerido": "GES-BIOHU",
+    "motivo": "punto \"HUELVA\" -> BIO OILS HUELVA SL (contencion, confianza media); nombre contenido en un unico canonico — verificar"
+  },
+  {
+    "literal": "LEIRIA (PT)",
+    "frecuencia": 41,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LEIRIA (PT)\""
+  },
+  {
+    "literal": "CURIA SPAIN, SAU",
+    "frecuencia": 40,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CURIA SPAIN, SAU\""
+  },
+  {
+    "literal": "URSA IBERICA, S.A.",
+    "frecuencia": 40,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"URSA IBERICA, S.A.\""
+  },
+  {
+    "literal": "PORRIÑO",
+    "frecuencia": 34,
+    "candidatos": [
+      {
+        "id_punto": "GES-ASTLV",
+        "nombre_canonico": "ASTURIAS-MARSELLA-PORRIÑO",
+        "metodo": "contencion",
+        "confianza": "media"
+      }
+    ],
+    "sugerido": "GES-ASTLV",
+    "motivo": "punto \"PORRIÑO\" -> ASTURIAS-MARSELLA-PORRIÑO (contencion, confianza media); nombre contenido en un unico canonico — verificar"
+  },
+  {
+    "literal": "HARINAS ALMELA,SC",
+    "frecuencia": 33,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"HARINAS ALMELA,SC\""
+  },
+  {
+    "literal": "NEFAB PONTEV. SL",
+    "frecuencia": 27,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"NEFAB PONTEV. SL\""
+  },
+  {
+    "literal": "VIGO",
+    "frecuencia": 27,
+    "candidatos": [
+      {
+        "id_punto": "GES-CALVI",
+        "nombre_canonico": "CALDAS-VIGO",
+        "metodo": "contencion",
+        "confianza": "media"
+      }
+    ],
+    "sugerido": "GES-CALVI",
+    "motivo": "punto \"VIGO\" -> CALDAS-VIGO (contencion, confianza media); nombre contenido en un unico canonico — verificar"
+  },
+  {
+    "literal": "VILANOVA FAMALICAO",
+    "frecuencia": 26,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VILANOVA FAMALICAO\""
+  },
+  {
+    "literal": "PONTEVEDRA",
+    "frecuencia": 25,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PONTEVEDRA\""
+  },
+  {
+    "literal": "CURTIS",
+    "frecuencia": 24,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CURTIS\""
+  },
+  {
+    "literal": "COGERSA",
+    "frecuencia": 20,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"COGERSA\""
+  },
+  {
+    "literal": "REINOSA",
+    "frecuencia": 19,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"REINOSA\""
+  },
+  {
+    "literal": "SANTAREM",
+    "frecuencia": 18,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SANTAREM\""
+  },
+  {
+    "literal": "TOLEDO",
+    "frecuencia": 17,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TOLEDO\""
+  },
+  {
+    "literal": "SEVILLA",
+    "frecuencia": 16,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SEVILLA\""
+  },
+  {
+    "literal": "ESTARREJA",
+    "frecuencia": 14,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ESTARREJA\""
+  },
+  {
+    "literal": "KRONOSPAN, S.L.",
+    "frecuencia": 14,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"KRONOSPAN, S.L.\""
+  },
+  {
+    "literal": "DROGAS VIGO, S.L.",
+    "frecuencia": 13,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"DROGAS VIGO, S.L.\""
+  },
+  {
+    "literal": "MEM MARTINS (PT)",
+    "frecuencia": 12,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MEM MARTINS (PT)\""
+  },
+  {
+    "literal": "COIMBRA",
+    "frecuencia": 11,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"COIMBRA\""
+  },
+  {
+    "literal": "QUER",
+    "frecuencia": 11,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"QUER\""
+  },
+  {
+    "literal": "SILLEDA",
+    "frecuencia": 10,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SILLEDA\""
+  },
+  {
+    "literal": "S.JOAO MADEIRA",
+    "frecuencia": 10,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"S.JOAO MADEIRA\""
+  },
+  {
+    "literal": "RUBI",
+    "frecuencia": 10,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"RUBI\""
+  },
+  {
+    "literal": "MINDELO",
+    "frecuencia": 10,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MINDELO\""
+  },
+  {
+    "literal": "OVAR",
+    "frecuencia": 10,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"OVAR\""
+  },
+  {
+    "literal": "TABLESTUY, S.L.",
+    "frecuencia": 9,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TABLESTUY, S.L.\""
+  },
+  {
+    "literal": "SALVATIERRA",
+    "frecuencia": 9,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SALVATIERRA\""
+  },
+  {
+    "literal": "LEON",
+    "frecuencia": 8,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LEON\""
+  },
+  {
+    "literal": "MAIA",
+    "frecuencia": 8,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MAIA\""
+  },
+  {
+    "literal": "SERVYECO IBERIA,SL",
+    "frecuencia": 8,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SERVYECO IBERIA,SL\""
+  },
+  {
+    "literal": "ZIERBANA",
+    "frecuencia": 8,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ZIERBANA\""
+  },
+  {
+    "literal": "MEJORADA",
+    "frecuencia": 8,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MEJORADA\""
+  },
+  {
+    "literal": "ZUERA",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ZUERA\""
+  },
+  {
+    "literal": "SANTIAGO",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SANTIAGO\""
+  },
+  {
+    "literal": "CORUÑA",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CORUÑA\""
+  },
+  {
+    "literal": "O PORTO",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"O PORTO\""
+  },
+  {
+    "literal": "SETUBAL",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SETUBAL\""
+  },
+  {
+    "literal": "GUADALAJARA",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"GUADALAJARA\""
+  },
+  {
+    "literal": "TORTOSA",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TORTOSA\""
+  },
+  {
+    "literal": "GUIMARAES",
+    "frecuencia": 7,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"GUIMARAES\""
+  },
+  {
+    "literal": "VALLADOLID",
+    "frecuencia": 6,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VALLADOLID\""
+  },
+  {
+    "literal": "VILLALBA",
+    "frecuencia": 6,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VILLALBA\""
+  },
+  {
+    "literal": "CLARIANT, S.A.",
+    "frecuencia": 6,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CLARIANT, S.A.\""
+  },
+  {
+    "literal": "TEIXEIRO",
+    "frecuencia": 6,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TEIXEIRO\""
+  },
+  {
+    "literal": "SOLOGAS (AS SOMOZAS)",
+    "frecuencia": 6,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SOLOGAS (AS SOMOZAS)\""
+  },
+  {
+    "literal": "NAVIA",
+    "frecuencia": 6,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"NAVIA\""
+  },
+  {
+    "literal": "SOBRALINHO(PT)",
+    "frecuencia": 6,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SOBRALINHO(PT)\""
+  },
+  {
+    "literal": "GUARDA (PT)",
+    "frecuencia": 5,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"GUARDA (PT)\""
+  },
+  {
+    "literal": "PALENCIA",
+    "frecuencia": 5,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PALENCIA\""
+  },
+  {
+    "literal": "VILARINHO(PT)",
+    "frecuencia": 5,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VILARINHO(PT)\""
+  },
+  {
+    "literal": "FRANCIA",
+    "frecuencia": 5,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"FRANCIA\""
+  },
+  {
+    "literal": "LORCOL",
+    "frecuencia": 5,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LORCOL\""
+  },
+  {
+    "literal": "VIC",
+    "frecuencia": 5,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VIC\""
+  },
+  {
+    "literal": "ZNDS TABLEROS, S.L.",
+    "frecuencia": 5,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ZNDS TABLEROS, S.L.\""
+  },
+  {
+    "literal": "ZAMUDIO",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ZAMUDIO\""
+  },
+  {
+    "literal": "COMERCIAL GODO, S.L.",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"COMERCIAL GODO, S.L.\""
+  },
+  {
+    "literal": "PONTEDEUME",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PONTEDEUME\""
+  },
+  {
+    "literal": "CASTANHEIRA RIBATEJO(PT)",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CASTANHEIRA RIBATEJO(PT)\""
+  },
+  {
+    "literal": "LISBOA",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LISBOA\""
+  },
+  {
+    "literal": "MUGARDOS",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MUGARDOS\""
+  },
+  {
+    "literal": "DROGAS CONDE, S.A.",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"DROGAS CONDE, S.A.\""
+  },
+  {
+    "literal": "PORTALEGRE",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PORTALEGRE\""
+  },
+  {
+    "literal": "SARIEGO",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SARIEGO\""
+  },
+  {
+    "literal": "LOUSADA",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LOUSADA\""
+  },
+  {
+    "literal": "IND.QUIM.CUADRADO,SA",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"IND.QUIM.CUADRADO,SA\""
+  },
+  {
+    "literal": "RABADE",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"RABADE\""
+  },
+  {
+    "literal": "GUARNIZO",
+    "frecuencia": 4,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"GUARNIZO\""
+  },
+  {
+    "literal": "MADERAS DE LLODIO,SA",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MADERAS DE LLODIO,SA\""
+  },
+  {
+    "literal": "HELDER ROB.MOREIRA",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"HELDER ROB.MOREIRA\""
+  },
+  {
+    "literal": "LANTEMIL (PT)",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LANTEMIL (PT)\""
+  },
+  {
+    "literal": "CATENVA, S.L.",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CATENVA, S.L.\""
+  },
+  {
+    "literal": "ERMESINDE(PT)",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ERMESINDE(PT)\""
+  },
+  {
+    "literal": "SANFINS (PT)",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SANFINS (PT)\""
+  },
+  {
+    "literal": "VALADARES(PT)",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VALADARES(PT)\""
+  },
+  {
+    "literal": "TABUA (PT)",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TABUA (PT)\""
+  },
+  {
+    "literal": "PADRON",
+    "frecuencia": 3,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PADRON\""
+  },
+  {
+    "literal": "CORDOBA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CORDOBA\""
+  },
+  {
+    "literal": "VILLATUERTA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VILLATUERTA\""
+  },
+  {
+    "literal": "LUSO FINSA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LUSO FINSA\""
+  },
+  {
+    "literal": "CHIVA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CHIVA\""
+  },
+  {
+    "literal": "CARREGADO",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CARREGADO\""
+  },
+  {
+    "literal": "VALGA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VALGA\""
+  },
+  {
+    "literal": "OLIVEIRA FRADES(PT)",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"OLIVEIRA FRADES(PT)\""
+  },
+  {
+    "literal": "TABOADA (LU)",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TABOADA (LU)\""
+  },
+  {
+    "literal": "SELENA IBERIA, SLU",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SELENA IBERIA, SLU\""
+  },
+  {
+    "literal": "SEIXO DE MIRA(PT)",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SEIXO DE MIRA(PT)\""
+  },
+  {
+    "literal": "MONFORTE LEMOS",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MONFORTE LEMOS\""
+  },
+  {
+    "literal": "REKAR IBERICA, S.A.",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"REKAR IBERICA, S.A.\""
+  },
+  {
+    "literal": "PATERNA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PATERNA\""
+  },
+  {
+    "literal": "TUDELA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TUDELA\""
+  },
+  {
+    "literal": "VALENCIA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VALENCIA\""
+  },
+  {
+    "literal": "LLIRIA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LLIRIA\""
+  },
+  {
+    "literal": "LUGO",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LUGO\""
+  },
+  {
+    "literal": "VITORIA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VITORIA\""
+  },
+  {
+    "literal": "TORRES NOVAS",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TORRES NOVAS\""
+  },
+  {
+    "literal": "CUNTIS",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CUNTIS\""
+  },
+  {
+    "literal": "CONTRACHAPADOS INDUSTRIALES, S.L.",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CONTRACHAPADOS INDUSTRIALES, S.L.\""
+  },
+  {
+    "literal": "ZAMORA",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ZAMORA\""
+  },
+  {
+    "literal": "GARNICA PLYWOOD",
+    "frecuencia": 2,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"GARNICA PLYWOOD\""
+  },
+  {
+    "literal": "MOSTOLES",
+    "frecuencia": 1,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MOSTOLES\""
+  },
+  {
+    "literal": "CASTELLBISBAL",
+    "frecuencia": 1,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CASTELLBISBAL\""
+  },
+  {
+    "literal": "TUI",
+    "frecuencia": 1,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TUI\""
+  },
+  {
+    "literal": "PAREDES (PT)",
+    "frecuencia": 1,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PAREDES (PT)\""
+  },
+  {
+    "literal": "HUESCA",
+    "frecuencia": 1,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"HUESCA\""
+  },
+  {
+    "literal": "VERIN",
+    "frecuencia": 1,
+    "candidatos": [],
+    "sugerido": null,
+    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VERIN\""
+  }
+]
