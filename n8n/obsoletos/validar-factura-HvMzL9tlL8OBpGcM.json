@@ -1,0 +1,11 @@
+{
+  "_export": "Backup del workflow obsoleto [ESTEVEZ] Validar Factura (v2, 22/07/2026) antes de archivarlo (Encargo 4 CAMBIO 0).",
+  "_diff_v3": "Los 10 checks del nodo Auditar v2 estan TODOS presentes en validador/auditar.js (v3): (1) importe=cant*precio, (2) minimo 23t, (3) matricula faltante, (4) indexacion pct por fecha, (5) base idx vs importe, (6) importe idx=base*pct, (7) falta linea indexacion, (8) cuadre suma vs base, (9) IVA aritmetica, (10) total=base+IVA. Ninguno huerfano; v3 es superset. Nada que rescatar.",
+  "id": "HvMzL9tlL8OBpGcM",
+  "name": "[ESTEVEZ] Validar Factura",
+  "active": true,
+  "createdAt": "2026-07-22T08:57:00.923Z",
+  "updatedAt": "2026-07-22T09:23:32.879Z",
+  "description": "Validador de facturas Transliquidos Estevez: recibe PDF de factura emitida, extrae lineas con gpt-4o y audita importes, indexacion por fecha, minimo 23t, matriculas y cuadre de totales.",
+  "nota_nodos": "Entrada Factura (formTrigger /validar-factura) -> Espera -> Preparar Payload (gpt-4o extractor) -> Extraer Factura (OpenAI) -> Auditar (Code, los 10 checks) -> Resultado (form showText). La logica del nodo Auditar quedo superada por validador/auditar.js (v3, workflow IlIod0DlephaLmAV)."
+}
