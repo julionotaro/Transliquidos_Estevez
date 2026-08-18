@@ -132,11 +132,19 @@ function resolverPunto(literal, fuente, catalogo) {
 
   // 1) exacto contra un nombre_canonico. 2) exacto contra un alias.
   var canon = null, alias = null, i;
+  var canonIds = {}; // id_punto distintos con match canonico exacto (para duplicados)
   for (i = 0; i < idx.length; i++) {
     if (idx[i].norm === norm) {
-      if (!idx[i].es_alias && !canon) { canon = idx[i]; }
+      if (!idx[i].es_alias) { if (!canon) { canon = idx[i]; } canonIds[idx[i].id_punto] = idx[i]; }
       if (idx[i].es_alias && !alias) { alias = idx[i]; }
     }
+  }
+  // Duplicado en catalogo: mismo nombre EXACTO, dos Cod.Pto. distintos (ej. GARNICA
+  // GARNI/GARNL). No se puede saber cual se uso desde el nombre -> NO elegir, es
+  // decision de Julio (§ dato: 5 duplicados marcados pendientes).
+  if (Object.keys(canonIds).length > 1) {
+    var cods = Object.keys(canonIds).join(', ');
+    return noReconocido(literal, 'duplicado en catalogo: mismo nombre con varios Cod.Pto. (' + cods + ') — decision pendiente de Julio');
   }
   var base = null, metodo = null;
   if (canon) { base = resultadoResuelto(canon, 'alta', 'canonico', literal); metodo = 'canonico'; }

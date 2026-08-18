@@ -1,5 +1,60 @@
 [
   {
+    "id_punto": "1",
+    "nombre_canonico": "CALDAS DE REIS",
+    "alias": "",
+    "municipio": "",
+    "provincia": "PONTEVEDRA",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta"
+  },
+  {
+    "id_punto": "9713",
+    "nombre_canonico": "ALJUSTREL (PT)",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta"
+  },
+  {
+    "id_punto": "9714",
+    "nombre_canonico": "ALMODOVAR (PT)",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta"
+  },
+  {
+    "id_punto": "9728",
+    "nombre_canonico": "ALPIARÇA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta"
+  },
+  {
+    "id_punto": "9732",
+    "nombre_canonico": "ARAIA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta"
+  },
+  {
     "id_punto": "OURENSE",
     "nombre_canonico": "Ourense",
     "alias": "OREMBER|OREMBER (OURENSE)",
@@ -66,7 +121,7 @@
     "origen_alta": "manual"
   },
   {
-    "id_punto": "GES-ESTRA",
+    "id_punto": "ESTRA",
     "nombre_canonico": "A ESTRADA",
     "alias": "",
     "municipio": "",
@@ -77,7 +132,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ABRA",
+    "id_punto": "ABRA",
     "nombre_canonico": "ABRANTES (PT)",
     "alias": "",
     "municipio": "",
@@ -88,7 +143,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ACOR",
+    "id_punto": "ACOR",
     "nombre_canonico": "ACOR-BIODIESEL",
     "alias": "",
     "municipio": "",
@@ -99,7 +154,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ACRIL",
+    "id_punto": "ACRIL",
     "nombre_canonico": "ACRILATOS, SAU",
     "alias": "",
     "municipio": "",
@@ -110,7 +165,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-GIMPE",
+    "id_punto": "GIMPE",
     "nombre_canonico": "ADHESIVOS GIMPEX, S.L",
     "alias": "",
     "municipio": "",
@@ -121,7 +176,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ADIEG",
+    "id_punto": "ADIEG",
     "nombre_canonico": "ADIEGO HERMANOS, S.A.",
     "alias": "",
     "municipio": "",
@@ -132,7 +187,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AGREL",
+    "id_punto": "AGREL",
     "nombre_canonico": "AGRELA SANTO TIRSO",
     "alias": "",
     "municipio": "",
@@ -143,7 +198,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AGUED",
+    "id_punto": "AGUED",
     "nombre_canonico": "AGUEDA",
     "alias": "",
     "municipio": "",
@@ -154,7 +209,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CAMPO",
+    "id_punto": "CAMPO",
     "nombre_canonico": "AGUILAR CAMPO",
     "alias": "",
     "municipio": "",
@@ -165,7 +220,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AGULL",
+    "id_punto": "AGULL",
     "nombre_canonico": "AGULLENT",
     "alias": "",
     "municipio": "",
@@ -176,7 +231,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AGURA",
+    "id_punto": "AGURA",
     "nombre_canonico": "AGURAIN",
     "alias": "",
     "municipio": "",
@@ -187,7 +242,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AHLST",
+    "id_punto": "AHLST",
     "nombre_canonico": "AHLSTROM LABELPACK",
     "alias": "",
     "municipio": "",
@@ -198,7 +253,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALANQ",
+    "id_punto": "ALANQ",
     "nombre_canonico": "ALANQUE",
     "alias": "",
     "municipio": "",
@@ -209,7 +264,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALAVA",
+    "id_punto": "ALAVA",
     "nombre_canonico": "ALAVA",
     "alias": "",
     "municipio": "",
@@ -220,7 +275,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AB",
+    "id_punto": "AB",
     "nombre_canonico": "ALBACETE",
     "alias": "",
     "municipio": "",
@@ -231,7 +286,19 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALCAL",
+    "id_punto": "ALBAC",
+    "nombre_canonico": "ALBACETE",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta",
+    "duplicado_pendiente": true
+  },
+  {
+    "id_punto": "ALCAL",
     "nombre_canonico": "ALCALA HENARES",
     "alias": "",
     "municipio": "",
@@ -242,7 +309,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALCAN",
+    "id_punto": "ALCAN",
     "nombre_canonico": "ALCANENA(PT)",
     "alias": "",
     "municipio": "",
@@ -253,7 +320,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALCAZ",
+    "id_punto": "ALCAZ",
     "nombre_canonico": "ALCAZAR DE S. JUAN",
     "alias": "",
     "municipio": "",
@@ -264,7 +331,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALCAÑ",
+    "id_punto": "ALCAÑ",
     "nombre_canonico": "ALCAÑIZ",
     "alias": "",
     "municipio": "",
@@ -275,7 +342,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALCOB",
+    "id_punto": "ALCOB",
     "nombre_canonico": "ALCOBENDAS",
     "alias": "",
     "municipio": "",
@@ -286,7 +353,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALCOV",
+    "id_punto": "ALCOV",
     "nombre_canonico": "ALCOVER",
     "alias": "",
     "municipio": "",
@@ -297,7 +364,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALCO",
+    "id_punto": "ALCO",
     "nombre_canonico": "ALCOVER QUIMINA, S.L.",
     "alias": "",
     "municipio": "",
@@ -308,7 +375,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALDEA",
+    "id_punto": "ALDEA",
     "nombre_canonico": "ALDEAMAYOR",
     "alias": "",
     "municipio": "",
@@ -319,7 +386,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALEG",
+    "id_punto": "ALEG",
     "nombre_canonico": "ALEGIA",
     "alias": "",
     "municipio": "",
@@ -330,7 +397,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALEMA",
+    "id_punto": "ALEMA",
     "nombre_canonico": "ALEMANIA",
     "alias": "",
     "municipio": "",
@@ -341,7 +408,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALENQ",
+    "id_punto": "ALENQ",
     "nombre_canonico": "ALENQUER",
     "alias": "",
     "municipio": "",
@@ -352,7 +419,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALFAR",
+    "id_punto": "ALFAR",
     "nombre_canonico": "ALFARO",
     "alias": "",
     "municipio": "",
@@ -363,7 +430,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALFEN",
+    "id_punto": "ALFEN",
     "nombre_canonico": "ALFENA(PT)",
     "alias": "",
     "municipio": "",
@@ -374,7 +441,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALGEC",
+    "id_punto": "ALGEC",
     "nombre_canonico": "ALGECIRAS",
     "alias": "",
     "municipio": "",
@@ -385,7 +452,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALGRY",
+    "id_punto": "ALGRY",
     "nombre_canonico": "ALGRY QUYIMICA, S.L.",
     "alias": "",
     "municipio": "",
@@ -396,7 +463,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-A",
+    "id_punto": "A",
     "nombre_canonico": "ALICANTE",
     "alias": "",
     "municipio": "",
@@ -407,18 +474,19 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-9713",
-    "nombre_canonico": "ALJUSTREL (PT)",
+    "id_punto": "ALICA",
+    "nombre_canonico": "ALICANTE",
     "alias": "",
     "municipio": "",
     "provincia": "",
     "pais": "",
     "tipo": "generico",
     "empresa_sede": "",
-    "origen_alta": "gesruta"
+    "origen_alta": "gesruta",
+    "duplicado_pendiente": true
   },
   {
-    "id_punto": "GES-ALLO",
+    "id_punto": "ALLO",
     "nombre_canonico": "ALLO",
     "alias": "",
     "municipio": "",
@@ -429,7 +497,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALMA",
+    "id_punto": "ALMA",
     "nombre_canonico": "ALMADA (PT)",
     "alias": "",
     "municipio": "",
@@ -440,7 +508,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALMEI",
+    "id_punto": "ALMEI",
     "nombre_canonico": "ALMEIRIN (PT)",
     "alias": "",
     "municipio": "",
@@ -451,7 +519,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALMEN",
+    "id_punto": "ALMEN",
     "nombre_canonico": "ALMENDRALEJO",
     "alias": "",
     "municipio": "",
@@ -462,7 +530,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AL",
+    "id_punto": "AL",
     "nombre_canonico": "ALMERIA",
     "alias": "",
     "municipio": "",
@@ -473,18 +541,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-9714",
-    "nombre_canonico": "ALMODOVAR (PT)",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "GES-ALMUS",
+    "id_punto": "ALMUS",
     "nombre_canonico": "ALMUSAFFES",
     "alias": "",
     "municipio": "",
@@ -495,7 +552,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALONS",
+    "id_punto": "ALONS",
     "nombre_canonico": "ALONSOTEGUI",
     "alias": "",
     "municipio": "",
@@ -506,7 +563,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALOVE",
+    "id_punto": "ALOVE",
     "nombre_canonico": "ALOVERA",
     "alias": "",
     "municipio": "",
@@ -517,18 +574,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-9728",
-    "nombre_canonico": "ALPIARÇA",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "GES-ALTO",
+    "id_punto": "ALTO",
     "nombre_canonico": "ALTORRICON (HU)",
     "alias": "",
     "municipio": "",
@@ -539,7 +585,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ALVER",
+    "id_punto": "ALVER",
     "nombre_canonico": "ALVERCA",
     "alias": "",
     "municipio": "",
@@ -550,7 +596,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AMAD",
+    "id_punto": "AMAD",
     "nombre_canonico": "AMADORA (PT)",
     "alias": "",
     "municipio": "",
@@ -561,7 +607,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AMBAR",
+    "id_punto": "AMBAR",
     "nombre_canonico": "AMBARES",
     "alias": "",
     "municipio": "",
@@ -572,7 +618,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AMBER",
+    "id_punto": "AMBER",
     "nombre_canonico": "AMBERES",
     "alias": "",
     "municipio": "",
@@ -583,7 +629,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AMELI",
+    "id_punto": "AMELI",
     "nombre_canonico": "AMELIE LES BAINS",
     "alias": "",
     "municipio": "",
@@ -594,7 +640,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AMORE",
+    "id_punto": "AMORE",
     "nombre_canonico": "AMOREBIETA",
     "alias": "",
     "municipio": "",
@@ -605,7 +651,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AMORI",
+    "id_punto": "AMORI",
     "nombre_canonico": "AMORIN REVESTIMENTOS, SA",
     "alias": "",
     "municipio": "",
@@ -616,7 +662,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AMPOS",
+    "id_punto": "AMPOS",
     "nombre_canonico": "AMPOSTA",
     "alias": "",
     "municipio": "",
@@ -627,7 +673,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ANADI",
+    "id_punto": "ANADI",
     "nombre_canonico": "ANADIA",
     "alias": "",
     "municipio": "",
@@ -638,7 +684,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ANDO",
+    "id_punto": "ANDO",
     "nombre_canonico": "ANDOAIN",
     "alias": "",
     "municipio": "",
@@ -649,7 +695,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ANDOR",
+    "id_punto": "ANDOR",
     "nombre_canonico": "ANDORRA",
     "alias": "",
     "municipio": "",
@@ -660,7 +706,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ANLEO",
+    "id_punto": "ANLEO",
     "nombre_canonico": "ANLEO",
     "alias": "",
     "municipio": "",
@@ -671,7 +717,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ANLSE",
+    "id_punto": "ANLSE",
     "nombre_canonico": "ANLEO-SEVARES",
     "alias": "",
     "municipio": "",
@@ -682,7 +728,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AQUAC",
+    "id_punto": "AQUAC",
     "nombre_canonico": "AQUACRIA AROUSA,SA",
     "alias": "",
     "municipio": "",
@@ -693,18 +739,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-9732",
-    "nombre_canonico": "ARAIA",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "GES-ARAND",
+    "id_punto": "ARAND",
     "nombre_canonico": "ARANDA DEL DUERO",
     "alias": "",
     "municipio": "",
@@ -715,7 +750,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARANG",
+    "id_punto": "ARANG",
     "nombre_canonico": "ARANGUREN",
     "alias": "",
     "municipio": "",
@@ -726,7 +761,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARANJ",
+    "id_punto": "ARANJ",
     "nombre_canonico": "ARANJUEZ",
     "alias": "",
     "municipio": "",
@@ -737,7 +772,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARAYA",
+    "id_punto": "ARAYA",
     "nombre_canonico": "ARAYA",
     "alias": "",
     "municipio": "",
@@ -748,7 +783,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARAZU",
+    "id_punto": "ARAZU",
     "nombre_canonico": "ARAZURI",
     "alias": "",
     "municipio": "",
@@ -759,7 +794,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARCHE",
+    "id_punto": "ARCHE",
     "nombre_canonico": "ARCHELA CONTRACHAPADOS,SL",
     "alias": "",
     "municipio": "",
@@ -770,7 +805,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARGA",
+    "id_punto": "ARGA",
     "nombre_canonico": "ARGANIL (PT)",
     "alias": "",
     "municipio": "",
@@ -781,7 +816,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARNED",
+    "id_punto": "ARNED",
     "nombre_canonico": "ARNEDO",
     "alias": "",
     "municipio": "",
@@ -792,7 +827,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARRAN",
+    "id_punto": "ARRAN",
     "nombre_canonico": "ARRANCUDIAGA",
     "alias": "",
     "municipio": "",
@@ -803,7 +838,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARRIG",
+    "id_punto": "ARRIG",
     "nombre_canonico": "ARRIGORRIAGA",
     "alias": "",
     "municipio": "",
@@ -814,7 +849,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARTAB",
+    "id_punto": "ARTAB",
     "nombre_canonico": "ARTABRA",
     "alias": "",
     "municipio": "",
@@ -825,7 +860,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARTEI",
+    "id_punto": "ARTEI",
     "nombre_canonico": "ARTEIXO",
     "alias": "",
     "municipio": "",
@@ -836,7 +871,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-PONTE",
+    "id_punto": "PONTE",
     "nombre_canonico": "AS PONTES",
     "alias": "",
     "municipio": "",
@@ -847,7 +882,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-SOMOZ",
+    "id_punto": "SOMOZ",
     "nombre_canonico": "AS SOMOZAS",
     "alias": "",
     "municipio": "",
@@ -858,7 +893,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ASTOR",
+    "id_punto": "ASTOR",
     "nombre_canonico": "ASTORGA",
     "alias": "",
     "municipio": "",
@@ -869,7 +904,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ASTUR",
+    "id_punto": "ASTUR",
     "nombre_canonico": "ASTURIAS",
     "alias": "",
     "municipio": "",
@@ -880,7 +915,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ASTLV",
+    "id_punto": "ASTLV",
     "nombre_canonico": "ASTURIAS-MARSELLA-PORRIÑO",
     "alias": "",
     "municipio": "",
@@ -891,7 +926,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ASUA",
+    "id_punto": "ASUA",
     "nombre_canonico": "ASUA",
     "alias": "",
     "municipio": "",
@@ -902,7 +937,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AVANC",
+    "id_punto": "AVANC",
     "nombre_canonico": "AVANCA (PT)",
     "alias": "",
     "municipio": "",
@@ -913,7 +948,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AV",
+    "id_punto": "AV",
     "nombre_canonico": "AVILA",
     "alias": "",
     "municipio": "",
@@ -924,7 +959,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AVILE",
+    "id_punto": "AVILE",
     "nombre_canonico": "AVILES",
     "alias": "",
     "municipio": "",
@@ -935,7 +970,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AVINT",
+    "id_punto": "AVINT",
     "nombre_canonico": "AVINTES",
     "alias": "",
     "municipio": "",
@@ -946,7 +981,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AVIS",
+    "id_punto": "AVIS",
     "nombre_canonico": "AVIS",
     "alias": "",
     "municipio": "",
@@ -957,7 +992,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AZAMB",
+    "id_punto": "AZAMB",
     "nombre_canonico": "AZAMBUJA(PT)",
     "alias": "",
     "municipio": "",
@@ -968,7 +1003,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AZPEI",
+    "id_punto": "AZPEI",
     "nombre_canonico": "AZPEITIA",
     "alias": "",
     "municipio": "",
@@ -979,7 +1014,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-AZUQU",
+    "id_punto": "AZUQU",
     "nombre_canonico": "AZUQUECA DE HENARES",
     "alias": "",
     "municipio": "",
@@ -990,7 +1025,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BA",
+    "id_punto": "BA",
     "nombre_canonico": "BADAJOZ",
     "alias": "",
     "municipio": "",
@@ -1001,7 +1036,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BADAL",
+    "id_punto": "BADAL",
     "nombre_canonico": "BADALONA",
     "alias": "",
     "municipio": "",
@@ -1012,7 +1047,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BADRI",
+    "id_punto": "BADRI",
     "nombre_canonico": "BADRINAS, SAU",
     "alias": "",
     "municipio": "",
@@ -1023,7 +1058,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BAION",
+    "id_punto": "BAION",
     "nombre_canonico": "BAION",
     "alias": "",
     "municipio": "",
@@ -1034,7 +1069,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BAKEL",
+    "id_punto": "BAKEL",
     "nombre_canonico": "BAKELITE IBERICA, SAU",
     "alias": "",
     "municipio": "",
@@ -1045,7 +1080,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BARAC",
+    "id_punto": "BARAC",
     "nombre_canonico": "BARAKALDO",
     "alias": "",
     "municipio": "",
@@ -1056,7 +1091,19 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BARBA",
+    "id_punto": "BARAK",
+    "nombre_canonico": "BARAKALDO",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta",
+    "duplicado_pendiente": true
+  },
+  {
+    "id_punto": "BARBA",
     "nombre_canonico": "BARBASTRO",
     "alias": "",
     "municipio": "",
@@ -1067,7 +1114,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BARBE",
+    "id_punto": "BARBE",
     "nombre_canonico": "BARBERA DEL VALLES",
     "alias": "",
     "municipio": "",
@@ -1078,7 +1125,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-B",
+    "id_punto": "B",
     "nombre_canonico": "BARCELONA",
     "alias": "",
     "municipio": "",
@@ -1089,7 +1136,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BARRE",
+    "id_punto": "BARRE",
     "nombre_canonico": "BARREIRO(PT)",
     "alias": "",
     "municipio": "",
@@ -1100,7 +1147,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BASAU",
+    "id_punto": "BASAU",
     "nombre_canonico": "BASAURI",
     "alias": "",
     "municipio": "",
@@ -1111,7 +1158,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BASSE",
+    "id_punto": "BASSE",
     "nombre_canonico": "BASSENS",
     "alias": "",
     "municipio": "",
@@ -1122,7 +1169,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BASTA",
+    "id_punto": "BASTA",
     "nombre_canonico": "BASTAVALES",
     "alias": "",
     "municipio": "",
@@ -1133,7 +1180,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BEGON",
+    "id_punto": "BEGON",
     "nombre_canonico": "BEGONTE",
     "alias": "",
     "municipio": "",
@@ -1144,7 +1191,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BELGI",
+    "id_punto": "BELGI",
     "nombre_canonico": "BELGICA",
     "alias": "",
     "municipio": "",
@@ -1155,7 +1202,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BENAV",
+    "id_punto": "BENAV",
     "nombre_canonico": "BENAVENTE(PORT.)",
     "alias": "",
     "municipio": "",
@@ -1166,7 +1213,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BENIC",
+    "id_punto": "BENIC",
     "nombre_canonico": "BENICARLO",
     "alias": "",
     "municipio": "",
@@ -1177,7 +1224,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BERA",
+    "id_punto": "BERA",
     "nombre_canonico": "BERA",
     "alias": "",
     "municipio": "",
@@ -1188,7 +1235,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BERAN",
+    "id_punto": "BERAN",
     "nombre_canonico": "BERANGO",
     "alias": "",
     "municipio": "",
@@ -1199,7 +1246,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BER",
+    "id_punto": "BER",
     "nombre_canonico": "BERANTEVILLA",
     "alias": "",
     "municipio": "",
@@ -1210,7 +1257,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BERME",
+    "id_punto": "BERME",
     "nombre_canonico": "BERMEO",
     "alias": "",
     "municipio": "",
@@ -1221,7 +1268,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BERRE",
+    "id_punto": "BERRE",
     "nombre_canonico": "BERRE-LETANG",
     "alias": "",
     "municipio": "",
@@ -1232,7 +1279,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BET",
+    "id_punto": "BET",
     "nombre_canonico": "BETANZOS",
     "alias": "",
     "municipio": "",
@@ -1243,7 +1290,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BI",
+    "id_punto": "BI",
     "nombre_canonico": "BILBAO",
     "alias": "",
     "municipio": "",
@@ -1254,7 +1301,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BILLA",
+    "id_punto": "BILLA",
     "nombre_canonico": "BILLABONA",
     "alias": "",
     "municipio": "",
@@ -1265,7 +1312,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIOHU",
+    "id_punto": "BIOHU",
     "nombre_canonico": "BIO OILS HUELVA SL",
     "alias": "",
     "municipio": "",
@@ -1276,7 +1323,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIOCA",
+    "id_punto": "BIOCA",
     "nombre_canonico": "BIOCARB.DE CASTILLA,SA",
     "alias": "",
     "municipio": "",
@@ -1287,7 +1334,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIOCS",
+    "id_punto": "BIOCS",
     "nombre_canonico": "BIOCARBUR.SALAMANCA,SA",
     "alias": "",
     "municipio": "",
@@ -1298,7 +1345,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIOCO",
+    "id_punto": "BIOCO",
     "nombre_canonico": "BIOCOM PISUERGA,SA",
     "alias": "",
     "municipio": "",
@@ -1309,7 +1356,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ARAGO",
+    "id_punto": "ARAGO",
     "nombre_canonico": "BIODIESEL ARAGON, S.L.",
     "alias": "",
     "municipio": "",
@@ -1320,7 +1367,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIODI",
+    "id_punto": "BIODI",
     "nombre_canonico": "BIODIESEL CLM, S.L.",
     "alias": "",
     "municipio": "",
@@ -1331,7 +1378,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BION",
+    "id_punto": "BION",
     "nombre_canonico": "BIONOR BERANTEVILLA,SLU",
     "alias": "",
     "municipio": "",
@@ -1342,7 +1389,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIONO",
+    "id_punto": "BIONO",
     "nombre_canonico": "BIONORTE, S.A.",
     "alias": "",
     "municipio": "",
@@ -1353,7 +1400,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIOPO",
+    "id_punto": "BIOPO",
     "nombre_canonico": "BIOPORT DIESEL,SA",
     "alias": "",
     "municipio": "",
@@ -1364,7 +1411,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIOVI",
+    "id_punto": "BIOVI",
     "nombre_canonico": "BIOVIGO ENERGY,SL",
     "alias": "",
     "municipio": "",
@@ -1375,7 +1422,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BIZKA",
+    "id_punto": "BIZKA",
     "nombre_canonico": "BIZKAIA",
     "alias": "",
     "municipio": "",
@@ -1386,7 +1433,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BOIRO",
+    "id_punto": "BOIRO",
     "nombre_canonico": "BOIRO",
     "alias": "",
     "municipio": "",
@@ -1397,7 +1444,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BOURD",
+    "id_punto": "BOURD",
     "nombre_canonico": "BOURDEAUX",
     "alias": "",
     "municipio": "",
@@ -1408,7 +1455,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BRAGA",
+    "id_punto": "BRAGA",
     "nombre_canonico": "BRAGA (PT)",
     "alias": "",
     "municipio": "",
@@ -1419,7 +1466,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BRAG",
+    "id_punto": "BRAG",
     "nombre_canonico": "BRAGANÇA (PT)",
     "alias": "",
     "municipio": "",
@@ -1430,7 +1477,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-ILE",
+    "id_punto": "ILE",
     "nombre_canonico": "BRENNTAG ILE FRANCE",
     "alias": "",
     "municipio": "",
@@ -1441,7 +1488,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BRENN",
+    "id_punto": "BRENN",
     "nombre_canonico": "BRENNTAG QUIMICA, SA",
     "alias": "",
     "municipio": "",
@@ -1452,7 +1499,19 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-BU",
+    "id_punto": "BRENT",
+    "nombre_canonico": "BRENNTAG QUIMICA,SA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta",
+    "duplicado_pendiente": true
+  },
+  {
+    "id_punto": "BU",
     "nombre_canonico": "BURGOS",
     "alias": "",
     "municipio": "",
@@ -1463,7 +1522,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CABAN",
+    "id_punto": "CABAN",
     "nombre_canonico": "CABANILLAS DEL CAMPO",
     "alias": "",
     "municipio": "",
@@ -1474,7 +1533,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CC",
+    "id_punto": "CC",
     "nombre_canonico": "CACERES",
     "alias": "",
     "municipio": "",
@@ -1485,7 +1544,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CACIA",
+    "id_punto": "CACIA",
     "nombre_canonico": "CACIA",
     "alias": "",
     "municipio": "",
@@ -1496,7 +1555,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CA",
+    "id_punto": "CA",
     "nombre_canonico": "CADIZ",
     "alias": "",
     "municipio": "",
@@ -1507,7 +1566,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CALAH",
+    "id_punto": "CALAH",
     "nombre_canonico": "CALAHORRA",
     "alias": "",
     "municipio": "",
@@ -1518,7 +1577,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CALA",
+    "id_punto": "CALA",
     "nombre_canonico": "CALATAYUD",
     "alias": "",
     "municipio": "",
@@ -1529,7 +1588,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CALD",
+    "id_punto": "CALD",
     "nombre_canonico": "CALDAS DA RAINHA (PT)",
     "alias": "",
     "municipio": "",
@@ -1540,18 +1599,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-1",
-    "nombre_canonico": "CALDAS DE REIS",
-    "alias": "",
-    "municipio": "",
-    "provincia": "PONTEVEDRA",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "GES-CALAV",
+    "id_punto": "CALAV",
     "nombre_canonico": "CALDAS RAINHA/AVIS",
     "alias": "",
     "municipio": "",
@@ -1562,7 +1610,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CALPE",
+    "id_punto": "CALPE",
     "nombre_canonico": "CALDAS RAINHA/PENICHE",
     "alias": "",
     "municipio": "",
@@ -1573,7 +1621,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CALVI",
+    "id_punto": "CALVI",
     "nombre_canonico": "CALDAS-VIGO",
     "alias": "",
     "municipio": "",
@@ -1584,7 +1632,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CAMBA",
+    "id_punto": "CAMBA",
     "nombre_canonico": "CAMBADOS",
     "alias": "",
     "municipio": "",
@@ -1595,7 +1643,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CAMUÑ",
+    "id_punto": "CAMUÑ",
     "nombre_canonico": "CAMUÑAS",
     "alias": "",
     "municipio": "",
@@ -1606,7 +1654,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CANCI",
+    "id_punto": "CANCI",
     "nombre_canonico": "CANCIENES",
     "alias": "",
     "municipio": "",
@@ -1617,7 +1665,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CANGA",
+    "id_punto": "CANGA",
     "nombre_canonico": "CANGAS",
     "alias": "",
     "municipio": "",
@@ -1628,7 +1676,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CANOV",
+    "id_punto": "CANOV",
     "nombre_canonico": "CANOVELLES",
     "alias": "",
     "municipio": "",
@@ -1639,7 +1687,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CANTA",
+    "id_punto": "CANTA",
     "nombre_canonico": "CANTABRIA",
     "alias": "",
     "municipio": "",
@@ -1650,7 +1698,7 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "GES-CAPAR",
+    "id_punto": "CAPAR",
     "nombre_canonico": "CAPARROSO",
     "alias": "",
     "municipio": "",

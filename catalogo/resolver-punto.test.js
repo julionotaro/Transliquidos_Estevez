@@ -94,6 +94,19 @@ test('conflicto de alias: "BREDFOR" ya es alias de BRESFOR -> NO se escribe como
   assert.strictEqual(r.id_conflicto, 'BRESFOR');
 });
 
+test('duplicado en catalogo: mismo nombre con dos Cod.Pto. -> NO elige, punto_no_reconocido pendiente de Julio', () => {
+  // Caso real (dato de Julio): GUADALAJARA existe como GU y GUADA, ambos en uso.
+  // Desde el nombre no se puede saber cual -> no se resuelve solo.
+  const catDup = [
+    { id_punto: 'GU', nombre_canonico: 'GUADALAJARA', alias: '' },
+    { id_punto: 'GUADA', nombre_canonico: 'GUADALAJARA', alias: '' },
+  ];
+  const r = resolverPunto('GUADALAJARA', 'documento', catDup);
+  assert.strictEqual(r.id_punto, null, 'no elige uno de los dos codigos');
+  assert.strictEqual(r.metodo, 'punto_no_reconocido');
+  assert.match(r.motivo, /duplicado|GU|GUADA/);
+});
+
 test('aprender alias nuevo: literal no visto -> se escribe con procedencia', () => {
   const proc = { viaje_id: 7, campo: 'origen', fecha: '2026-08-14' };
   const r = aprenderAlias('CASA VERDE', 'RELISA', CAT, proc);

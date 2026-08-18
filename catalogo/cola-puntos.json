@@ -88,13 +88,13 @@
     "frecuencia": 44,
     "candidatos": [
       {
-        "id_punto": "GES-BIOHU",
+        "id_punto": "BIOHU",
         "nombre_canonico": "BIO OILS HUELVA SL",
         "metodo": "contencion",
         "confianza": "media"
       }
     ],
-    "sugerido": "GES-BIOHU",
+    "sugerido": "BIOHU",
     "motivo": "punto \"HUELVA\" -> BIO OILS HUELVA SL (contencion, confianza media); nombre contenido en un unico canonico — verificar"
   },
   {
@@ -123,13 +123,13 @@
     "frecuencia": 34,
     "candidatos": [
       {
-        "id_punto": "GES-ASTLV",
+        "id_punto": "ASTLV",
         "nombre_canonico": "ASTURIAS-MARSELLA-PORRIÑO",
         "metodo": "contencion",
         "confianza": "media"
       }
     ],
-    "sugerido": "GES-ASTLV",
+    "sugerido": "ASTLV",
     "motivo": "punto \"PORRIÑO\" -> ASTURIAS-MARSELLA-PORRIÑO (contencion, confianza media); nombre contenido en un unico canonico — verificar"
   },
   {
@@ -151,13 +151,13 @@
     "frecuencia": 27,
     "candidatos": [
       {
-        "id_punto": "GES-CALVI",
+        "id_punto": "CALVI",
         "nombre_canonico": "CALDAS-VIGO",
         "metodo": "contencion",
         "confianza": "media"
       }
     ],
-    "sugerido": "GES-CALVI",
+    "sugerido": "CALVI",
     "motivo": "punto \"VIGO\" -> CALDAS-VIGO (contencion, confianza media); nombre contenido en un unico canonico — verificar"
   },
   {

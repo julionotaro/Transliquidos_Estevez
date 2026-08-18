@@ -34,6 +34,12 @@ const P_HISTORICO = path.join(RAIZ, 'datos', 'historico-gesruta.csv');
 const P_SEMILLAS = path.join(__dirname, 'semillas-puntos.json');
 const P_SALIDA_ALTA = path.join(__dirname, 'puntos-alta.json');
 const P_SALIDA_COLA = path.join(__dirname, 'cola-puntos.json');
+const P_SALIDA_DUP = path.join(__dirname, 'duplicados-pendientes.json');
+
+// Basura confirmada en el catalogo Gesruta (decision de Julio ya tomada): NO son
+// puntos validos. MATRIC. PO4034AY es una matricula; FRANCIA es un pais usado como
+// punto. Se excluyen por nombre normalizado.
+var BASURA = ['MATRIC PO4034AY', 'FRANCIA'];
 
 // --- helpers de parseo de tablas markdown -----------------------------------
 // Lee filas de una tabla markdown: devuelve arrays de celdas (sin separadoras).
@@ -70,8 +76,12 @@ function cargarSemillaCanonica() {
       tipo: m.tipo || 'generico', empresa_sede: m.empresa_sede || '', origen_alta: 'manual'
     };
   });
-  // 2) Registro Gesruta (Cod.Pto. = id canonico que entiende Gesruta).
-  let nG = 0;
+  // 2) Registro Gesruta (Cod.Pto. = id canonico que entiende Gesruta, decision
+  //    confirmada por Julio: es lo que el robot tendra que teclear).
+  let nG = 0, nBasura = 0;
+  const porNombre = {}; // nombre_norm -> [id_punto,...] para detectar duplicados
+  const duplicados = {}; // nombre_norm -> { nombre, codigos:[...] }
+  Object.keys(puntos).forEach(function (id) { var nn = normalizar(puntos[id].nombre_canonico); (porNombre[nn] = porNombre[nn] || []).push(id); });
   if (fs.existsSync(P_GESRUTA)) {
     filasMd(fs.readFileSync(P_GESRUTA, 'utf8')).forEach(function (c) {
       // columnas: # | Punto | Cod.Pto. | Provincia
@@ -79,11 +89,29 @@ function cargarSemillaCanonica() {
       const cod = (c[2] || '').trim();
       const prov = c[3] || '';
       if (!nombre) { return; }
-      const id = cod ? ('GES-' + cod) : idDesde(nombre);
-      if (puntos[id]) { return; } // ya sembrado (manual)
-      // si una semilla manual ya cubre este nombre canonico, no duplicar
-      const yaPorNombre = Object.keys(puntos).some(function (k) { return normalizar(puntos[k].nombre_canonico) === normalizar(nombre); });
-      if (yaPorNombre) { return; }
+      const nn = normalizar(nombre);
+      if (BASURA.indexOf(nn) >= 0) { nBasura++; return; } // no es punto valido
+      const id = cod || idDesde(nombre); // id_punto = Cod.Pto. DIRECTO (sin prefijo)
+      if (puntos[id]) { return; }
+      // Duplicado: mismo nombre EXACTO ya sembrado con OTRO codigo. NO se elige
+      // (dato de Julio: 5 duplicados en uso, decision suya). Se registran ambos.
+      if (porNombre[nn] && porNombre[nn].length >= 1 && porNombre[nn].indexOf(id) < 0) {
+        var prevId = porNombre[nn][0];
+        // solo cuenta como duplicado si el previo tambien es un canonico Gesruta con
+        // otro codigo (no una semilla manual que ya lo cubre a proposito)
+        if (puntos[prevId] && puntos[prevId].origen_alta === 'gesruta') {
+          duplicados[nn] = duplicados[nn] || { nombre: nombre, codigos: [prevId] };
+          if (duplicados[nn].codigos.indexOf(id) < 0) { duplicados[nn].codigos.push(id); }
+          porNombre[nn].push(id);
+          // se agrega igual al catalogo (existe en Gesruta), pero queda flagueado
+          puntos[id] = { id_punto: id, nombre_canonico: nombre, alias: '', municipio: '', provincia: prov, pais: '', tipo: 'generico', empresa_sede: '', origen_alta: 'gesruta', duplicado_pendiente: true };
+          nG++;
+          return;
+        }
+        // el nombre ya lo cubre una semilla manual: no duplicar
+        return;
+      }
+      (porNombre[nn] = porNombre[nn] || []).push(id);
       puntos[id] = {
         id_punto: id, nombre_canonico: nombre, alias: '',
         municipio: '', provincia: prov, pais: '', tipo: 'generico', empresa_sede: '', origen_alta: 'gesruta'
@@ -91,7 +119,7 @@ function cargarSemillaCanonica() {
       nG++;
     });
   }
-  return { puntos: puntos, nGesruta: nG, nManual: manuales.length };
+  return { puntos: puntos, nGesruta: nG, nManual: manuales.length, nBasura: nBasura, duplicados: duplicados };
 }
 
 // --- Fase B: cosecha de literales con frecuencia ----------------------------
@@ -122,7 +150,10 @@ function main() {
   console.log('== Bootstrap catalogo de puntos ==');
   const semilla = cargarSemillaCanonica();
   const catalogo = Object.keys(semilla.puntos).map(function (k) { return semilla.puntos[k]; });
-  console.log('  [Fase A] canonico sembrado: ' + catalogo.length + ' puntos (' + semilla.nManual + ' manuales + ' + semilla.nGesruta + ' de Gesruta).');
+  console.log('  [Fase A] canonico sembrado: ' + catalogo.length + ' puntos (' + semilla.nManual + ' manuales + ' + semilla.nGesruta + ' de Gesruta). Basura excluida: ' + semilla.nBasura + '.');
+  const dupList = Object.keys(semilla.duplicados).map(function (k) { return semilla.duplicados[k]; });
+  fs.writeFileSync(P_SALIDA_DUP, JSON.stringify(dupList, null, 2));
+  console.log('  [duplicados] mismo nombre con varios Cod.Pto. (decision de Julio): ' + dupList.length + ' -> ' + path.relative(RAIZ, P_SALIDA_DUP) + (dupList.length ? '' : ' (ninguno en esta muestra)'));
 
   const cosecha = cosecharLiterales();
   const literales = Object.keys(cosecha.freq);
