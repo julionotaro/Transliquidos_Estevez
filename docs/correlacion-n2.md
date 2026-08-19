@@ -63,18 +63,37 @@ Punto de integración: la rama de huérfano del match documento→viaje (helper
 `intentarN2`). El documento aporta el **punto canónico** (coincide 100% con Gesruta);
 N2 nunca usa la matrícula ni la ficha manuscrita.
 
+### Estado del cableado (preparado, SIN publicar)
+
+El wrapper `nodo-formatear.wrapper.js` **ya pasa** `opts.viajesExistentes` y
+`opts.catalogoPuntos` a `procesar()`, leyéndolos de dos nodos upstream de forma
+defensiva (try/catch → inerte si no existen). Y esos dos nodos **ya están agregados
+como borrador** al workflow `[ESTEVEZ] Ingesta Viaje` (WD0q9Ic0oDvUoJwp), colgados
+de `Hook Viaje` (sin publicar → no afecta la versión activa):
+
+| Nodo (borrador) | Tabla | Filtro |
+|---|---|---|
+| **Cargar Catalogo Puntos** | `puntos` (`YjxcHHb5B4hT0RFU`, 324) | ninguno (returnAll) |
+| **Leer Viajes N2** | `viajes` (`lrBxWpTUxMtO8U48`) | `fecha >= hoy-45d` |
+
+⚠️ **Nombres dedicados a propósito.** Ya existe un nodo `Leer Viajes Existentes` en
+el workflow, pero corre **DESPUÉS** de Formatear (`Guardar Hoja → Leer Viajes
+Existentes → Preparar Filas Viajes`, alimenta el dedup §5.1). N2 necesita el pool
+**ANTES** de Formatear, por eso el reader dedicado `Leer Viajes N2` cuelga de
+`Hook Viaje` (corre apenas dispara el trigger, mucho antes de que la cadena
+Rasterizar→GPT→Formatear llegue a Formatear).
+
 ### Lo que Julio decide/aplica (no se toca por MCP)
 
-1. **Grafo del workflow `[ESTEVEZ] Ingesta Viaje` (WD0q9Ic0oDvUoJwp):** agregar dos
-   lecturas de data table que alimenten el nodo *Formatear Linea Gesruta*:
-   - **Leer Viajes Existentes** (tabla `viajes`, filtrable por fecha reciente —
-     p. ej. últimos 45 días — para no cargar todo el histórico), y
-   - **Cargar Catálogo Puntos** (tabla `puntos`, `YjxcHHb5B4hT0RFU`, ya cargada: 324).
-   El wrapper `nodo-formatear.wrapper.js` debe pasar `opts.viajesExistentes` y
-   `opts.catalogoPuntos` a `procesar()`/`correlacionar()`. **Este cambio de wrapper +
-   grafo queda para la sesión de revisión** (hoy el wrapper NO los pasa → inerte).
-2. **Pegar `nodo-formatear.generated.js`** en el nodo Code, manual, junto con Publish
-   (regla del repo: código de nodo no se toca por MCP).
+1. **Pegar `nodo-formatear.generated.js`** en el nodo Code *Formatear Linea Gesruta*,
+   manual, y **Publish** (regla del repo: código de nodo no se toca por MCP). Al
+   publicar se activan juntos el wrapper + los dos readers borrador.
+2. **Verificar el orden de ejecución en una corrida de prueba** ANTES de confiar en
+   N2: que `$('Leer Viajes N2')` y `$('Cargar Catalogo Puntos')` tengan datos cuando
+   corre Formatear (deben haber ejecutado antes). Si por el motor quedaran vacíos, N2
+   simplemente no dispara (gated) — no rompe nada, pero no correlaciona.
+3. **Decisión de diseño abierta:** ¿el pool de N2 debe filtrar por fecha (45 d, como
+   quedó) o por otra ventana? Ajustable en el nodo `Leer Viajes N2`.
 
 ### Trazabilidad — columna `correlacion`
 
