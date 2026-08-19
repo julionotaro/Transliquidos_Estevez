@@ -61,6 +61,26 @@ cuando el operador corrige un punto. Salvaguardas duras:
   alimentarlo.
 - Duplicados (GARNICA/GUADALAJARA/GUARDA/RENTERÍA/SEGOVIA): pendientes de Gesruta.
 
+### Correcciones de fichas reales (`datos/alias-fichas-reales.md`, commit `6fd02d6`)
+
+- **OREMBER (`OR`) — alias generosos.** El 2º punto más usado (1.008 viajes) aparece
+  escrito de ≥7 formas por los chóferes (`OROMBOR`, `OROMBER`, `ORENBER`, `OREMBEL`,
+  `ORENTBER`, `OREMBEA`); **ninguna** pasa el filtro de distancia ≤1. Añadidos a
+  `semillas-puntos.json` como alias explícitos. Es planta **FINSA** en Ourense.
+- **OREMBER ≠ CELLA — no fusionar.** El grupo FINSA tiene otra planta en **Cella
+  (Teruel)** que aparece como destino separado (`FINSA CELLA`, `Cella - Teruel`). Son
+  **dos puntos distintos**; desambiguar por localidad (Ourense→OREMBER, Teruel/Cella→
+  CELLA). ⚠️ **CELLA no está entre los 214 usados ni cargado**: falta su `Cód.Pto.`
+  real de Gesruta (sembrado como pendiente en `semillas`, no resuelve hasta cargarlo).
+- **Anleo/Navia — no era discrepancia.** El chófer escribió `Anleo` (parroquia de
+  Navia), no Avilés; destino real = `NAVIA`. Alias deseado: `ANLEO → NAVIA`. ⚠️
+  **Decisión pendiente de Julio**: el catálogo Gesruta ya tiene un canónico `ANLEO`
+  (id `ANLEO`, cargado). Por precedencia (canónico exacto > alias), poner `ANLEO`
+  como alias de `NAVIA` sería **inerte** — seguiría resolviendo al punto `ANLEO`. Se
+  necesita confirmar si el punto Gesruta `ANLEO` se usa de verdad, o si `Anleo` en
+  ficha debe rutear a `NAVIA` vía **override por cliente/ruta** (no un alias). Por eso
+  NO se agregó todavía.
+
 ## Cómo re-correr
 
 ```
