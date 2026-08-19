@@ -28,6 +28,7 @@ const path = require('path');
 const { resolverPunto, normalizar } = require('./resolver-punto.js');
 
 const RAIZ = path.resolve(__dirname, '..');
+const P_CSV = [path.join(RAIZ, 'datos', 'puntos-214-parte1.csv'), path.join(RAIZ, 'datos', 'puntos-214-parte2.csv')];
 const P_TABLA = path.join(RAIZ, 'datos', 'tabla-traduccion-puntos.md');
 const P_GESRUTA = path.join(RAIZ, 'datos', 'resumen-puntos-gesruta.md');
 const P_LITERALES = path.join(RAIZ, 'datos', 'resumen-literales.md');
@@ -111,11 +112,23 @@ function cargarSemillaCanonica() {
     return true;
   }
 
-  // 1) PRIMARIO: tabla de traduccion (Punto | Usos | Cod.Pto. | Provincia).
+  // 1) PRIMARIO: los 214 puntos USADOS con su Cod.Pto. real (CSV, punto;cod_pto;usos).
+  //    Es el destino de la traduccion: los nombres que Gesruta ya tiene cargados.
   let nTabla = 0;
-  if (fs.existsSync(P_TABLA)) {
+  P_CSV.forEach(function (pcsv) {
+    if (!fs.existsSync(pcsv)) { return; }
+    fs.readFileSync(pcsv, 'utf8').split('\n').forEach(function (linea) {
+      const l = linea.trim();
+      if (!l) { return; }
+      const c = l.split(';');
+      if (c.length < 2 || normalizar(c[0]) === 'PUNTO') { return; } // cabecera
+      if (registrar(c[0], stripCod(c[1]), '', 'gesruta-usado')) { nTabla++; }
+    });
+  });
+  // Respaldo: si no estan los CSV, cae a la tabla md (top-30).
+  if (nTabla === 0 && fs.existsSync(P_TABLA)) {
     filasMdRaw(fs.readFileSync(P_TABLA, 'utf8')).forEach(function (c) {
-      if (normalizar(c[0]) === 'PUNTO') { return; } // cabecera
+      if (normalizar(c[0]) === 'PUNTO') { return; }
       if (registrar(c[0], stripCod(c[2]), c[3] || '', 'gesruta-usado')) { nTabla++; }
     });
   }

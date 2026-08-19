@@ -67,7 +67,7 @@ node catalogo/bootstrap-puntos.js     # regenera puntos-alta.json y cola-puntos.
 node --test catalogo/resolver-punto.test.js
 ```
 
-Última corrida (seed real, tabla-traduccion-puntos.md): 176 canónicos (30 usados de la tabla con su Cód.Pto. real + 142 del registro + 4 semillas), 150 literales cosechados, 57 resueltos automático, 93 a cola, **89.8% del volumen** cubierto automático.
+Última corrida (214 puntos, datos/puntos-214-parte{1,2}.csv): 324 canónicos, 150 literales cosechados, **149 resueltos automático, cola = 1** (solo FRANCIA, que es basura excluida), **99.9% del volumen**. El seed completo cierra la cola.
 
 ## Pendiente (para cerrar el catálogo)
 
