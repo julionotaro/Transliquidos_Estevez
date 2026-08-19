@@ -42,6 +42,24 @@ depende la ventana. Por `tipo_doc`, con marcadores de encabezado como respaldo
   Foresa metanol (misma ruta/día) se distinguen por peso; no se colapsan a un viaje.
   Reusa `RUTAS_MULTIVIAJE`/`esRutaMultiviaje` de `cruce.js` (no duplica).
 
+## Tolerancia de 1 letra en matrícula (mismo envío) — "por bueno"
+
+Encargo Julio (rama `claude/matricula-tolerancia-envio`, apila sobre N2). Cuando la
+matrícula de un documento no coincide exacta con la de una ficha del envío pero está
+a **distancia de edición 1** de **una sola** matrícula candidata (documentos
+convergentes), el emparejamiento se da **por bueno**: se corrige la ficha (el
+documento impreso manda sobre la manuscrita), se registra como **corrección
+automática reversible** en `viaje.correccion_matricula` (`{de, a, distancia, metodo}`)
++ un **aviso no bloqueante**, y **ya NO marca REVISAR** (antes sí — patrón alias de
+puntos: se aprende y se registra, no se frena). Se conserva `tractora_original`.
+
+Sigue marcando **REVISAR** (no adivina) cuando: hay **más de una** ficha candidata a
+distancia 1 (ambiguo), los documentos **no convergen** (posible envío de dos
+camiones, matrículas de lote), o la distancia es **> 1**. Implementado en
+`reconciliarMatriculaFicha` (`ficha/correlacionar.js`). Regresión byte-idéntica
+(los fixtures v3.1 no tocaban ese camino); 2 tests de reconciliación actualizados al
+nuevo contrato + aserción `estado_lectura==='OK'` para el caso único.
+
 ## Cableado en `correlacionar.js` — DIFF listo, deploy EN ESPERA de revisión
 
 El fallback N2 ya está integrado en `ficha/correlacionar.js` (rama

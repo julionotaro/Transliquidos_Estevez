@@ -49,8 +49,12 @@ test('reconciliacion: ficha 0337 + N documentos 0332 -> correlaciona, corrige ma
   assert.strictEqual(v.referencia, '706013', 'referencia del documento');
   assert.strictEqual(v.cliente, 'QUIMIDROGA', 'cliente facturable del documento, no el lugar de carga');
   assert.notStrictEqual(v.estado, 'PENDIENTE_DOCUMENTACION', 'ya no falta documentacion');
-  assert.strictEqual(v.estado_lectura, 'REVISAR');
-  assert.match(v.motivo_revision, /matricula ficha 0337LPL corregida a 0332LPL/);
+  // Encargo Julio: candidato UNICO a 1 letra se da POR BUENO (no REVISAR). Se
+  // registra como correccion automatica reversible (correccion_matricula) + aviso.
+  assert.deepStrictEqual(v.correccion_matricula, { de: '0337LPL', a: '0332LPL', distancia: 1, metodo: 'tolerancia_1_letra_envio' });
+  assert.strictEqual(v.estado_lectura, 'OK', 'por bueno: la correccion unica de 1 letra no deja el viaje en REVISAR');
+  assert.ok(!/corregida a|por 1 letra/.test(v.motivo_revision || ''), 'la correccion unica ya no marca REVISAR');
+  assert.ok(res.avisos.some(function (a) { return /0332LPL/.test(a) && /reversible/.test(a); }), 'queda registrado como aviso no bloqueante');
 });
 
 // ============================================================================
@@ -128,5 +132,7 @@ test('reconciliacion: un documento con matricula null no rompe la convergencia d
   const v = viajeDe(res, 1);
   assert.strictEqual(v.tractoraN, '0332LPL', 'converge en 0332 ignorando el doc sin matricula');
   assert.strictEqual(v.tractora_original, '0337LPL');
-  assert.match(v.motivo_revision, /corregida a 0332LPL/);
+  // Correccion unica por bueno (no REVISAR): provenance en correccion_matricula.
+  assert.deepStrictEqual(v.correccion_matricula, { de: '0337LPL', a: '0332LPL', distancia: 1, metodo: 'tolerancia_1_letra_envio' });
+  assert.ok(!/corregida a|por 1 letra/.test(v.motivo_revision || ''), 'la correccion unica ya no marca REVISAR');
 });

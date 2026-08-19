@@ -122,8 +122,11 @@ function distanciaEdicion(a, b) {
  * @param {Array} viajes   viajes de las fichas (se mutan).
  * @param {Array} docsRaw  documentos del envio (impresos).
  * @param {function} marcar  marcar(v, motivo) para acumular motivos de REVISAR.
+ * @param {function} [avisar]  avisar(msg) para notas NO bloqueantes (correccion
+ *   "por bueno" del caso unico de 1 letra: se registra, no marca REVISAR).
  */
-function reconciliarMatriculaFicha(viajes, docsRaw, marcar) {
+function reconciliarMatriculaFicha(viajes, docsRaw, marcar, avisar) {
+  avisar = avisar || function () {};
   if (!viajes.length || !docsRaw.length) { return; }
 
   // Matriculas de tractor legibles de los documentos (sin duplicados de pagina).
@@ -211,14 +214,19 @@ function reconciliarMatriculaFicha(viajes, docsRaw, marcar) {
   // candidato unico mandan) pero se deja constancia para mirarlo con mas atencion.
   var remolqueFichaN = arr[0].remolque ? mat(arr[0].remolque) : '';
   var remolqueCoincide = remolqueFichaN && remolqueDocs[remolqueFichaN];
-  var nota = remolqueCoincide ? ' (el remolque si coincide, verificar con atencion)' : '';
+  var extra = remolqueCoincide ? ' (ojo: el remolque coincide pero la tractora no)' : '';
   for (var ai = 0; ai < arr.length; ai++) {
     var vv = arr[ai];
     vv.tractora_original = vv.tractora;
     vv.tractoraN_original = vv.tractoraN;
     vv.tractora = dmConv;
     vv.tractoraN = dmConv;
-    marcar(vv, 'matricula ficha ' + (vv.tractora_original || fmUnica) + ' corregida a ' + dmConv + ' segun ' + docMats.length + ' documento(s) coincidente(s) — verificar que sea el mismo camion' + nota);
+    // Encargo Julio: candidato UNICO a 1 letra = se da POR BUENO. Se registra como
+    // correccion automatica REVERSIBLE (patron alias de puntos: de/a en el viaje),
+    // SIN marcar REVISAR (eso queda solo para el caso ambiguo/no-convergente, mas
+    // arriba). tractora_original/tractoraN_original conservan la lectura previa.
+    vv.correccion_matricula = { de: vv.tractoraN_original, a: dmConv, distancia: distanciaEdicion(vv.tractoraN_original || '', dmConv), metodo: 'tolerancia_1_letra_envio' };
+    avisar('matricula ficha ' + (vv.tractora_original || fmUnica) + ' emparejada a ' + dmConv + ' por 1 letra (unica candidata del envio, ' + docMats.length + ' documento(s)) — correccion automatica reversible' + extra + '.');
   }
 }
 
@@ -352,7 +360,7 @@ function correlacionar(rA, rB, opts) {
   // (el documento manda sobre la ficha manuscrita). Los casos inseguros (no
   // convergen / candidato no unico / distancia mayor) quedan sin correlacionar, con
   // motivo_revision explicito. Ver reconciliarMatriculaFicha.
-  reconciliarMatriculaFicha(viajes, docsRaw, marcar);
+  reconciliarMatriculaFicha(viajes, docsRaw, marcar, function (m) { avisos.push('Correccion matricula (por bueno): ' + m); });
 
   // ---- Match documento -> viaje (N docs : 1 viaje) ----
   const docsHuerfanos = [];
