@@ -43,22 +43,23 @@ cuando el operador corrige un punto. Salvaguardas duras:
 2. Todo alias guarda **procedencia** (de qué corrección, cuándo, qué viaje) → reversible.
 3. (Pendiente de UI) Informe "Aliases aprendidos esta semana" en la vista pendientes.
 
-## Fuente del seed y estado (actualizado)
+## Fuente del seed y estado
 
-- **Semilla primaria: `datos/tabla-traduccion-puntos.md`** — el cruce (hecho por el
-  chat de diseño) de los 214 puntos usados contra el catálogo Gesruta de 807:
-  **emparejan al 100% por nombre exacto**, con su `Cód.Pto.` real (= `id_punto`, lo
-  que teclea el robot). No hay cola de *emparejamiento*.
-- **La cola residual (93) NO es un fallo del matching.** Son los puntos de menor
-  volumen cuyo `Cód.Pto.` no está en el repo (la tabla trae solo el top-30 = ~90%
-  del volumen; el resto de los 214 está en el catálogo Gesruta completo, que no se
-  sube). Con el volumen que importa, la cobertura automática es **89.8%**.
-- **Corrección de datos**: OREMBER (`OR`) y ORENSE (`OU`) son puntos Gesruta
-  **distintos**, no alias entre sí. La semilla vieja que los unía se corrigió.
-- Duplicados sin resolver (GARNICA/GUADALAJARA/GUARDA/RENTERÍA/SEGOVIA): están en el
-  catálogo completo, no en el top-30; Julio los consulta en Gesruta.
-- No hay tool MCP para leer filas de una data table; por eso el seed viene de los
-  `.md` de `datos/`, no de la tabla `tarifas`.
+- **Semilla primaria: `datos/puntos-214-parte{1,2}.csv`** (`punto;cod_pto;usos`) — los
+  214 puntos usados con su `Cód.Pto.` real (= `id_punto`, lo que teclea el robot).
+  Son el **destino** de la traducción: los nombres que Gesruta ya tiene cargados.
+- **Cola = 1** (solo `FRANCIA`, basura excluida). **99.9% del volumen** resuelto
+  automático. El normalizador y la cascada están validados contra dato real.
+- **OREMBER (`OR`) y ORENSE (`ORE`/`OU`) son puntos Gesruta DISTINTOS**, no alias.
+  Corregido (la semilla vieja los unía).
+- **Aviso para la ficha (Encargo 3)**: lo que escribe el chófer NO está en ningún
+  dato (nunca se digitalizó). El caso típico — ficha "FORESA" vs punto "CALDAS DE
+  REIS" — **no comparte una sola letra**; ningún parecido de texto los une. La vía
+  es **cliente + material → punto** (Foresa: METANOL→Villagarcía 418/418;
+  COLA/FINCAT/FORMOL→Caldas). La resolución empresa→punto **no se construye todavía**:
+  Julio escaneará 30-40 fichas reales primero. El resolvedor no se toca; falta
+  alimentarlo.
+- Duplicados (GARNICA/GUADALAJARA/GUARDA/RENTERÍA/SEGOVIA): pendientes de Gesruta.
 
 ## Cómo re-correr
 
