@@ -43,12 +43,48 @@ var r2 = function (x) { return Math.round(x * 100) / 100; };
 
 var SIN_IDX = ['TANK SOLUTIONS', 'TRANSPORTES SANTOS', 'HISPALENSE'];
 
+function digitos(x) { return String(x === null || x === undefined ? '' : x).replace(/\D/g, ''); }
+
 // Cliente de la factura -> grupo de indexacion (solapa) + clave del tarifario.
-function resolverCliente(f) {
+// CAMBIO 1 (Encargo 4): si se pasa el catalogo `clientes`, se resuelve desde ahi,
+// con el CIF como LLAVE DURA (prioridad sobre el nombre). Cliente no reconocido en
+// el catalogo -> bloqueante (§3), ya no un aviso. Sin catalogo, cae al legacy
+// hardcodeado (compatibilidad / regresion).
+function resolverCliente(f, clientes) {
   var cli = up(f.cliente);
+  var avisos = [];
+  var cat = Array.isArray(clientes) ? clientes : [];
+
+  if (cat.length) {
+    var cif = digitos(f.cif_cliente);
+    var row = null, viaCif = false, i, j;
+    if (cif) {
+      for (i = 0; i < cat.length; i++) { if (digitos(cat[i].cif) && digitos(cat[i].cif) === cif) { row = cat[i]; viaCif = true; break; } }
+    }
+    if (!row) {
+      for (i = 0; i < cat.length; i++) {
+        var nombres = [cat[i].nombre_canonico].concat(String(cat[i].alias || '').split('|'));
+        for (j = 0; j < nombres.length; j++) { var nn = up(nombres[j]).trim(); if (nn && cli.indexOf(nn) >= 0) { row = cat[i]; break; } }
+        if (row) break;
+      }
+    }
+    if (row) {
+      if (cif && digitos(row.cif) && digitos(row.cif) !== cif) {
+        avisos.push('CIF de la factura (' + f.cif_cliente + ') no coincide con el del catalogo para ' + (row.nombre_canonico || '') + '; se resolvio por nombre');
+      }
+      return { grupo: row.grupo_indexacion || 'OTROS', clienteBase: row.nombre_canonico || f.cliente,
+        pais: row.pais || null, regimen_iva: row.regimen_iva || null, ciclo: row.ciclo_facturacion || null,
+        reconocido: true, via: viaCif ? 'cif' : 'nombre', avisos: avisos };
+    }
+    // Catalogo presente y el cliente NO esta -> NO se valida contra una solapa
+    // ajena (fail-silent viejo). Bloqueante, con el emisor visible (§3).
+    return { grupo: 'NO_RECONOCIDO', clienteBase: f.cliente || 'DESCONOCIDO', pais: null,
+      regimen_iva: null, ciclo: null, reconocido: false, via: null, avisos: avisos };
+  }
+
+  // ---- Fallback LEGACY (sin catalogo de clientes) ----
   var grupo = null;
   var clienteBase = null;
-  var avisos = [];
 
   if (cli.indexOf('BRESFOR') >= 0) { grupo = 'FORESA-BRESFOR'; clienteBase = 'FORESA'; }
   else if (cli.indexOf('FORESA') >= 0) { grupo = 'FORESA-BRESFOR'; clienteBase = 'FORESA'; }
@@ -73,7 +109,7 @@ function resolverCliente(f) {
   if (grupo === 'SIN_IDX') {
     avisos.push(clienteBase + ' no usa indexacion: se omite validacion de porcentajes y no se exige la linea.');
   }
-  return { grupo: grupo, clienteBase: clienteBase, avisos: avisos };
+  return { grupo: grupo, clienteBase: clienteBase, pais: null, regimen_iva: null, ciclo: null, reconocido: true, via: 'legacy', avisos: avisos };
 }
 
 // Indice de tramos de indexacion por solapa.
@@ -113,6 +149,10 @@ function buscarTarifa(porCliente, ck, origen, destino, fecha) {
   if (!arr.length) return null;
   var oN = norm(origen);
   var dN = norm(destino);
+  // CAMBIO 4 (Encargo 4): el origen vacio DEJA DE SER COMODIN. Antes, una linea con
+  // origen ilegible matcheaba cualquier tarifa de ese destino (fail-silent). Sin
+  // origen no hay match -> SIN_TARIFA, nunca un match por descarte.
+  if (!oN) return null;
   var cand = arr.filter(function (t) { return t.vd <= (fecha || '9999-12-31'); });
   if (!cand.length) cand = arr;
   var lista = cand.filter(function (t) {
@@ -134,12 +174,22 @@ function buscarTarifa(porCliente, ck, origen, destino, fecha) {
  * @returns {{resumen:object, detalles:Array, errores:Array, avisos:Array,
  *            listo_para_pago:boolean, meta:object}}
  */
-function auditar(factura, indexacion, tarifas) {
+function auditar(factura, indexacion, tarifas, opts) {
   var f = factura || {};
   var IDX = Array.isArray(indexacion) ? indexacion : [];
   var TAR = Array.isArray(tarifas) ? tarifas : [];
+  opts = opts || {};
+  var CLIENTES = Array.isArray(opts.clientes) ? opts.clientes : [];
+  var VIAJES = Array.isArray(opts.viajes) ? opts.viajes : [];
+  // CAMBIO 3: rutas multiviaje (Foresa metanol). Se REUSA la lista de cruce.js; en
+  // el nodo la pasa el wrapper por opts (el Code node no puede require). Sin lista
+  // -> se intenta cruce.js (entorno de test) -> [] (no rompe nada).
+  var RUTAS_MV = Array.isArray(opts.rutasMultiviaje) ? opts.rutasMultiviaje : null;
+  if (!RUTAS_MV) {
+    try { RUTAS_MV = require('../ficha/cruce.js').RUTAS_MULTIVIAJE || []; } catch (e) { RUTAS_MV = []; }
+  }
 
-  var rc = resolverCliente(f);
+  var rc = resolverCliente(f, CLIENTES);
   var grupo = rc.grupo;
   var clienteBase = rc.clienteBase;
 
@@ -147,8 +197,22 @@ function auditar(factura, indexacion, tarifas) {
   var avisos = [].concat(rc.avisos);
   var detalles = [];         // contrato tri-valuado, una entrada por linea
 
+  // CAMBIO 1 (§3): cliente no reconocido en el catalogo -> bloqueante, con el
+  // emisor leido visible. Deja de validarse contra una solapa que no corresponde.
+  if (!rc.reconocido) {
+    errores.push('cliente_no_reconocido: emisor "' + (f.cliente || '') + '" no esta en el catalogo de clientes; no se valida tarifa ni indexacion contra una solapa ajena (§3)');
+  }
+
+  // Matcher local de ruta multiviaje (mismo criterio de inclusion que cruce.js:
+  // sin acentos, mayusculas, inclusion en ambos sentidos). No matchea vacios.
+  var incl = function (a, b) { var x = norm(a), y = norm(b); return !!(x && y && (x.indexOf(y) >= 0 || y.indexOf(x) >= 0)); };
+  var esRutaMV = function (cli, ori, des) {
+    for (var i = 0; i < RUTAS_MV.length; i++) { var r = RUTAS_MV[i]; if (incl(cli, r.cliente) && incl(ori, r.origen) && incl(des, r.destino)) { return true; } }
+    return false;
+  };
+
   var porSolapa = indexarTramos(IDX);
-  var solapa = (grupo === 'BALTRANSA' || grupo === 'SIN_IDX') ? null : grupo;
+  var solapa = (grupo === 'BALTRANSA' || grupo === 'SIN_IDX' || grupo === 'NO_RECONOCIDO') ? null : grupo;
   var TRAMOS = solapa ? (porSolapa[solapa] || []) : [];
   var pctDe = function (fc) {
     for (var i = 0; i < TRAMOS.length; i++) { if (fc >= TRAMOS[i].d && fc <= TRAMOS[i].h) return TRAMOS[i].p; }
@@ -176,7 +240,7 @@ function auditar(factura, indexacion, tarifas) {
     }
   }
   var esAgregada = (grupo === 'FORESA-BRESFOR') && nV > 0 && (nOr >= nV * 0.6 || nMet >= nV * 0.6);
-  var validarPct = (grupo !== 'SIN_IDX' && grupo !== 'BALTRANSA');
+  var validarPct = (grupo !== 'SIN_IDX' && grupo !== 'BALTRANSA' && grupo !== 'NO_RECONOCIDO');
 
   var suma = 0;
   var baseRango = {};
@@ -211,9 +275,21 @@ function auditar(factura, indexacion, tarifas) {
       if (Math.abs(calc - imp) > 0.02) { errLinea.push('importe: ' + cant + ' x ' + precio + ' = ' + calc + ' pero dice ' + imp); }
       suma += imp;
       if (!ln.matricula) { errLinea.push('sin matricula'); }
+      // CAMBIO 5 (§8): la referencia FORESA empieza por 20. Si empieza por 5030 es
+      // el nº interno del albaran, no la referencia facturable -> DISCREPANCIA.
+      if (clienteBase === 'FORESA' && ln.referencia) {
+        var refD = String(ln.referencia).replace(/\D/g, '');
+        if (refD.indexOf('5030') === 0) { errLinea.push('referencia FORESA "' + ln.referencia + '" empieza por 5030 (nº interno del albaran, no la referencia; §8)'); }
+        else if (refD && refD.indexOf('20') !== 0) { avLinea.push('referencia FORESA "' + ln.referencia + '" no empieza por 20 (formato esperado, §8)'); }
+      }
       var rg = ln.fecha_viaje ? rangoDe(ln.fecha_viaje) : null;
       if (rg) { baseRango[rg] = r2((baseRango[rg] || 0) + imp); }
-      if (!cerrada && cant > 0 && cant < 23) { avLinea.push('cantidad ' + cant + ' t bajo el minimo de 23 t'); }
+      // CAMBIO 3 (§7): en rutas multiviaje (Foresa metanol Villagarcia->Caldas) la
+      // `cantidad` puede ser numero de rotaciones, no toneladas; leer "6 viajes"
+      // como "6 t" disparaba un aviso de minimo FALSO garantizado. No se aplica el
+      // minimo de 23 t en esas rutas.
+      var esMV = esRutaMV(f.cliente || clienteBase, ln.origen, ln.destino);
+      if (!cerrada && !esMV && cant > 0 && cant < 23) { avLinea.push('cantidad ' + cant + ' t bajo el minimo de 23 t'); }
 
       tarifaHallada = buscarTarifa(porCliente, clienteBase, ln.origen, ln.destino, ln.fecha_viaje);
       if (!tarifaHallada) {
@@ -266,7 +342,36 @@ function auditar(factura, indexacion, tarifas) {
       var dest = up(ln.destino);
       if (!tieneIdx && dest.indexOf('REPARTO') < 0) { errLinea.push('FALTA linea de indexacion gasoleo'); }
     }
-    if (esViaje && grupo === 'BALTRANSA' && !tieneIdx) { avLinea.push('BALTRANSA sin linea de indexacion a 0 (las facturas suelen traerla)'); }
+    // CAMBIO 5 (§8, regla dura): BALTRANSA DEBE llevar la linea de indexacion a 0.
+    // Antes era aviso; ahora es error (la indexacion incluida en precio se
+    // materializa como linea a 0,000 en factura; su ausencia es un defecto).
+    if (esViaje && grupo === 'BALTRANSA' && !tieneIdx) { errLinea.push('BALTRANSA: falta la linea de indexacion a 0 (obligatoria, §8)'); }
+
+    // --- CAMBIO 2: contraste de la linea contra la tabla `viajes` (realidad operativa) ---
+    // Solo corre si hay viajes cargados del periodo; si no, se declara en el informe
+    // (meta.contraste_viajes) y no se contrasta en silencio.
+    if (VIAJES.length && esViaje) {
+      var refn = ln.referencia ? String(ln.referencia).trim() : '';
+      var vMatch = null;
+      if (refn) { for (var vi = 0; vi < VIAJES.length; vi++) { if (String(VIAJES[vi].referencia || '').trim() === refn) { vMatch = VIAJES[vi]; break; } } }
+      if (!vMatch) {
+        errLinea.push('linea facturada sin viaje registrado (ref ' + (refn || 's/ref') + '); no hay respaldo operativo');
+      } else {
+        // Referencia ya facturada en OTRA factura: puede ser refacturacion/duplicado
+        // O una rectificativa legitima -> no se marca error a ciegas, va a REVISAR.
+        var fid = String(vMatch.factura_id || '').trim();
+        if (fid && f.numero && fid !== String(f.numero).trim()) {
+          avLinea.push('referencia ' + refn + ' ya facturada en ' + fid + '; verificar si es rectificativa legitima o duplicado (REVISAR)');
+        }
+        // Peso divergente: peso del viaje (documento de origen, §4/D-01) vs cantidad
+        // facturada (tn->kg). No aplica a lineas cerradas (cantidad=1 = precio cerrado).
+        var kgViaje = Number(vMatch.kg_documento) || 0;
+        var kgFactura = (cant && cant > 1) ? cant * 1000 : 0;
+        if (kgViaje && kgFactura && Math.abs(kgViaje - kgFactura) > kgFactura * 0.02) {
+          errLinea.push('peso divergente: viaje ' + kgViaje + ' kg vs factura ' + r2(kgFactura) + ' kg (>2%, §4/D-01)');
+        }
+      }
+    }
 
     // --- Estado tri-valuado de la linea ---
     // Precedencia: SIN_TARIFA gana sobre DISCREPANCIA. Si no hubo tarifa contra la
@@ -303,6 +408,25 @@ function auditar(factura, indexacion, tarifas) {
     if (motivoSinTarifa) { avisos.push(et + ' NO VERIFICADA: ' + motivoSinTarifa); }
   }
 
+  // --- CAMBIO 2: viajes reales NO facturados (SOLO reporta, no bloquea pago) ---
+  // Es el error que mas plata cuesta y que ningun check contra la propia factura
+  // puede encontrar. Se lista; la decision de facturarlos es humana.
+  var viajesNoFacturados = [];
+  var contrasteViajes = 'no ejecutado (no hay viajes del periodo cargados)';
+  if (VIAJES.length) {
+    contrasteViajes = 'ejecutado contra ' + VIAJES.length + ' viaje(s)';
+    for (var vv = 0; vv < VIAJES.length; vv++) {
+      var vr = String(VIAJES[vv].referencia || '').trim();
+      var yaFacturado = !!String(VIAJES[vv].factura_id || '').trim();
+      if (vr && refs[vr] === undefined && !yaFacturado && incl(VIAJES[vv].cliente, clienteBase)) {
+        viajesNoFacturados.push({ referencia: vr, origen: VIAJES[vv].origen || null, destino: VIAJES[vv].destino || null, kg: Number(VIAJES[vv].kg_documento) || null, fecha: VIAJES[vv].fecha || VIAJES[vv].fecha_carga || null });
+      }
+    }
+    if (viajesNoFacturados.length) {
+      avisos.push('CONTRASTE viajes: ' + viajesNoFacturados.length + ' viaje(s) de ' + clienteBase + ' SIN facturar en esta factura (informativo, no bloquea; ver seccion).');
+    }
+  }
+
   // --- Indexacion agregada (FORESA Orember / Metanol) ---
   if (esAgregada && idxDecl.length > 0) {
     var rangos = Object.keys(baseRango);
@@ -330,6 +454,15 @@ function auditar(factura, indexacion, tarifas) {
     if (Math.abs(ci - ivaImp) > 0.05) { errores.push('IVA: ' + base + ' x ' + ivaPct + '% = ' + ci + ' pero dice ' + ivaImp); }
   }
   if (grupo === 'BALTRANSA' && ivaPct && Math.abs(ivaPct - 21) > 0.01) { errores.push('BALTRANSA factura siempre al 21% (porte P) aunque el destino sea PT/FR; dice ' + ivaPct + '%'); }
+  // CAMBIO 5 (§8): IVA por pais/cliente desde el catalogo de clientes (no hardcodeado).
+  // RNM (PT) sin IVA; Quimidroga Portugal (PT); etc. Sale de clientes.regimen_iva.
+  if (rc.regimen_iva) {
+    if (String(rc.regimen_iva).toLowerCase() === 'sin_iva' && ivaPct > 0) {
+      errores.push(rc.clienteBase + ' (' + (rc.pais || '?') + ') factura SIN IVA pero lleva ' + ivaPct + '%');
+    } else if (/^\d+(\.\d+)?$/.test(String(rc.regimen_iva)) && ivaPct && Math.abs(ivaPct - Number(rc.regimen_iva)) > 0.01) {
+      errores.push('IVA esperado ' + rc.regimen_iva + '% para ' + rc.clienteBase + ' (' + (rc.pais || '?') + ') pero factura ' + ivaPct + '%');
+    }
+  }
   var total = Number(f.total) || 0;
   if (base && Math.abs(r2(base + ivaImp) - total) > 0.05) { errores.push('Total: ' + r2(base + ivaImp) + ' pero dice ' + total); }
 
@@ -374,6 +507,13 @@ function auditar(factura, indexacion, tarifas) {
       tramos_indexacion: IDX.length,
       filas_tarifas: TAR.length,
       bases_por_rango: baseRango,
+      cliente_reconocido: rc.reconocido,
+      cliente_via: rc.via,
+      pais: rc.pais,
+      regimen_iva: rc.regimen_iva,
+      ciclo_facturacion: rc.ciclo,
+      contraste_viajes: contrasteViajes,
+      viajes_no_facturados: viajesNoFacturados,
     },
   };
 }
@@ -396,6 +536,16 @@ function renderInforme(res) {
   L.push('Cliente base: ' + m.cliente_base + '   Solapa: ' + (m.solapa || (m.grupo === 'BALTRANSA' ? 'BALTRANSA (linea a 0)' : 'SIN INDEXACION')) + '   Regimen: ' + m.regimen);
   L.push('Base: ' + m.base_imponible + '   IVA: ' + m.iva_importe + '   Total: ' + m.total);
   L.push('Datos vivos: ' + m.tramos_indexacion + ' tramos indexacion / ' + m.filas_tarifas + ' filas tarifas.');
+  if (m.cliente_reconocido === false) { L.push('  >> CLIENTE NO RECONOCIDO en el catalogo — factura NO validada contra tarifa/indexacion.'); }
+  L.push('Contraste contra viajes: ' + (m.contraste_viajes || 'n/d') + '.');
+  if (m.viajes_no_facturados && m.viajes_no_facturados.length) {
+    L.push('');
+    L.push('---- VIAJES REALES SIN FACTURAR (' + m.viajes_no_facturados.length + ') — informativo, no bloquea ----');
+    for (var vnf = 0; vnf < m.viajes_no_facturados.length; vnf++) {
+      var vf = m.viajes_no_facturados[vnf];
+      L.push('  - ref ' + vf.referencia + '  ' + (vf.origen || '?') + ' -> ' + (vf.destino || '?') + '  ' + (vf.kg || '?') + ' kg  ' + (vf.fecha || ''));
+    }
+  }
   L.push('');
   L.push('---- RESUMEN (' + res.detalles.length + ' lineas) ----');
   L.push('  OK  VALIDADO_OK  : ' + r.validadas_ok + '   (tarifa hallada, importe dentro de tolerancia)');
@@ -475,7 +625,19 @@ try {
   return [{ json: { informe: 'ERROR: JSON invalido.\n' + raw, resumen: null, detalles: [], listo_para_pago: false } }];
 }
 
-const res = auditar(f, input.indexacion, input.tarifas);
+// Rutas multiviaje (Foresa metanol): espejo de ficha/cruce.js RUTAS_MULTIVIAJE.
+// Se pasa por opts porque el Code node no puede require cruce.js (colision `norm`
+// al inlinear). Si se amplia la lista alla, reflejarla aca.
+const RUTAS_MV = input.rutas_multiviaje || [{ cliente: 'FORESA', origen: 'VILLAGARCIA', destino: 'CALDAS DE REIS' }];
+
+// clientes/viajes: los proveen (opcional) los nodos "Leer Clientes" / "Leer Viajes"
+// del grafo. Si aun no estan cableados, auditar() degrada a [] sin romperse (los
+// checks CAMBIO 1/2/3 quedan inactivos; el resto del auditor v4 sigue activo).
+const res = auditar(f, input.indexacion, input.tarifas, {
+  clientes: input.clientes,
+  viajes: input.viajes,
+  rutasMultiviaje: RUTAS_MV,
+});
 
 // Se devuelve el informe de texto (canal que ya consume auditar-factura.html)
 // junto con el contrato JSON tri-valuado. El nodo Responder sigue sirviendo

@@ -27,7 +27,19 @@ try {
   return [{ json: { informe: 'ERROR: JSON invalido.\n' + raw, resumen: null, detalles: [], listo_para_pago: false } }];
 }
 
-const res = auditar(f, input.indexacion, input.tarifas);
+// Rutas multiviaje (Foresa metanol): espejo de ficha/cruce.js RUTAS_MULTIVIAJE.
+// Se pasa por opts porque el Code node no puede require cruce.js (colision `norm`
+// al inlinear). Si se amplia la lista alla, reflejarla aca.
+const RUTAS_MV = input.rutas_multiviaje || [{ cliente: 'FORESA', origen: 'VILLAGARCIA', destino: 'CALDAS DE REIS' }];
+
+// clientes/viajes: los proveen (opcional) los nodos "Leer Clientes" / "Leer Viajes"
+// del grafo. Si aun no estan cableados, auditar() degrada a [] sin romperse (los
+// checks CAMBIO 1/2/3 quedan inactivos; el resto del auditor v4 sigue activo).
+const res = auditar(f, input.indexacion, input.tarifas, {
+  clientes: input.clientes,
+  viajes: input.viajes,
+  rutasMultiviaje: RUTAS_MV,
+});
 
 // Se devuelve el informe de texto (canal que ya consume auditar-factura.html)
 // junto con el contrato JSON tri-valuado. El nodo Responder sigue sirviendo

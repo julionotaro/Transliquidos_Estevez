@@ -239,3 +239,98 @@ test('factura sin lineas no revienta y no se declara apta por vacio', () => {
   assert.deepStrictEqual(res.resumen, { validadas_ok: 0, discrepancias: 0, sin_tarifa: 0 });
   assert.strictEqual(res.detalles.length, 0);
 });
+
+// ============================================================================
+// AUDITOR v4 (Encargo 4) — clientes desde catalogo, contraste contra viajes,
+// rotaciones Foresa, tarifa via origen, reglas de dominio. opts = 4to parametro.
+// ============================================================================
+
+const CLIENTES = [
+  { id_cliente: 'FORESA', nombre_canonico: 'FORESA', alias: 'BRESFOR', cif: 'A36000001', grupo_indexacion: 'FORESA-BRESFOR', pais: 'ES', regimen_iva: '21', ciclo_facturacion: 'mensual' },
+  { id_cliente: 'RNM', nombre_canonico: 'RNM GROUP', alias: 'RNM', cif: 'PT500000000', grupo_indexacion: 'OTROS', pais: 'PT', regimen_iva: 'sin_iva', ciclo_facturacion: 'quincenal' },
+  { id_cliente: 'BALTRANSA', nombre_canonico: 'BALTRANSA', alias: '', cif: 'A28000002', grupo_indexacion: 'BALTRANSA', pais: 'ES', regimen_iva: '21', ciclo_facturacion: 'quincenal' },
+];
+
+test('v4-1) cliente desconocido -> bloqueante (no listo_para_pago) con el emisor leido', () => {
+  const res = auditar(factura([linea()], { cliente: 'CLIENTE FANTASMA SL' }), INDEXACION, TARIFAS, { clientes: CLIENTES });
+  assert.ok(res.errores.some(e => /cliente_no_reconocido/.test(e) && /CLIENTE FANTASMA/.test(e)), 'error con el emisor visible');
+  assert.strictEqual(res.listo_para_pago, false);
+  assert.strictEqual(res.meta.cliente_reconocido, false);
+});
+
+test('v4-2) CIF como llave dura: nombre distinto pero CIF de Foresa -> resuelve por CIF', () => {
+  const res = auditar(factura([linea()], { cliente: 'RAZON SOCIAL RARA SA', cif_cliente: 'A36000001' }), INDEXACION, TARIFAS, { clientes: CLIENTES });
+  assert.strictEqual(res.meta.cliente_via, 'cif');
+  assert.strictEqual(res.meta.cliente_base, 'FORESA');
+  assert.strictEqual(res.meta.cliente_reconocido, true);
+});
+
+test('v4-3) linea facturada sin viaje registrado -> DISCREPANCIA', () => {
+  const viajes = [{ referencia: 'OTRA-REF', cliente: 'RNM', factura_id: '', kg_documento: 25000 }];
+  const res = auditar(factura([linea()]), INDEXACION, TARIFAS, { viajes: viajes });
+  assert.strictEqual(res.detalles[0].estado, ESTADOS.DISCREPANCIA);
+  assert.ok(res.errores.some(e => /sin viaje registrado/.test(e)));
+});
+
+test('v4-4) viaje real sin facturar -> aparece en el informe y NO bloquea el pago', () => {
+  const viajes = [
+    { referencia: 'REF-1', cliente: 'RNM', factura_id: '', kg_documento: 25000 },
+    { referencia: 'V-EXTRA', cliente: 'RNM', factura_id: '', kg_documento: 24000, origen: 'VIGO', destino: 'PORTO', fecha: '2026-07-12' },
+  ];
+  const res = auditar(factura([linea()]), INDEXACION, TARIFAS, { viajes: viajes });
+  assert.strictEqual(res.meta.viajes_no_facturados.length, 1);
+  assert.strictEqual(res.meta.viajes_no_facturados[0].referencia, 'V-EXTRA');
+  assert.strictEqual(res.listo_para_pago, true, 'un viaje sin facturar informa, no bloquea');
+});
+
+test('v4-5) peso factura vs peso viaje fuera de ±2% -> DISCREPANCIA', () => {
+  const viajes = [{ referencia: 'REF-1', cliente: 'RNM', factura_id: '', kg_documento: 30000 }]; // 30 t vs 25 t facturadas
+  const res = auditar(factura([linea()]), INDEXACION, TARIFAS, { viajes: viajes });
+  assert.strictEqual(res.detalles[0].estado, ESTADOS.DISCREPANCIA);
+  assert.ok(res.errores.some(e => /peso divergente/.test(e)));
+});
+
+test('v4-6) referencia ya facturada en otra factura -> REVISAR (rectificativa?), no bloquea a ciegas', () => {
+  const viajes = [{ referencia: 'REF-1', cliente: 'RNM', factura_id: 'FRA-100', kg_documento: 25000 }];
+  const res = auditar(factura([linea()], { numero: 'FRA-200' }), INDEXACION, TARIFAS, { viajes: viajes });
+  assert.ok(res.avisos.some(a => /ya facturada en FRA-100/.test(a) && /rectificativa/.test(a)));
+  assert.strictEqual(res.listo_para_pago, true, 'no se marca error a ciegas: puede ser rectificativa legitima');
+});
+
+test('v4-7) Foresa metanol 6 rotaciones -> SIN aviso de minimo 23 t (§7)', () => {
+  const ln = linea({ origen: 'VILLAGARCIA', destino: 'CALDAS DE REIS', material: 'METANOL', cantidad_tn: 6, precio: 3.68, importe: 22.08, referencia: '2016120', conceptos: [] });
+  const res = auditar(factura([ln], { cliente: 'FORESA' }), INDEXACION, TARIFAS, {
+    rutasMultiviaje: [{ cliente: 'FORESA', origen: 'VILLAGARCIA', destino: 'CALDAS DE REIS' }],
+  });
+  assert.ok(!res.avisos.some(a => /minimo de 23 t/.test(a)), 'no dispara el minimo falso por rotaciones');
+});
+
+test('v4-8) referencia Foresa 5030xxx (nº interno albaran) -> DISCREPANCIA', () => {
+  const ln = linea({ referencia: '5030126', origen: 'CALDAS DE REIS', destino: 'ORENSE', material: 'METANOL', conceptos: [] });
+  const res = auditar(factura([ln], { cliente: 'FORESA' }), INDEXACION, TARIFAS);
+  assert.ok(res.errores.some(e => /5030/.test(e) && /interno/.test(e)));
+});
+
+test('v4-9) Baltransa sin linea de indexacion a 0 -> ERROR (no aviso)', () => {
+  const ln = linea({ referencia: 'OC-274', cantidad_tn: 1, precio: 2050, importe: 2050, conceptos: [] });
+  const res = auditar(factura([ln], { cliente: 'BALTRANSA' }), INDEXACION, TARIFAS);
+  assert.ok(res.errores.some(e => /BALTRANSA/.test(e) && /indexacion a 0/.test(e)), 'es error, no aviso');
+});
+
+test('v4-10) RNM (PT) con IVA aplicado -> DISCREPANCIA (sin IVA por catalogo)', () => {
+  const res = auditar(factura([linea()], { cliente: 'RNM', base_imponible: 500, iva_pct: 21, iva_importe: 105, total: 605 }), INDEXACION, TARIFAS, { clientes: CLIENTES });
+  assert.ok(res.errores.some(e => /SIN IVA/.test(e) && /21/.test(e)));
+  assert.strictEqual(res.listo_para_pago, false);
+});
+
+test('v4-11) origen vacio -> SIN_TARIFA, nunca match por descarte', () => {
+  const res = auditar(factura([linea({ origen: '' })]), INDEXACION, TARIFAS);
+  assert.strictEqual(res.detalles[0].estado, ESTADOS.SIN_TARIFA);
+  assert.notStrictEqual(res.detalles[0].estado, ESTADOS.VALIDADO_OK);
+});
+
+test('v4-12) tabla viajes vacia -> el informe DECLARA que no se contrasto', () => {
+  const res = auditar(factura([linea()]), INDEXACION, TARIFAS);
+  assert.match(res.meta.contraste_viajes, /no ejecutado/);
+  assert.match(renderInforme(res), /Contraste contra viajes/);
+});
