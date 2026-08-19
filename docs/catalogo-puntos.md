@@ -11,7 +11,7 @@
 |---|---|
 | Data table `puntos` (`YjxcHHb5B4hT0RFU`) | Registro canónico en n8n. Columnas: `id_punto` (clave Gesruta), `nombre_canonico`, `alias` (\|-separados), `municipio`, `provincia`, `pais`, `tipo`, `empresa_sede`, `origen_alta` |
 | `catalogo/resolver-punto.js` | Módulo puro: `normalizar`, `resolverPunto`, `resolverPuntoDocFicha`, `aprenderAlias`. 12 tests |
-| `catalogo/semillas-puntos.json` | Semillas manuales (`origen_alta='manual'`): OREMBER→Ourense, AVEIRO (puerto PT, origen), RELISA/DIVERSEY/TEPSA (planta_cargadora), BREDFOR→BRESFOR |
+| `catalogo/semillas-puntos.json` | Enriquecen por nombre (país/tipo/empresa/alias): AVEIRO (puerto PT, origen), RELISA/DIVERSEY/TEPSA (planta_cargadora), BREDFOR→BRESFOR. **OREMBER NO es alias de Ourense** — son puntos Gesruta distintos (OR vs OU) |
 | `catalogo/bootstrap-puntos.js` | Script de una corrida: siembra + cosecha + asigna + encola |
 | `catalogo/cola-puntos.json` | **Revisar de arriba hacia abajo.** Literales sin resolver, ordenados por frecuencia |
 | `catalogo/puntos-alta.json` | Canónico listo para cargar en la data table |
@@ -43,17 +43,22 @@ cuando el operador corrige un punto. Salvaguardas duras:
 2. Todo alias guarda **procedencia** (de qué corrección, cuándo, qué viaje) → reversible.
 3. (Pendiente de UI) Informe "Aliases aprendidos esta semana" en la vista pendientes.
 
-## Divergencias con el brief (reales, reportadas)
+## Fuente del seed y estado (actualizado)
 
-- **Semilla canónica: NO desde `tarifas`.** No hay tool MCP para leer filas de una
-  data table, y `datos/` tiene los **resúmenes** de las exportaciones Gesruta, no los
-  CSV crudos. Se siembra desde `datos/resumen-puntos-gesruta.md` — que además es la
-  fuente correcta del `id_punto` (el `Cód.Pto.` es la clave que entiende Gesruta).
-- **Seed incompleto: 150 de 807 puntos.** El resumen trae solo las primeras 150 filas
-  del registro Gesruta. Por eso la cola queda **inflada**: puntos reales como
-  VILLAGARCIA o TORDESILLAS caen a la cola solo porque no están en esa muestra. Con el
-  CSV completo (`puntos-geograficos.csv`, 807 filas) la cobertura sube mucho.
-- **`datos/historico-gesruta.csv` no existe** → el bootstrap sigue sin él (era opcional).
+- **Semilla primaria: `datos/tabla-traduccion-puntos.md`** — el cruce (hecho por el
+  chat de diseño) de los 214 puntos usados contra el catálogo Gesruta de 807:
+  **emparejan al 100% por nombre exacto**, con su `Cód.Pto.` real (= `id_punto`, lo
+  que teclea el robot). No hay cola de *emparejamiento*.
+- **La cola residual (93) NO es un fallo del matching.** Son los puntos de menor
+  volumen cuyo `Cód.Pto.` no está en el repo (la tabla trae solo el top-30 = ~90%
+  del volumen; el resto de los 214 está en el catálogo Gesruta completo, que no se
+  sube). Con el volumen que importa, la cobertura automática es **89.8%**.
+- **Corrección de datos**: OREMBER (`OR`) y ORENSE (`OU`) son puntos Gesruta
+  **distintos**, no alias entre sí. La semilla vieja que los unía se corrigió.
+- Duplicados sin resolver (GARNICA/GUADALAJARA/GUARDA/RENTERÍA/SEGOVIA): están en el
+  catálogo completo, no en el top-30; Julio los consulta en Gesruta.
+- No hay tool MCP para leer filas de una data table; por eso el seed viene de los
+  `.md` de `datos/`, no de la tabla `tarifas`.
 
 ## Cómo re-correr
 
@@ -62,8 +67,7 @@ node catalogo/bootstrap-puntos.js     # regenera puntos-alta.json y cola-puntos.
 node --test catalogo/resolver-punto.test.js
 ```
 
-Última corrida: 151 canónicos (6 manuales + 145 Gesruta), 150 literales cosechados,
-32 resueltos automático, 118 a cola, **59.8% del volumen** cubierto automático.
+Última corrida (seed real, tabla-traduccion-puntos.md): 176 canónicos (30 usados de la tabla con su Cód.Pto. real + 142 del registro + 4 semillas), 150 literales cosechados, 57 resueltos automático, 93 a cola, **89.8% del volumen** cubierto automático.
 
 ## Pendiente (para cerrar el catálogo)
 

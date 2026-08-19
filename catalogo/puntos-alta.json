@@ -8,7 +8,18 @@
     "pais": "",
     "tipo": "generico",
     "empresa_sede": "",
-    "origen_alta": "gesruta"
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "2",
+    "nombre_canonico": "VILLAGARCIA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "PONTEVEDRA",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
   },
   {
     "id_punto": "9713",
@@ -55,70 +66,312 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "OURENSE",
-    "nombre_canonico": "Ourense",
-    "alias": "OREMBER|OREMBER (OURENSE)",
-    "municipio": "Ourense",
-    "provincia": "Ourense",
-    "pais": "ES",
+    "id_punto": "OR",
+    "nombre_canonico": "OREMBER",
+    "alias": "",
+    "municipio": "",
+    "provincia": "ORENSE",
+    "pais": "",
     "tipo": "generico",
     "empresa_sede": "",
-    "origen_alta": "manual"
+    "origen_alta": "gesruta-usado"
   },
   {
-    "id_punto": "AVEIRO",
-    "nombre_canonico": "Aveiro",
+    "id_punto": "AVEIR",
+    "nombre_canonico": "AVEIRO",
     "alias": "PUERTO DE AVEIRO|AVEIRO (PT)",
-    "municipio": "Aveiro",
-    "provincia": "Aveiro",
+    "municipio": "",
+    "provincia": "",
     "pais": "PT",
     "tipo": "puerto",
     "empresa_sede": "",
-    "origen_alta": "manual"
+    "origen_alta": "gesruta-usado"
   },
   {
-    "id_punto": "RELISA",
-    "nombre_canonico": "Relisa",
+    "id_punto": "UTI",
+    "nombre_canonico": "UTISA TERUEL",
     "alias": "",
-    "municipio": "Barcelona",
-    "provincia": "Barcelona",
-    "pais": "ES",
-    "tipo": "planta_cargadora",
-    "empresa_sede": "Relisa",
-    "origen_alta": "manual"
+    "municipio": "",
+    "provincia": "TERUEL",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
   },
   {
-    "id_punto": "DIVERSEY",
-    "nombre_canonico": "Diversey",
-    "alias": "DIVERSEY ESPANA|DIVERSEY ESPANA PRODUCTION",
-    "municipio": "Valdemoro",
-    "provincia": "Madrid",
-    "pais": "ES",
-    "tipo": "planta_cargadora",
-    "empresa_sede": "Diversey",
-    "origen_alta": "manual"
-  },
-  {
-    "id_punto": "TEPSA",
-    "nombre_canonico": "Tepsa",
+    "id_punto": "TORD",
+    "nombre_canonico": "TORDESILLAS",
     "alias": "",
     "municipio": "",
     "provincia": "",
-    "pais": "ES",
-    "tipo": "planta_cargadora",
-    "empresa_sede": "Tepsa",
-    "origen_alta": "manual"
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
   },
   {
-    "id_punto": "BRESFOR",
-    "nombre_canonico": "Bresfor",
-    "alias": "BREDFOR",
-    "municipio": "Aveiro",
-    "provincia": "Aveiro",
-    "pais": "PT",
-    "tipo": "planta_cargadora",
-    "empresa_sede": "Bresfor",
-    "origen_alta": "manual"
+    "id_punto": "B",
+    "nombre_canonico": "BARCELONA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "BARCELONA",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "T",
+    "nombre_canonico": "TARRAGONA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "TARRAGONA",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "IPDEC",
+    "nombre_canonico": "IP DECOR SPAIN, SAU",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "MIRAN",
+    "nombre_canonico": "MIRANDA DE EBRO",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "OU",
+    "nombre_canonico": "ORENSE",
+    "alias": "",
+    "municipio": "",
+    "provincia": "ORENSE",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "TERMO",
+    "nombre_canonico": "TERMOLAN, S.A.",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "VALDE",
+    "nombre_canonico": "VALDEMORO",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "LEIRI",
+    "nombre_canonico": "LEIRIA (PT)",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "CURIA",
+    "nombre_canonico": "CURIA SPAIN, SAU",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "URSA",
+    "nombre_canonico": "URSA IBERICA, S.A.",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "BRAGA",
+    "nombre_canonico": "BRAGA (PT)",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "H",
+    "nombre_canonico": "HUELVA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "HUELVA",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "NEFAB",
+    "nombre_canonico": "NEFAB PONTEV. SL",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "VIGO",
+    "nombre_canonico": "VIGO",
+    "alias": "",
+    "municipio": "",
+    "provincia": "PONTEVEDRA",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "SANTA",
+    "nombre_canonico": "SANTAREM",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "COGER",
+    "nombre_canonico": "COGERSA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "REINO",
+    "nombre_canonico": "REINOSA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "CURTI",
+    "nombre_canonico": "CURTIS",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "SE",
+    "nombre_canonico": "SEVILLA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "SEVILLA",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "KRONO",
+    "nombre_canonico": "KRONOSPAN, S.L.",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "DROVI",
+    "nombre_canonico": "DROGAS VIGO, S.L.",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "FAMAL",
+    "nombre_canonico": "VILANOVA FAMALICAO",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "SETUB",
+    "nombre_canonico": "SETUBAL",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
+  },
+  {
+    "id_punto": "ESTAR",
+    "nombre_canonico": "ESTARREJA",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "gesruta-usado"
   },
   {
     "id_punto": "ESTRA",
@@ -284,18 +537,6 @@
     "tipo": "generico",
     "empresa_sede": "",
     "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "ALBAC",
-    "nombre_canonico": "ALBACETE",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta",
-    "duplicado_pendiente": true
   },
   {
     "id_punto": "ALCAL",
@@ -472,18 +713,6 @@
     "tipo": "generico",
     "empresa_sede": "",
     "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "ALICA",
-    "nombre_canonico": "ALICANTE",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta",
-    "duplicado_pendiente": true
   },
   {
     "id_punto": "ALLO",
@@ -1091,18 +1320,6 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "BARAK",
-    "nombre_canonico": "BARAKALDO",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta",
-    "duplicado_pendiente": true
-  },
-  {
     "id_punto": "BARBA",
     "nombre_canonico": "BARBASTRO",
     "alias": "",
@@ -1119,17 +1336,6 @@
     "alias": "",
     "municipio": "",
     "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "B",
-    "nombre_canonico": "BARCELONA",
-    "alias": "",
-    "municipio": "",
-    "provincia": "BARCELONA",
     "pais": "",
     "tipo": "generico",
     "empresa_sede": "",
@@ -1455,17 +1661,6 @@
     "origen_alta": "gesruta"
   },
   {
-    "id_punto": "BRAGA",
-    "nombre_canonico": "BRAGA (PT)",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta"
-  },
-  {
     "id_punto": "BRAG",
     "nombre_canonico": "BRAGANÇA (PT)",
     "alias": "",
@@ -1497,18 +1692,6 @@
     "tipo": "generico",
     "empresa_sede": "",
     "origen_alta": "gesruta"
-  },
-  {
-    "id_punto": "BRENT",
-    "nombre_canonico": "BRENNTAG QUIMICA,SA",
-    "alias": "",
-    "municipio": "",
-    "provincia": "",
-    "pais": "",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "origen_alta": "gesruta",
-    "duplicado_pendiente": true
   },
   {
     "id_punto": "BU",
@@ -1707,5 +1890,53 @@
     "tipo": "generico",
     "empresa_sede": "",
     "origen_alta": "gesruta"
+  },
+  {
+    "id_punto": "RELISA",
+    "nombre_canonico": "Relisa",
+    "alias": "",
+    "municipio": "Barcelona",
+    "provincia": "Barcelona",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Relisa",
+    "origen_alta": "manual",
+    "id_provisional": true
+  },
+  {
+    "id_punto": "DIVERSEY",
+    "nombre_canonico": "Diversey",
+    "alias": "DIVERSEY ESPANA|DIVERSEY ESPANA PRODUCTION",
+    "municipio": "Valdemoro",
+    "provincia": "Madrid",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Diversey",
+    "origen_alta": "manual",
+    "id_provisional": true
+  },
+  {
+    "id_punto": "TEPSA",
+    "nombre_canonico": "Tepsa",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Tepsa",
+    "origen_alta": "manual",
+    "id_provisional": true
+  },
+  {
+    "id_punto": "BRESFOR",
+    "nombre_canonico": "Bresfor",
+    "alias": "BREDFOR",
+    "municipio": "Aveiro",
+    "provincia": "Aveiro",
+    "pais": "PT",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Bresfor",
+    "origen_alta": "manual",
+    "id_provisional": true
   }
 ]

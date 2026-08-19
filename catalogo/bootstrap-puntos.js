@@ -28,6 +28,7 @@ const path = require('path');
 const { resolverPunto, normalizar } = require('./resolver-punto.js');
 
 const RAIZ = path.resolve(__dirname, '..');
+const P_TABLA = path.join(RAIZ, 'datos', 'tabla-traduccion-puntos.md');
 const P_GESRUTA = path.join(RAIZ, 'datos', 'resumen-puntos-gesruta.md');
 const P_LITERALES = path.join(RAIZ, 'datos', 'resumen-literales.md');
 const P_HISTORICO = path.join(RAIZ, 'datos', 'historico-gesruta.csv');
@@ -62,64 +63,95 @@ function idDesde(nombre) {
   // id legible y estable a partir del nombre (fallback cuando no hay Cod.Pto.).
   return normalizar(nombre).replace(/\s+/g, '-') || 'SIN-NOMBRE';
 }
+function stripCod(x) { return String(x === null || x === undefined ? '' : x).replace(/[`\s]/g, '').trim(); }
+
+// Parser de tabla markdown SIN columna de indice numerico (primera celda = dato).
+function filasMdRaw(texto) {
+  const filas = [];
+  texto.split('\n').forEach(function (linea) {
+    const l = linea.trim();
+    if (l.indexOf('|') !== 0) { return; }
+    const c = l.split('|').slice(1, -1).map(function (x) { return x.trim(); });
+    if (c.length < 2) { return; }
+    if (c.every(function (x) { return /^:?-{2,}:?$/.test(x) || x === ''; })) { return; } // separadora
+    filas.push(c);
+  });
+  return filas;
+}
 
 // --- Fase A: semilla canonica -----------------------------------------------
+// Fuentes, en orden de autoridad:
+//   1) tabla-traduccion-puntos.md  -> los puntos USADOS con su Cod.Pto. real (id).
+//   2) resumen-puntos-gesruta.md   -> resto del registro (solo nombres nuevos).
+//   3) semillas-puntos.json        -> ENRIQUECEN por nombre (pais/tipo/empresa/alias).
 function cargarSemillaCanonica() {
-  const puntos = {}; // id_punto -> fila
-  // 1) Semillas manuales (mandan; origen_alta='manual').
-  let manuales = [];
-  try { manuales = JSON.parse(fs.readFileSync(P_SEMILLAS, 'utf8')); } catch (e) { manuales = []; }
-  manuales.forEach(function (m) {
-    puntos[m.id_punto] = {
-      id_punto: m.id_punto, nombre_canonico: m.nombre_canonico, alias: m.alias || '',
-      municipio: m.municipio || '', provincia: m.provincia || '', pais: m.pais || '',
-      tipo: m.tipo || 'generico', empresa_sede: m.empresa_sede || '', origen_alta: 'manual'
-    };
-  });
-  // 2) Registro Gesruta (Cod.Pto. = id canonico que entiende Gesruta, decision
-  //    confirmada por Julio: es lo que el robot tendra que teclear).
-  let nG = 0, nBasura = 0;
-  const porNombre = {}; // nombre_norm -> [id_punto,...] para detectar duplicados
-  const duplicados = {}; // nombre_norm -> { nombre, codigos:[...] }
-  Object.keys(puntos).forEach(function (id) { var nn = normalizar(puntos[id].nombre_canonico); (porNombre[nn] = porNombre[nn] || []).push(id); });
-  if (fs.existsSync(P_GESRUTA)) {
-    filasMd(fs.readFileSync(P_GESRUTA, 'utf8')).forEach(function (c) {
-      // columnas: # | Punto | Cod.Pto. | Provincia
-      const nombre = c[1] || '';
-      const cod = (c[2] || '').trim();
-      const prov = c[3] || '';
-      if (!nombre) { return; }
-      const nn = normalizar(nombre);
-      if (BASURA.indexOf(nn) >= 0) { nBasura++; return; } // no es punto valido
-      const id = cod || idDesde(nombre); // id_punto = Cod.Pto. DIRECTO (sin prefijo)
-      if (puntos[id]) { return; }
-      // Duplicado: mismo nombre EXACTO ya sembrado con OTRO codigo. NO se elige
-      // (dato de Julio: 5 duplicados en uso, decision suya). Se registran ambos.
-      if (porNombre[nn] && porNombre[nn].length >= 1 && porNombre[nn].indexOf(id) < 0) {
-        var prevId = porNombre[nn][0];
-        // solo cuenta como duplicado si el previo tambien es un canonico Gesruta con
-        // otro codigo (no una semilla manual que ya lo cubre a proposito)
-        if (puntos[prevId] && puntos[prevId].origen_alta === 'gesruta') {
-          duplicados[nn] = duplicados[nn] || { nombre: nombre, codigos: [prevId] };
-          if (duplicados[nn].codigos.indexOf(id) < 0) { duplicados[nn].codigos.push(id); }
-          porNombre[nn].push(id);
-          // se agrega igual al catalogo (existe en Gesruta), pero queda flagueado
-          puntos[id] = { id_punto: id, nombre_canonico: nombre, alias: '', municipio: '', provincia: prov, pais: '', tipo: 'generico', empresa_sede: '', origen_alta: 'gesruta', duplicado_pendiente: true };
-          nG++;
-          return;
-        }
-        // el nombre ya lo cubre una semilla manual: no duplicar
-        return;
-      }
-      (porNombre[nn] = porNombre[nn] || []).push(id);
-      puntos[id] = {
-        id_punto: id, nombre_canonico: nombre, alias: '',
-        municipio: '', provincia: prov, pais: '', tipo: 'generico', empresa_sede: '', origen_alta: 'gesruta'
-      };
-      nG++;
+  const puntos = {};            // id_punto -> fila
+  const porNombre = {};         // nombre_norm -> [id_punto,...]
+  const duplicados = {};        // nombre_norm -> { nombre, codigos }
+  let nBasura = 0;
+
+  function registrar(nombre, cod, prov, origen) {
+    if (!nombre) { return false; }
+    const nn = normalizar(nombre);
+    if (BASURA.indexOf(nn) >= 0) { nBasura++; return false; } // no es punto valido
+    const id = cod || idDesde(nombre);
+    if (puntos[id]) { return false; }
+    const yaIds = porNombre[nn] || [];
+    if (yaIds.length && yaIds.indexOf(id) < 0) {
+      // Mismo nombre EXACTO con OTRO Cod.Pto. -> duplicado. NO se elige (dato de
+      // Julio: imposible saber cual se uso desde el nombre). Se registran ambos.
+      duplicados[nn] = duplicados[nn] || { nombre: nombre, codigos: yaIds.slice() };
+      if (duplicados[nn].codigos.indexOf(id) < 0) { duplicados[nn].codigos.push(id); }
+      porNombre[nn].push(id);
+      puntos[id] = { id_punto: id, nombre_canonico: nombre, alias: '', municipio: '', provincia: prov || '', pais: '', tipo: 'generico', empresa_sede: '', origen_alta: origen, duplicado_pendiente: true };
+      return true;
+    }
+    (porNombre[nn] = porNombre[nn] || []).push(id);
+    puntos[id] = { id_punto: id, nombre_canonico: nombre, alias: '', municipio: '', provincia: prov || '', pais: '', tipo: 'generico', empresa_sede: '', origen_alta: origen };
+    return true;
+  }
+
+  // 1) PRIMARIO: tabla de traduccion (Punto | Usos | Cod.Pto. | Provincia).
+  let nTabla = 0;
+  if (fs.existsSync(P_TABLA)) {
+    filasMdRaw(fs.readFileSync(P_TABLA, 'utf8')).forEach(function (c) {
+      if (normalizar(c[0]) === 'PUNTO') { return; } // cabecera
+      if (registrar(c[0], stripCod(c[2]), c[3] || '', 'gesruta-usado')) { nTabla++; }
     });
   }
-  return { puntos: puntos, nGesruta: nG, nManual: manuales.length, nBasura: nBasura, duplicados: duplicados };
+  // 2) SECUNDARIO: registro Gesruta (# | Punto | Cod.Pto. | Provincia), nombres nuevos.
+  let nGesruta = 0;
+  if (fs.existsSync(P_GESRUTA)) {
+    filasMd(fs.readFileSync(P_GESRUTA, 'utf8')).forEach(function (c) {
+      const nombre = c[1] || '';
+      if (!nombre || porNombre[normalizar(nombre)]) { return; }
+      if (registrar(nombre, stripCod(c[2]), c[3] || '', 'gesruta')) { nGesruta++; }
+    });
+  }
+  // 3) Semillas: ENRIQUECEN por nombre. Crean punto provisional solo si falta.
+  let manuales = [];
+  try { manuales = JSON.parse(fs.readFileSync(P_SEMILLAS, 'utf8')); } catch (e) { manuales = []; }
+  let nEnriq = 0, nNuevos = 0;
+  manuales.forEach(function (m) {
+    if (!m || !m.nombre_canonico) { return; } // ignora la nota general del archivo
+    const nn = normalizar(m.nombre_canonico);
+    const ids = porNombre[nn] || [];
+    if (ids.length) {
+      const p = puntos[ids[0]];
+      if (m.pais) { p.pais = m.pais; }
+      if (m.tipo) { p.tipo = m.tipo; }
+      if (m.empresa_sede) { p.empresa_sede = m.empresa_sede; }
+      if (m.alias) { p.alias = p.alias ? (p.alias + '|' + m.alias) : m.alias; }
+      nEnriq++;
+    } else {
+      const id = m.id_punto || idDesde(m.nombre_canonico);
+      puntos[id] = { id_punto: id, nombre_canonico: m.nombre_canonico, alias: m.alias || '', municipio: m.municipio || '', provincia: m.provincia || '', pais: m.pais || '', tipo: m.tipo || 'generico', empresa_sede: m.empresa_sede || '', origen_alta: 'manual', id_provisional: true };
+      (porNombre[nn] = porNombre[nn] || []).push(id);
+      nNuevos++;
+    }
+  });
+
+  return { puntos: puntos, nTabla: nTabla, nGesruta: nGesruta, nEnriq: nEnriq, nNuevos: nNuevos, nBasura: nBasura, duplicados: duplicados };
 }
 
 // --- Fase B: cosecha de literales con frecuencia ----------------------------
@@ -150,7 +182,7 @@ function main() {
   console.log('== Bootstrap catalogo de puntos ==');
   const semilla = cargarSemillaCanonica();
   const catalogo = Object.keys(semilla.puntos).map(function (k) { return semilla.puntos[k]; });
-  console.log('  [Fase A] canonico sembrado: ' + catalogo.length + ' puntos (' + semilla.nManual + ' manuales + ' + semilla.nGesruta + ' de Gesruta). Basura excluida: ' + semilla.nBasura + '.');
+  console.log('  [Fase A] canonico sembrado: ' + catalogo.length + ' puntos (' + semilla.nTabla + ' usados de la tabla + ' + semilla.nGesruta + ' del registro + ' + semilla.nNuevos + ' semillas nuevas; ' + semilla.nEnriq + ' enriquecidos). Basura excluida: ' + semilla.nBasura + '.');
   const dupList = Object.keys(semilla.duplicados).map(function (k) { return semilla.duplicados[k]; });
   fs.writeFileSync(P_SALIDA_DUP, JSON.stringify(dupList, null, 2));
   console.log('  [duplicados] mismo nombre con varios Cod.Pto. (decision de Julio): ' + dupList.length + ' -> ' + path.relative(RAIZ, P_SALIDA_DUP) + (dupList.length ? '' : ' (ninguno en esta muestra)'));

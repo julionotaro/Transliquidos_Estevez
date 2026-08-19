@@ -1,25 +1,13 @@
 [
   {
-    "id_punto": "OURENSE",
-    "nombre_canonico": "Ourense",
-    "alias": "OREMBER|OREMBER (OURENSE)",
-    "municipio": "Ourense",
-    "provincia": "Ourense",
-    "pais": "ES",
-    "tipo": "generico",
-    "empresa_sede": "",
-    "_nota": "OREMBER es un punto geografico legitimo (=Ourense), confirmado en dominio. NO es un cliente."
+    "_nota_general": "Estas semillas ENRIQUECEN por NOMBRE los puntos ya sembrados desde datos/tabla-traduccion-puntos.md (pais/tipo/empresa_sede/alias, columnas que el catalogo Gesruta tiene vacias). Solo crean un punto nuevo si el nombre no esta en la tabla; en ese caso el id_punto es PROVISIONAL (el Cod.Pto. real esta en el catalogo Gesruta completo, no en el repo)."
   },
   {
-    "id_punto": "AVEIRO",
     "nombre_canonico": "Aveiro",
     "alias": "PUERTO DE AVEIRO|AVEIRO (PT)",
-    "municipio": "Aveiro",
-    "provincia": "Aveiro",
     "pais": "PT",
     "tipo": "puerto",
-    "empresa_sede": "",
-    "_nota": "Puerto. Es ORIGEN de carga en Bresfor (no destino), §8."
+    "_nota": "Enriquece AVEIRO (Cod.Pto. AVEIR). Puerto, ORIGEN de carga en Bresfor (no destino), §8. CORRECCION: OREMBER (OR) y ORENSE (OU) son puntos Gesruta DISTINTOS, no alias entre si; se siembran de la tabla."
   },
   {
     "id_punto": "RELISA",

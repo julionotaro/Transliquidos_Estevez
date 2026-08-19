@@ -1,40 +1,5 @@
 [
   {
-    "literal": "VILLAGARCIA",
-    "frecuencia": 421,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VILLAGARCIA\""
-  },
-  {
-    "literal": "UTISA TERUEL",
-    "frecuencia": 358,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"UTISA TERUEL\""
-  },
-  {
-    "literal": "TORDESILLAS",
-    "frecuencia": 330,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TORDESILLAS\""
-  },
-  {
-    "literal": "TARRAGONA",
-    "frecuencia": 127,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TARRAGONA\""
-  },
-  {
-    "literal": "IP DECOR SPAIN, SAU",
-    "frecuencia": 91,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"IP DECOR SPAIN, SAU\""
-  },
-  {
     "literal": "MADRID",
     "frecuencia": 89,
     "candidatos": [],
@@ -47,76 +12,6 @@
     "candidatos": [],
     "sugerido": null,
     "motivo": "punto_no_reconocido: no se pudo resolver el literal \"GETAFE\""
-  },
-  {
-    "literal": "VALDEMORO",
-    "frecuencia": 60,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VALDEMORO\""
-  },
-  {
-    "literal": "MIRANDA DE EBRO",
-    "frecuencia": 57,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"MIRANDA DE EBRO\""
-  },
-  {
-    "literal": "ORENSE",
-    "frecuencia": 56,
-    "candidatos": [
-      {
-        "id_punto": "OURENSE",
-        "nombre_canonico": "Ourense",
-        "metodo": "distancia",
-        "confianza": "media"
-      }
-    ],
-    "sugerido": "OURENSE",
-    "motivo": "punto \"ORENSE\" -> Ourense (distancia, confianza media); lectura parecida a un canonico (distancia 1) — verificar"
-  },
-  {
-    "literal": "TERMOLAN, S.A.",
-    "frecuencia": 49,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TERMOLAN, S.A.\""
-  },
-  {
-    "literal": "HUELVA",
-    "frecuencia": 44,
-    "candidatos": [
-      {
-        "id_punto": "BIOHU",
-        "nombre_canonico": "BIO OILS HUELVA SL",
-        "metodo": "contencion",
-        "confianza": "media"
-      }
-    ],
-    "sugerido": "BIOHU",
-    "motivo": "punto \"HUELVA\" -> BIO OILS HUELVA SL (contencion, confianza media); nombre contenido en un unico canonico — verificar"
-  },
-  {
-    "literal": "LEIRIA (PT)",
-    "frecuencia": 41,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"LEIRIA (PT)\""
-  },
-  {
-    "literal": "CURIA SPAIN, SAU",
-    "frecuencia": 40,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CURIA SPAIN, SAU\""
-  },
-  {
-    "literal": "URSA IBERICA, S.A.",
-    "frecuencia": 40,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"URSA IBERICA, S.A.\""
   },
   {
     "literal": "PORRIÑO",
@@ -140,34 +35,6 @@
     "motivo": "punto_no_reconocido: no se pudo resolver el literal \"HARINAS ALMELA,SC\""
   },
   {
-    "literal": "NEFAB PONTEV. SL",
-    "frecuencia": 27,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"NEFAB PONTEV. SL\""
-  },
-  {
-    "literal": "VIGO",
-    "frecuencia": 27,
-    "candidatos": [
-      {
-        "id_punto": "CALVI",
-        "nombre_canonico": "CALDAS-VIGO",
-        "metodo": "contencion",
-        "confianza": "media"
-      }
-    ],
-    "sugerido": "CALVI",
-    "motivo": "punto \"VIGO\" -> CALDAS-VIGO (contencion, confianza media); nombre contenido en un unico canonico — verificar"
-  },
-  {
-    "literal": "VILANOVA FAMALICAO",
-    "frecuencia": 26,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"VILANOVA FAMALICAO\""
-  },
-  {
     "literal": "PONTEVEDRA",
     "frecuencia": 25,
     "candidatos": [],
@@ -175,67 +42,11 @@
     "motivo": "punto_no_reconocido: no se pudo resolver el literal \"PONTEVEDRA\""
   },
   {
-    "literal": "CURTIS",
-    "frecuencia": 24,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CURTIS\""
-  },
-  {
-    "literal": "COGERSA",
-    "frecuencia": 20,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"COGERSA\""
-  },
-  {
-    "literal": "REINOSA",
-    "frecuencia": 19,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"REINOSA\""
-  },
-  {
-    "literal": "SANTAREM",
-    "frecuencia": 18,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SANTAREM\""
-  },
-  {
     "literal": "TOLEDO",
     "frecuencia": 17,
     "candidatos": [],
     "sugerido": null,
     "motivo": "punto_no_reconocido: no se pudo resolver el literal \"TOLEDO\""
-  },
-  {
-    "literal": "SEVILLA",
-    "frecuencia": 16,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SEVILLA\""
-  },
-  {
-    "literal": "ESTARREJA",
-    "frecuencia": 14,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"ESTARREJA\""
-  },
-  {
-    "literal": "KRONOSPAN, S.L.",
-    "frecuencia": 14,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"KRONOSPAN, S.L.\""
-  },
-  {
-    "literal": "DROGAS VIGO, S.L.",
-    "frecuencia": 13,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"DROGAS VIGO, S.L.\""
   },
   {
     "literal": "MEM MARTINS (PT)",
@@ -369,13 +180,6 @@
     "candidatos": [],
     "sugerido": null,
     "motivo": "punto_no_reconocido: no se pudo resolver el literal \"O PORTO\""
-  },
-  {
-    "literal": "SETUBAL",
-    "frecuencia": 7,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"SETUBAL\""
   },
   {
     "literal": "GUADALAJARA",
@@ -786,9 +590,16 @@
   {
     "literal": "CUNTIS",
     "frecuencia": 2,
-    "candidatos": [],
-    "sugerido": null,
-    "motivo": "punto_no_reconocido: no se pudo resolver el literal \"CUNTIS\""
+    "candidatos": [
+      {
+        "id_punto": "CURTI",
+        "nombre_canonico": "CURTIS",
+        "metodo": "distancia",
+        "confianza": "media"
+      }
+    ],
+    "sugerido": "CURTI",
+    "motivo": "punto \"CUNTIS\" -> CURTIS (distancia, confianza media); lectura parecida a un canonico (distancia 1) — verificar"
   },
   {
     "literal": "CONTRACHAPADOS INDUSTRIALES, S.L.",
