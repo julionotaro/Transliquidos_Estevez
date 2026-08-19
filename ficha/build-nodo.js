@@ -17,7 +17,10 @@ const DIR = __dirname;
 const TARGETS = [
   {
     nodo: 'Formatear Linea Gesruta',
-    logica: ['cruce.js', 'correlacionar.js'],
+    // Orden: resolver-punto (puntos canonicos) -> cruce -> correlacionar-n2
+    // (depende de los dos anteriores por globales inlineados) -> correlacionar.
+    // El N2 queda GATED en correlacionar.js: sin pool de viajes + catalogo, inerte.
+    logica: ['../catalogo/resolver-punto.js', 'cruce.js', '../correlacion/correlacionar-n2.js', 'correlacionar.js'],
     wrapper: 'nodo-formatear.wrapper.js',
     salida: 'nodo-formatear.generated.js',
   },

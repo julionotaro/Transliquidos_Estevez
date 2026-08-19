@@ -21,7 +21,7 @@
 var RP = (typeof resolverPunto === 'function')
   ? { resolverPunto: resolverPunto }
   : require('../catalogo/resolver-punto.js');
-var CRUCE = (typeof esRutaMultiviaje === 'function')
+var N2_CRUCE = (typeof esRutaMultiviaje === 'function')
   ? { esRutaMultiviaje: esRutaMultiviaje }
   : require('../ficha/cruce.js');
 
@@ -29,7 +29,7 @@ var VENTANA_OC_DIAS = 2;     // decision de Julio: la OC se emite hasta 2 dias a
 var TOL_PESO = 0.02;         // ±2% para el desempate por peso
 
 function s(x) { return (x === null || x === undefined) ? '' : String(x); }
-function num(x) { var n = (typeof x === 'number') ? x : Number(x); return isFinite(n) ? n : null; }
+function n2num(x) { var n = (typeof x === 'number') ? x : Number(x); return isFinite(n) ? n : null; }
 function normTxt(x) { return s(x).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/\s+/g, ' ').trim(); }
 
 // Compatibilidad de material: inclusion en cualquier sentido, sin acentos. No
@@ -131,10 +131,10 @@ function correlacionarN2(doc, viajes, catalogo, opts) {
   }
 
   // Señal de desempate 2: peso ±2% (sobre el kg del documento).
-  var kgDoc = num(doc && doc.kg_neto);
+  var kgDoc = n2num(doc && doc.kg_neto);
   if (kgDoc) {
     var porPeso = enVentana.filter(function (v) {
-      var kv = num(v.kg_documento) !== null ? num(v.kg_documento) : num(v.cantidad_kg);
+      var kv = n2num(v.kg_documento) !== null ? n2num(v.kg_documento) : n2num(v.cantidad_kg);
       return kv !== null && Math.abs(kv - kgDoc) <= kgDoc * TOL_PESO;
     });
     if (porPeso.length === 1) {
@@ -144,7 +144,7 @@ function correlacionarN2(doc, viajes, catalogo, opts) {
   }
 
   // >1 y no se pudo desempatar -> REVISAR listando los candidatos (no adivinar).
-  var multiv = CRUCE.esRutaMultiviaje(doc && doc.cliente, doc && doc.origen, doc && doc.destino) ? ' [ruta multiviaje §7: pueden ser rotaciones]' : '';
+  var multiv = N2_CRUCE.esRutaMultiviaje(doc && doc.cliente, doc && doc.origen, doc && doc.destino) ? ' [ruta multiviaje §7: pueden ser rotaciones]' : '';
   var lst = enVentana.map(function (v) { return (v.referencia || v.id || '?') + ' (' + s(v.fecha_carga || v.fecha) + ')'; }).join('; ');
   return { correlacion: 'sin_correlacion', viaje: null, confianza: 'ninguna', revisar: true,
     motivo: enVentana.length + ' candidatos compatibles, no se puede desambiguar: ' + lst + multiv, candidatos: enVentana };

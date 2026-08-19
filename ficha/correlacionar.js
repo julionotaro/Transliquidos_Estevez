@@ -231,6 +231,16 @@ var CRUCE = (typeof clasificarCantidad === 'function')
   ? { clasificarCantidad: clasificarCantidad, regimenIndexacion: regimenIndexacion, repartirKm: repartirKm, esRutaMultiviaje: esRutaMultiviaje, RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE, CLIENTES_CONOCIDOS: CLIENTES_CONOCIDOS }
   : require('./cruce.js');
 
+// Correlacion documento<->viaje NIVEL 2 (modelo-dominio-lectura.md §5.2). En el
+// nodo, build-nodo.js inlinea correlacion/correlacionar-n2.js (y catalogo/
+// resolver-punto.js, del que depende) ANTES de este archivo, asi que
+// correlacionarN2 queda global; en node/test se requiere. Ver el uso GATED en el
+// match documento->viaje: solo actua si el grafo cablea el pool de viajes
+// existentes + el catalogo de puntos; sin eso, el comportamiento es identico.
+var CN2 = (typeof correlacionarN2 === 'function')
+  ? { correlacionarN2: correlacionarN2 }
+  : require('../correlacion/correlacionar-n2.js');
+
 // Fuente legible de un dato para el audit trail (§4): que papel/pagina lo aporto.
 var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'doc') + ':pag' + (d.pagina || '?')) : null; };
 
@@ -246,6 +256,15 @@ var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'do
 function correlacionar(rA, rB, opts) {
   const rutas = (opts && opts.rutas) ? opts.rutas : CRUCE.RUTAS_MULTIVIAJE;
   const clientes = (opts && opts.clientes) ? opts.clientes : CRUCE.CLIENTES_CONOCIDOS;
+  // --- N2 doc<->viaje (§5.2): pool de viajes YA cargados en Gesruta + catalogo de
+  // puntos canonicos. GATED: si el grafo no los cablea, viajesExistentes=[] y
+  // catalogoPuntos=null y el nodo se comporta EXACTAMENTE como antes (los
+  // documentos sin ficha en el envio quedan huerfanos, igual que hoy). N2 nunca
+  // usa la matricula ni la ficha: correlaciona por el punto canonico del documento
+  // impreso (que coincide 100% con Gesruta) + material + peso + ventana temporal.
+  const viajesExistentes = (opts && Array.isArray(opts.viajesExistentes)) ? opts.viajesExistentes : [];
+  const catalogoPuntos = (opts && opts.catalogoPuntos) ? opts.catalogoPuntos : null;
+  const correlacionesExternas = [];
   if (!rA) {
     logError('la pasada de FICHAS no devolvio JSON valido');
     return { ok: false, hojas: [], viajes: [], documentos: [], errores: [], avisos: [] };
@@ -337,14 +356,54 @@ function correlacionar(rA, rB, opts) {
 
   // ---- Match documento -> viaje (N docs : 1 viaje) ----
   const docsHuerfanos = [];
+
+  // Fallback N2 (§5.2): correlaciona UN documento sin ficha en el envio contra el
+  // pool de viajes ya cargados en Gesruta. GATED por viajesExistentes+catalogoPuntos
+  // (sin cablear -> devuelve false, el documento sigue su camino de huerfano de
+  // antes: cambio ADITIVO puro). Devuelve true cuando ya trato al documento (lo
+  // correlaciono, o lo dejo anotado como candidato ambiguo para revision humana).
+  const intentarN2 = function (d, et) {
+    if (!viajesExistentes.length || !catalogoPuntos) { return false; }
+    const docN2 = {
+      referencia: d.referencia, origen: d.origen, destino: d.destino,
+      material: d.material, fecha: nz(d.fecha), kg_neto: d.kg_neto,
+      cliente: nz(d.cliente_probable) || nz(d.emisor) || null, tipo_doc: d.tipo_doc,
+    };
+    const r = CN2.correlacionarN2(docN2, viajesExistentes, catalogoPuntos, opts);
+    if ((r.correlacion === 'N1' || r.correlacion === 'N2') && !r.revisar && r.viaje) {
+      correlacionesExternas.push({ documento: d, viaje: r.viaje, correlacion: r.correlacion, confianza: r.confianza, revisar: false, motivo: r.motivo });
+      avisos.push('Documento ' + et + ' correlacionado ' + r.correlacion + ' con viaje ya cargado (' + (nz(r.viaje.referencia) || r.viaje.id || '?') + '): ' + r.motivo + '.');
+      return true;
+    }
+    if (r.revisar && r.candidatos && r.candidatos.length) {
+      correlacionesExternas.push({ documento: d, viaje: null, correlacion: 'sin_correlacion', confianza: 'ninguna', revisar: true, motivo: r.motivo });
+      docsHuerfanos.push({ d: d, motivo: 'sin ficha en el envio; N2 hallo ' + r.candidatos.length + ' viaje(s) candidato(s) pero no desambiguo — revisar: ' + r.motivo });
+      return true;
+    }
+    return false; // N2 no aplica (documento sin origen/destino resoluble, o 0 candidatos)
+  };
+
   for (const d of docsRaw) {
     if (d.duplicado_de) { continue; }
     const dm = mat(d.matricula_tractor);
     const df = nz(d.fecha);
     const et = 'pag ' + (d.pagina || '?') + ' ' + (nz(d.referencia) || 'sin ref');
-    if (!dm) { docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible' }); continue; }
+    // N2 (§5.2) — fallback cuando el documento NO ata a ninguna ficha de ESTE
+    // envio (sin matricula legible, o matricula que no corresponde a ninguna
+    // ficha). Antes de declararlo huerfano se intenta correlacionarlo contra el
+    // pool de viajes ya cargados en Gesruta, por referencia (N1) o
+    // ruta+material+peso+fecha (N2). GATED: solo si el grafo cablea el pool. El
+    // documento aporta el punto CANONICO (coincide con Gesruta); no se toca la
+    // ficha ni la matricula. Ver intentarN2() abajo.
+    if (!dm) {
+      if (intentarN2(d, et)) { continue; }
+      docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible' }); continue;
+    }
     let cands = viajes.filter(function (v) { return v.tractoraN && v.tractoraN === dm; });
-    if (cands.length === 0) { docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' }); continue; }
+    if (cands.length === 0) {
+      if (intentarN2(d, et)) { continue; }
+      docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' }); continue;
+    }
     if (cands.length > 1 && df) {
       const enVentana = cands.filter(function (v) {
         const ini = v.fecha_carga; const fin = v.fecha_descarga || v.fecha_carga;
@@ -690,7 +749,7 @@ function correlacionar(rA, rB, opts) {
     ' errores=' + errores.length + ' avisos=' + avisos.length);
   if (nRevisar > 0) { logInfo(nRevisar + ' viaje(s) marcados REVISAR: la lectura no es confiable, requieren revision humana.'); }
 
-  return { ok: true, hojas: hojasRaw, viajes: viajes, documentos: docsRaw, errores: errores, avisos: avisos };
+  return { ok: true, hojas: hojasRaw, viajes: viajes, documentos: docsRaw, errores: errores, avisos: avisos, correlaciones_externas: correlacionesExternas };
 }
 
 /**
@@ -738,6 +797,22 @@ function renderInforme(res) {
   L.push('');
   L.push('---- AVISOS (' + avisos.length + ') ----');
   if (!avisos.length) { L.push('Ninguno.'); } else { for (const a of avisos) { L.push('  ! ' + a); } }
+  // Correlaciones N2 documento<->viaje existente. Solo se imprime si las hubo
+  // (grafo cableado): sin cablear, esta seccion no aparece y el informe es
+  // identico al de v3.2 (regresion intacta).
+  const cx = Array.isArray(res.correlaciones_externas) ? res.correlaciones_externas : [];
+  if (cx.length) {
+    L.push('');
+    L.push('---- CORRELACION N2 doc<->viaje existente (' + cx.length + ') ----');
+    for (const c of cx) {
+      const dref = f(nz(c.documento && c.documento.referencia)) + ' pag ' + f(c.documento && c.documento.pagina);
+      if (c.viaje) {
+        L.push('  = ' + c.correlacion + ' [' + f(c.confianza) + '] doc ' + dref + ' -> viaje ' + f(nz(c.viaje.referencia) || c.viaje.id) + ': ' + c.motivo);
+      } else {
+        L.push('  ? REVISAR doc ' + dref + ': ' + c.motivo);
+      }
+    }
+  }
   L.push('============================');
   return L.join('\n');
 }
@@ -819,6 +894,11 @@ function procesar(respuestas, metas, opts) {
     erroresPrevios.length + ' fallo(s) de lectura de pagina.');
 
   const salida = { hojas: res.hojas, viajes: res.viajes, documentos: res.documentos, errores: res.errores, avisos: res.avisos };
+  // Aditivo: solo se agrega la clave si N2 produjo correlaciones (grafo cableado).
+  // Sin cablear, `salida` (y por tanto datos_json) es identico al de v3.2.
+  if (Array.isArray(res.correlaciones_externas) && res.correlaciones_externas.length) {
+    salida.correlaciones_externas = res.correlaciones_externas;
+  }
   const nRevisar = res.viajes.filter(function (v) { return v.estado_lectura === ESTADO_LECTURA.REVISAR; }).length;
   return {
     ok: true,

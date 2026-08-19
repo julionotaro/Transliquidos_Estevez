@@ -42,17 +42,53 @@ depende la ventana. Por `tipo_doc`, con marcadores de encabezado como respaldo
   Foresa metanol (misma ruta/día) se distinguen por peso; no se colapsan a un viaje.
   Reusa `RUTAS_MULTIVIAJE`/`esRutaMultiviaje` de `cruce.js` (no duplica).
 
-## Trazabilidad (CAMBIO 3) — pendiente de cableado
+## Cableado en `correlacionar.js` — DIFF listo, deploy EN ESPERA de revisión
 
-El campo `correlacion` (`N1`/`N2`/`manual`/`sin_correlacion`) debe persistirse en la
-tabla `viajes` y mostrarse en la vista pendientes, para **medir si N2 acierta** (sin
-medición no sabemos si la ventana de 2 días es la correcta). Falta:
-- agregar columna `correlacion` a la tabla `viajes` (MCP) + emitirla en Preparar
-  Filas Viajes + mostrarla en `pendientes.js`;
-- integrar la cascada en el correlacionador de ingesta.
+El fallback N2 ya está integrado en `ficha/correlacionar.js` (rama
+`claude/correlacion-n2-integracion`), pero **NO se pegó en el nodo**: es nodo crítico
+y Julio revisa el diff antes de aplicarlo. El diseño es **ADITIVO y GATED**:
+
+- `correlacionar(rA, rB, opts)` acepta dos entradas nuevas en `opts`:
+  `viajesExistentes` (pool de viajes ya cargados en Gesruta) y `catalogoPuntos`
+  (los 324 puntos canónicos, tabla `puntos`).
+- **Sin cablear** esas dos entradas el nodo se comporta **exactamente** como v3.2:
+  los documentos sin ficha en el envío quedan huérfanos igual que hoy. La regresión
+  (226 tests) pasa **byte-idéntica**; el informe y `datos_json` no cambian.
+- **Con** el pool + catálogo cableados, un documento cuya matrícula no ata a ninguna
+  ficha del envío se intenta correlacionar contra el pool: `referencia` (N1) o
+  `ruta+material+peso+fecha` (N2). El resultado sale en `correlaciones_externas`
+  (y en una sección nueva del informe, solo si la hubo).
+
+Punto de integración: la rama de huérfano del match documento→viaje (helper
+`intentarN2`). El documento aporta el **punto canónico** (coincide 100% con Gesruta);
+N2 nunca usa la matrícula ni la ficha manuscrita.
+
+### Lo que Julio decide/aplica (no se toca por MCP)
+
+1. **Grafo del workflow `[ESTEVEZ] Ingesta Viaje` (WD0q9Ic0oDvUoJwp):** agregar dos
+   lecturas de data table que alimenten el nodo *Formatear Linea Gesruta*:
+   - **Leer Viajes Existentes** (tabla `viajes`, filtrable por fecha reciente —
+     p. ej. últimos 45 días — para no cargar todo el histórico), y
+   - **Cargar Catálogo Puntos** (tabla `puntos`, `YjxcHHb5B4hT0RFU`, ya cargada: 324).
+   El wrapper `nodo-formatear.wrapper.js` debe pasar `opts.viajesExistentes` y
+   `opts.catalogoPuntos` a `procesar()`/`correlacionar()`. **Este cambio de wrapper +
+   grafo queda para la sesión de revisión** (hoy el wrapper NO los pasa → inerte).
+2. **Pegar `nodo-formatear.generated.js`** en el nodo Code, manual, junto con Publish
+   (regla del repo: código de nodo no se toca por MCP).
+
+### Trazabilidad — columna `correlacion`
+
+El campo `correlacion` (`N1`/`N2`/`manual`/`sin_correlacion`) debe persistirse por
+viaje para **medir si N2 acierta** (sin medición no sabemos si la ventana de 2 días
+es la correcta). Con el cableado de arriba, la escritura toma el valor de
+`correlaciones_externas`. Falta (cuando Julio apruebe): agregar la columna a `viajes`
+(MCP) + emitirla en Preparar Filas Viajes + mostrarla en `pendientes.js`.
 
 ## Re-correr tests
 
 ```
-node --test correlacion/correlacionar-n2.test.js
+node --test correlacion/correlacionar-n2.test.js          # módulo puro (10)
+node --test ficha/tests/correlacionar-n2-fallback.test.js # gate on/off cableado (4)
+node --test ficha/tests/*.test.js                         # regresión completa (230)
+node ficha/build-nodo.js --check                          # generated en sync
 ```

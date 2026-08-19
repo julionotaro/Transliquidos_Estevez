@@ -1,6 +1,266 @@
 // ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.
-// Fuente: ficha/cruce.js + ficha/correlacionar.js + ficha/nodo-formatear.wrapper.js
+// Fuente: ficha/../catalogo/resolver-punto.js + ficha/cruce.js + ficha/../correlacion/correlacionar-n2.js + ficha/correlacionar.js + ficha/nodo-formatear.wrapper.js
 // Contenido exacto del nodo Code "Formatear Linea Gesruta" (WD0q9Ic0oDvUoJwp).
+
+// ===== RESOLVEDOR CANONICO DE PUNTOS (modelo-dominio-lectura.md §9) ==========
+//
+// Los choferes y los documentos escriben lugares a mano; no coinciden con los
+// nombres de las bases. Este modulo resuelve un literal cualquiera al PUNTO
+// CANONICO (el id que entiende Gesruta), con una cascada de confianza explicita.
+// NUNCA adivina en silencio: todo lo que no sea match exacto marca REVISAR
+// (adivinar un punto envenena la tarifa, §2).
+//
+// Logica PURA (sin n8n), compartida por ingesta, auditor y (futuro) robot Gesruta.
+//
+// `catalogo`: Array<{ id_punto, nombre_canonico, alias, ... }>. `alias` es un
+// string con variantes separadas por "|".
+
+'use strict';
+
+// Escalones de confianza (para poder "bajar un escalon" segun la fuente, §4).
+var ESCALON = { alta: 3, media: 2, baja: 1, ninguna: 0 };
+function bajarConfianza(c) {
+  if (c === 'alta') { return 'media'; }
+  if (c === 'media') { return 'baja'; }
+  return c; // baja/ninguna no bajan mas
+}
+
+// Frases de ruido a quitar ANTES que los tokens sueltos (orden: mas larga primero).
+var FRASES_RUIDO = [' S L U ', ' S A U ', ' S C A ', ' S L L ', ' S A ', ' S L ', ' S C ', ' C B ',
+                    ' PUERTO DE ', ' POLIGONO INDUSTRIAL ', ' POL INDUSTRIAL ', ' POL IND '];
+// Tokens de ruido sueltos.
+var TOKENS_RUIDO = [' SA ', ' SL ', ' SLU ', ' SAU ', ' PLANTA ', ' FABRICA ', ' PTO ',
+                    ' POLIGONO ', ' POL ', ' IND ', ' PUERTO '];
+
+/**
+ * Normaliza un literal: mayusculas, sin acentos, sin puntuacion, espacios
+ * colapsados, y sin ruido (formas societarias, POL. IND., PLANTA, PUERTO DE...).
+ */
+function normalizar(literal) {
+  var s = (literal === null || literal === undefined) ? '' : String(literal);
+  s = s.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // sin acentos
+  s = s.replace(/[^A-Z0-9]+/g, ' ');                                    // puntuacion -> espacio
+  s = ' ' + s.replace(/\s+/g, ' ').trim() + ' ';                        // bordes con espacio para matchear tokens
+  var i;
+  for (i = 0; i < FRASES_RUIDO.length; i++) { while (s.indexOf(FRASES_RUIDO[i]) >= 0) { s = s.replace(FRASES_RUIDO[i], ' '); } }
+  for (i = 0; i < TOKENS_RUIDO.length; i++) { while (s.indexOf(TOKENS_RUIDO[i]) >= 0) { s = s.replace(TOKENS_RUIDO[i], ' '); } }
+  return s.replace(/\s+/g, ' ').trim();
+}
+
+// Distancia de edicion (Levenshtein). Reutilizable, sin dependencias.
+function distanciaEdicion(a, b) {
+  a = a || ''; b = b || '';
+  if (a === b) { return 0; }
+  var la = a.length, lb = b.length;
+  if (la === 0) { return lb; }
+  if (lb === 0) { return la; }
+  var prev = [], i, j;
+  for (j = 0; j <= lb; j++) { prev[j] = j; }
+  for (i = 1; i <= la; i++) {
+    var cur = [i], ca = a.charAt(i - 1);
+    for (j = 1; j <= lb; j++) {
+      var cost = (ca === b.charAt(j - 1)) ? 0 : 1;
+      var m = prev[j] + 1;
+      if (cur[j - 1] + 1 < m) { m = cur[j - 1] + 1; }
+      if (prev[j - 1] + cost < m) { m = prev[j - 1] + cost; }
+      cur[j] = m;
+    }
+    prev = cur;
+  }
+  return prev[lb];
+}
+
+function tokens(norm) { return norm ? norm.split(' ') : []; }
+function subconjuntoTokens(chico, grande) {
+  // true si TODOS los tokens de `chico` estan en `grande` (y chico no vacio).
+  var tc = tokens(chico), tg = {}, i;
+  if (tc.length === 0) { return false; }
+  tokens(grande).forEach(function (t) { tg[t] = true; });
+  for (i = 0; i < tc.length; i++) { if (!tg[tc[i]]) { return false; } }
+  return true;
+}
+
+// Indexa el catalogo: lista de { id_punto, nombre_canonico, norm } por cada
+// nombre canonico y por cada alias.
+function indexar(catalogo) {
+  var entradas = [];
+  (catalogo || []).forEach(function (p) {
+    if (!p || !p.id_punto) { return; }
+    if (p.nombre_canonico) { entradas.push({ id_punto: p.id_punto, nombre_canonico: p.nombre_canonico, norm: normalizar(p.nombre_canonico), es_alias: false }); }
+    var al = (p.alias === null || p.alias === undefined) ? '' : String(p.alias);
+    al.split('|').forEach(function (a) {
+      var t = a.trim();
+      if (t) { entradas.push({ id_punto: p.id_punto, nombre_canonico: p.nombre_canonico, norm: normalizar(t), es_alias: true }); }
+    });
+  });
+  return entradas;
+}
+
+function resultadoResuelto(ent, confianza, metodo, literal, motivoExtra) {
+  var revisar = (confianza !== 'alta');
+  var motivo = 'punto "' + literal + '" -> ' + ent.nombre_canonico + ' (' + metodo + ', confianza ' + confianza + ')';
+  if (motivoExtra) { motivo += '; ' + motivoExtra; }
+  return {
+    id_punto: ent.id_punto,
+    nombre_canonico: ent.nombre_canonico,
+    confianza: confianza,
+    metodo: metodo,
+    literal_original: literal,
+    revisar: revisar,
+    motivo: revisar ? motivo : ''
+  };
+}
+
+function noReconocido(literal, motivoExtra) {
+  var lit = (literal === null || literal === undefined) ? '' : String(literal);
+  var motivo = 'punto_no_reconocido: no se pudo resolver el literal "' + lit + '"';
+  if (motivoExtra) { motivo += ' (' + motivoExtra + ')'; }
+  return {
+    id_punto: null, nombre_canonico: null, confianza: 'ninguna', metodo: 'punto_no_reconocido',
+    literal_original: lit, revisar: true, motivo: motivo
+  };
+}
+
+/**
+ * Resuelve UN literal contra el catalogo. Cascada estricta (§9).
+ * @param {string} literal
+ * @param {'documento'|'ficha'} [fuente='documento'] la ficha es sospechosa (§4):
+ *   si resuelve, se le baja la confianza un escalon.
+ * @param {Array} catalogo
+ */
+function resolverPunto(literal, fuente, catalogo) {
+  fuente = fuente || 'documento';
+  var norm = normalizar(literal);
+  if (!norm) { return noReconocido(literal, 'literal vacio tras normalizar'); }
+  var idx = indexar(catalogo);
+
+  // 1) exacto contra un nombre_canonico. 2) exacto contra un alias.
+  var canon = null, alias = null, i;
+  var canonIds = {}; // id_punto distintos con match canonico exacto (para duplicados)
+  for (i = 0; i < idx.length; i++) {
+    if (idx[i].norm === norm) {
+      if (!idx[i].es_alias) { if (!canon) { canon = idx[i]; } canonIds[idx[i].id_punto] = idx[i]; }
+      if (idx[i].es_alias && !alias) { alias = idx[i]; }
+    }
+  }
+  // Duplicado en catalogo: mismo nombre EXACTO, dos Cod.Pto. distintos (ej. GARNICA
+  // GARNI/GARNL). No se puede saber cual se uso desde el nombre -> NO elegir, es
+  // decision de Julio (§ dato: 5 duplicados marcados pendientes).
+  if (Object.keys(canonIds).length > 1) {
+    var cods = Object.keys(canonIds).join(', ');
+    return noReconocido(literal, 'duplicado en catalogo: mismo nombre con varios Cod.Pto. (' + cods + ') — decision pendiente de Julio');
+  }
+  var base = null, metodo = null;
+  if (canon) { base = resultadoResuelto(canon, 'alta', 'canonico', literal); metodo = 'canonico'; }
+  else if (alias) { base = resultadoResuelto(alias, 'alta', 'alias', literal); metodo = 'alias'; }
+
+  if (!base) {
+    // 3) distancia de edicion <=1 contra EXACTAMENTE un canonico.
+    var cercanos = {};
+    for (i = 0; i < idx.length; i++) {
+      if (idx[i].es_alias) { continue; }
+      if (distanciaEdicion(norm, idx[i].norm) <= 1) { cercanos[idx[i].id_punto] = idx[i]; }
+    }
+    var idsCerca = Object.keys(cercanos);
+    if (idsCerca.length === 1) {
+      base = resultadoResuelto(cercanos[idsCerca[0]], 'media', 'distancia', literal, 'lectura parecida a un canonico (distancia 1) — verificar');
+    }
+  }
+  if (!base) {
+    // 4) contencion de tokens UNIVOCA (CALDAS subconjunto de CALDAS DE REIS).
+    var contiene = {};
+    for (i = 0; i < idx.length; i++) {
+      if (subconjuntoTokens(norm, idx[i].norm)) { contiene[idx[i].id_punto] = idx[i]; }
+    }
+    var idsCont = Object.keys(contiene);
+    if (idsCont.length === 1) {
+      base = resultadoResuelto(contiene[idsCont[0]], 'media', 'contencion', literal, 'nombre contenido en un unico canonico — verificar');
+    } else if (idsCont.length > 1) {
+      var nombres = idsCont.map(function (k) { return contiene[k].nombre_canonico; }).join(', ');
+      return noReconocido(literal, 'ambiguo: contenido en varios canonicos (' + nombres + ')');
+    }
+  }
+  if (!base) { return noReconocido(literal); }
+
+  // Precedencia por fuente (§4): la ficha es sospechosa -> baja un escalon.
+  if (fuente === 'ficha' && base.confianza !== 'ninguna') {
+    var cNueva = bajarConfianza(base.confianza);
+    base.confianza = cNueva;
+    base.revisar = (cNueva !== 'alta');
+    var nota = 'valor de ficha (fuente sospechosa): confianza reducida a ' + cNueva;
+    base.motivo = base.motivo ? (base.motivo + '; ' + nota) : ('punto "' + literal + '" -> ' + base.nombre_canonico + '; ' + nota);
+  }
+  return base;
+}
+
+/**
+ * Resuelve un punto con precedencia documento > ficha (§4).
+ * El documento manda; la ficha solo confirma. Si ambos resuelven y difieren,
+ * gana el documento y se deja la correccion anotada en el motivo.
+ */
+function resolverPuntoDocFicha(literalDoc, literalFicha, catalogo) {
+  var rDoc = literalDoc ? resolverPunto(literalDoc, 'documento', catalogo) : null;
+  var rFicha = literalFicha ? resolverPunto(literalFicha, 'ficha', catalogo) : null;
+
+  if (rDoc && rDoc.id_punto) {
+    if (rFicha && rFicha.id_punto && rFicha.id_punto !== rDoc.id_punto) {
+      rDoc.revisar = true;
+      var corr = 'la ficha decia "' + literalFicha + '" (=' + rFicha.nombre_canonico + '); manda el documento (§4)';
+      rDoc.motivo = rDoc.motivo ? (rDoc.motivo + '; ' + corr) : corr;
+    }
+    return rDoc;
+  }
+  if (rFicha && rFicha.id_punto) { return rFicha; } // solo ficha: ya viene con confianza reducida
+  // Ninguno resolvio: reportar sobre el literal que exista (documento primero).
+  return rDoc || rFicha || noReconocido(literalDoc || literalFicha);
+}
+
+/**
+ * Aprendizaje automatico de alias (decision de Julio: sin cola de aprobacion).
+ * Cuando el operador corrige un punto, el literal original se agrega como alias
+ * del canonico elegido. Salvaguarda dura: un literal NO puede ser alias de dos
+ * canonicos. Todo alias guarda procedencia (reversible).
+ *
+ * @returns {{escribir, alias, alias_norm, id_punto, procedencia, conflicto,
+ *            id_conflicto, ya_existe, motivo}}
+ */
+function aprenderAlias(literal, idCanonicoElegido, catalogo, procedencia) {
+  var norm = normalizar(literal);
+  if (!norm) { return { escribir: false, conflicto: false, ya_existe: false, motivo: 'literal vacio, no se aprende alias' }; }
+  var idx = indexar(catalogo);
+  var duenoActual = null, i;
+  for (i = 0; i < idx.length; i++) {
+    if (idx[i].norm === norm) { duenoActual = idx[i].id_punto; break; }
+  }
+  if (duenoActual !== null) {
+    if (duenoActual === idCanonicoElegido) {
+      return { escribir: false, conflicto: false, ya_existe: true, id_punto: idCanonicoElegido, alias: literal, alias_norm: norm, motivo: 'el literal ya resuelve a ese canonico; no se duplica' };
+    }
+    // CONFLICTO: el literal ya es alias/canonico de OTRO punto. No se escribe.
+    return {
+      escribir: false, conflicto: true, ya_existe: true, id_punto: idCanonicoElegido, id_conflicto: duenoActual,
+      alias: literal, alias_norm: norm,
+      motivo: 'CONFLICTO: "' + literal + '" ya resuelve a ' + duenoActual + '; no puede ser alias de ' + idCanonicoElegido + ' — a cola-puntos.json'
+    };
+  }
+  return {
+    escribir: true, conflicto: false, ya_existe: false,
+    id_punto: idCanonicoElegido, alias: literal, alias_norm: norm,
+    procedencia: procedencia || null,
+    motivo: 'alias nuevo "' + literal + '" -> ' + idCanonicoElegido
+  };
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    normalizar: normalizar,
+    distanciaEdicion: distanciaEdicion,
+    resolverPunto: resolverPunto,
+    resolverPuntoDocFicha: resolverPuntoDocFicha,
+    aprenderAlias: aprenderAlias,
+    indexar: indexar
+  };
+}
 
 // ===== CRUCE FICHA<->DOCUMENTO — reglas del modelo "albaran = unidad facturable" =====
 //
@@ -186,6 +446,168 @@ if (typeof module !== 'undefined' && module.exports) {
     clasificarCantidad: clasificarCantidad,
     regimenIndexacion: regimenIndexacion,
     repartirKm: repartirKm,
+  };
+}
+
+// ===== CORRELACION documento<->viaje NIVEL 2 (modelo-dominio-lectura.md §5.2) =
+//
+// Cascada de correlacion:
+//   Nivel 1  -> por `referencia` (la mas fuerte, la emite el cliente).
+//   Nivel 2  -> por origen + destino + material + fecha + peso, cuando no hay
+//               referencia o para desambiguar dias multi-pata (caso Baltransa:
+//               la OC lleva fecha de EMISION, distinta de la del viaje).
+//
+// Reglas duras:
+//   - El km NO correlaciona (no existe en ningun documento de transporte, §5).
+//   - Nunca se asigna por fecha sola, ni cliente solo, ni ruta sola: sin
+//     origen+destino+material NO hay N2.
+//   - Respeta §7 (cardinalidad N:1): un viaje ya correlacionado NO sale del pool
+//     si la ruta esta en RUTAS_MULTIVIAJE (rotaciones Foresa metanol).
+//
+// Logica PURA. Reusa resolver-punto.js (puntos canonicos) y cruce.js
+// (RUTAS_MULTIVIAJE), no los duplica.
+
+'use strict';
+
+var RP = (typeof resolverPunto === 'function')
+  ? { resolverPunto: resolverPunto }
+  : require('../catalogo/resolver-punto.js');
+var N2_CRUCE = (typeof esRutaMultiviaje === 'function')
+  ? { esRutaMultiviaje: esRutaMultiviaje }
+  : require('../ficha/cruce.js');
+
+var VENTANA_OC_DIAS = 2;     // decision de Julio: la OC se emite hasta 2 dias antes
+var TOL_PESO = 0.02;         // ±2% para el desempate por peso
+
+function s(x) { return (x === null || x === undefined) ? '' : String(x); }
+function n2num(x) { var n = (typeof x === 'number') ? x : Number(x); return isFinite(n) ? n : null; }
+function normTxt(x) { return s(x).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/\s+/g, ' ').trim(); }
+
+// Compatibilidad de material: inclusion en cualquier sentido, sin acentos. No
+// matchea vacios (fail-loud: sin material no hay N2).
+function materialCompatible(a, b) {
+  var na = normTxt(a), nb = normTxt(b);
+  if (!na || !nb) { return false; }
+  return na.indexOf(nb) >= 0 || nb.indexOf(na) >= 0;
+}
+
+// Dias entre dos fechas ISO (b - a). null si alguna no parsea.
+function diffDias(a, b) {
+  var da = Date.parse(s(a) + 'T00:00:00Z'), db = Date.parse(s(b) + 'T00:00:00Z');
+  if (!isFinite(da) || !isFinite(db)) { return null; }
+  return Math.round((db - da) / 86400000);
+}
+
+/**
+ * Clasificador BINARIO de documento (CAMBIO 1): orden vs documento de transporte.
+ * La ventana temporal depende de esto. Usa tipo_doc ya extraido; si no alcanza,
+ * busca marcadores en el encabezado. Sin señal -> 'desconocido' (ventana ancha,
+ * comportamiento seguro).
+ * @returns {'orden'|'transporte'|'desconocido'}
+ */
+function clasificarDocumento(doc) {
+  var tipo = normTxt(doc && doc.tipo_doc);
+  if (tipo === 'ORDEN_TRANSPORTE' || tipo === 'ORDEN_CARGA' || tipo === 'ORDEN') { return 'orden'; }
+  if (tipo === 'CMR' || tipo === 'ALBARAN' || tipo === 'CARTA_PORTE' || tipo === 'BASCULA') { return 'transporte'; }
+  var cab = normTxt((doc && (doc.encabezado || doc.texto || doc.titulo)) || '');
+  if (cab.indexOf('ORDEN DE TRANSPORTE') >= 0 || cab.indexOf('ORDEN DE CARGA') >= 0) { return 'orden'; }
+  if (cab.indexOf('CMR') >= 0 || cab.indexOf('ALBARAN') >= 0 || cab.indexOf('CARTA DE PORTE') >= 0 || cab.indexOf('TICKET DE BASCULA') >= 0) { return 'transporte'; }
+  return 'desconocido';
+}
+
+// Ventana temporal segun clase (asimetrica: la orden se emite ANTES del viaje).
+function ventana(clase, opts) {
+  var vo = (opts && typeof opts.ventanaOcDias === 'number') ? opts.ventanaOcDias : VENTANA_OC_DIAS;
+  if (clase === 'orden') { return { antes: 0, despues: vo }; }        // solo hacia adelante
+  if (clase === 'transporte') { return { antes: 1, despues: 1 }; }    // contemporaneo
+  return { antes: 1, despues: 2 };                                    // desconocido: ancha
+}
+function dentroVentana(fechaDoc, fechaViaje, clase, opts) {
+  var d = diffDias(fechaDoc, fechaViaje);
+  if (d === null) { return false; }
+  var v = ventana(clase, opts);
+  return d >= -v.antes && d <= v.despues;
+}
+
+function idCanon(literal, catalogo) {
+  var r = RP.resolverPunto(literal, 'documento', catalogo);
+  return r.id_punto || null;
+}
+
+/**
+ * Correlaciona UN documento contra un pool de viajes candidatos.
+ * @returns {{correlacion, viaje, confianza, revisar, motivo, candidatos}}
+ *   correlacion: 'N1' | 'N2' | 'sin_correlacion'
+ */
+function correlacionarN2(doc, viajes, catalogo, opts) {
+  opts = opts || {};
+  var lista = Array.isArray(viajes) ? viajes : [];
+
+  // ---- Nivel 1: referencia ----
+  var ref = normTxt(doc && doc.referencia);
+  if (ref) {
+    for (var i = 0; i < lista.length; i++) {
+      if (normTxt(lista[i].referencia) === ref) {
+        return { correlacion: 'N1', viaje: lista[i], confianza: 'alta', revisar: false, motivo: '', candidatos: [lista[i]] };
+      }
+    }
+  }
+
+  // ---- Nivel 2: origen + destino + material + fecha + peso ----
+  var clase = clasificarDocumento(doc);
+  var oDoc = idCanon(doc && doc.origen, catalogo);
+  var dDoc = idCanon(doc && doc.destino, catalogo);
+  if (!oDoc || !dDoc) {
+    return { correlacion: 'sin_correlacion', viaje: null, confianza: 'ninguna', revisar: true,
+      motivo: 'N2 imposible: documento sin origen/destino resoluble (origen="' + s(doc && doc.origen) + '", destino="' + s(doc && doc.destino) + '")', candidatos: [] };
+  }
+  var matDoc = doc && doc.material;
+
+  // Requisitos duros: mismo origen_canonico + destino_canonico + material compatible.
+  var compat = lista.filter(function (v) {
+    return idCanon(v.origen, catalogo) === oDoc &&
+           idCanon(v.destino, catalogo) === dDoc &&
+           materialCompatible(matDoc, v.material);
+  });
+  // Señal de desempate 1: ventana temporal (por tipo de documento).
+  var enVentana = compat.filter(function (v) { return dentroVentana(doc && doc.fecha, v.fecha_carga || v.fecha, clase, opts); });
+
+  if (enVentana.length === 0) {
+    return { correlacion: 'sin_correlacion', viaje: null, confianza: 'ninguna', revisar: true,
+      motivo: '0 viajes compatibles por ruta+material+fecha (' + oDoc + '->' + dDoc + ', ' + clase + ')', candidatos: [] };
+  }
+  if (enVentana.length === 1) {
+    return { correlacion: 'N2', viaje: enVentana[0], confianza: 'media', revisar: false,
+      motivo: 'N2 por ruta+material+fecha (' + oDoc + '->' + dDoc + ')', candidatos: enVentana };
+  }
+
+  // Señal de desempate 2: peso ±2% (sobre el kg del documento).
+  var kgDoc = n2num(doc && doc.kg_neto);
+  if (kgDoc) {
+    var porPeso = enVentana.filter(function (v) {
+      var kv = n2num(v.kg_documento) !== null ? n2num(v.kg_documento) : n2num(v.cantidad_kg);
+      return kv !== null && Math.abs(kv - kgDoc) <= kgDoc * TOL_PESO;
+    });
+    if (porPeso.length === 1) {
+      return { correlacion: 'N2', viaje: porPeso[0], confianza: 'media', revisar: false,
+        motivo: 'N2 desempatado por peso (±2%)', candidatos: enVentana };
+    }
+  }
+
+  // >1 y no se pudo desempatar -> REVISAR listando los candidatos (no adivinar).
+  var multiv = N2_CRUCE.esRutaMultiviaje(doc && doc.cliente, doc && doc.origen, doc && doc.destino) ? ' [ruta multiviaje §7: pueden ser rotaciones]' : '';
+  var lst = enVentana.map(function (v) { return (v.referencia || v.id || '?') + ' (' + s(v.fecha_carga || v.fecha) + ')'; }).join('; ');
+  return { correlacion: 'sin_correlacion', viaje: null, confianza: 'ninguna', revisar: true,
+    motivo: enVentana.length + ' candidatos compatibles, no se puede desambiguar: ' + lst + multiv, candidatos: enVentana };
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    VENTANA_OC_DIAS: VENTANA_OC_DIAS,
+    clasificarDocumento: clasificarDocumento,
+    dentroVentana: dentroVentana,
+    materialCompatible: materialCompatible,
+    correlacionarN2: correlacionarN2
   };
 }
 
@@ -422,6 +844,16 @@ var CRUCE = (typeof clasificarCantidad === 'function')
   ? { clasificarCantidad: clasificarCantidad, regimenIndexacion: regimenIndexacion, repartirKm: repartirKm, esRutaMultiviaje: esRutaMultiviaje, RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE, CLIENTES_CONOCIDOS: CLIENTES_CONOCIDOS }
   : require('./cruce.js');
 
+// Correlacion documento<->viaje NIVEL 2 (modelo-dominio-lectura.md §5.2). En el
+// nodo, build-nodo.js inlinea correlacion/correlacionar-n2.js (y catalogo/
+// resolver-punto.js, del que depende) ANTES de este archivo, asi que
+// correlacionarN2 queda global; en node/test se requiere. Ver el uso GATED en el
+// match documento->viaje: solo actua si el grafo cablea el pool de viajes
+// existentes + el catalogo de puntos; sin eso, el comportamiento es identico.
+var CN2 = (typeof correlacionarN2 === 'function')
+  ? { correlacionarN2: correlacionarN2 }
+  : require('../correlacion/correlacionar-n2.js');
+
 // Fuente legible de un dato para el audit trail (§4): que papel/pagina lo aporto.
 var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'doc') + ':pag' + (d.pagina || '?')) : null; };
 
@@ -437,6 +869,15 @@ var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'do
 function correlacionar(rA, rB, opts) {
   const rutas = (opts && opts.rutas) ? opts.rutas : CRUCE.RUTAS_MULTIVIAJE;
   const clientes = (opts && opts.clientes) ? opts.clientes : CRUCE.CLIENTES_CONOCIDOS;
+  // --- N2 doc<->viaje (§5.2): pool de viajes YA cargados en Gesruta + catalogo de
+  // puntos canonicos. GATED: si el grafo no los cablea, viajesExistentes=[] y
+  // catalogoPuntos=null y el nodo se comporta EXACTAMENTE como antes (los
+  // documentos sin ficha en el envio quedan huerfanos, igual que hoy). N2 nunca
+  // usa la matricula ni la ficha: correlaciona por el punto canonico del documento
+  // impreso (que coincide 100% con Gesruta) + material + peso + ventana temporal.
+  const viajesExistentes = (opts && Array.isArray(opts.viajesExistentes)) ? opts.viajesExistentes : [];
+  const catalogoPuntos = (opts && opts.catalogoPuntos) ? opts.catalogoPuntos : null;
+  const correlacionesExternas = [];
   if (!rA) {
     logError('la pasada de FICHAS no devolvio JSON valido');
     return { ok: false, hojas: [], viajes: [], documentos: [], errores: [], avisos: [] };
@@ -528,14 +969,54 @@ function correlacionar(rA, rB, opts) {
 
   // ---- Match documento -> viaje (N docs : 1 viaje) ----
   const docsHuerfanos = [];
+
+  // Fallback N2 (§5.2): correlaciona UN documento sin ficha en el envio contra el
+  // pool de viajes ya cargados en Gesruta. GATED por viajesExistentes+catalogoPuntos
+  // (sin cablear -> devuelve false, el documento sigue su camino de huerfano de
+  // antes: cambio ADITIVO puro). Devuelve true cuando ya trato al documento (lo
+  // correlaciono, o lo dejo anotado como candidato ambiguo para revision humana).
+  const intentarN2 = function (d, et) {
+    if (!viajesExistentes.length || !catalogoPuntos) { return false; }
+    const docN2 = {
+      referencia: d.referencia, origen: d.origen, destino: d.destino,
+      material: d.material, fecha: nz(d.fecha), kg_neto: d.kg_neto,
+      cliente: nz(d.cliente_probable) || nz(d.emisor) || null, tipo_doc: d.tipo_doc,
+    };
+    const r = CN2.correlacionarN2(docN2, viajesExistentes, catalogoPuntos, opts);
+    if ((r.correlacion === 'N1' || r.correlacion === 'N2') && !r.revisar && r.viaje) {
+      correlacionesExternas.push({ documento: d, viaje: r.viaje, correlacion: r.correlacion, confianza: r.confianza, revisar: false, motivo: r.motivo });
+      avisos.push('Documento ' + et + ' correlacionado ' + r.correlacion + ' con viaje ya cargado (' + (nz(r.viaje.referencia) || r.viaje.id || '?') + '): ' + r.motivo + '.');
+      return true;
+    }
+    if (r.revisar && r.candidatos && r.candidatos.length) {
+      correlacionesExternas.push({ documento: d, viaje: null, correlacion: 'sin_correlacion', confianza: 'ninguna', revisar: true, motivo: r.motivo });
+      docsHuerfanos.push({ d: d, motivo: 'sin ficha en el envio; N2 hallo ' + r.candidatos.length + ' viaje(s) candidato(s) pero no desambiguo — revisar: ' + r.motivo });
+      return true;
+    }
+    return false; // N2 no aplica (documento sin origen/destino resoluble, o 0 candidatos)
+  };
+
   for (const d of docsRaw) {
     if (d.duplicado_de) { continue; }
     const dm = mat(d.matricula_tractor);
     const df = nz(d.fecha);
     const et = 'pag ' + (d.pagina || '?') + ' ' + (nz(d.referencia) || 'sin ref');
-    if (!dm) { docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible' }); continue; }
+    // N2 (§5.2) — fallback cuando el documento NO ata a ninguna ficha de ESTE
+    // envio (sin matricula legible, o matricula que no corresponde a ninguna
+    // ficha). Antes de declararlo huerfano se intenta correlacionarlo contra el
+    // pool de viajes ya cargados en Gesruta, por referencia (N1) o
+    // ruta+material+peso+fecha (N2). GATED: solo si el grafo cablea el pool. El
+    // documento aporta el punto CANONICO (coincide con Gesruta); no se toca la
+    // ficha ni la matricula. Ver intentarN2() abajo.
+    if (!dm) {
+      if (intentarN2(d, et)) { continue; }
+      docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible' }); continue;
+    }
     let cands = viajes.filter(function (v) { return v.tractoraN && v.tractoraN === dm; });
-    if (cands.length === 0) { docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' }); continue; }
+    if (cands.length === 0) {
+      if (intentarN2(d, et)) { continue; }
+      docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' }); continue;
+    }
     if (cands.length > 1 && df) {
       const enVentana = cands.filter(function (v) {
         const ini = v.fecha_carga; const fin = v.fecha_descarga || v.fecha_carga;
@@ -881,7 +1362,7 @@ function correlacionar(rA, rB, opts) {
     ' errores=' + errores.length + ' avisos=' + avisos.length);
   if (nRevisar > 0) { logInfo(nRevisar + ' viaje(s) marcados REVISAR: la lectura no es confiable, requieren revision humana.'); }
 
-  return { ok: true, hojas: hojasRaw, viajes: viajes, documentos: docsRaw, errores: errores, avisos: avisos };
+  return { ok: true, hojas: hojasRaw, viajes: viajes, documentos: docsRaw, errores: errores, avisos: avisos, correlaciones_externas: correlacionesExternas };
 }
 
 /**
@@ -929,6 +1410,22 @@ function renderInforme(res) {
   L.push('');
   L.push('---- AVISOS (' + avisos.length + ') ----');
   if (!avisos.length) { L.push('Ninguno.'); } else { for (const a of avisos) { L.push('  ! ' + a); } }
+  // Correlaciones N2 documento<->viaje existente. Solo se imprime si las hubo
+  // (grafo cableado): sin cablear, esta seccion no aparece y el informe es
+  // identico al de v3.2 (regresion intacta).
+  const cx = Array.isArray(res.correlaciones_externas) ? res.correlaciones_externas : [];
+  if (cx.length) {
+    L.push('');
+    L.push('---- CORRELACION N2 doc<->viaje existente (' + cx.length + ') ----');
+    for (const c of cx) {
+      const dref = f(nz(c.documento && c.documento.referencia)) + ' pag ' + f(c.documento && c.documento.pagina);
+      if (c.viaje) {
+        L.push('  = ' + c.correlacion + ' [' + f(c.confianza) + '] doc ' + dref + ' -> viaje ' + f(nz(c.viaje.referencia) || c.viaje.id) + ': ' + c.motivo);
+      } else {
+        L.push('  ? REVISAR doc ' + dref + ': ' + c.motivo);
+      }
+    }
+  }
   L.push('============================');
   return L.join('\n');
 }
@@ -1010,6 +1507,11 @@ function procesar(respuestas, metas, opts) {
     erroresPrevios.length + ' fallo(s) de lectura de pagina.');
 
   const salida = { hojas: res.hojas, viajes: res.viajes, documentos: res.documentos, errores: res.errores, avisos: res.avisos };
+  // Aditivo: solo se agrega la clave si N2 produjo correlaciones (grafo cableado).
+  // Sin cablear, `salida` (y por tanto datos_json) es identico al de v3.2.
+  if (Array.isArray(res.correlaciones_externas) && res.correlaciones_externas.length) {
+    salida.correlaciones_externas = res.correlaciones_externas;
+  }
   const nRevisar = res.viajes.filter(function (v) { return v.estado_lectura === ESTADO_LECTURA.REVISAR; }).length;
   return {
     ok: true,
