@@ -68,18 +68,17 @@ cuando el operador corrige un punto. Salvaguardas duras:
   `ORENTBER`, `OREMBEA`); **ninguna** pasa el filtro de distancia ≤1. Añadidos a
   `semillas-puntos.json` como alias explícitos. Es planta **FINSA** en Ourense.
 - **OREMBER ≠ CELLA — no fusionar.** El grupo FINSA tiene otra planta en **Cella
-  (Teruel)** que aparece como destino separado (`FINSA CELLA`, `Cella - Teruel`). Son
-  **dos puntos distintos**; desambiguar por localidad (Ourense→OREMBER, Teruel/Cella→
-  CELLA). ⚠️ **CELLA no está entre los 214 usados ni cargado**: falta su `Cód.Pto.`
-  real de Gesruta (sembrado como pendiente en `semillas`, no resuelve hasta cargarlo).
-- **Anleo/Navia — no era discrepancia.** El chófer escribió `Anleo` (parroquia de
-  Navia), no Avilés; destino real = `NAVIA`. Alias deseado: `ANLEO → NAVIA`. ⚠️
-  **Decisión pendiente de Julio**: el catálogo Gesruta ya tiene un canónico `ANLEO`
-  (id `ANLEO`, cargado). Por precedencia (canónico exacto > alias), poner `ANLEO`
-  como alias de `NAVIA` sería **inerte** — seguiría resolviendo al punto `ANLEO`. Se
-  necesita confirmar si el punto Gesruta `ANLEO` se usa de verdad, o si `Anleo` en
-  ficha debe rutear a `NAVIA` vía **override por cliente/ruta** (no un alias). Por eso
-  NO se agregó todavía.
+  (Teruel)**. ✅ **Resuelto (Julio):** la oficina usa **`CELLA → TE`** (`TE` =
+  Teruel, código **provincial genérico**) — cargado en la tabla `puntos` con alias
+  `FINSA CELLA`/`CELLA TERUEL`. Es un **uso intencional** del código de provincia:
+  **NO limpiar** en pasadas futuras que descarten "zonas amplias" (Francia, Asturias
+  sueltas) — ese descarte es para errores, éste no. **Distinto de `UTISA TERUEL`**
+  (`Cód.Pto. UTI`, 358 usos) y de OREMBER (`OR`, Ourense): **no fusionar** los tres.
+- **Anleo/Navia.** ✅ **Resuelto (Julio):** `Anleo` es parroquia de Navia y la
+  oficina siempre lo carga como `NAVIA`. Implementado como **override intencional**
+  en `resolver-punto.js` (`OVERRIDES_LITERAL`): el literal `ANLEO` resuelve a `NAVIA`
+  (confianza alta), **ganando sobre** el canónico Gesruta `ANLEO` (existe pero no se
+  usa). Reversible quitando la entrada del map. Con nota de trazabilidad en el motivo.
 
 ## Cómo re-correr
 

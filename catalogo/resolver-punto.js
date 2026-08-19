@@ -21,6 +21,19 @@ function bajarConfianza(c) {
   return c; // baja/ninguna no bajan mas
 }
 
+// Overrides INTENCIONALES de oficina (confirmados por Julio): un literal que
+// coincide con un canonico Gesruta que EN LA PRACTICA no se usa para ese destino.
+// Ganan sobre toda la cascada. Clave = literal normalizado; destino = nombre
+// canonico al que debe resolver. Reversible: quitar la entrada revierte al
+// comportamiento por catalogo. Trazabilidad: la nota viaja en el motivo del
+// resultado aunque la confianza sea alta.
+var OVERRIDES_LITERAL = {
+  // 'Anleo' es una parroquia dentro de Navia (Asturias); la oficina SIEMPRE lo
+  // carga como NAVIA. Gana sobre el canonico Gesruta 'ANLEO', que existe pero no
+  // se usa en la practica (datos/alias-fichas-reales.md, confirmado por Julio).
+  'ANLEO': { destino: 'NAVIA', nota: "'Anleo' es parroquia de Navia; la oficina siempre lo carga como NAVIA. Override intencional sobre el canonico Gesruta ANLEO (existe pero no se usa)." }
+};
+
 // Frases de ruido a quitar ANTES que los tokens sueltos (orden: mas larga primero).
 var FRASES_RUIDO = [' S L U ', ' S A U ', ' S C A ', ' S L L ', ' S A ', ' S L ', ' S C ', ' C B ',
                     ' PUERTO DE ', ' POLIGONO INDUSTRIAL ', ' POL INDUSTRIAL ', ' POL IND '];
@@ -129,6 +142,24 @@ function resolverPunto(literal, fuente, catalogo) {
   var norm = normalizar(literal);
   if (!norm) { return noReconocido(literal, 'literal vacio tras normalizar'); }
   var idx = indexar(catalogo);
+
+  // 0) Override intencional de oficina (gana sobre TODA la cascada). Busca el
+  // canonico destino en el catalogo y resuelve a el, con la nota en el motivo.
+  if (Object.prototype.hasOwnProperty.call(OVERRIDES_LITERAL, norm)) {
+    var ov = OVERRIDES_LITERAL[norm];
+    var normDest = normalizar(ov.destino);
+    for (var k = 0; k < idx.length; k++) {
+      if (!idx[k].es_alias && idx[k].norm === normDest) {
+        return {
+          id_punto: idx[k].id_punto, nombre_canonico: idx[k].nombre_canonico,
+          confianza: 'alta', metodo: 'override', literal_original: literal,
+          revisar: false, override: true,
+          motivo: 'override intencional de oficina: "' + literal + '" -> ' + idx[k].nombre_canonico + '. ' + ov.nota
+        };
+      }
+    }
+    return noReconocido(literal, 'override a "' + ov.destino + '" pero ese punto no esta en el catalogo');
+  }
 
   // 1) exacto contra un nombre_canonico. 2) exacto contra un alias.
   var canon = null, alias = null, i;

@@ -115,3 +115,34 @@ test('aprender alias nuevo: literal no visto -> se escribe con procedencia', () 
   assert.strictEqual(r.id_punto, 'RELISA');
   assert.deepStrictEqual(r.procedencia, proc, 'guarda de que correccion salio (reversible)');
 });
+
+test('override oficina: "Anleo" -> NAVIA aunque exista el canonico ANLEO', () => {
+  const cat = [
+    { id_punto: 'ANLEO', nombre_canonico: 'ANLEO', alias: '' },
+    { id_punto: 'NAVIA', nombre_canonico: 'NAVIA', alias: '' },
+  ];
+  const r = resolverPunto('Anleo', 'ficha', cat);
+  assert.strictEqual(r.id_punto, 'NAVIA', 'gana el override, no el canonico ANLEO');
+  assert.strictEqual(r.metodo, 'override');
+  assert.strictEqual(r.confianza, 'alta');
+  assert.strictEqual(r.revisar, false);
+  assert.strictEqual(r.override, true);
+  assert.match(r.motivo, /NAVIA/);
+});
+
+test('override sin destino en catalogo -> no reconocido (no inventa)', () => {
+  const cat = [{ id_punto: 'ANLEO', nombre_canonico: 'ANLEO', alias: '' }];
+  const r = resolverPunto('Anleo', 'documento', cat);
+  assert.strictEqual(r.id_punto, null);
+  assert.match(r.motivo, /override|NAVIA/);
+});
+
+test('CELLA -> TE (provincial), distinto de UTISA TERUEL (UTI)', () => {
+  const cat = [
+    { id_punto: 'TE', nombre_canonico: 'CELLA', alias: 'FINSA CELLA|CELLA TERUEL' },
+    { id_punto: 'UTI', nombre_canonico: 'UTISA TERUEL', alias: '' },
+  ];
+  assert.strictEqual(resolverPunto('FINSA CELLA', 'ficha', cat).id_punto, 'TE');
+  assert.strictEqual(resolverPunto('CELLA', 'documento', cat).id_punto, 'TE');
+  assert.strictEqual(resolverPunto('UTISA TERUEL', 'documento', cat).id_punto, 'UTI');
+});

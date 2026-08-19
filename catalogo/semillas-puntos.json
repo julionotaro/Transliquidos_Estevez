@@ -61,13 +61,14 @@
     "_nota": "Enriquece OREMBER (Cod.Pto. OR), 2do punto mas usado (1.008 viajes). Fuente: datos/alias-fichas-reales.md (30 fichas reales, commit 6fd02d6): el chofer lo escribe de >=7 formas y ninguna pasa el filtro de distancia <=1 del resolvedor -> necesita lista de alias explicita y generosa. OREMBER es planta FINSA en Ourense. NO fusionar con CELLA (otra planta FINSA en Teruel): son dos puntos distintos, desambiguar por localidad (Ourense/Orense->OREMBER; Teruel/Cella->CELLA)."
   },
   {
+    "id_punto": "TE",
     "nombre_canonico": "CELLA",
     "alias": "FINSA CELLA|CELLA TERUEL",
-    "empresa_sede": "Finsa",
     "provincia": "Teruel",
-    "_nota": "PENDIENTE Cod.Pto. real de Gesruta (no esta en los 214 usados ni cargado en la tabla). Planta FINSA en Cella (Teruel), distinta de OREMBER (Finsa Ourense). Aparece en fichas como 'FINSA CELLA'/'Cella - Teruel'. Cargar el id_punto real cuando este el catalogo completo; hasta entonces NO se resuelve (queda en cola)."
+    "empresa_sede": "Finsa",
+    "_nota": "Cod.Pto. confirmado por Julio: TE (Teruel, codigo PROVINCIAL generico). La oficina usa SIEMPRE TE para la entrega de Cella (planta FINSA). USO INTENCIONAL del codigo de provincia: NO limpiar en ninguna pasada futura que descarte 'zonas amplias' (Francia, Asturias sueltas) — ese descarte es para errores, este es intencional. DISTINTO de UTISA TERUEL (Cod.Pto. UTI, 358 usos): NO fusionar. Distinto tambien de OREMBER (Finsa Ourense, Cod.Pto. OR)."
   },
   {
-    "_nota_anleo": "ANLEO->NAVIA (datos/alias-fichas-reales.md): en la ficha de Jose A. Vazquez (6/8/2026) el chofer escribio 'Anleo' (parroquia dentro de Navia, Asturias) y el destino real de Gesruta es NAVIA. CONFLICTO A DECIDIR POR JULIO: el catalogo Gesruta YA tiene un punto canonico 'ANLEO' (id_punto ANLEO, de los 807, ya cargado). Por precedencia del resolvedor (canonico exacto gana sobre alias), agregar 'ANLEO' como alias de NAVIA seria INERTE: 'Anleo' seguiria resolviendo al punto ANLEO, nunca a NAVIA. Por eso NO se agrega el alias todavia: hace falta que Julio confirme si el punto Gesruta ANLEO se usa de verdad, o si 'Anleo' en ficha debe rutear a NAVIA (lo que exige una regla de override por cliente/ruta, no un alias)."
+    "_nota_anleo": "ANLEO->NAVIA: RESUELTO (confirmado por Julio). 'Anleo' es parroquia de Navia; la oficina siempre lo carga como NAVIA. Implementado como OVERRIDE intencional en resolver-punto.js (OVERRIDES_LITERAL): el literal 'ANLEO' resuelve a NAVIA con confianza alta, ganando sobre el canonico Gesruta 'ANLEO' (existe pero no se usa en la practica). Reversible quitando la entrada del map."
   }
 ]
