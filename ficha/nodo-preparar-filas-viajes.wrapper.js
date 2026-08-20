@@ -43,8 +43,26 @@ const paisDe = function (cli, ref) {
   }
   return 'ES';
 };
+// ---- Tarifa contractual (tabla Tarifas -> columna del viaje) ----------------
+// Reusa buscarTarifaContractual (inlineado, con resolver-punto delante). Los
+// nodos lectores son OPCIONALES: si "Leer Tarifas"/"Leer Puntos" no existen aun
+// (deploy parcial), degrada a vacio en vez de romper — mismo patron defensivo que
+// la dedup. NUNCA inventa: sin match unico deja la tarifa vacia y el motivo a la
+// vista para REVISAR.
+let tarifasTbl = [], puntosTbl = [];
+try { tarifasTbl = $('Leer Tarifas').all().map(function (it) { return (it && it.json) ? it.json : {}; }); } catch (e) {}
+try { puntosTbl = $('Leer Puntos').all().map(function (it) { return (it && it.json) ? it.json : {}; }); } catch (e) {}
+const tarifaDe = function (v) {
+  if (typeof buscarTarifaContractual !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '' }; }
+  const r = buscarTarifaContractual({ cliente: v.cliente, origen: v.origen, destino: v.destino, material: v.material }, tarifasTbl, puntosTbl);
+  if (!r) { return { tn: null, fijo: null, motivo: '' }; }
+  if (r.tarifa === null) { return { tn: null, fijo: null, motivo: r.motivo || '' }; }
+  return { tn: r.tarifa_tn, fijo: r.precio_fijo, motivo: r.revisar ? ('tarifa via punto resuelto — verificar (' + s(v.origen) + '->' + s(v.destino) + ')') : '' };
+};
+
 const filas = [];
 for (const v of viajes) {
+  const tar = tarifaDe(v);
   filas.push({
     hoja_id: idDe(v.hoja_idx),
     orden: n(v.orden),
@@ -64,6 +82,11 @@ for (const v of viajes) {
     fuente_peso: s(v.fuente_peso),
     importe_documento: n(v.importe_documento),
     tarifa_tn_documento: n(v.tarifa_tn_documento),
+    // Tarifa CONTRACTUAL (de la tabla Tarifas, no de la OC impresa). Vacia si no
+    // hay match unico; el motivo dice por que (para REVISAR sin inventar).
+    tarifa_contractual_tn: n(tar.tn),
+    tarifa_contractual_fijo: n(tar.fijo),
+    tarifa_contractual_motivo: s(tar.motivo),
     pais_facturacion: paisDe(v.cliente, v.referencia),
     fecha_descarga: s(v.fecha_descarga),
     km_inicio: n(v.km_inicio),
