@@ -640,9 +640,23 @@ const paisDe = function (cli, ref) {
 // (deploy parcial), degrada a vacio en vez de romper — mismo patron defensivo que
 // la dedup. NUNCA inventa: sin match unico deja la tarifa vacia y el motivo a la
 // vista para REVISAR.
-let tarifasTbl = [], puntosTbl = [];
-try { tarifasTbl = $('Leer Tarifas').all().map(function (it) { return (it && it.json) ? it.json : {}; }); } catch (e) {}
-try { puntosTbl = $('Leer Puntos').all().map(function (it) { return (it && it.json) ? it.json : {}; }); } catch (e) {}
+// Los nodos dataTable `get` se ejecutan UNA vez por item de entrada y CONCATENAN
+// su salida: si entran N items, cada fila de Tarifas/puntos aparece N veces. Sin
+// deduplicar, buscarTarifaContractual veria la misma tarifa repetida y marcaria
+// "2 tarifas posibles" (falsa ambiguedad). Se deduplican por identidad de fila.
+function _leerTabla(nombre) {
+  var filas = [];
+  try { filas = $(nombre).all().map(function (it) { return (it && it.json) ? it.json : {}; }); } catch (e) { return []; }
+  var vistos = {}, out = [];
+  for (var i = 0; i < filas.length; i++) {
+    var k = JSON.stringify(filas[i]);
+    if (vistos[k]) { continue; }
+    vistos[k] = true; out.push(filas[i]);
+  }
+  return out;
+}
+let tarifasTbl = _leerTabla('Leer Tarifas');
+let puntosTbl = _leerTabla('Leer Puntos');
 const tarifaDe = function (v) {
   if (typeof buscarTarifaContractual !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '' }; }
   const r = buscarTarifaContractual({ cliente: v.cliente, origen: v.origen, destino: v.destino, material: v.material }, tarifasTbl, puntosTbl);
