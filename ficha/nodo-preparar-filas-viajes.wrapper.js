@@ -71,6 +71,9 @@ for (const v of viajes) {
     tractora: s(v.tractora),
     semi: s(v.remolque),
     conductor: s(v.conductor),
+    // Mini-mapa chofer -> tipo (autonomo | dependiente). Abal/Fraga/Alfonsin son
+    // autonomos (confirmado Julio); el resto, dependientes. Vacio si no hay chofer.
+    tipo_conductor: (typeof tipoConductor === 'function') ? tipoConductor(v.conductor) : '',
     cliente: s(v.cliente),
     origen: s(v.origen),
     destino: s(v.destino),
