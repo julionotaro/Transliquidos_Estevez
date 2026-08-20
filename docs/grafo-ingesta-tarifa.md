@@ -7,7 +7,13 @@
 > El *porqué* vive en `ficha/tarifa-contractual.js` (dos puentes) y en
 > `docs/catalogo-puntos.md`. Este documento es el *cómo* del grafo y del deploy.
 >
-> Rama: `claude/tarifa-contractual`. **Pendiente de aplicar** (deploy manual).
+> Rama: `claude/tarifa-contractual`.
+>
+> **Estado (aplicado por MCP, SIN publicar):** ✅ 4 columnas creadas en `Viajes`;
+> ✅ nodos `Leer Tarifas` (`e9808b19…`) y `Leer Puntos` (`a4a49fa9…`) creados;
+> ✅ 4 reconexiones aplicadas; ✅ 4 columnas mapeadas en `Guardar Viajes`
+> (schema 42, value con las 4 expresiones). **Falta (Julio):** pegar el código en
+> `Preparar Filas Viajes` + **Publish**.
 
 ## Qué agrega y por qué
 
@@ -120,15 +126,18 @@ adivinada (§2).
 
 ## Deploy
 
-Cambios de grafo (nodos + edges + columnas) por MCP o a mano en el editor; el
-código del nodo Code se pega desde el `.generated.js` de la rama (regex/backslashes
-no viajan seguro por MCP):
+Pasos 1–3 **ya aplicados por MCP** (sin publicar). Solo restan 4 y 5, que van a
+mano porque el código del nodo Code (regex/backslashes) no viaja seguro por MCP:
 
-1. **Tabla `Viajes`**: crear las 4 columnas de arriba.
-2. **Grafo**: crear `Leer Tarifas` y `Leer Puntos`; aplicar las 4 reconexiones.
-3. **`Guardar Viajes`**: mapear las 4 columnas nuevas (schema + value).
+1. ~~**Tabla `Viajes`**: crear las 4 columnas.~~ ✅ hecho.
+2. ~~**Grafo**: crear `Leer Tarifas` y `Leer Puntos`; aplicar las 4 reconexiones.~~ ✅ hecho.
+3. ~~**`Guardar Viajes`**: mapear las 4 columnas nuevas (schema + value).~~ ✅ hecho.
 4. **`Preparar Filas Viajes`** ← pegar `ficha/nodo-preparar-filas-viajes.generated.js`.
 5. **Publish** del workflow.
+
+Hasta el Publish, el workflow activo sigue corriendo la versión anterior; los
+nodos y columnas nuevos quedan guardados pero inertes (el código viejo de
+`Preparar Filas Viajes` ni los mira).
 
 ## Verificación en corrida real (pendiente)
 
