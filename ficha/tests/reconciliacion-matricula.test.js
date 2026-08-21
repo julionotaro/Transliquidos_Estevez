@@ -130,3 +130,46 @@ test('reconciliacion: un documento con matricula null no rompe la convergencia d
   assert.strictEqual(v.tractora_original, '0337LPL');
   assert.match(v.motivo_revision, /corregida a 0332LPL/);
 });
+
+// ============================================================================
+// 7. MAYORIA CLARA (ejec. 944): el envio tuvo DOS camiones — un viaje lo cubrio
+//    otro camion (7347LBB, lejano). La mayoria (0332LPL) corrige la ficha; el
+//    camion lejano NO bloquea los viajes limpios. Antes: unanimidad -> docs:[].
+// ============================================================================
+test('reconciliacion: ficha 0332LPZ + mayoria 0332LPL + un 7347LBB lejano -> corrige a 0332LPL y pega los docs limpios (el camion lejano no bloquea)', () => {
+  const rA = { hojas: [ficha('0332LPZ', 'CR03204-R', [
+    bloque({ orden: 1, nombre_carga: 'Foresa', lugar_carga: 'Caldas', lugar_descarga: 'Cella', cantidad_kg: 22600 }),
+    bloque({ orden: 2, nombre_carga: 'Tepsa', lugar_carga: 'Barcelona', lugar_descarga: 'Orense', cantidad_kg: 23920 }),
+  ])] };
+  const rB = { documentos: [
+    doc('0332LPL', { pagina: 1, tipo_doc: 'cmr', referencia: '2017842', cliente_probable: 'FORESA', kg_neto: 22600 }),
+    doc('0332LPL', { pagina: 2, tipo_doc: 'orden_transporte', referencia: '706162', cliente_probable: 'QUIMIDROGA', kg_neto: 23920 }),
+    doc('7347LBB', { pagina: 3, tipo_doc: 'cmr', referencia: 'R427972', cliente_probable: 'RNM', kg_neto: 23760 }),
+  ] };
+  const res = correlacionar(rA, rB);
+  res.viajes.forEach(function (v) {
+    assert.strictEqual(v.tractoraN, '0332LPL', 'la ficha se corrige a la matricula mayoritaria');
+    assert.match(v.motivo_revision, /corregida a 0332LPL/);
+  });
+  const v1 = viajeDe(res, 1);
+  const v2 = viajeDe(res, 2);
+  assert.ok(v1.docs.length >= 1, 'el viaje limpio 1 recibe su documento (ya no docs:[])');
+  assert.ok(v2.docs.length >= 1, 'el viaje limpio 2 recibe su documento');
+  assert.notStrictEqual(v1.cliente, null, 'el viaje 1 sale de sin-cliente');
+});
+
+// ============================================================================
+// 8. CONTRASTE: dos matriculas de documento CERCANAS entre si (par de lote)
+//    siguen siendo ambiguas -> NO se corrige. No aflojamos ese caso peligroso.
+// ============================================================================
+test('reconciliacion: ficha 0333LPL + docs 0332LPL y 0334LPL (ambos cercanos) -> ambiguo, no corrige', () => {
+  const rA = { hojas: [ficha('0333LPL', 'CR1', [bloque({})])] };
+  const rB = { documentos: [
+    doc('0332LPL', { pagina: 1, referencia: 'A1' }),
+    doc('0334LPL', { pagina: 2, referencia: 'B1' }),
+  ] };
+  const res = correlacionar(rA, rB);
+  const v = viajeDe(res, 1);
+  assert.strictEqual(v.tractora_original, undefined, 'no se corrige: dos candidatas cercanas (par de lote)');
+  assert.match(v.motivo_revision, /no coinciden entre si|dos camiones/);
+});

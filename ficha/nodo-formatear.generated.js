@@ -260,13 +260,14 @@ var PESO_TOL_DIFIEREN_KG = 100;
 // se corrige la FICHA (nunca al reves). Parametros configurables (endurecer o
 // aflojar sin reescribir la logica):
 //   MATRICULA_DIST_MAX  distancia de edicion maxima ficha<->documento del fallback.
-//   Convergencia (salvaguarda anti "dos camiones"): TODAS las matriculas de tractor
-//   legibles de los documentos deben coincidir en una sola. Si divergen, jamas se
-//   correlaciona por cercania.
-// NOTA (decidir con datos, NO ahora): la convergencia por UNANIMIDAD es el lado
-// seguro para arrancar. Si en operacion real un solo documento con OCR sucio
-// rompe la unanimidad seguido, aflojar a "mayoria clara" (que domine una
-// matricula) -- se decide con datos, no por diseno anticipado.
+//   Convergencia (salvaguarda anti "dos camiones"): se evalua POR FICHA. Solo
+//   cuentan como candidatas de correccion las matriculas de documento CERCANAS
+//   (distancia <= umbral) a esa ficha; las lejanas son otro camion y no bloquean.
+// DECIDIDO CON DATOS (ejec. 944): se aflojo la unanimidad global a "mayoria clara".
+// El envio real tenia dos camiones (un viaje cubierto por otro camion, 7347LBB) y
+// la unanimidad bloqueaba tambien los viajes limpios de 0332LPL, dejandolos SIN
+// documento/cliente/tarifa. El par peligroso de lote (0332 vs 0337, cercanos entre
+// si) sigue tratandose como ambiguo. Ver reconciliarMatriculaFicha.
 var MATRICULA_DIST_MAX = 1;
 
 // Distancia de edicion (Levenshtein). Matriculas cortas, sin optimizacion agresiva.
@@ -349,67 +350,78 @@ function reconciliarMatriculaFicha(viajes, docsRaw, marcar) {
 
   var marcarFicha = function (fm, motivo) { var a = fichas[fm]; for (var k = 0; k < a.length; k++) { marcar(a[k], motivo); } };
 
-  // Convergencia: ¿los documentos legibles coinciden todos en UNA matricula?
+  // MAYORIA CLARA por ficha (decidido con datos, ejec. 944) — reemplaza la
+  // unanimidad global. Un envio real puede tener VARIOS camiones: en 944 el viaje
+  // a RNM lo cubrio otro camion ("lo trajo Rodrigo, averio, fui a buscar la
+  // cisterna"), asi que en el lote convivian 0332LPL (5 docs) y 7347LBB (2 docs).
+  // Exigir unanimidad bloqueaba TAMBIEN los viajes limpios de 0332LPL. Ahora se
+  // decide POR FICHA: solo cuentan como candidatas de correccion las matriculas de
+  // documento CERCANAS a esa ficha (distancia <= umbral). Las lejanas son otro
+  // camion y NO bloquean; sus documentos se ataran a su propio viaje en el match de
+  // mas abajo, o quedaran huerfanos para revision. Asi se sigue distinguiendo el
+  // par peligroso de lote (0332 vs 0337, ambos cercanos -> ambiguo, no adivinar) del
+  // caso de dos camiones distintos (0332LPL vs 7347LBB, lejanos -> corregir la
+  // mayoria). MATRICULA_DIST_MAX es la frontera "mismo camion mal leido".
   var distintas = {};
   for (var ci = 0; ci < docMats.length; ci++) { distintas[docMats[ci]] = true; }
-  var convergen = Object.keys(distintas);
+  var docDistintas = Object.keys(distintas);
 
-  if (convergen.length > 1) {
-    // SALVAGUARDA DURA: los documentos NO convergen -> posible envio de dos
-    // camiones (matriculas de lote consecutivas). Nunca correlacionar por cercania.
-    var lista = convergen.join(' vs ');
-    for (var fi = 0; fi < fichaMats.length; fi++) {
-      var fm = fichaMats[fi];
-      for (var cj = 0; cj < convergen.length; cj++) {
-        if (fm !== convergen[cj] && distanciaEdicion(fm, convergen[cj]) <= MATRICULA_DIST_MAX) {
-          marcarFicha(fm, 'documentos del envio no coinciden entre si en la matricula (' + lista + ') — posible envio de dos camiones, revisar manualmente');
-          break;
-        }
+  var contarDocs = function (dmx) { var q, n = 0; for (q = 0; q < docMats.length; q++) { if (docMats[q] === dmx) { n++; } } return n; };
+
+  var corregir = function (arr, dmConv) {
+    // Refuerzo por remolque (senal secundaria, NO puerta): si el remolque de la
+    // ficha tambien difiere de los documentos, refuerza que se leyo mal. Si coincide
+    // exacto pero la tractora no, se corrige igual pero se deja constancia.
+    var remolqueFichaN = arr[0].remolque ? mat(arr[0].remolque) : '';
+    var remolqueCoincide = remolqueFichaN && remolqueDocs[remolqueFichaN];
+    var nota = remolqueCoincide ? ' (el remolque si coincide, verificar con atencion)' : '';
+    for (var ai = 0; ai < arr.length; ai++) {
+      var vv = arr[ai];
+      vv.tractora_original = vv.tractora;
+      vv.tractoraN_original = vv.tractoraN;
+      vv.tractora = dmConv;
+      vv.tractoraN = dmConv;
+      marcar(vv, 'matricula ficha ' + (vv.tractora_original || arr[0].tractoraN) + ' corregida a ' + dmConv + ' segun ' + contarDocs(dmConv) + ' documento(s) coincidente(s) — verificar que sea el mismo camion' + nota);
+    }
+  };
+
+  for (var fi = 0; fi < fichaMats.length; fi++) {
+    var fm = fichaMats[fi];
+    // Matriculas de documento CERCANAS a ESTA ficha (candidatas de correccion).
+    var cercanas = [];
+    for (var ck = 0; ck < docDistintas.length; ck++) {
+      if (distanciaEdicion(fm, docDistintas[ck]) <= MATRICULA_DIST_MAX) { cercanas.push(docDistintas[ck]); }
+    }
+    if (cercanas.length === 0) {
+      // Ningun documento se parece a esta ficha. Si hay documentos (de otro camion),
+      // esta ficha no tiene los suyos: se deja constancia sin corregir (distancia >).
+      var lejana = docDistintas.slice().sort(function (a, b) { return distanciaEdicion(fm, a) - distanciaEdicion(fm, b); })[0];
+      if (lejana) {
+        marcarFicha(fm, 'documentos con matricula ' + lejana + ' no correlacionados: la ficha dice ' + fm + ' (distancia > ' + MATRICULA_DIST_MAX + '), no se puede afirmar que sea el mismo camion');
       }
+      continue;
     }
-    return;
-  }
-
-  // Convergen en UNA matricula que no matchea exacto ninguna ficha.
-  var dmConv = convergen[0];
-  var candidatas = [];
-  for (var fj = 0; fj < fichaMats.length; fj++) {
-    if (distanciaEdicion(fichaMats[fj], dmConv) <= MATRICULA_DIST_MAX) { candidatas.push(fichaMats[fj]); }
-  }
-
-  if (candidatas.length === 0) {
-    // Distancia > umbral: no se puede afirmar que sea el mismo camion.
-    for (var fk = 0; fk < fichaMats.length; fk++) {
-      marcarFicha(fichaMats[fk], 'documentos con matricula ' + dmConv + ' no correlacionados: la ficha dice ' + fichaMats[fk] + ' (distancia > ' + MATRICULA_DIST_MAX + '), no se puede afirmar que sea el mismo camion');
+    if (cercanas.length === 1 && cercanas[0] === fm) {
+      continue; // la ficha ya matchea exacto un documento y no hay otra cercana: ok
     }
-    return;
-  }
-  if (candidatas.length > 1) {
-    // Candidato NO unico: dmConv a distancia <= umbral de dos o mas fichas (par
-    // peligroso de matriculas de lote). Ambiguo: no adivinar.
-    for (var fl = 0; fl < candidatas.length; fl++) {
-      marcarFicha(candidatas[fl], 'documentos con matricula ' + dmConv + ' no correlacionados: ' + candidatas.length + ' fichas candidatas a distancia ' + MATRICULA_DIST_MAX + ' (' + candidatas.join(', ') + ') — revisar cual camion es');
+    if (cercanas.length > 1) {
+      // DOS o mas matriculas de documento cercanas a la MISMA ficha (par de lote,
+      // p.ej. 0332 vs 0337 con ficha 0335/0337): ambiguo -> no adivinar.
+      marcarFicha(fm, 'documentos del envio no coinciden entre si en la matricula (' + cercanas.join(' vs ') + ') — posible envio de dos camiones, revisar manualmente');
+      continue;
     }
-    return;
-  }
-
-  // ---- Candidato UNICO a distancia <= umbral: corregir la ficha (documento manda) ----
-  var fmUnica = candidatas[0];
-  var arr = fichas[fmUnica];
-  // Refuerzo por remolque (senal secundaria, NO puerta): si el remolque de la ficha
-  // tambien difiere del de los documentos, refuerza que la ficha se leyo mal. Si el
-  // remolque coincide exacto pero la tractora no, se corrige igual (convergencia +
-  // candidato unico mandan) pero se deja constancia para mirarlo con mas atencion.
-  var remolqueFichaN = arr[0].remolque ? mat(arr[0].remolque) : '';
-  var remolqueCoincide = remolqueFichaN && remolqueDocs[remolqueFichaN];
-  var nota = remolqueCoincide ? ' (el remolque si coincide, verificar con atencion)' : '';
-  for (var ai = 0; ai < arr.length; ai++) {
-    var vv = arr[ai];
-    vv.tractora_original = vv.tractora;
-    vv.tractoraN_original = vv.tractoraN;
-    vv.tractora = dmConv;
-    vv.tractoraN = dmConv;
-    marcar(vv, 'matricula ficha ' + (vv.tractora_original || fmUnica) + ' corregida a ' + dmConv + ' segun ' + docMats.length + ' documento(s) coincidente(s) — verificar que sea el mismo camion' + nota);
+    // Exactamente UNA matricula de documento cercana, distinta de la ficha.
+    var dmConv = cercanas[0];
+    // ¿Esa matricula esta cerca de OTRA ficha tambien? (ambiguo entre fichas).
+    var otras = [];
+    for (var oj = 0; oj < fichaMats.length; oj++) {
+      if (fichaMats[oj] !== fm && distanciaEdicion(fichaMats[oj], dmConv) <= MATRICULA_DIST_MAX) { otras.push(fichaMats[oj]); }
+    }
+    if (otras.length > 0) {
+      marcarFicha(fm, 'documentos con matricula ' + dmConv + ' no correlacionados: ' + (otras.length + 1) + ' fichas candidatas a distancia ' + MATRICULA_DIST_MAX + ' (' + [fm].concat(otras).join(', ') + ') — revisar cual camion es');
+      continue;
+    }
+    corregir(fichas[fm], dmConv);
   }
 }
 
