@@ -75,6 +75,21 @@ llega a registrarse), con corridas de 5–8 min canceladas a mano y un OOM (907)
 una sola vez y no multiplica items aguas abajo. Aplicado por MCP el 2026-08-21.
 Si algún día se agrega otro lector a esta cadena, va con `Execute Once` también.
 
+### ⚠️ `Always Output Data` en los lectores — OBLIGATORIO (bug de ejec. 951)
+
+Segundo efecto de encadenar los lectores en serie: si un lector devuelve **cero
+filas** (tabla vacía), emite **0 items** y n8n **saltea** el nodo siguiente por
+falta de item que lo dispare. En 951 la tabla `Viajes` estaba vacía → `Leer
+Viajes Existentes` emitió `[]` → `Preparar Filas Viajes` **no se ejecutó** → no se
+escribió ningún viaje (huevo y gallina: una tabla vacía nunca recibía su primer
+registro).
+
+**Fix:** `Always Output Data` (`alwaysOutputData: true`) en los TRES lectores →
+emiten un item vacío `{}` cuando la tabla está vacía, disparando el nodo
+siguiente. El wrapper ya tolera ese `{}` (la dedup y la tarifa lo ignoran por no
+tener claves). Aplicado por MCP el 2026-08-21. Regla para lectores futuros de esta
+cadena: `Execute Once` **y** `Always Output Data`, juntos.
+
 ## Nodos nuevos
 
 Ambos son `n8n-nodes-base.dataTable` (typeVersion `1.1`), operación `get`,

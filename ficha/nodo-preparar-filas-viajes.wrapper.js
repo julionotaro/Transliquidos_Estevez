@@ -66,6 +66,16 @@ function _leerTabla(nombre) {
 }
 let tarifasTbl = _leerTabla('Leer Tarifas');
 let puntosTbl = _leerTabla('Leer Puntos');
+// Punto canonico Gesruta para MOSTRAR en origen/destino: "codigo · NOMBRE". El
+// literal leido se conserva en `detalle`/origen_campos (no se pierde). Si no
+// resuelve con seguridad, se deja el literal tal cual; el resolver ya marca
+// REVISAR aparte cuando la resolucion no es exacta.
+const puntoGesruta = function (literal) {
+  if (!literal) { return ''; }
+  if (typeof resolverPunto !== 'function' || !puntosTbl.length) { return s(literal); }
+  const r = resolverPunto(literal, 'documento', puntosTbl);
+  return (r && r.id_punto) ? (r.id_punto + ' · ' + r.nombre_canonico) : s(literal);
+};
 const tarifaDe = function (v) {
   if (typeof buscarTarifaContractual !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '' }; }
   const r = buscarTarifaContractual({ cliente: v.cliente, origen: v.origen, destino: v.destino, material: v.material }, tarifasTbl, puntosTbl);
@@ -89,8 +99,11 @@ for (const v of viajes) {
     // autonomos (confirmado Julio); el resto, dependientes. Vacio si no hay chofer.
     tipo_conductor: (typeof tipoConductor === 'function') ? tipoConductor(v.conductor) : '',
     cliente: s(v.cliente),
-    origen: s(v.origen),
-    destino: s(v.destino),
+    // origen/destino como punto canonico Gesruta "codigo · NOMBRE" (el literal
+    // leido queda en detalle/origen_campos). La tarifa se calcula arriba con el
+    // literal crudo (buscarTarifaContractual resuelve por su cuenta).
+    origen: puntoGesruta(v.origen),
+    destino: puntoGesruta(v.destino),
     material: s(v.material),
     referencia: s(v.referencia),
     tipo_doc: s(v.tipo_doc),
