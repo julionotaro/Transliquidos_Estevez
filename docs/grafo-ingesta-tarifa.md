@@ -59,6 +59,22 @@ las filas de ambos lectores por identidad (`_leerTabla`) antes de usarlas, así
 que el resultado es correcto sin importar cuántos items entren. Igual conviene el
 punto de inserción con menos items por rendimiento (leer 698 filas pocas veces).
 
+### ⚠️ `Execute Once` en los lectores — OBLIGATORIO (bug de ejec. 921/930/939)
+
+La dedup del wrapper arregla la CORRECCION, pero no el COSTE: encadenar los
+lectores en serie multiplica los items del GRAFO antes de llegar al código.
+
+Lo que pasó al desplegar sin esto: `Leer Puntos` emite ~390 filas → el nodo
+siguiente, `Leer Viajes Existentes`, corre **una vez por item de entrada**, o sea
+**390 lecturas completas** de la tabla `Viajes`. Se colgaba ahí (en las ejecs.
+921/939 `Leer Puntos` es el `lastNodeExecuted` y `Leer Viajes Existentes` no
+llega a registrarse), con corridas de 5–8 min canceladas a mano y un OOM (907).
+
+**Fix:** `Execute Once` (`executeOnce: true`) en los TRES nodos de la cadena —
+`Leer Tarifas`, `Leer Puntos` y `Leer Viajes Existentes`. Cada uno lee su tabla
+una sola vez y no multiplica items aguas abajo. Aplicado por MCP el 2026-08-21.
+Si algún día se agrega otro lector a esta cadena, va con `Execute Once` también.
+
 ## Nodos nuevos
 
 Ambos son `n8n-nodes-base.dataTable` (typeVersion `1.1`), operación `get`,
