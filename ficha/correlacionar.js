@@ -155,13 +155,47 @@ function reconciliarMatriculaFicha(viajes, docsRaw, marcar) {
 
   // Fichas del envio agrupadas por matricula normalizada.
   var fichas = {};
+  var sinMatricula = [];
+  var hojasSinMat = {};
   for (var vi = 0; vi < viajes.length; vi++) {
     var v = viajes[vi];
-    if (!v.tractoraN) { continue; }
+    if (!v.tractoraN) { sinMatricula.push(v); hojasSinMat[v.hoja_idx] = true; continue; }
     if (!fichas[v.tractoraN]) { fichas[v.tractoraN] = []; }
     fichas[v.tractoraN].push(v);
   }
   var fichaMats = Object.keys(fichas);
+
+  // ---- Ficha SIN matricula legible: el documento impreso manda (§ asimetria) --
+  // La vision no siempre lee la matricula manuscrita: en la ejec. 975 devolvio
+  // null (en la 967, de la MISMA ficha, habia leido 0332LPZ). Sin matricula de
+  // ficha el envio queda con "0 camiones" y NINGUN documento se puede asociar.
+  // Mismo principio asimetrico de toda esta funcion: el documento IMPRESO es la
+  // fuente confiable. Si NINGUNA ficha del envio tiene matricula legible, el envio
+  // es de UNA sola ficha, y los documentos DOMINAN en una matricula (sin empate),
+  // se adopta esa para la ficha, marcando REVISAR. Conservador: con dos fichas sin
+  // matricula, o con empate entre matriculas, no se adivina.
+  if (sinMatricula.length && fichaMats.length === 0) {
+    if (Object.keys(hojasSinMat).length !== 1) { return; }
+    var conteoDoc = {};
+    for (var q = 0; q < docMats.length; q++) { conteoDoc[docMats[q]] = (conteoDoc[docMats[q]] || 0) + 1; }
+    var dominante = null, dmax = 0, empatada = false;
+    for (var kd in conteoDoc) {
+      if (!Object.prototype.hasOwnProperty.call(conteoDoc, kd)) { continue; }
+      if (conteoDoc[kd] > dmax) { dominante = kd; dmax = conteoDoc[kd]; empatada = false; }
+      else if (conteoDoc[kd] === dmax) { empatada = true; }
+    }
+    if (dominante && !empatada) {
+      for (var s2 = 0; s2 < sinMatricula.length; s2++) {
+        var vs = sinMatricula[s2];
+        vs.tractora_original = vs.tractora;
+        vs.tractoraN_original = vs.tractoraN;
+        vs.tractora = dominante;
+        vs.tractoraN = dominante;
+        marcar(vs, 'la ficha no traia matricula legible; se adopta ' + dominante + ' de los documentos (' + dmax + ' coincidente(s)) — verificar que sea el camion correcto');
+      }
+    }
+    return;
+  }
   if (fichaMats.length === 0) { return; }
 
   // ¿Algun documento NO matchea exacto ninguna ficha? Solo entonces hay algo que

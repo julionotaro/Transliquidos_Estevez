@@ -224,3 +224,34 @@ test('normalizacion de matricula: prefijo ES/PT y cero inicial perdido se corrig
   assert.strictEqual(v.docs.length, 2, 'ambas variantes sucias se resuelven a 0332LPL');
   assert.strictEqual(v.tractora_original, undefined, 'la ficha ya era correcta: no se "corrige"');
 });
+
+// ============================================================================
+// 11. CASO REAL 975: la VISION no leyo la matricula de la ficha (tractora null).
+//     Los documentos si la traen -> se adopta del documento (asimetria) y los 6
+//     documentos llegan a su viaje. Sin esto el envio queda con "0 camiones".
+// ============================================================================
+test('caso 975: ficha con tractora null -> adopta la matricula dominante de los documentos y asocia', () => {
+  const rA = { hojas: [ficha(null, 'CR-03204-R', [
+    bloque({ orden: 1, fecha_carga: '2026-08-07', fecha_descarga: '2026-08-10', nombre_carga: 'Foresa', lugar_carga: 'Caldas', lugar_descarga: 'Cella', nombre_descarga: 'Finsa Cella', tipo_mercancia: 'Res 0701', cantidad_kg: 22600 }),
+    bloque({ orden: 2, fecha_carga: '2026-08-11', fecha_descarga: '2026-08-12', nombre_carga: 'Tepsa', lugar_carga: 'Barcelona', lugar_descarga: 'Orense', nombre_descarga: 'Revi', tipo_mercancia: 'Vinka-Plast.', cantidad_kg: 23920 }),
+    bloque({ orden: 3, fecha_carga: '2026-08-12', fecha_descarga: '2026-08-13', nombre_carga: 'Tepsa', lugar_carga: null, lugar_descarga: 'V. Formalicao', nombre_descarga: 'RNM', tipo_mercancia: 'A. Acetico', cantidad_kg: 23760 }),
+  ])] };
+  const rB = { documentos: [
+    doc('0332LPL', { pagina: 1, tipo_doc: 'albaran', emisor: 'FORESA IND. QUIMICAS DEL NOROESTE SA', referencia: '2009926', fecha: '2026-08-10', destino: 'FINSA CELLA', material: 'Resorcinol', kg_neto: null, cliente_probable: 'FORESA' }),
+    doc(null, { pagina: 2, tipo_doc: 'orden_transporte', emisor: 'Quimidroga', referencia: '706162', fecha: '2026-08-03', destino: 'COMQUIMICOS ELECTROQUIMICOS REVI', material: 'VINA PLAST OD 390 BULK', kg_neto: null, cliente_probable: 'QUIMIDROGA' }),
+    doc(null, { pagina: 3, tipo_doc: 'carta_porte', emisor: 'TEPSA', referencia: '202610005532CRP', fecha: '2026-08-12', destino: 'COMQUIMICOS ELECTROQUIMICOS REVI', material: 'VINA PLAST OD 390', kg_neto: 23920, cliente_probable: 'QUIMIDROGA' }),
+    doc(null, { pagina: 5, tipo_doc: 'carta_porte', emisor: 'TEPSA', referencia: '202610005532CRP', fecha: '2026-08-11', destino: 'RENI - PRODUTOS QUIMICOS S.A.', material: 'Acido Acetico', kg_neto: 23760, cliente_probable: null }),
+    doc('0332LPL', { pagina: 6, tipo_doc: 'cmr', emisor: 'TEPSA', referencia: '202610005532CMR', fecha: '2026-08-11', destino: 'RENI - PRODUTOS QUIMICOS S.A.', material: 'Acido Acetico', kg_neto: 23760, cliente_probable: null }),
+  ] };
+  const res = correlacionar(rA, rB);
+  const v1 = viajeDe(res, 1), v2 = viajeDe(res, 2), v3 = viajeDe(res, 3);
+
+  assert.ok(res.viajes.every(v => v.tractoraN === '0332LPL'), 'se adopta la matricula de los documentos');
+  assert.ok(res.viajes.every(v => /no traia matricula legible/.test(v.motivo_revision || '')), 'queda trazado y en REVISAR');
+  assert.strictEqual(v1.docs.length, 1, 'viaje 1 <- albaran Foresa (por emisor)');
+  assert.strictEqual(v2.docs.length, 2, 'viaje 2 <- orden Quimidroga (por destino Revi) + carta 23920 kg');
+  assert.strictEqual(v3.docs.length, 2, 'viaje 3 <- carta + CMR de 23760 kg');
+  assert.ok(res.viajes.every(v => v.estado !== 'PENDIENTE_DOCUMENTACION'), 'ningun viaje queda sin documentacion');
+  assert.match(v1.cliente || '', /FORESA/, 'viaje 1 resuelve cliente desde el documento (razon social del emisor)');
+  assert.strictEqual(v1.referencia, '2009926', 'y toma la referencia del albaran');
+});

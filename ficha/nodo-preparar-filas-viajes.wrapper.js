@@ -70,23 +70,45 @@ let puntosTbl = _leerTabla('Leer Puntos');
 // literal leido se conserva en `detalle`/origen_campos (no se pierde). Si no
 // resuelve con seguridad, se deja el literal tal cual; el resolver ya marca
 // REVISAR aparte cuando la resolucion no es exacta.
+// LUGAR vs EMPRESA (ejec. 975): para identidad (cliente/referencia/kg) el
+// documento manda, pero para el LUGAR suele escribir la EMPRESA ("FORESA IND.
+// QUIMICAS...", "CELLMARK", "COMQUIMICOS...REVI") donde la ficha escribe el
+// pueblo ("Caldas", "Barcelona", "Orense"). Una razon social no resuelve a punto
+// Gesruta -> sin punto no hay tarifa. Cascada: se prueba el literal del documento
+// y, si no resuelve, el de la ficha. (Cuando se carguen los alias empresa->punto
+// el primero resolvera solo; hasta entonces la ficha es la red de seguridad.)
+const mejorLiteralPunto = function (literalDoc, literalFicha) {
+  if (typeof resolverPunto !== 'function' || !puntosTbl.length) { return literalDoc || literalFicha || ''; }
+  if (literalDoc) {
+    const r1 = resolverPunto(literalDoc, 'documento', puntosTbl);
+    if (r1 && r1.id_punto) { return literalDoc; }
+  }
+  if (literalFicha) {
+    const r2 = resolverPunto(literalFicha, 'ficha', puntosTbl);
+    if (r2 && r2.id_punto) { return literalFicha; }
+  }
+  return literalDoc || literalFicha || '';
+};
 const puntoGesruta = function (literal) {
   if (!literal) { return ''; }
   if (typeof resolverPunto !== 'function' || !puntosTbl.length) { return s(literal); }
   const r = resolverPunto(literal, 'documento', puntosTbl);
   return (r && r.id_punto) ? (r.id_punto + ' · ' + r.nombre_canonico) : s(literal);
 };
-const tarifaDe = function (v) {
+const tarifaDe = function (v, origenLit, destinoLit) {
   if (typeof buscarTarifaContractual !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '' }; }
-  const r = buscarTarifaContractual({ cliente: v.cliente, origen: v.origen, destino: v.destino, material: v.material }, tarifasTbl, puntosTbl);
+  const r = buscarTarifaContractual({ cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material }, tarifasTbl, puntosTbl);
   if (!r) { return { tn: null, fijo: null, motivo: '' }; }
   if (r.tarifa === null) { return { tn: null, fijo: null, motivo: r.motivo || '' }; }
-  return { tn: r.tarifa_tn, fijo: r.precio_fijo, motivo: r.revisar ? ('tarifa via punto resuelto — verificar (' + s(v.origen) + '->' + s(v.destino) + ')') : '' };
+  return { tn: r.tarifa_tn, fijo: r.precio_fijo, motivo: r.revisar ? ('tarifa via punto resuelto — verificar (' + s(origenLit) + '->' + s(destinoLit) + ')') : '' };
 };
 
 const filas = [];
 for (const v of viajes) {
-  const tar = tarifaDe(v);
+  // Literal de lugar que SI resuelve a punto (documento, si no la ficha).
+  const origenLit = mejorLiteralPunto(v.origen, v.lugar_carga);
+  const destinoLit = mejorLiteralPunto(v.destino, v.lugar_descarga);
+  const tar = tarifaDe(v, origenLit, destinoLit);
   filas.push({
     hoja_id: idDe(v.hoja_idx),
     orden: n(v.orden),
@@ -102,8 +124,8 @@ for (const v of viajes) {
     // origen/destino como punto canonico Gesruta "codigo · NOMBRE" (el literal
     // leido queda en detalle/origen_campos). La tarifa se calcula arriba con el
     // literal crudo (buscarTarifaContractual resuelve por su cuenta).
-    origen: puntoGesruta(v.origen),
-    destino: puntoGesruta(v.destino),
+    origen: puntoGesruta(origenLit),
+    destino: puntoGesruta(destinoLit),
     material: s(v.material),
     referencia: s(v.referencia),
     tipo_doc: s(v.tipo_doc),
