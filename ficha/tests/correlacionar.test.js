@@ -344,16 +344,45 @@ test('contaminacion: doc de una pata NO presta material/destino a la otra pata d
   const v1 = res.viajes[0];
 
   // El viaje 1 (sosa) NO hereda la carga del CMR de acido de la otra pata.
-  assert.notStrictEqual(v1.material, 'ACIDO SULFURICO', 'viaje 1 no debe heredar el material del CMR ambiguo');
+  // (Proteccion original del bug 2026-08-04: sigue intacta.)
+  assert.notStrictEqual(v1.material, 'ACIDO SULFURICO', 'viaje 1 no debe heredar el material del CMR de la otra pata');
   assert.strictEqual(v1.material, 'SOSA', 'viaje 1 conserva su material de ficha');
-  assert.notStrictEqual(v1.destino, 'VIANA DO CASTELO', 'viaje 1 no debe heredar el destino del CMR ambiguo');
+  assert.notStrictEqual(v1.destino, 'VIANA DO CASTELO', 'viaje 1 no debe heredar el destino del CMR de la otra pata');
   assert.strictEqual(v1.destino, 'BEGEGA', 'viaje 1 conserva su lugar de descarga de ficha');
-  // El doc ambiguo queda aparte, no como documentacion confirmada del viaje.
-  assert.strictEqual(v1.docs.length, 0, 'el doc ambiguo no cuenta como doc confirmado');
-  assert.strictEqual(v1.docs_ambiguos.length, 1, 'el doc ambiguo queda adjunto aparte para revision');
-  assert.strictEqual(v1.estado, 'PENDIENTE_DOCUMENTACION', 'sin doc propio confirmado -> PENDIENTE, no facturado con datos de otro');
-  assert.ok(res.avisos.some(function (a) { return /no se pudo desambiguar/.test(a); }),
-    'la ambiguedad se surfacea en avisos');
+  assert.strictEqual(v1.docs.length, 0, 'el CMR de la pata 2 no cuenta como doc del viaje 1');
+  assert.strictEqual(v1.estado, 'PENDIENTE_DOCUMENTACION', 'sin doc propio -> PENDIENTE, no facturado con datos de otro');
+
+  // MEJORA (ejec. 967): antes este CMR quedaba AMBIGUO (fecha en ventana de ambas
+  // patas, sin kg). Ahora el desempate por emisor/destino lo manda a SU viaje: el
+  // emisor ASTURIANA ZINC y el destino VIANA DO CASTELO son los de la pata 2. Es
+  // mas util que dejarlo sin asignar, y no relaja la proteccion de arriba.
+  const v2 = res.viajes[1];
+  assert.strictEqual(v2.docs.length, 1, 'el CMR se asigna a la pata que realmente le corresponde');
+  assert.strictEqual(v2.material, 'ACIDO SULFURICO');
+  assert.strictEqual(v2.estado, 'con_documentacion');
+});
+
+test('contaminacion: sin señal de emisor/destino que desempate, el doc sigue quedando AMBIGUO (no se adivina)', () => {
+  // Mismo escenario pero el CMR no trae emisor/cliente ni destino reconocibles:
+  // no hay con que desempatar -> debe quedar ambiguo, sin prestarle carga a nadie.
+  const cmrSinSeñal = doc({
+    pagina: 5, tipo_doc: 'cmr', referencia: '2601014469',
+    matricula_tractor: '2498KZL', fecha: '2026-07-30',
+    origen: null, destino: null, material: 'ACIDO SULFURICO',
+    kg_neto: null, cliente_probable: null, emisor: null,
+  });
+  const caso = entrada(
+    [hoja([
+      bloque({ orden: 1, fecha_carga: '2026-07-29', fecha_descarga: '2026-07-30', nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'BEGEGA', tipo_mercancia: 'SOSA', cantidad_kg: 17900, km_inicio: 845752, km_final: 846406, km_recorridos: null }),
+      bloque({ orden: 2, fecha_carga: '2026-07-30', fecha_descarga: '2026-07-31', nombre_carga: 'ASTURIANA ZINC', lugar_carga: 'SAN JUAN DE NIEVA', lugar_descarga: 'VIANA DO CASTELO', tipo_mercancia: 'ACIDO SULFURICO', cantidad_kg: 24160, km_inicio: 846531, km_final: 847037, km_recorridos: null }),
+    ])],
+    [cmrSinSeñal]);
+  const res = correlacionar(
+    JSON.parse(caso[0].json.choices[0].message.content),
+    JSON.parse(caso[1].json.choices[0].message.content));
+  assert.ok(res.viajes.every(function (v) { return v.docs.length === 0; }), 'ningun viaje recibe el doc sin señal');
+  assert.ok(res.viajes.some(function (v) { return (v.docs_ambiguos || []).length === 1; }), 'queda adjunto aparte');
+  assert.ok(res.avisos.some(function (a) { return /no se pudo desambiguar/.test(a); }), 'la ambiguedad se surfacea');
 });
 
 test('lote mixto: cada viaje lleva su propio estado_lectura', () => {

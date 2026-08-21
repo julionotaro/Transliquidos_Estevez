@@ -159,6 +159,41 @@ test('reconciliacion: ficha 0332LPZ + mayoria 0332LPL + un 7347LBB lejano -> cor
 });
 
 // ============================================================================
+// 9. CASO REAL 967: la vision devuelve los documentos SUCIOS — matricula null
+//    (el PDF dice "Vehiculo tractor: ES 0332LPL"), matricula sin el cero inicial
+//    ("332LPL") y el ANO mal (2020 en vez de 2026, lo que inutiliza el desempate
+//    por fecha). Aun asi los documentos deben llegar a su viaje.
+// ============================================================================
+test('caso 967: docs con matricula null / sin cero inicial / ano mal -> igual se asignan por peso, emisor y destino', () => {
+  const rA = { hojas: [ficha('0332LPZ', 'CR-03204-R', [
+    bloque({ orden: 1, fecha_carga: '2026-08-07', fecha_descarga: '2026-08-10', nombre_carga: 'Foresa', lugar_carga: 'Caldas', lugar_descarga: 'Cella', nombre_descarga: 'Finsa Cella', tipo_mercancia: 'Res 0201', cantidad_kg: 22600 }),
+    bloque({ orden: 2, fecha_carga: '2026-08-11', fecha_descarga: '2026-08-12', nombre_carga: 'Tepsa', lugar_carga: 'Barcelona', lugar_descarga: 'Orense', nombre_descarga: 'Reivi', tipo_mercancia: 'Vinka-Plast.', cantidad_kg: 23920 }),
+    bloque({ orden: 3, fecha_carga: '2026-08-12', fecha_descarga: '2026-08-13', nombre_carga: 'Tepsa', lugar_carga: null, lugar_descarga: 'V. Formalicao', nombre_descarga: 'RNM', tipo_mercancia: 'A. Acetico', cantidad_kg: 23760 }),
+  ])] };
+  const rB = { documentos: [
+    // pag 1: matricula OK pero sin kg y con el ano mal -> desempata por emisor Foresa.
+    doc('0332LPL', { pagina: 1, tipo_doc: 'albaran', emisor: 'FORESA', referencia: '2017842', fecha: '2020-08-10', destino: 'FINANCIERA MADERERA SA', material: 'Resina colofonia', kg_neto: null, cliente_probable: null }),
+    // pag 3: sin matricula, pero el kg 23920 identifica al viaje 2.
+    doc(null, { pagina: 3, tipo_doc: 'carta_porte', emisor: 'TEPSA', referencia: '202610005532CRP', fecha: '2020-08-12', destino: 'REVI', material: 'VINKA PLAST', kg_neto: 23920, cliente_probable: null }),
+    // pag 5: sin matricula, kg 23760 -> viaje 3.
+    doc(null, { pagina: 5, tipo_doc: 'carta_porte', emisor: 'TEPSA', referencia: '202610005532CRP', fecha: '2020-08-11', destino: 'RNM', material: 'ACIDO ACETICO', kg_neto: 23760, cliente_probable: null }),
+    // pag 6: matricula sin el cero inicial -> tolerancia de 1 caracter.
+    doc('332LPL', { pagina: 6, tipo_doc: 'cmr', referencia: '202610005532CMR', fecha: '2020-08-11', destino: 'RNM', material: 'ACIDO ACETICO', kg_neto: 23760, cliente_probable: null }),
+  ] };
+  const res = correlacionar(rA, rB);
+  const v1 = viajeDe(res, 1), v2 = viajeDe(res, 2), v3 = viajeDe(res, 3);
+
+  assert.ok(res.viajes.every(v => v.tractoraN === '0332LPL'), 'la matricula de ficha se corrige');
+  assert.strictEqual(v1.docs.length, 1, 'viaje 1 recibe el albaran de Foresa (desempate por emisor)');
+  assert.strictEqual(v1.docs[0].pagina, 1);
+  assert.strictEqual(v2.docs.length, 1, 'viaje 2 recibe el doc de 23920 kg');
+  assert.strictEqual(v2.docs[0].pagina, 3);
+  assert.strictEqual(v3.docs.length, 2, 'viaje 3 recibe los dos de 23760 kg (uno por matricula tolerada)');
+  assert.ok(v3.docs.some(d => d.pagina === 6), 'el CMR con matricula 332LPL entra por tolerancia');
+  assert.ok(res.viajes.every(v => v.estado !== 'PENDIENTE_DOCUMENTACION'), 'ningun viaje queda sin documentacion');
+});
+
+// ============================================================================
 // 8. CONTRASTE: dos matriculas de documento CERCANAS entre si (par de lote)
 //    siguen siendo ambiguas -> NO se corrige. No aflojamos ese caso peligroso.
 // ============================================================================
@@ -172,4 +207,20 @@ test('reconciliacion: ficha 0333LPL + docs 0332LPL y 0334LPL (ambos cercanos) ->
   const v = viajeDe(res, 1);
   assert.strictEqual(v.tractora_original, undefined, 'no se corrige: dos candidatas cercanas (par de lote)');
   assert.match(v.motivo_revision, /no coinciden entre si|dos camiones/);
+});
+
+// ============================================================================
+// 10. Normalizacion de matricula en el propio codigo (no depende del modelo):
+//     prefijo de pais "ES 0332LPL" y cero inicial perdido "332LPL".
+// ============================================================================
+test('normalizacion de matricula: prefijo ES/PT y cero inicial perdido se corrigen en codigo', () => {
+  const rA = { hojas: [ficha('0332LPL', 'CR1', [bloque({ cantidad_kg: 22600 })])] };
+  const rB = { documentos: [
+    doc('ES 0332LPL', { pagina: 1, referencia: 'A1', kg_neto: 22600 }),
+    doc('332LPL', { pagina: 2, tipo_doc: 'cmr', referencia: 'A2', kg_neto: 22600 }),
+  ] };
+  const res = correlacionar(rA, rB);
+  const v = viajeDe(res, 1);
+  assert.strictEqual(v.docs.length, 2, 'ambas variantes sucias se resuelven a 0332LPL');
+  assert.strictEqual(v.tractora_original, undefined, 'la ficha ya era correcta: no se "corrige"');
 });

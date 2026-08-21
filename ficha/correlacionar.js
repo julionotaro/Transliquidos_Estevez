@@ -34,7 +34,20 @@ var nz = function (x) { if (x === null || x === undefined) { return null; } if (
 // num() devuelve null para 0: el marcador 0 que el modelo copiaba del esquema
 // nunca debe entrar como dato (ESTADO §4, error 2).
 var num = function (x) { if (typeof x === 'number') { return (isFinite(x) && x !== 0) ? x : null; } if (typeof x === 'string' && x.trim() !== '') { const n = Number(x.replace(/\./g, '').replace(',', '.')); return (isFinite(n) && n !== 0) ? n : null; } return null; };
-var mat = function (x) { return (x || '').toString().toUpperCase().replace(/[^A-Z0-9]/g, ''); };
+// Normaliza una matricula. Ademas de quitar separadores, limpia dos suciedades
+// REALES de la lectura de documentos (ejec. 967), sin depender del modelo:
+//   - PREFIJO DE PAIS: los CMR/cartas de porte escriben "ES 0332LPL" / "PT 12AB34".
+//     Se quita el ES/PT inicial cuando lo que sigue ya es una matricula completa.
+//   - CERO INICIAL PERDIDO: "332LPL" por "0332LPL". La matricula espanola es
+//     4 digitos + 3 letras; si vienen 3 digitos + 3 letras se repone el cero.
+// Ambas son reversibles y conservadoras: si el patron no calza, no se toca nada.
+var mat = function (x) {
+  var s = (x || '').toString().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  var m = s.match(/^(?:ES|PT)(\d{4}[A-Z]{3})$/);
+  if (m) { s = m[1]; }
+  if (/^\d{3}[A-Z]{3}$/.test(s)) { s = '0' + s; }
+  return s;
+};
 var upp = function (x) { return (x || '').toString().toUpperCase(); };
 var dias = function (a, b) { if (!a || !b) { return null; } const da = Date.parse(a + 'T00:00:00Z'); const db = Date.parse(b + 'T00:00:00Z'); if (!isFinite(da) || !isFinite(db)) { return null; } return Math.round((db - da) / 86400000); };
 
@@ -348,15 +361,59 @@ function correlacionar(rA, rB, opts) {
   reconciliarMatriculaFicha(viajes, docsRaw, marcar);
 
   // ---- Match documento -> viaje (N docs : 1 viaje) ----
+  //
+  // ROBUSTEZ ANTE LECTURA SUCIA DEL DOCUMENTO (ejec. 967). La vision devuelve
+  // seguido: matricula null (el campo viene como "Vehiculo tractor: ES 0332LPL" y
+  // no la extrae), matricula sin el cero inicial ("332LPL"), y el ANO mal (2020 en
+  // vez de 2026, lo que inutiliza el desempate por fecha). El match no puede
+  // depender de que esos tres campos vengan perfectos, PERO tampoco puede prestarle
+  // la carga de un viaje a otro. Estrategia: ampliar como se ENCUENTRA el camion
+  // (tolerancia de matricula; envio de un solo camion) y agregar desempates que no
+  // dependen de la fecha (kg, emisor vs nombre_carga, destino vs nombre_descarga).
   const docsHuerfanos = [];
+  const matsFicha = {};
+  for (const v of viajes) { if (v.tractoraN) { matsFicha[v.tractoraN] = true; } }
+  const listaMatsFicha = Object.keys(matsFicha);
+  // Comparacion laxa de nombres propios (emisor/destino del documento vs lo que
+  // escribio el chofer). Señal SECUNDARIA: solo DESEMPATA entre viajes del mismo
+  // camion; nunca ata un documento a un camion que no es el suyo.
+  const txtN = function (x) { return upp(nz(x) || '').replace(/[^A-Z0-9]/g, ''); };
+  const pareceMismo = function (a, b) {
+    const A = txtN(a), B = txtN(b);
+    if (!A || !B || A.length < 3 || B.length < 3) { return false; }
+    return A === B || A.indexOf(B) >= 0 || B.indexOf(A) >= 0;
+  };
   for (const d of docsRaw) {
     if (d.duplicado_de) { continue; }
     const dm = mat(d.matricula_tractor);
     const df = nz(d.fecha);
     const et = 'pag ' + (d.pagina || '?') + ' ' + (nz(d.referencia) || 'sin ref');
-    if (!dm) { docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible' }); continue; }
-    let cands = viajes.filter(function (v) { return v.tractoraN && v.tractoraN === dm; });
-    if (cands.length === 0) { docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' }); continue; }
+    let cands = [];
+    if (dm) {
+      cands = viajes.filter(function (v) { return v.tractoraN && v.tractoraN === dm; });
+      if (cands.length === 0) {
+        // Tolerancia: el documento perdio un caracter al leerse ("332LPL" por
+        // "0332LPL"). Solo si queda UNA matricula de ficha a distancia <= umbral.
+        const cercanas = listaMatsFicha.filter(function (fm) { return distanciaEdicion(fm, dm) <= MATRICULA_DIST_MAX; });
+        if (cercanas.length === 1) {
+          cands = viajes.filter(function (v) { return v.tractoraN === cercanas[0]; });
+          avisos.push('Documento ' + et + ': matricula leida ' + d.matricula_tractor + ' se asocia a ' + cercanas[0] + ' (distancia ' + MATRICULA_DIST_MAX + ', unica ficha candidata) — verificar que sea el mismo camion.');
+        } else {
+          docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' });
+          continue;
+        }
+      }
+    } else if (listaMatsFicha.length === 1) {
+      // Sin matricula legible PERO el envio tiene UN SOLO camion: el documento es
+      // de ese camion (no hay otro al que pudiera pertenecer). Se desambigua entre
+      // sus viajes con las señales de abajo; si no desambigua, queda ambiguo (no se
+      // le presta la carga a nadie).
+      cands = viajes.filter(function (v) { return v.tractoraN === listaMatsFicha[0]; });
+      avisos.push('Documento ' + et + ': sin matricula legible; el envio tiene un solo camion (' + listaMatsFicha[0] + '), se intenta asignar por peso/emisor/destino.');
+    } else {
+      docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible y el envio tiene ' + listaMatsFicha.length + ' camiones' });
+      continue;
+    }
     if (cands.length > 1 && df) {
       const enVentana = cands.filter(function (v) {
         const ini = v.fecha_carga; const fin = v.fecha_descarga || v.fecha_carga;
@@ -376,6 +433,22 @@ function correlacionar(rA, rB, opts) {
       }
     }
     if (cands.length > 1) {
+      // Desempate por EMISOR del documento vs NOMBRE DE CARGA de la ficha (lo que
+      // escribio el chofer: "Foresa", "Tepsa"). No depende de la fecha ni del kg,
+      // que son justo los campos que la vision trae sucios.
+      const porEmisor = cands.filter(function (v) {
+        return pareceMismo(d.emisor, v.nombre_carga) || pareceMismo(d.cliente_probable, v.nombre_carga);
+      });
+      if (porEmisor.length === 1) { cands = porEmisor; }
+    }
+    if (cands.length > 1) {
+      // Desempate por DESTINO del documento vs nombre/lugar de descarga de la ficha.
+      const porDestino = cands.filter(function (v) {
+        return pareceMismo(d.destino, v.nombre_descarga) || pareceMismo(d.destino, v.lugar_descarga);
+      });
+      if (porDestino.length === 1) { cands = porDestino; }
+    }
+    if (cands.length > 1) {
       // No se pudo desambiguar (mismo camion, varias patas el mismo dia; ni la
       // fecha ni el kg separan). NO se le presta la carga a ningun viaje: un
       // documento de la pata B no puede definir material/origen/destino de la
@@ -386,7 +459,7 @@ function correlacionar(rA, rB, opts) {
       d.ambiguo = true;
       cands.sort(function (a, b) { return a.docs.length - b.docs.length; });
       cands[0].docs_ambiguos.push(d);
-      avisos.push('Documento ' + et + ' matchea ' + cands.length + ' viajes de ' + d.matricula_tractor + ' y no se pudo desambiguar (fecha/kg). NO se le asigna la carga a ningun viaje; queda adjunto al bloque ' + cands[0].orden + ' para revision humana.');
+      avisos.push('Documento ' + et + ' matchea ' + cands.length + ' viajes de ' + (nz(d.matricula_tractor) || listaMatsFicha[0] || 'este envio') + ' y no se pudo desambiguar (fecha/kg/emisor/destino). NO se le asigna la carga a ningun viaje; queda adjunto al bloque ' + cands[0].orden + ' para revision humana.');
       continue;
     }
     cands[0].docs.push(d);
