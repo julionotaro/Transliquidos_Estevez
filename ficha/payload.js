@@ -164,22 +164,18 @@ function adjuntosDocsDesdeArchivos(archivos) {
 
 // --- Payloads --------------------------------------------------------------
 
-// Los razonadores (gpt-5*, o*) "piensan" antes de responder. Para una tarea de
-// TRANSCRIPCION (OCR) ese razonamiento es tiempo y dinero tirados: en produccion
-// gpt-5.6-sol tardaba ~97 s y ~1 EUR por pagina (ejec. 921). reasoning_effort
-// 'minimal' le pide el minimo razonamiento CONSERVANDO su vision (superior en
-// manuscrito, el motivo del swap a GPT-5). Y max_completion_tokens baja de 16000
-// a 6000: la ficha JSON es chica y, sin tokens de "pensar" que la inflen, 6000
-// sobra. Reversible: subir REASONING_EFFORT_FICHAS o quitar la clave.
-var REASONING_EFFORT_FICHAS = 'minimal';
-var MAX_COMPLETION_TOKENS_RAZONADOR = 6000;
-
+// NOTA (ejec. 930): se probo reasoning_effort:'minimal' + max_completion_tokens
+// 6000 para acelerar/abaratar el razonador. Con la MISMA ficha de 1 pagina que en
+// 921 (97 s OK), la llamada se colgo >180 s y el nodo la reintento 5x (8 min, ~1
+// EUR sin resultado): el endpoint de gpt-5.6-sol NO digiere ese combo. Revertido
+// al config que funciona (sin reasoning_effort, max_completion_tokens 16000). La
+// latencia/costo del razonador se ataca por otra via (config de reintentos del
+// nodo HTTP + decision de modelo), no desde aca.
 function mkPayloadOpenAI(modelo, sys, userText, adjuntos) {
   var content = [{ type: 'text', text: userText }].concat(adjuntos);
   var p = { model: modelo, messages: [{ role: 'system', content: sys }, { role: 'user', content: content }], response_format: { type: 'json_object' } };
   if (esRazonadorOpenAI(modelo)) {
-    p.max_completion_tokens = MAX_COMPLETION_TOKENS_RAZONADOR;
-    p.reasoning_effort = REASONING_EFFORT_FICHAS;
+    p.max_completion_tokens = 16000;
   } else {
     p.max_tokens = 8000;
     p.temperature = 0;

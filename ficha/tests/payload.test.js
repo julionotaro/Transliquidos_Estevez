@@ -258,7 +258,6 @@ test('swap GPT-5: gpt-5.6-sol arma payload de razonador (max_completion_tokens, 
 
   assert.strictEqual(sol.model, 'gpt-5.6-sol');
   assert.ok(sol.max_completion_tokens > 0, 'reasoner usa max_completion_tokens');
-  assert.strictEqual(sol.reasoning_effort, 'minimal', 'razonador transcribiendo: minimo razonamiento (tiempo/costo)');
   assert.strictEqual(sol.max_tokens, undefined, 'reasoner NO manda max_tokens');
   assert.strictEqual(sol.temperature, undefined, 'reasoner NO manda temperature');
   // El esquema de salida y el contenido (prompt+imagen) no cambian con el modelo.
@@ -283,21 +282,20 @@ test('un modelo desconocido falla en vez de armar un payload invalido', () => {
     /proveedor desconocido/);
 });
 
-test('la familia gpt-5 usa max_completion_tokens acotado + reasoning_effort minimal, y no temperature', () => {
+test('la familia gpt-5 usa max_completion_tokens y no temperature', () => {
   const p = armarPayloadFichas('gpt-5', adjuntosImagenesDesdePng([PNG_1PX]), '');
 
-  assert.strictEqual(p.max_completion_tokens, 6000);
-  assert.strictEqual(p.reasoning_effort, 'minimal');
+  assert.strictEqual(p.max_completion_tokens, 16000);
   assert.strictEqual(p.max_tokens, undefined);
   assert.strictEqual(p.temperature, undefined);
 });
 
-test('un modelo NO razonador (gpt-4o) no lleva reasoning_effort ni max_completion_tokens', () => {
-  const p = armarPayloadFichas('gpt-4o', adjuntosImagenesDesdePng([PNG_1PX]), '');
+// Regresion 930: reasoning_effort:'minimal' colgo el endpoint de gpt-5.6-sol
+// (misma ficha que 921 pasaba en 97 s -> >8 min con 5 reintentos). No debe volver
+// a colarse en el payload de un razonador.
+test('el payload de un razonador NO manda reasoning_effort (regresion 930)', () => {
+  const p = armarPayloadFichas('gpt-5.6-sol', adjuntosImagenesDesdePng([PNG_1PX]), '');
   assert.strictEqual(p.reasoning_effort, undefined);
-  assert.strictEqual(p.max_completion_tokens, undefined);
-  assert.strictEqual(p.max_tokens, 8000);
-  assert.strictEqual(p.temperature, 0);
 });
 
 // ============================================================================
