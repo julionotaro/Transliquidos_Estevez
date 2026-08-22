@@ -146,7 +146,7 @@ function reconciliarMatriculaFicha(viajes, docsRaw, marcar) {
   for (var di = 0; di < docsRaw.length; di++) {
     var d = docsRaw[di];
     if (d.duplicado_de) { continue; }
-    var dm = mat(d.matricula_tractor);
+    var dm = matFlota(d.matricula_tractor);
     if (dm) { docMats.push(dm); }
     var rm = mat(d.matricula_remolque);
     if (rm) { remolqueDocs[rm] = true; }
@@ -286,6 +286,24 @@ function reconciliarMatriculaFicha(viajes, docsRaw, marcar) {
 // que sus funciones quedan globales; en node/test se requieren. `typeof X ===
 // 'function'` sobre un identificador no declarado devuelve 'undefined' sin lanzar,
 // asi que el ternario elige la fuente correcta en cada entorno.
+// Padron de flota (ficha/flota.js). Convierte una lectura imperfecta en la
+// matricula CIERTA cruzando contra el conjunto cerrado de ~28 tractoras. Es la
+// pieza que hace que la cascada (documento -> viaje -> cliente -> tarifa) no
+// dependa de leer 7 caracteres perfectos. Ver flota.js para la regla y el dato.
+var FLOTA = (typeof resolverMatricula === 'function')
+  ? { resolverMatricula: resolverMatricula, FLOTA_TRACTORAS: FLOTA_TRACTORAS }
+  : require('./flota.js');
+
+// Resuelve una matricula leida contra el padron. Devuelve la canonica si el
+// padron la identifica sin ambiguedad; si no, la leida normalizada (no bloquea).
+// `notas` (opcional) recoge los motivos para trazabilidad.
+function matFlota(x, notas) {
+  var r = FLOTA.resolverMatricula(x);
+  if (r.motivo && notas) { notas.push(r.motivo); }
+  if (r.matricula) { return r.matricula; }
+  return r.leida || '';
+}
+
 var CRUCE = (typeof clasificarCantidad === 'function')
   ? { clasificarCantidad: clasificarCantidad, regimenIndexacion: regimenIndexacion, repartirKm: repartirKm, esRutaMultiviaje: esRutaMultiviaje, RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE, CLIENTES_CONOCIDOS: CLIENTES_CONOCIDOS }
   : require('./cruce.js');
@@ -335,7 +353,10 @@ function correlacionar(rA, rB, opts) {
       viajes.push({
         hoja_idx: h, orden: num(b.orden) || (i + 1),
         conductor: nz(H.conductor), tractora: nz(H.tractora), remolque: nz(H.remolque), empresa: nz(H.empresa),
-        tractoraN: mat(H.tractora),
+        // La matricula de la ficha pasa por el padron de flota: una lectura con
+        // 1-3 caracteres mal se resuelve a la matricula real (y si queda ambigua
+        // entre dos de la flota, se deja la leida y se marca aparte).
+        tractoraN: matFlota(H.tractora),
         pagina_origen: (typeof H.pagina === 'number' && isFinite(H.pagina)) ? H.pagina : null,
         fecha_carga: nz(b.fecha_carga), fecha_carga_texto: nz(b.fecha_carga_texto), fecha_descarga: nz(b.fecha_descarga),
         nombre_carga: nz(b.nombre_carga), lugar_carga: nz(b.lugar_carga),
@@ -386,6 +407,17 @@ function correlacionar(rA, rB, opts) {
     }
   }
 
+  // ---- Trazabilidad del padron de flota (§ matricula) ----
+  // Si la matricula de la ficha NO se leyo tal cual y el padron la resolvio (o la
+  // dejo ambigua), el viaje va a REVISAR con el motivo. Cambiar una matricula
+  // decide a que viaje se pegan los documentos y, aguas abajo, que se factura:
+  // nunca puede pasar en silencio, por mas confiable que sea el cruce.
+  for (const vf of viajes) {
+    const rf = FLOTA.resolverMatricula(vf.tractora);
+    if (rf.metodo === 'exacta' || rf.metodo === 'ilegible') { continue; }
+    if (rf.motivo) { marcar(vf, rf.motivo); }
+  }
+
   // ---- Reconciliacion de matricula de ficha mal leida (asimetrica + convergencia) ----
   // Corrige la matricula de la ficha ANTES del match cuando los documentos impresos
   // convergen en una matricula a distancia <= MATRICULA_DIST_MAX de una UNICA ficha
@@ -419,7 +451,7 @@ function correlacionar(rA, rB, opts) {
   };
   for (const d of docsRaw) {
     if (d.duplicado_de) { continue; }
-    const dm = mat(d.matricula_tractor);
+    const dm = matFlota(d.matricula_tractor);
     const df = nz(d.fecha);
     const et = 'pag ' + (d.pagina || '?') + ' ' + (nz(d.referencia) || 'sin ref');
     let cands = [];
