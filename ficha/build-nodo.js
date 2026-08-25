@@ -38,7 +38,7 @@ const TARGETS = [
     // resolver-punto.js + tarifa-contractual.js: buscan la tarifa pactada (tabla
     // Tarifas) resolviendo antes origen/destino a punto canonico. Van ANTES de
     // dedup.js; tarifa-contractual reusa resolverPunto/normalizar ya inlineados.
-    logica: ['../catalogo/resolver-punto.js', 'tarifa-contractual.js', 'conductores.js', 'dedup.js'],
+    logica: ['../catalogo/resolver-punto.js', '../catalogo/gesruta.js', 'tarifa-contractual.js', 'conductores.js', 'dedup.js'],
     wrapper: 'nodo-preparar-filas-viajes.wrapper.js',
     salida: 'nodo-preparar-filas-viajes.generated.js',
   },

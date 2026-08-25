@@ -444,6 +444,8 @@ function correlacionar(rA, rB, opts) {
   // escribio el chofer). Señal SECUNDARIA: solo DESEMPATA entre viajes del mismo
   // camion; nunca ata un documento a un camion que no es el suyo.
   const txtN = function (x) { return upp(nz(x) || '').replace(/[^A-Z0-9]/g, ''); };
+  // Comparacion laxa de nombres propios. Se usa para desempatar documentos y para
+  // detectar que un "lugar" es en realidad la razon social del emisor.
   const pareceMismo = function (a, b) {
     const A = txtN(a), B = txtN(b);
     if (!A || !B || A.length < 3 || B.length < 3) { return false; }
@@ -545,10 +547,24 @@ function correlacionar(rA, rB, opts) {
     // facturable; cliente_probable (guess del modelo) queda de respaldo. Si no hay
     // emisor ni cliente_probable, `cliente` queda null -> REVISAR (fail-loud), sin
     // inventar cliente desde el lugar de carga.
-    const TIPOS_EMISOR_CLIENTE = ['orden_transporte', 'orden_carga', 'cmr', 'albaran', 'carta_porte', 'guia'];
+    // ANALISIS (encargo Julio 2026-08-25): el CMR y la carta de porte declaran al
+    // DUEÑO DE LA MERCANCIA ("Remitente", "Mercancia por cuenta de"), que no es
+    // necesariamente quien CONTRATA el transporte. De ahi salio CELLMARK (dueño
+    // sueco de la carga) como cliente de un viaje que habia encargado RNM por
+    // mail. Quien contrata lo dice el documento de ENCARGO: orden de transporte,
+    // orden de carga o el mail con el pedido. Esos tipos van PRIMERO; el CMR y el
+    // albaran quedan como respaldo cuando no hay documento de encargo.
+    const TIPOS_EMISOR_CLIENTE = ['orden_transporte', 'orden_carga', 'mail', 'albaran', 'cmr', 'carta_porte', 'guia'];
     let clienteEmisor = null;
+    let clienteTipoDoc = null;
     for (const t of TIPOS_EMISOR_CLIENTE) {
-      for (const d of v.docs) { if ((d.tipo_doc || '') === t && nz(d.emisor)) { clienteEmisor = upp(nz(d.emisor)); break; } }
+      for (const d of v.docs) {
+        if ((d.tipo_doc || '') !== t) { continue; }
+        // cliente_probable del documento de encargo gana sobre su emisor: en el
+        // mail de pedido el emisor es la persona y cliente_probable la empresa.
+        const cand = nz(d.cliente_probable) || nz(d.emisor);
+        if (cand) { clienteEmisor = upp(cand); clienteTipoDoc = t; break; }
+      }
       if (clienteEmisor) { break; }
     }
     const votos = {};
@@ -625,9 +641,53 @@ function correlacionar(rA, rB, opts) {
     if (v.kg_documento === null && v.docs.some(function (d) { return esOrden(d) && num(d.kg_neto) !== null; })) {
       marcar(v, 'solo la orden trae kg; falta documento de peso (albaran/bascula) — no se factura el kg de la orden');
     }
-    const dOD = pick(['cmr', 'carta_porte', 'albaran', 'orden_transporte', 'guia'], 'destino');
-    v.origen = (dOD && nz(dOD.origen)) ? nz(dOD.origen) : v.lugar_carga;
-    v.destino = (dOD && nz(dOD.destino)) ? nz(dOD.destino) : v.lugar_descarga;
+    // ---- LUGARES: autoridad por TIPO de documento, campo por campo ----------
+    //
+    // ANALISIS (encargo Julio 2026-08-25). Cada tipo de documento es autoridad
+    // sobre cosas distintas, y el codigo tomaba origen y destino del MISMO
+    // documento elegido por `destino`, con el CMR primero. El CMR es justamente
+    // el que peor declara el origen: su recuadro 1 es el REMITENTE (domicilio
+    // social), y de ahi salio "CELLMARK AB, SE-001 18967, SUECIA" como origen de
+    // una carga hecha en Barcelona. Lo mismo con "FORESA IND. QUIMICAS DEL
+    // NOROESTE SA" como origen de una carga en Caldas de Reis.
+    //
+    // Autoridad real, verificada en los documentos de los clientes (los formatos
+    // por cliente son estables):
+    //   ORDEN de transporte / orden de carga / mail: dicen literalmente "Lugar de
+    //     Carga" y "Destino" / "CARGA EN" y "DESCARGA EN". Son la MEJOR fuente.
+    //   Carta de porte: trae "Planta cargadora" (buena) y destinatario.
+    //   CMR / albaran: destino fiable (consignatario); ORIGEN dudoso (remitente).
+    // Si ninguna fuente da un lugar valido, manda la FICHA (el chofer escribe el
+    // pueblo real).
+    //
+    // GUARDA ESTRUCTURAL: un lugar que coincide con la RAZON SOCIAL del propio
+    // emisor del documento no es un lugar, es su domicilio -> se descarta y se
+    // sigue bajando en la precedencia. Esto ataca la causa, no el sintoma: sirve
+    // para cualquier cliente y cualquier documento futuro, sin listas de empresas.
+    const esLugarValido = function (d, valor) {
+      const val = nz(valor);
+      if (!val) { return false; }
+      if (pareceMismo(val, d.emisor)) { return false; }        // domicilio del emisor
+      if (pareceMismo(val, d.cliente_probable)) { return false; }
+      return true;
+    };
+    // Devuelve {valor, doc} para poder dejar en el audit trail de QUE papel salio.
+    const pickLugar = function (tipos, campo) {
+      for (const t of tipos) {
+        for (const d of v.docs) {
+          if ((d.tipo_doc || '') !== t) { continue; }
+          if (esLugarValido(d, d[campo])) { return { valor: nz(d[campo]), doc: d }; }
+        }
+      }
+      for (const d of v.docs) { if (esLugarValido(d, d[campo])) { return { valor: nz(d[campo]), doc: d }; } }
+      return { valor: null, doc: null };
+    };
+    const TIPOS_ORIGEN = ['orden_transporte', 'orden_carga', 'mail', 'carta_porte', 'guia', 'albaran', 'cmr'];
+    const TIPOS_DESTINO = ['orden_transporte', 'orden_carga', 'mail', 'cmr', 'carta_porte', 'albaran', 'guia'];
+    const rOrigen = pickLugar(TIPOS_ORIGEN, 'origen');
+    const rDestino = pickLugar(TIPOS_DESTINO, 'destino');
+    v.origen = rOrigen.valor || v.lugar_carga;
+    v.destino = rDestino.valor || v.lugar_descarga;
     const dMt = pick(['cmr', 'carta_porte', 'albaran', 'guia', 'orden_transporte'], 'material');
     v.material = (dMt && nz(dMt.material)) ? nz(dMt.material) : v.tipo_mercancia;
     const dIm = pick(['orden_carga', 'orden_transporte'], 'importe');
@@ -703,8 +763,8 @@ function correlacionar(rA, rB, opts) {
       cliente: clienteFuente,
       referencia: v.referencia ? fuenteDoc(dRef) : null,
       kg_documento: (v.kg_documento !== null) ? fuenteDoc(dKg) : null,
-      origen: (dOD && nz(dOD.origen)) ? fuenteDoc(dOD) : (v.lugar_carga ? 'ficha:lugar_carga' : null),
-      destino: (dOD && nz(dOD.destino)) ? fuenteDoc(dOD) : (v.lugar_descarga ? 'ficha:lugar_descarga' : null),
+      origen: rOrigen.doc ? fuenteDoc(rOrigen.doc) : (v.lugar_carga ? 'ficha:lugar_carga' : null),
+      destino: rDestino.doc ? fuenteDoc(rDestino.doc) : (v.lugar_descarga ? 'ficha:lugar_descarga' : null),
       material: (dMt && nz(dMt.material)) ? fuenteDoc(dMt) : (v.tipo_mercancia ? 'ficha:tipo_mercancia' : null),
       km: (v.km_cargados !== null) ? ('ficha:odometro:' + v.origen_km) : null,
       cantidad_ficha: (v.cantidad_kg !== null) ? 'ficha:cantidad' : null

@@ -207,6 +207,34 @@ function resolverPunto(literal, fuente, catalogo) {
       return noReconocido(literal, 'ambiguo: contenido en varios canonicos (' + nombres + ')');
     }
   }
+  if (!base) {
+    // 5) LOCALIDAD DENTRO DE UNA DIRECCION (encargo Julio 2026-08-25).
+    // Los documentos no escriben el pueblo suelto: escriben la direccion entera
+    // ("CELLMARK, MUELLE DE LA ENERGIA S/N, 08039 BARCELONA", "Finsa Cella 2,
+    // CELLA-TERUEL 44370 España"). Los pasos 1-4 buscan el literal DENTRO del
+    // canonico (CALDAS -> CALDAS DE REIS); aca se busca al reves: el nombre
+    // canonico como TOKENS COMPLETOS dentro del literal largo. Es lo que permite
+    // traducir origen/destino de un CMR o una orden a punto Gesruta sin listas
+    // por cliente. Gana el canonico MAS LARGO (mas especifico: "VILA NOVA DE
+    // FAMALICAO" sobre "FAMALICAO"); si dos distintos empatan, es ambiguo.
+    var dentro = {}, mejorLen = 0;
+    var espaciado = ' ' + norm + ' ';
+    for (i = 0; i < idx.length; i++) {
+      var cand = idx[i].norm;
+      if (!cand || cand.length < 4) { continue; }
+      if (espaciado.indexOf(' ' + cand + ' ') < 0) { continue; }
+      if (cand.length > mejorLen) { mejorLen = cand.length; dentro = {}; }
+      if (cand.length === mejorLen) { dentro[idx[i].id_punto] = idx[i]; }
+    }
+    var idsDentro = Object.keys(dentro);
+    if (idsDentro.length === 1) {
+      base = resultadoResuelto(dentro[idsDentro[0]], 'media', 'localidad_en_direccion', literal,
+        'nombre del punto hallado dentro de la direccion del documento — verificar');
+    } else if (idsDentro.length > 1) {
+      var nomsD = idsDentro.map(function (k) { return dentro[k].nombre_canonico; }).join(', ');
+      return noReconocido(literal, 'la direccion menciona varios puntos (' + nomsD + ')');
+    }
+  }
   if (!base) { return noReconocido(literal); }
 
   // Precedencia por fuente (§4): la ficha es sospechosa -> baja un escalon.
