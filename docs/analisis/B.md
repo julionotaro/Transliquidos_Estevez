@@ -1,0 +1,39 @@
+# JUEGO B — ficha 171807 (tractora 7394LZP, R-910/0110-BBG) | docs 171843 (7 pag)
+## !! El CHOFER de la ficha lo lei "Luis S. Cazouso"; el documento (p7) dice
+##    JOSE ANTONIO VAZQUEZ HERMO -> el documento CORRIGE la lectura de la ficha.
+
+## V1 10/08 Aveiro -> Cella
+- p1 CMR/GUIA DE REMESSA **BRESFOR** ZIN1 D83X/6023012441. Doc int: 5050139934 / **2017609**.
+  Rem.1 BRESFOR IND. DO FORMOL, GAFANHA DA NAZARE. Rem.2 Destinatario FINANCIERA MADERERA S.A.
+  Rem.3 Place of delivery: **Finsa Cella 2, BARRIO DE LA ESTACION, CELLA-TERUEL 44370**.
+  Rem.4 Lugar carga: GAFANHA DA NAZARE 10.08.2026. FORESA RES 1350. 22.500 KG.
+  Transportadora TRANSPORTES LIQUIDOS ESTEVEZ. Tractor 7394LZP / Plataforma R1832BBC.
+  Pedido 0400883544-000010. Coste referencia gasoleo 2,049000 EUR.
+- p2 FINSA "MOVIMIENTO MERCANCIA" ticket 0005111666. Fabrica F001 FINANCIERA MADERERA.
+  Transportista 42434 TLE. Cabeza 7394LZP / Plataforma R0110BBG. Neto **22.460** (destino).
+  Articulo 13009225 COLAS AGLOMERADO. Entrada 11.08.2026.
+=> CLIENTE BRESFOR. REF 2017609. ORI GAFANHA/AVEIRO. DES CELLA(TERUEL). MAT RES 1350 -> COLA(1).
+   KG 22.500 (ORIGEN manda; destino 22.460).
+
+## V2 12-13/08 Barcelona -> Monte Redondo/Leiria
+- p3 ORDEN DE TRANSPORTE **QUIMIDROGA 706469**. Expedidor QUIMIDROGA (Tuset 26 Barcelona).
+  Transportista TRANS LIQUIDOS ESTEVEZ. **Lugar de Carga: Relisa, Muelle 32 Inflamables,
+  Barcelona 08039**. Fecha carga 13/08. **Destino: RACENTRO - FABRICA DE RACOES DO AROEIRA,
+  LEIRIA MONTE REDONDO (PORTUGAL) 2425-601**. Entrega 17/08. Ref. cliente: CONTRATO 100 TONS.
+  103600 LISINA LIQUIDA 50% BULK. Peso neto 24.000 KG. **Referencia en factura: 706469**.
+- p4 ALBARAN RELISA nº **740774** 12-08-2026. Propietario QUIMIDROGA. Transportista TLE.
+  Destino RACENTRO AROEIRA LEIRIA. TRACTORA 7394LZP REMOLQUE R0110BBG. 503 LISINA LIQUIDA 50%.
+  TARA 16620 BRUTO 39720 **NETO 23100**. Pedido Cliente 83314047.
+- p5 CMR manuscrito nº 301262. Rem.1 RELISA Barcelona. Rem.2 RACENTRO. Rec.3 carga PUERTO DE
+  INFLAMABLES BARCELONA. Rec.4 entrega RACENTRO. Peso 23100.
+=> CLIENTE QUIMIDROGA. REF 706469 ("Referencia en factura"). ORI BARCELONA. DES LEIRIA.
+   MAT LISINA LIQUIDA 50% -> LISINA(62). KG 23.100 (albaran de carga Relisa).
+
+## V3 17/08 Aveiro -> Ence Pontevedra
+- p6 MAIL RNM 14/08 "AVEIRO - PONTEVEDRA". Carga 17/08 tanques de aveiro. Descarga 18/08
+  ENCE PONTEVEDRA.
+- p7 GUIA REMESSA **RNM nº 0141165836** 17.08.2026. Cliente(de RNM): ENCE ENERGIA & CELULOSA.
+  SOSA CAUSTICA LIQ 50% GRANEL. **23.140 KG**. Local carga: 1052 - LOCAL EXP. AVEIRO.
+  Transporte Z939 - T. LIQ. ESTEVEZ. Matricula 7394LZP. **Motorista JOSE ANTONIO VAZQUEZ HERMO**.
+  Reboque R-0110-BBG. Morada entrega: ENCE, MARISMA DE LOURIZAN, 36153 PONTEVEDRA.
+=> CLIENTE RNM. REF 0141165836. ORI AVEIRO. DES PONTEVEDRA. MAT SOSA(51). KG 23.140.

@@ -49,6 +49,10 @@ var ALIAS_MATERIAL = {
   // La ficha lo abrevia "A. Acetico".
   'A ACETICO': 'ACETIC', 'ACETICO': 'ACETIC',
   'SOSA CAUSTICA': '51', 'HIDROXIDO DE SODIO': '65', 'HIDROXIDO SODICO': '65',
+  // Los documentos portugueses e ingleses la nombran distinto (guias de Bondalti,
+  // RNM y los CMR internacionales): todas son SOSA en Gesruta.
+  'SODA CAUSTICA': '51', 'CAUSTIC SODA': '51', 'CAUSTIC SODA LIQUOR': '51',
+  'LIQUID CAUSTIC SODA': '51', 'SODA': '51',
   'ACIDO SULFURICO': '20', 'ACIDO NITRICO': '89',
   'METANOL': '5', 'ALCOHOL METILICO': '5',
   'FORMOL': '3', 'FORMALDEHIDO': '3',

@@ -39,7 +39,21 @@ var FRASES_RUIDO = [' S L U ', ' S A U ', ' S C A ', ' S L L ', ' S A ', ' S L '
                     ' PUERTO DE ', ' POLIGONO INDUSTRIAL ', ' POL INDUSTRIAL ', ' POL IND '];
 // Tokens de ruido sueltos.
 var TOKENS_RUIDO = [' SA ', ' SL ', ' SLU ', ' SAU ', ' PLANTA ', ' FABRICA ', ' PTO ',
-                    ' POLIGONO ', ' POL ', ' IND ', ' PUERTO '];
+                    ' POLIGONO ', ' POL ', ' IND ', ' PUERTO ',
+                    // Marcador de PAIS en el catalogo Gesruta: "LEIRIA (PT)",
+                    // "ALCANENA(PT)". El documento escribe solo la localidad, asi
+                    // que el marcador impide el match. No aporta identidad: el
+                    // codigo del punto ya distingue.
+                    ' PT ', ' PORTUGAL ', ' ESPANA ', ' SPAIN '];
+
+// Abreviaturas toponimicas portuguesas/gallegas: la ficha y los documentos
+// escriben "V.N. Famalicao" o "Vila Nova de Famalicao" y Gesruta "VILANOVA
+// FAMALICAO". Es convencion de escritura, no ambiguedad: se unifican antes de
+// comparar. Se aplican como frase, tras limpiar la puntuacion.
+var ABREVIATURAS = [
+  [' V N ', ' VILANOVA '], [' VILA NOVA ', ' VILANOVA '], [' VN ', ' VILANOVA '],
+  [' STO ', ' SANTO '], [' STA ', ' SANTA '], [' S ', ' SAN ']
+];
 
 /**
  * Normaliza un literal: mayusculas, sin acentos, sin puntuacion, espacios
@@ -53,6 +67,7 @@ function normalizar(literal) {
   var i;
   for (i = 0; i < FRASES_RUIDO.length; i++) { while (s.indexOf(FRASES_RUIDO[i]) >= 0) { s = s.replace(FRASES_RUIDO[i], ' '); } }
   for (i = 0; i < TOKENS_RUIDO.length; i++) { while (s.indexOf(TOKENS_RUIDO[i]) >= 0) { s = s.replace(TOKENS_RUIDO[i], ' '); } }
+  for (i = 0; i < ABREVIATURAS.length; i++) { while (s.indexOf(ABREVIATURAS[i][0]) >= 0) { s = s.replace(ABREVIATURAS[i][0], ABREVIATURAS[i][1]); } }
   return s.replace(/\s+/g, ' ').trim();
 }
 
@@ -217,14 +232,22 @@ function resolverPunto(literal, fuente, catalogo) {
     // traducir origen/destino de un CMR o una orden a punto Gesruta sin listas
     // por cliente. Gana el canonico MAS LARGO (mas especifico: "VILA NOVA DE
     // FAMALICAO" sobre "FAMALICAO"); si dos distintos empatan, es ambiguo.
-    var dentro = {}, mejorLen = 0;
+    // Gana el que aparece ANTES en el literal, no el mas largo: las direcciones
+    // van de lo ESPECIFICO a lo GENERAL ("Navia Asturias", "Monte Redondo -
+    // Leiria", "Teixeiro (Curtis)"). Con "el mas largo" se elegia ASTURIAS (la
+    // provincia) sobre NAVIA (el pueblo), que es el punto real de descarga.
+    // A igual posicion, desempata el mas largo (mas especifico).
+    var dentro = {}, mejorPos = -1, mejorLen = 0;
     var espaciado = ' ' + norm + ' ';
     for (i = 0; i < idx.length; i++) {
       var cand = idx[i].norm;
       if (!cand || cand.length < 4) { continue; }
-      if (espaciado.indexOf(' ' + cand + ' ') < 0) { continue; }
-      if (cand.length > mejorLen) { mejorLen = cand.length; dentro = {}; }
-      if (cand.length === mejorLen) { dentro[idx[i].id_punto] = idx[i]; }
+      var pos = espaciado.indexOf(' ' + cand + ' ');
+      if (pos < 0) { continue; }
+      if (mejorPos < 0 || pos < mejorPos || (pos === mejorPos && cand.length > mejorLen)) {
+        mejorPos = pos; mejorLen = cand.length; dentro = {};
+      }
+      if (pos === mejorPos && cand.length === mejorLen) { dentro[idx[i].id_punto] = idx[i]; }
     }
     var idsDentro = Object.keys(dentro);
     if (idsDentro.length === 1) {
