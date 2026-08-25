@@ -107,9 +107,12 @@ test('chofer desconocido o vacio -> null + motivo', () => {
   assert.strictEqual(resolverChofer(null).codigo, null);
 });
 
-test('los catalogos tienen el contenido del export real', () => {
-  assert.strictEqual(Object.keys(MATERIALES).length, 42);
+test('los catalogos son los oficiales de Gesruta', () => {
+  // 558 materiales del listado oficial (Materiales.csv), 25 choferes del export.
+  assert.strictEqual(Object.keys(MATERIALES).length, 558);
   assert.strictEqual(Object.keys(CHOFERES).length, 25);
   assert.strictEqual(MATERIALES['1'], 'COLA');
+  assert.strictEqual(MATERIALES['51'], 'SOSA');
+  assert.strictEqual(MATERIALES['BIOETA'], 'BIOETANOL');
   assert.strictEqual(CHOFERES['30'], 'JUAN MANUEL ABAL');
 });
