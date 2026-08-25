@@ -13,12 +13,13 @@
 // historico de viajes YA CONTIENE la respuesta. Se construye un tarifario ANEXO
 // (no oficial) a partir de los viajes del año, indexado por la ruta REAL.
 //
-// VERIFICACION sobre el export real (765 lineas, viajes del año):
-//   - 118 rutas distintas (cliente + origen + destino)
-//   - 78 de 82 rutas en EUR/TN tienen UN SOLO precio -> 95% consistente
+// VERIFICACION sobre el export real (8.755 lineas, todo el año):
 //   - RNM AVEIR->C = 29,09 y RNM AVEIR->TEIXE = 29,09  <-- el caso exacto
-//   Las 4 rutas con varios precios se separan por MATERIAL (misma ruta, producto
-//   distinto: COLA 13,85 vs FINCAT 20,16). Por eso el material entra en la clave.
+//   - Una misma ruta cambia de precio segun MATERIAL (Foresa 1->OR: COLA 13,85
+//     vs FINCAT 20,16). Por eso el material entra en la clave.
+//   - Y las tarifas SE ACTUALIZAN con el tiempo (Quimidroga MIR->GUIM:
+//     29,80 -> 59,85 -> 61,65). Por eso NO se exige precio unico: manda el MAS
+//     RECIENTE, y si hubo cambio se avisa para que el humano lo verifique.
 //
 // PRECEDENCIA (no se negocia): el tarifario OFICIAL manda. El historico es el
 // respaldo para lo que el oficial no cubre, y SIEMPRE marca REVISAR: es una
@@ -103,42 +104,38 @@ function buscarTarifaHistorica(viaje, indice) {
   var base = mismas.length ? mismas : filas;
   var porMaterial = mismas.length > 0;
 
-  // Separar por unidad: EUR/TN y EUR por viaje (UN) no son comparables.
-  var porUnidad = {};
-  for (var i = 0; i < base.length; i++) {
-    var u = base[i].unidad || 'TN';
-    if (!porUnidad[u]) { porUnidad[u] = []; }
-    porUnidad[u].push(base[i]);
-  }
-  var unidades = Object.keys(porUnidad);
-  if (unidades.length > 1) {
-    return {
-      precio: null, unidad: null, n: base.length, revisar: true, metodo: 'ambiguo_unidad',
-      motivo: 'el historico de ' + ori + ' -> ' + des + ' mezcla unidades (' + unidades.join(', ') + '): revisar si el viaje se cobra por tonelada o por viaje',
-      candidatas: base
-    };
-  }
-  var lista = porUnidad[unidades[0]];
-  var precios = {};
-  for (var j = 0; j < lista.length; j++) { precios[lista[j].precio] = (precios[lista[j].precio] || 0) + 1; }
-  var distintos = Object.keys(precios);
+  // NO se rechaza cuando la ruta mezcla EUR/TN y EUR por viaje: eso no es
+  // ambiguedad, es un CAMBIO DE MODALIDAD en el tiempo. Dato real: RNM AVILE->
+  // FAMAL se cobraba 875 EUR/viaje (fechas de enero-marzo) y hoy 39,13 EUR/tn
+  // (agosto). La linea MAS RECIENTE dice como se cobra hoy, y su unidad viene
+  // con ella. Rechazar por unidades mezcladas descartaba justo las rutas vivas.
+  var lista = base;
 
-  if (distintos.length === 1) {
-    return {
-      precio: lista[0].precio, unidad: lista[0].unidad, n: lista.length, revisar: true,
-      metodo: porMaterial ? 'historico_material' : 'historico_ruta',
-      motivo: 'tarifa tomada del HISTORICO de viajes (' + lista.length + ' viaje(s) de ' + ori + ' -> ' + des +
-        ' a ' + lista[0].precio + ' EUR/' + lista[0].unidad + ')' + (porMaterial ? ' con el mismo material' : '') +
-        ' — no es tarifa pactada, verificar'
-    };
-  }
 
-  // Varios precios para la misma ruta+material+unidad: no se elige.
-  var lst = distintos.map(function (p) { return p + ' (x' + precios[p] + ')'; }).join(', ');
+  // La tarifa vigente es la del viaje MAS RECIENTE de esa ruta: los precios se
+  // renegocian (dato real: Quimidroga MIR->GUIM paso de 29,80 a 59,85 y a 61,65).
+  // Exigir un precio unico habria descartado justamente las rutas mas usadas.
+  var comparable = function (f) {
+    // El export trae la fecha como serial de Excel o como texto; ambos ordenan.
+    var n = Number(f); return isFinite(n) ? n : 0;
+  };
+  var ordenadas = lista.slice().sort(function (a, b) { return comparable(b.fecha) - comparable(a.fecha); });
+  var vigente = ordenadas[0];
+  var mismos = ordenadas.filter(function (f) { return f.precio === vigente.precio; }).length;
+  var huboCambio = mismos < ordenadas.length;
+  var unidades = {}; ordenadas.forEach(function (f) { unidades[f.unidad] = true; });
+  var cambioUnidad = Object.keys(unidades).length > 1;
+
   return {
-    precio: null, unidad: null, n: lista.length, revisar: true, metodo: 'ambiguo_precio',
-    motivo: 'el historico de ' + ori + ' -> ' + des + ' tiene precios distintos (' + lst + '): revisar cual aplica',
-    candidatas: lista
+    precio: vigente.precio, unidad: vigente.unidad, n: ordenadas.length, revisar: true,
+    metodo: porMaterial ? 'historico_material' : 'historico_ruta',
+    cambioReciente: huboCambio, cambioUnidad: cambioUnidad,
+    motivo: 'tarifa tomada del HISTORICO: ultimo viaje de ' + ori + ' -> ' + des + ' a ' +
+      vigente.precio + ' EUR/' + vigente.unidad + ' (' + mismos + ' de ' + ordenadas.length +
+      ' viajes a ese precio' + (porMaterial ? ', mismo material' : '') + ')' +
+      (huboCambio ? ' — OJO: el precio de esta ruta CAMBIO durante el año, verificar cual rige' : '') +
+      (cambioUnidad ? '; esta ruta paso de cobrarse por viaje a por tonelada (o al reves): se toma la modalidad del ultimo viaje' : '') +
+      ' — no es tarifa pactada, verificar'
   };
 }
 
