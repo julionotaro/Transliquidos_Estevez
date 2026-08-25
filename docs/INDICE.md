@@ -1,7 +1,7 @@
 # ÍNDICE — Documentación TLE
 
 > **Leer esto primero, siempre.** No hace falta leer todo lo demás: hace falta saber qué existe y dónde está cada cosa.
-> Última actualización: 14/08/2026.
+> Última actualización: 25/08/2026.
 
 ---
 
@@ -17,6 +17,35 @@ Cada chat nuevo lee **este archivo** y después solo los documentos que su tarea
 4. Lo demás es histórico: sirve para entender por qué se decidió algo, no para decidir hoy
 
 Si encontrás una contradicción que no está listada abajo, **no la resuelvas por tu cuenta**: preguntá a Julio y después actualizá este índice.
+
+---
+
+## ⭐ EMPEZAR POR AQUÍ — `EXTRACCION-Y-CARGA-GESRUTA.md` **VIGENTE**
+
+**Documento maestro de la extracción.** Si tu tarea toca leer fichas o documentos,
+resolver cliente / origen / destino / material / chófer / matrícula, calcular
+tarifa o régimen de indexación, o escribir prompts: **leelo antes que nada**.
+
+Sale de analizar ~70 páginas de documentación real (9 juegos de ficha +
+documentos) y las 8.755 líneas del histórico de Gesruta. Contiene:
+
+- De dónde sale **cada** campo y qué documento manda sobre él (jerarquía por campo)
+- Los **formatos por cliente** (FORESA, BRESFOR, QUIMIDROGA, RNM, BALTRANSA,
+  TRANSTAMBRE, Q. DEL JARAMA) — dónde está la referencia en cada uno
+- Los **conjuntos cerrados** y por qué nada se traduce con criterio libre:
+  28 tractoras, 25 chóferes, 558 materiales, ~305 puntos
+- El **tarifario histórico**: por qué el oficial no alcanza y cómo se resuelve
+- **Régimen de indexación por país del cliente** (no por destino)
+- La tabla de los **12 bugs reales** con su causa raíz — para no repetirlos
+- Qué **NO** debe hacer el sistema nunca
+
+Notas del análisis documento por documento: `analisis/A..H.md`.
+
+**Precedencia:** este documento manda sobre lo que digan los archivos históricos
+en materia de extracción. Si contradice a `modelo-dominio-lectura.md`, gana
+`modelo-dominio-lectura.md` en el modelo de dominio y éste en las reglas de
+extracción concretas.
+
 
 ---
 
