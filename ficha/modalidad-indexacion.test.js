@@ -21,6 +21,17 @@ function idxLinea(cliente, viaje, albaran, base, pct) {
   // Forma normal de Gesruta: cantidad = base en EUR, precio = pct decimal.
   return { cliente, viaje, albaran, codcon: 'G', cantid: base, precio: pct, import: base * pct };
 }
+// Genera n albaranes de un cliente, de los cuales `conLinea` llevan su propia
+// linea de indexacion. Es la forma en que se mide la modalidad sobre el dato
+// real: por COBERTURA, no por comparar la base contra el porte.
+function lote(cliente, n, conLinea) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    out.push(porte(cliente, String(i), '01', 1000));
+    if (i < conLinea) { out.push(idxLinea(cliente, String(i), '01', 1000, 0.15)); }
+  }
+  return out;
+}
 
 // ============================================================================
 // MODALIDAD DEDUCIDA DEL HISTORICO
@@ -36,15 +47,27 @@ test('POR LINEA: la base de la indexacion es el importe del propio porte', () =>
   assert.strictEqual(h['TRANSTAMBRE'].conLinea, 1);
 });
 
-test('POR PERIODO: la base es mucho mayor que el porte del albaran', () => {
-  // Caso real (albaran 50448): porte 482,01 y G1Q con base 11.944,32. La base no
-  // puede ser la de ese viaje: es el acumulado de la quincena.
-  const h = modalidadPorHistorico([
-    porte('FORESA', '1', '04', 482.01),
-    idxLinea('FORESA', '1', '04', 11944.32, 0.1717),
-  ]);
-  assert.strictEqual(h['FORESA'].modalidad, 'agregada');
-  assert.strictEqual(h['FORESA'].conAgregada, 1);
+test('POR PERIODO: casi ningun albaran lleva linea propia de indexacion', () => {
+  // Cifras reales del CSV, ruta CALDAS -> OREMBER (COLA): 586 albaranes y solo
+  // 12 con linea propia (2,0%). La indexacion de esos viajes no esta en el
+  // albaran: se acumula y se factura aparte.
+  const h = modalidadPorHistorico(lote('FORESA-OREMBER', 586, 12));
+  assert.strictEqual(h['FORESA-OREMBER'].modalidad, 'agregada');
+  assert.strictEqual(h['FORESA-OREMBER'].cobertura, 0.02);
+});
+
+test('POR LINEA: la mayoria de los albaranes lleva linea propia', () => {
+  // Cifras reales, CALDAS -> TERUEL (COLA): 42 albaranes, 35 con linea (83,3%).
+  const h = modalidadPorHistorico(lote('FORESA-TERUEL', 42, 35));
+  assert.strictEqual(h['FORESA-TERUEL'].modalidad, 'linea');
+});
+
+test('el umbral cae en un HUECO del dato, no es una eleccion nuestra', () => {
+  // Coberturas observadas por ruta: 2,0 / 3,0 / 6,9 % (agregadas) y luego
+  // 46,2 / 56,2 / 60,0 / 69,6 / 78,0 / 83,3 % (por viaje). Entre 7 y 46 % no
+  // hay NINGUNA ruta. Los umbrales 20/40 caen dentro de ese hueco vacio.
+  assert.strictEqual(modalidadPorHistorico(lote('A', 116, 8))['A'].modalidad, 'agregada');  // 6,9%
+  assert.strictEqual(modalidadPorHistorico(lote('B', 26, 12))['B'].modalidad, 'linea');     // 46,2%
 });
 
 test('INCLUIDA: todas las lineas de indexacion a cero (Baltransa)', () => {
@@ -56,25 +79,29 @@ test('INCLUIDA: todas las lineas de indexacion a cero (Baltransa)', () => {
 });
 
 test('SIN INDEXACION: el cliente tiene portes y NINGUNA linea de indexacion', () => {
-  // Este es el defecto que se corrige: antes el default `linea` le inventaba a
-  // Tank Solutions una indexacion que su factura no lleva.
-  const h = modalidadPorHistorico([
-    porte('TANK SOLUTIONS', '1', '01', 900),
-    porte('TANK SOLUTIONS', '2', '01', 750),
-  ]);
-  assert.strictEqual(h['TANK SOLUTIONS'].modalidad, 'sin_indexacion');
-  assert.strictEqual(h['TANK SOLUTIONS'].sinIndexacion, 2);
+  // Caso real: TRANSPORTES SANTOS, 11 albaranes y cero lineas de indexacion.
+  // Antes el default `linea` le inventaba un cobro que su factura no lleva.
+  const h = modalidadPorHistorico(lote('TRANSPORTES SANTOS', 11, 0));
+  assert.strictEqual(h['TRANSPORTES SANTOS'].modalidad, 'sin_indexacion');
+  assert.strictEqual(h['TRANSPORTES SANTOS'].sinIndexacion, 11);
+});
+
+test('EVIDENCIA MINIMA: "sin indexacion" con 2 albaranes NO es evidencia', () => {
+  // TANK SOLUTIONS tiene 2 albaranes en la muestra y ninguna indexacion. Eso no
+  // prueba que no se indexe: puede ser que en esos dos no hubo. Afirmarlo deja
+  // de facturar un cobro real, que es el error simetrico al de inventarlo.
+  const h = modalidadPorHistorico(lote('TANK SOLUTIONS', 2, 0));
+  assert.strictEqual(h['TANK SOLUTIONS'].modalidad, 'mixta');
+  assert.strictEqual(h['TANK SOLUTIONS'].evidenciaFloja, true);
+  assert.match(h['TANK SOLUTIONS'].evidencia, /MUESTRA INSUFICIENTE/);
 });
 
 test('MIXTA: un cliente con las dos formas no se resuelve por cliente', () => {
   // Foresa real: parte de sus servicios por linea y parte agregados. Elegir una
   // de las dos "por mayoria" seria elegir mal la mitad de las veces.
-  const h = modalidadPorHistorico([
-    porte('FORESA', '1', '01', 344.31),
-    idxLinea('FORESA', '1', '01', 344.31, 0.1584),
-    porte('FORESA', '2', '04', 482.01),
-    idxLinea('FORESA', '2', '04', 11944.32, 0.1717),
-  ]);
+  // Cifras reales de FORESA en conjunto: 1.266 albaranes, 239 con linea (18,9%).
+  // Ese 18,9% es el promedio de mezclar rutas al 2% con rutas al 83%.
+  const h = modalidadPorHistorico(lote('FORESA', 100, 30));
   assert.strictEqual(h['FORESA'].modalidad, 'mixta');
 
   const r = modalidadDeViaje({ codigoCliente: 'FORESA', cliente: 'FORESA' }, h);
@@ -87,10 +114,7 @@ test('MIXTA: un cliente con las dos formas no se resuelve por cliente', () => {
 // LA CASCADA: historico -> regla confirmada -> nada (nunca un default)
 // ============================================================================
 test('el historico manda sobre la regla confirmada', () => {
-  const h = modalidadPorHistorico([
-    porte('TRANSTAMBRE', '1', '01', 100),
-    porte('TRANSTAMBRE', '2', '01', 100),
-  ]);
+  const h = modalidadPorHistorico(lote('TRANSTAMBRE', 12, 0));
   const r = modalidadDeViaje({ codigoCliente: 'TRANSTAMBRE', cliente: 'TRANSTAMBRE' }, h);
   assert.strictEqual(r.modalidad, 'sin_indexacion');
   assert.strictEqual(r.fuente, 'historico');
@@ -117,10 +141,7 @@ test('SALVAGUARDA: sin evidencia NUNCA se asume "linea"', () => {
 });
 
 test('la modalidad agregada siempre marca REVISAR: no se cierra por viaje', () => {
-  const h = modalidadPorHistorico([
-    porte('QUIMIDROGA', '1', '01', 400),
-    idxLinea('QUIMIDROGA', '1', '01', 9000, 0.15),
-  ]);
+  const h = modalidadPorHistorico(lote('QUIMIDROGA', 50, 2));
   const r = modalidadDeViaje({ codigoCliente: 'QUIMIDROGA', cliente: 'QUIMIDROGA' }, h);
   assert.strictEqual(r.modalidad, 'agregada');
   assert.strictEqual(r.revisar, true);
@@ -233,13 +254,26 @@ test('sin modalidad inyectada: cruce.js mantiene sus reglas de ruta (compat)', (
   );
 });
 
-test('con historico: la modalidad deducida GANA sobre la regla de ruta', () => {
-  // La ruta Villagarcia->Caldas diria agregada_mensual. Si el historico dice que
-  // a ese cliente se le factura por linea, manda el historico: la ruta era una
-  // aproximacion, el historico es lo que paso de verdad.
-  const mod = { modalidad: 'linea', fuente: 'historico', revisar: false, motivo: '' };
-  const r = regimenIndexacion('FORESA', 'VILLAGARCIA', 'CALDAS DE REIS', CLIENTES_CONOCIDOS, mod);
-  assert.strictEqual(r.regimen, 'linea');
+test('con historico: para un cliente NO-Foresa, la modalidad deducida manda', () => {
+  // Foresa es la excepcion (se resuelve por ruta, ver test aparte). Para el
+  // resto, el historico dice como se le facturo de verdad y eso manda sobre
+  // cualquier default de ruta.
+  const mod = { modalidad: 'sin_indexacion', fuente: 'historico', revisar: false, motivo: '' };
+  const r = regimenIndexacion('QUIMIDROGA', 'A', 'B', CLIENTES_CONOCIDOS, mod);
+  assert.strictEqual(r.regimen, 'sin_indexacion');
+});
+
+test('FORESA es la excepcion: la RUTA manda aunque el historico diga otra cosa', () => {
+  // Villagarcia->Caldas es el metanol agregado mensual. El historico de Foresa
+  // en conjunto da 'mixta' (mezcla rutas al 2% con rutas al 83%), asi que una
+  // modalidad por cliente seria una media sin sentido: la del SERVICIO manda.
+  const mod = { modalidad: null, fuente: 'historico', revisar: true, motivo: 'mixta' };
+  const metanol = regimenIndexacion('FORESA', 'VILLAGARCIA', 'CALDAS DE REIS', CLIENTES_CONOCIDOS, mod);
+  assert.strictEqual(metanol.regimen, 'agregada_mensual');
+  const orember = regimenIndexacion('FORESA', 'CALDAS DE REIS', 'OREMBER', CLIENTES_CONOCIDOS, mod);
+  assert.strictEqual(orember.regimen, 'agregada_quincenal');
+  const otros = regimenIndexacion('FORESA', 'CALDAS DE REIS', 'TERUEL', CLIENTES_CONOCIDOS, mod);
+  assert.strictEqual(otros.regimen, 'linea');
 });
 
 test('SALVAGUARDA: "sin_indexacion" llega hasta el regimen, no se pierde', () => {
@@ -255,9 +289,11 @@ test('SALVAGUARDA: "sin_indexacion" llega hasta el regimen, no se pierde', () =>
   assert.strictEqual(fila.motivo, null, 'no debe ir a REVISAR por esto');
 });
 
-test('modalidad ambigua: no cae al default, va a REVISAR con motivo', () => {
+test('modalidad ambigua en cliente NO-Foresa: no cae al default, va a REVISAR', () => {
+  // Para un cliente que no es Foresa, si el historico no pudo decidir, el viaje
+  // va a REVISAR en vez de caer a 'linea' por defecto.
   const mod = { modalidad: null, fuente: 'historico', revisar: true, motivo: 'factura de las DOS formas' };
-  const r = regimenIndexacion('FORESA', 'A', 'B', CLIENTES_CONOCIDOS, mod);
+  const r = regimenIndexacion('HELM', 'A', 'B', CLIENTES_CONOCIDOS, mod);
   assert.strictEqual(r.regimen, null);
   assert.match(r.motivo, /DOS formas/);
 });

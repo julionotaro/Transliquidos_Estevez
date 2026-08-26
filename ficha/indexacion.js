@@ -83,19 +83,44 @@ function grupoIndexacion(clienteViaje) {
   return { grupo: 'OTROS', motivo: 'grupo_por_defecto: cliente "' + (clienteViaje || '(no leido)') + '" sin regla explicita (D-5)' };
 }
 
-/** Tramo vigente [desde,hasta] (inclusive, string ISO) para un grupo+fecha. null si no hay tramo. */
+/**
+ * Tramo vigente [desde,hasta] (inclusive, texto ISO) para un grupo+fecha.
+ *
+ * SOLAPES: los tramos del Suplemento Gasoleo comparten el dia de corte
+ * (2026-06-01->06-07 y 2026-06-07->06-15), asi que una fecha puede caer en dos.
+ * Quedarse con "el primero que matchea" era arbitrario y en HELM cambia el
+ * numero: el 2026-06-07 cae en un tramo al 0,1256 y en otro al 0,1141.
+ *   - si todos los tramos que matchean tienen el MISMO pct -> no hay ambiguedad
+ *   - si difieren -> NO se elige: se devuelve ambiguo para que el viaje vaya a
+ *     REVISAR con los dos candidatos a la vista. Elegir uno es elegir cuanto se
+ *     factura.
+ *
+ * @returns {{pct, fila, ambiguo:boolean, candidatas:Array}|null}
+ */
 function buscarPct(grupo, fecha, indexacionRows) {
   var filas = Array.isArray(indexacionRows) ? indexacionRows : [];
   if (!fecha) { return null; }
+  var hits = [];
   for (var i = 0; i < filas.length; i++) {
     var f = filas[i];
     if (CRUCE_IDX.norm(f.cliente) !== grupo) { continue; }
     if ((f.desde || '') <= fecha && fecha <= (f.hasta || '')) {
       var pct = parseFloat(f.pct);
-      if (isFinite(pct)) { return { pct: pct, fila: f }; }
+      if (isFinite(pct)) { hits.push({ pct: pct, fila: f }); }
     }
   }
-  return null;
+  if (!hits.length) { return null; }
+  var distintos = {};
+  for (var j = 0; j < hits.length; j++) { distintos[hits[j].pct] = true; }
+  var claves = Object.keys(distintos);
+  if (claves.length === 1) {
+    return { pct: hits[0].pct, fila: hits[0].fila, ambiguo: false, candidatas: hits };
+  }
+  return {
+    pct: null, fila: null, ambiguo: true, candidatas: hits,
+    motivo: 'la fecha ' + fecha + ' cae en ' + hits.length + ' tramos de ' + grupo +
+      ' con porcentajes distintos (' + claves.join(' / ') + '): el suplemento tiene los bordes solapados, hay que decidir cual rige'
+  };
 }
 
 /**
@@ -131,6 +156,7 @@ function indexacionDeFila(viaje, importeLinea, indexacionRows) {
     // llegue la factura. Antes esto quedaba ciego hasta la facturacion.
     var gA = grupoIndexacion(v.cliente);
     var hitA = buscarPct(gA.grupo, v.fecha, indexacionRows);
+    if (hitA && hitA.ambiguo) { hitA = null; }
     var baseA = (typeof importeLinea === 'number' && isFinite(importeLinea)) ? round2(importeLinea) : null;
     return {
       modo: 'regimen_pendiente', pct: hitA ? hitA.pct : null, importe: null,
@@ -146,6 +172,9 @@ function indexacionDeFila(viaje, importeLinea, indexacionRows) {
 
   var g = grupoIndexacion(v.cliente);
   var hit = buscarPct(g.grupo, v.fecha, indexacionRows);
+  if (hit && hit.ambiguo) {
+    return { modo: 'sin_regimen', pct: null, importe: null, grupo: g.grupo, etiqueta: '-', motivo: hit.motivo };
+  }
   if (!hit) {
     return {
       modo: 'sin_regimen', pct: null, importe: null, grupo: g.grupo, etiqueta: '-',

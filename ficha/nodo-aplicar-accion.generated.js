@@ -153,20 +153,43 @@ function regimenIndexacion(cliente, origen, destino, clientes, modalidad) {
   //     real lo dan los tramos de pct, no el calendario (ver modalidad-indexacion).
   //   modalidad null (cliente que factura de las dos formas, o sin evidencia) NO
   //     cae al default: devuelve null + motivo para que el viaje vaya a REVISAR.
+  var cl = norm(cliente);
+  var esForesa = cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0;
+
+  // FORESA es el unico cliente MIXTO: parte de sus servicios se indexa por viaje
+  // y parte agregado. Eso NO se resuelve por cliente, se resuelve por RUTA, con
+  // las reglas confirmadas por Julio y verificadas sobre el CSV (cobertura de
+  // linea por ruta): Metanol Villagarcia->Caldas = agregada mensual; destino
+  // Orember = agregada quincenal; el resto (Foresa otros, Villagarcia otros,
+  // Retornos) = por linea. Por eso, para Foresa, la ruta manda AUN cuando el
+  // historico dijo 'mixta' — si dijera 'linea' o 'agregada' a secas seria una
+  // media del cliente, no la del servicio.
+  if (esForesa) {
+    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS')) {
+      return { regimen: 'agregada_mensual', motivo: null };
+    }
+    if (coincideTexto(destino, 'OREMBER')) {
+      return { regimen: 'agregada_quincenal', motivo: null };
+    }
+    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) {
+      return { regimen: 'agregada_quincenal', motivo: null };
+    }
+    return { regimen: 'linea', motivo: null }; // Foresa otros / Villagarcia otros / Retornos (D-06, confirmado).
+  }
+
+  // EVIDENCIA PRIMERO para el resto. Si se inyecto la modalidad deducida del
+  // historico (ficha/modalidad-indexacion.js), manda esa: dice como se le facturo
+  // REALMENTE la indexacion a este cliente, en vez de adivinarla.
+  //   'sin_indexacion' se propaga tal cual (hay clientes cuya factura no la lleva).
+  //   'agregada' se propaga (el corte real lo dan los tramos de pct, no el mes).
+  //   modalidad null (sin evidencia) NO cae al default: null + motivo -> REVISAR.
   if (modalidad && modalidad.fuente && modalidad.fuente !== 'ninguna') {
     if (modalidad.modalidad === null) {
       return { regimen: null, motivo: modalidad.motivo };
     }
     return { regimen: modalidad.modalidad, motivo: modalidad.revisar ? modalidad.motivo : null };
   }
-  var cl = norm(cliente);
   if (cl.indexOf('BALTRANSA') >= 0) { return { regimen: 'incluida', motivo: null }; }
-  var esForesa = cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0;
-  if (esForesa) {
-    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS DE REIS')) { return { regimen: 'agregada_mensual', motivo: null }; }
-    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) { return { regimen: 'agregada_quincenal', motivo: null }; }
-    return { regimen: 'linea', motivo: null }; // FORESA a cualquier otro destino: por viaje (D-06).
-  }
   return { regimen: 'linea', motivo: null }; // QUIMIDROGA, RNM, HELM: por viaje (regla general).
 }
 // nz_local: version standalone de nz (correlacionar.js la tiene con otro nombre;

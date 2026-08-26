@@ -287,20 +287,43 @@ function regimenIndexacion(cliente, origen, destino, clientes, modalidad) {
   //     real lo dan los tramos de pct, no el calendario (ver modalidad-indexacion).
   //   modalidad null (cliente que factura de las dos formas, o sin evidencia) NO
   //     cae al default: devuelve null + motivo para que el viaje vaya a REVISAR.
+  var cl = norm(cliente);
+  var esForesa = cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0;
+
+  // FORESA es el unico cliente MIXTO: parte de sus servicios se indexa por viaje
+  // y parte agregado. Eso NO se resuelve por cliente, se resuelve por RUTA, con
+  // las reglas confirmadas por Julio y verificadas sobre el CSV (cobertura de
+  // linea por ruta): Metanol Villagarcia->Caldas = agregada mensual; destino
+  // Orember = agregada quincenal; el resto (Foresa otros, Villagarcia otros,
+  // Retornos) = por linea. Por eso, para Foresa, la ruta manda AUN cuando el
+  // historico dijo 'mixta' — si dijera 'linea' o 'agregada' a secas seria una
+  // media del cliente, no la del servicio.
+  if (esForesa) {
+    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS')) {
+      return { regimen: 'agregada_mensual', motivo: null };
+    }
+    if (coincideTexto(destino, 'OREMBER')) {
+      return { regimen: 'agregada_quincenal', motivo: null };
+    }
+    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) {
+      return { regimen: 'agregada_quincenal', motivo: null };
+    }
+    return { regimen: 'linea', motivo: null }; // Foresa otros / Villagarcia otros / Retornos (D-06, confirmado).
+  }
+
+  // EVIDENCIA PRIMERO para el resto. Si se inyecto la modalidad deducida del
+  // historico (ficha/modalidad-indexacion.js), manda esa: dice como se le facturo
+  // REALMENTE la indexacion a este cliente, en vez de adivinarla.
+  //   'sin_indexacion' se propaga tal cual (hay clientes cuya factura no la lleva).
+  //   'agregada' se propaga (el corte real lo dan los tramos de pct, no el mes).
+  //   modalidad null (sin evidencia) NO cae al default: null + motivo -> REVISAR.
   if (modalidad && modalidad.fuente && modalidad.fuente !== 'ninguna') {
     if (modalidad.modalidad === null) {
       return { regimen: null, motivo: modalidad.motivo };
     }
     return { regimen: modalidad.modalidad, motivo: modalidad.revisar ? modalidad.motivo : null };
   }
-  var cl = norm(cliente);
   if (cl.indexOf('BALTRANSA') >= 0) { return { regimen: 'incluida', motivo: null }; }
-  var esForesa = cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0;
-  if (esForesa) {
-    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS DE REIS')) { return { regimen: 'agregada_mensual', motivo: null }; }
-    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) { return { regimen: 'agregada_quincenal', motivo: null }; }
-    return { regimen: 'linea', motivo: null }; // FORESA a cualquier otro destino: por viaje (D-06).
-  }
   return { regimen: 'linea', motivo: null }; // QUIMIDROGA, RNM, HELM: por viaje (regla general).
 }
 // nz_local: version standalone de nz (correlacionar.js la tiene con otro nombre;
@@ -405,12 +428,15 @@ var CONCEPTOS_PORTE = { 'P': true, 'PI': true };
 // Conceptos que SON lineas de indexacion.
 var CONCEPTOS_INDEXACION = { 'G': true, 'GPT': true, 'G1Q': true, 'G2Q': true };
 
-// Tolerancia al comparar la base de una linea de indexacion contra el importe
-// del porte del mismo albaran: son dos redondeos a 2 decimales de Gesruta.
-var TOL_BASE = 0.02;
-// Cuantas veces el porte tiene que superar la base para considerarla acumulada.
-// 1,5x deja fuera el ruido de redondeo y no confunde un albaran con dos portes.
-var FACTOR_ACUMULADA = 1.5;
+// Umbrales de COBERTURA (fraccion de albaranes con linea propia de indexacion).
+// No son una eleccion: caen en el hueco que deja el dato real. Por ruta de Foresa
+// las coberturas observadas son 2,0 / 3,0 / 6,9 % (agregadas) y 46,2 / 56,2 /
+// 60,0 / 69,6 / 78,0 / 83,3 % (por viaje). Entre 7 y 46 % no hay ninguna.
+var COBERTURA_LINEA = 0.40;
+var COBERTURA_AGREGADA = 0.20;
+// Con menos albaranes que esto, "sin indexacion" no es evidencia: puede ser que
+// en esa muestra no hubo. Decirlo mal deja de facturar un cobro real.
+var ALBARANES_MINIMOS = 8;
 
 function num(x) {
   var n = Number(String(x === null || x === undefined ? '' : x).replace(',', '.'));
@@ -452,7 +478,25 @@ function modalidadPorHistorico(lineas) {
     if (CONCEPTOS_PORTE[cod]) { albaranes[k].portes.push(reg); } else { albaranes[k].idx.push(reg); }
   }
 
-  // 2) Por cliente, contar de que tipo son sus lineas de indexacion.
+  // 2) Por cliente, contar CUANTOS ALBARANES llevan su propia linea de indexacion.
+  //
+  // CORRECCION 2026-08-26, sobre PRUEBA_2608_LINEA_FACTURACION.CSV: la señal que
+  // se usaba antes (comparar la BASE de la linea contra el porte) casi no aplica
+  // en el dato real. Gesruta escribe el 94 % de las lineas de indexacion como
+  // `cantidad = 1, precio = importe`, sin base explicita; solo 7 de 656 traen la
+  // base en la cantidad. Esa heuristica se apoyaba en los G1Q/G2Q, que son minoria.
+  //
+  // La señal ROBUSTA es la COBERTURA: que fraccion de los albaranes con porte de
+  // ese cliente (o de esa ruta) lleva su propia linea de indexacion.
+  //   ~todos    -> se itemiza por viaje              -> linea
+  //   ~ninguno  -> se acumula y se factura aparte    -> agregada
+  //   todas a 0 -> la tarifa ya la contiene          -> incluida
+  //   ninguna   -> ese cliente no lleva indexacion   -> sin_indexacion
+  //
+  // Y la separacion NO es una eleccion nuestra: esta en el dato. Por ruta de
+  // Foresa las coberturas son 2,0 % / 3,0 % / 6,9 % (las agregadas) y luego
+  // 46,2 % / 56,2 % / 60,0 % / 69,6 % / 78,0 % / 83,3 % (las de por viaje).
+  // Entre el 7 % y el 46 % no hay ninguna ruta: el umbral cae en un hueco real.
   var CONT = {};
   for (var kk in albaranes) {
     if (!Object.prototype.hasOwnProperty.call(albaranes, kk)) { continue; }
@@ -464,31 +508,11 @@ function modalidadPorHistorico(lineas) {
     var C = CONT[A.cliente];
     C.portes++;
     if (!A.idx.length) { C.sinIndexacion++; continue; }
-
-    var basePorte = 0;
-    for (var p = 0; p < A.portes.length; p++) { basePorte += (A.portes[p].importe || 0); }
-
+    var algunaConValor = false, algunaCero = false;
     for (var j = 0; j < A.idx.length; j++) {
-      var G = A.idx[j];
-      if (!G.importe) { C.enCero++; continue; }         // incluida en precio
-      var base = G.cantidad;
-      // Gesruta escribe la indexacion de dos formas:
-      //   cantidad = base en EUR, precio = pct decimal   (el caso normal)
-      //   cantidad = 1, precio = importe                 (importe suelto)
-      // En la segunda la base no esta escrita: se deduce del importe / pct, que
-      // no tenemos aca. Se juzga por el importe contra el porte.
-      if (base !== null && base > 1.5) {
-        if (basePorte && Math.abs(base - basePorte) <= TOL_BASE) { C.conLinea++; }
-        else if (basePorte && base > basePorte * FACTOR_ACUMULADA) { C.conAgregada++; }
-        else { C.conLinea++; }
-      } else if (basePorte && G.importe > basePorte) {
-        // Importe suelto MAYOR que el porte del albaran: no puede ser la
-        // indexacion de esa sola linea, es el acumulado del periodo.
-        C.conAgregada++;
-      } else {
-        C.conLinea++;
-      }
+      if (A.idx[j].importe) { algunaConValor = true; } else { algunaCero = true; }
     }
+    if (algunaConValor) { C.conLinea++; } else if (algunaCero) { C.enCero++; }
   }
 
   // 3) Decidir la modalidad de cada cliente.
@@ -496,27 +520,33 @@ function modalidadPorHistorico(lineas) {
   for (var cli2 in CONT) {
     if (!Object.prototype.hasOwnProperty.call(CONT, cli2)) { continue; }
     var v = CONT[cli2];
-    var conIdx = v.conLinea + v.conAgregada + v.enCero;
+    var cobertura = v.portes ? (v.conLinea / v.portes) : 0;
     var modalidad;
-    if (conIdx === 0) {
+    if (v.conLinea === 0 && v.enCero === 0) {
       modalidad = 'sin_indexacion';
-    } else if (v.enCero === conIdx) {
+    } else if (v.conLinea === 0 && v.enCero > 0) {
       modalidad = 'incluida';
-    } else if (v.conAgregada > 0 && v.conLinea === 0) {
-      modalidad = 'agregada';
-    } else if (v.conAgregada > 0) {
-      // Foresa real: parte por linea y parte agregada, segun el servicio. No se
-      // puede decidir por cliente -> se decide por viaje, y hasta entonces
-      // REVISAR. Nunca se elige una de las dos en silencio.
-      modalidad = 'mixta';
-    } else {
+    } else if (cobertura >= COBERTURA_LINEA) {
       modalidad = 'linea';
+    } else if (cobertura <= COBERTURA_AGREGADA) {
+      modalidad = 'agregada';
+    } else {
+      // Zona intermedia: el cliente factura de las dos formas segun el servicio
+      // (Foresa) o la muestra no alcanza. No se elige una: se decide por viaje.
+      modalidad = 'mixta';
     }
+    // EVIDENCIA MINIMA. "Sin indexacion" con 2 o 3 albaranes no es evidencia de
+    // nada: puede ser que en esa muestra no hubo indexacion. Decir que un cliente
+    // no se indexa cuando si se indexa deja de facturar un cobro real.
+    var floja = (v.portes < ALBARANES_MINIMOS) && (modalidad === 'sin_indexacion');
     out[cli2] = {
-      modalidad: modalidad, portes: v.portes, conLinea: v.conLinea,
-      conAgregada: v.conAgregada, enCero: v.enCero, sinIndexacion: v.sinIndexacion,
-      evidencia: v.portes + ' albaranes con porte; ' + v.conLinea + ' indexacion por linea, ' +
-        v.conAgregada + ' acumulada, ' + v.enCero + ' a cero, ' + v.sinIndexacion + ' sin linea'
+      modalidad: floja ? 'mixta' : modalidad,
+      cobertura: Math.round(cobertura * 1000) / 1000,
+      portes: v.portes, conLinea: v.conLinea, conAgregada: v.conAgregada,
+      enCero: v.enCero, sinIndexacion: v.sinIndexacion, evidenciaFloja: floja,
+      evidencia: v.portes + ' albaranes con porte, ' + v.conLinea + ' con linea propia de indexacion (' +
+        Math.round(cobertura * 100) + '%), ' + v.enCero + ' a cero, ' + v.sinIndexacion + ' sin linea' +
+        (floja ? ' — MUESTRA INSUFICIENTE para afirmar que no se indexa' : '')
     };
   }
   return out;
@@ -616,11 +646,24 @@ function acumularPorPeriodo(viajes, tramos, grupoDe) {
     var grupo = grupoDe ? grupoDe(v.cliente) : null;
     var gNombre = (grupo && grupo.grupo) ? grupo.grupo : String(grupo || '');
 
-    var tramo = null;
+    // Los tramos del suplemento solapan en el dia de corte. Si los que matchean
+    // tienen pct distinto no se elige uno: ese viaje no puede acumularse todavia.
+    var candidatos = [];
     for (var t = 0; t < trs.length; t++) {
       var f = trs[t];
       if (MI_CRUCE.norm(f.cliente) !== gNombre) { continue; }
-      if (fecha && (f.desde || '') <= fecha && fecha <= (f.hasta || '')) { tramo = f; break; }
+      if (fecha && (f.desde || '') <= fecha && fecha <= (f.hasta || '')) { candidatos.push(f); }
+    }
+    var pcts = {}; candidatos.forEach(function (c) { pcts[parseFloat(c.pct)] = true; });
+    var tramo = candidatos.length ? candidatos[0] : null;
+    if (Object.keys(pcts).length > 1) {
+      sinTramo.push({
+        cliente: v.cliente, codigoCliente: v.codigoCliente, fecha: fecha, base: imp,
+        pct: null, importe: null, revisar: true,
+        motivo: 'la fecha ' + fecha + ' cae en ' + candidatos.length + ' tramos de ' + gNombre +
+          ' con porcentajes distintos (' + Object.keys(pcts).join(' / ') + '): hay que decidir cual rige'
+      });
+      continue;
     }
     if (!tramo) {
       sinTramo.push({

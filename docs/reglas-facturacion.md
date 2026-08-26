@@ -55,4 +55,5 @@ Fuente: 32 facturas finales + soportes (23-24/07/2026) + correcciones de Julio e
 ## Tarifas y datos cargados (24/07/2026)
 - Tabla `tarifas` (Siwhv2AUWTSeFlrJ): FORESA 89 filas (PDF vigor 2025-01-01), HELM 69 filas (Excel TARIFAS 2026 v.3, precio cerrado por viaje, vigencias por fila — OJO: el archivo venia nombrado QUIMIDROGA pero su contenido es HELM, verificado contra fra 300), RNM 53 filas (Excel 2026, eur/tn + eur/viaje).
 - Tabla `indexacion` (or1otD9WsjJ3V8Cr): 46 tramos migrados del validador (FORESA-BRESFOR, HELM, QUIMIDROGA, OTROS). AGENCIA y AUTONOMOS pendientes (no estaban en el codigo).
+- **2026-08-26**: cargado el SUPLEMENTO_GASOLEO.xlsx completo en `catalogo/suplemento-gasoleo.js` (6 solapas, 79 tramos utilizables). AGENCIA y AUTONOMOS YA tienen valores. El archivo tiene 4 defectos denunciados por `verificarTramos()` (fecha 1900 en FORESA-BRESFOR que contamina 55 dias, hueco del 16-17 de mayo en las 6 solapas, abril sin % en 4 solapas, solapes en los bordes). Periodos de facturacion por cliente en `ficha/periodo-facturacion.js`.
 - Falta: tarifa QUIMIDROGA real (eur/tn), tarifa FORESA 2026, solapas AGENCIA y AUTONOMOS.

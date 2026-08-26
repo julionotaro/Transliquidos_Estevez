@@ -1,6 +1,220 @@
 // ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.
-// Fuente: ficha/cruce.js + ficha/clientes.js + ficha/tarifas.js + ficha/indexacion.js + ficha/modalidad-indexacion.js + ficha/planilla.js + ficha/nodo-planilla.wrapper.js
+// Fuente: ficha/../catalogo/suplemento-gasoleo.js + ficha/cruce.js + ficha/clientes.js + ficha/tarifas.js + ficha/indexacion.js + ficha/modalidad-indexacion.js + ficha/periodo-facturacion.js + ficha/planilla.js + ficha/nodo-planilla.wrapper.js
 // Contenido exacto del nodo Code "Planilla" ([ESTEVEZ] Vista Pendientes (C3eZ1RteNAZDdaCV)).
+
+// ===== SUPLEMENTO GASOLEO — los porcentajes oficiales, tramo por tramo ========
+//
+// Transcripcion literal de SUPLEMENTO_GASOLEO.xlsx (entregado por Julio,
+// 2026-08-26). SEIS solapas = los seis grupos de indexacion. AGENCIA y AUTONOMOS
+// figuraban como "pendientes" en docs/reglas-facturacion.md: ya tienen valores.
+//
+// Formato de cada tramo: [desde, hasta, pct], fechas como texto ISO y pct en
+// DECIMAL (0.1838 = 18,38 por ciento).
+//
+// LOS TRAMOS SON ~SEMANALES, NO QUINCENALES. Por eso una quincena contiene dos o
+// mas tramos, y por eso una factura quincenal puede llevar DOS lineas de
+// indexacion con valores distintos. Caso real en esta misma tabla:
+//     HELM  2026-06-01 -> 06-07 = 0,1256
+//     HELM  2026-06-07 -> 06-15 = 0,1141
+// Las dos caen en la 1a quincena de junio. Agrupar por quincena en vez de por
+// tramo facturaria mal la mitad de esos viajes. Es exactamente la advertencia de
+// Julio y la razon de que la agregacion vaya por TRAMO (ver modalidad-indexacion).
+//
+// DEFECTOS DEL ARCHIVO — se transcriben TAL CUAL y se denuncian; NO se corrigen
+// por nuestra cuenta, porque inventar un tramo es inventar un cobro:
+//
+//   1) FECHA CORRUPTA. FORESA-BRESFOR trae un tramo que empieza en '1900-01-16'
+//      (artefacto de la epoca de Excel) y termina en 2026-06-21. Por el patron de
+//      las otras cinco solapas, que en esa posicion tienen 2026-06-15 -> 06-21,
+//      lo mas probable es que sea 2026-06-15. NO se asume: el tramo queda con la
+//      fecha corrupta, verificarTramos() lo denuncia, y los viajes de
+//      FORESA-BRESFOR entre el 15 y el 21 de junio quedan SIN tramo -> REVISAR.
+//
+//   2) HUECO DEL 16-17 DE MAYO. En LAS SEIS solapas se salta del 2026-05-15 al
+//      2026-05-18. Un viaje del 16 o 17 de mayo no tiene porcentaje vigente. Es
+//      sistematico (no un tipeo suelto), asi que hay que preguntarlo, no rellenarlo.
+//
+//   3) ABRIL SIN VALOR. QUIMIDROGA, OTROS, AGENCIA y AUTONOMOS tienen los dos
+//      tramos de abril vacios. Un viaje de abril de esos grupos no tiene vigente.
+//
+//   4) SOLAPES EN LOS BORDES. Varios tramos comparten el dia de corte
+//      (04-27->05-01 y 05-01->05-10; 06-01->06-07 y 06-07->06-15). Cuando los dos
+//      tramos tienen el mismo valor da igual, pero en HELM el 06-07 cae en dos
+//      tramos con valores distintos (0,1256 y 0,1141). Por eso buscarPct() no
+//      puede quedarse con "el primero que matchea": ver indexacion.js.
+
+'use strict';
+
+var SUPLEMENTO_GASOLEO = {
+  'FORESA-BRESFOR': [
+    ['2026-04-20', '2026-04-26', 0.1838],
+    ['2026-04-27', '2026-05-01', 0.1838],
+    ['2026-05-01', '2026-05-10', 0.1717],
+    ['2026-05-11', '2026-05-15', 0.1717],
+    ['2026-05-18', '2026-05-24', 0.1584],
+    ['2026-05-25', '2026-05-31', 0.1584],
+    ['2026-06-01', '2026-06-07', 0.1452],
+    ['2026-06-07', '2026-06-15', 0.1452],
+    ['1900-01-16', '2026-06-21', 0.1279],
+    ['2026-06-22', '2026-06-28', 0.1279],
+    ['2026-06-29', '2026-06-30', 0.1279],
+    ['2026-07-01', '2026-07-15', 0.1064],
+    ['2026-07-16', '2026-07-31', 0.0665],
+    ['2026-08-01', '2026-08-15', 0.0918],
+    ['2026-08-16', '2026-08-31', 0.1316],
+  ],
+  'HELM': [
+    ['2026-04-20', '2026-04-26', 0.0986],
+    ['2026-04-27', '2026-05-01', 0.0802],
+    ['2026-05-01', '2026-05-10', 0.1385],
+    ['2026-05-11', '2026-05-15', 0.1409],
+    ['2026-05-18', '2026-05-24', 0.1356],
+    ['2026-05-25', '2026-05-31', 0.1254],
+    ['2026-06-01', '2026-06-07', 0.1256],
+    ['2026-06-07', '2026-06-15', 0.1141],
+    ['2026-06-15', '2026-06-21', 0.1036],
+    ['2026-06-22', '2026-06-28', 0.0965],
+    ['2026-06-29', '2026-07-05', 0.0796],
+    ['2026-07-06', '2026-07-12', 0.0687],
+    ['2026-07-13', '2026-07-19', 0.0412],
+    ['2026-07-20', '2026-07-26', 0.039],
+    ['2026-07-27', '2026-07-31', 0.0598],
+    ['2026-08-01', '2026-08-31', 0.0571],
+  ],
+  'QUIMIDROGA': [
+    ['2026-04-20', '2026-04-26', null],
+    ['2026-04-27', '2026-05-01', null],
+    ['2026-05-01', '2026-05-10', 0.1848],
+    ['2026-05-11', '2026-05-15', 0.1848],
+    ['2026-05-18', '2026-05-24', 0.1848],
+    ['2026-05-25', '2026-05-31', 0.1848],
+    ['2026-06-01', '2026-06-07', 0.1517],
+    ['2026-06-07', '2026-06-15', 0.1517],
+    ['2026-06-15', '2026-06-21', 0.1517],
+    ['2026-06-22', '2026-06-28', 0.1517],
+    ['2026-06-29', '2026-06-30', 0.1517],
+    ['2026-07-01', '2026-07-31', 0.1171],
+    ['2026-08-01', '2026-08-15', 0.0766],
+  ],
+  'OTROS': [
+    ['2026-04-20', '2026-04-26', null],
+    ['2026-04-27', '2026-05-01', null],
+    ['2026-05-01', '2026-05-10', 0.1848],
+    ['2026-05-11', '2026-05-15', 0.1848],
+    ['2026-05-18', '2026-05-24', 0.1848],
+    ['2026-05-25', '2026-05-31', 0.1848],
+    ['2026-06-01', '2026-06-07', 0.15],
+    ['2026-06-07', '2026-06-15', 0.15],
+    ['2026-06-15', '2026-06-21', 0.15],
+    ['2026-06-22', '2026-06-28', 0.15],
+    ['2026-06-29', '2026-06-30', 0.15],
+    ['2026-07-01', '2026-07-15', 0.08],
+    ['2026-07-16', '2026-07-31', 0.08],
+    ['2026-08-01', '2026-08-31', 0.0766],
+  ],
+  'AGENCIA': [
+    ['2026-04-20', '2026-04-26', null],
+    ['2026-04-27', '2026-05-01', null],
+    ['2026-05-01', '2026-05-10', 0.17],
+    ['2026-05-11', '2026-05-15', 0.17],
+    ['2026-05-18', '2026-05-24', 0.15],
+    ['2026-05-25', '2026-05-31', 0.15],
+    ['2026-06-01', '2026-06-07', 0.12],
+    ['2026-06-07', '2026-06-15', 0.12],
+    ['2026-06-15', '2026-06-21', 0.08],
+    ['2026-06-22', '2026-06-28', 0.08],
+    ['2026-06-29', '2026-06-30', 0.08],
+    ['2026-07-01', '2026-07-15', 0.06],
+    ['2026-07-16', '2026-07-31', 0.06],
+    ['2026-08-01', '2026-08-15', 0.06],
+    ['2026-08-16', '2026-08-31', 0.09],
+  ],
+  'AUTONOMOS': [
+    ['2026-04-20', '2026-04-26', null],
+    ['2026-04-27', '2026-05-01', null],
+    ['2026-05-01', '2026-05-10', 0.17],
+    ['2026-05-11', '2026-05-15', 0.17],
+    ['2026-05-18', '2026-05-24', 0.15],
+    ['2026-05-25', '2026-05-31', 0.15],
+    ['2026-06-01', '2026-06-07', 0.14],
+    ['2026-06-07', '2026-06-15', 0.14],
+    ['2026-06-15', '2026-06-21', 0.11],
+    ['2026-06-22', '2026-06-28', 0.11],
+    ['2026-06-29', '2026-06-30', 0.11],
+    ['2026-07-01', '2026-07-15', 0.08],
+    ['2026-07-16', '2026-07-31', 0.06],
+    ['2026-08-01', '2026-08-15', 0.0766],
+  ],
+};
+
+var GRUPOS = ["FORESA-BRESFOR", "HELM", "QUIMIDROGA", "OTROS", "AGENCIA", "AUTONOMOS"];
+
+/**
+ * Revisa la calidad de la tabla y devuelve los defectos encontrados. Se corre al
+ * cargar, no por viaje: sirve para avisar de que el archivo tiene agujeros ANTES
+ * de que una factura salga mal.
+ *
+ * @returns {Array<{grupo,tipo,detalle}>}
+ */
+function verificarTramos(tabla) {
+  var T = tabla || SUPLEMENTO_GASOLEO;
+  var problemas = [];
+  var dias = function (a, b) { return Math.round((Date.parse(b) - Date.parse(a)) / 86400000); };
+  for (var g in T) {
+    if (!Object.prototype.hasOwnProperty.call(T, g)) { continue; }
+    var filas = T[g];
+    var prevHasta = null;
+    for (var i = 0; i < filas.length; i++) {
+      var desde = filas[i][0], hasta = filas[i][1], pct = filas[i][2];
+      if (!/^20[0-9][0-9]-/.test(desde)) {
+        problemas.push({ grupo: g, tipo: 'fecha_corrupta', detalle: 'el tramo que termina el ' + hasta + ' empieza en "' + desde + '"' });
+      }
+      if (pct === null || pct === undefined) {
+        problemas.push({ grupo: g, tipo: 'sin_pct', detalle: 'el tramo ' + desde + ' -> ' + hasta + ' no tiene porcentaje' });
+      }
+      if (prevHasta && /^20/.test(desde)) {
+        if (desde < prevHasta) {
+          problemas.push({ grupo: g, tipo: 'solape', detalle: 'el tramo que empieza el ' + desde + ' solapa con el que termina el ' + prevHasta });
+        } else if (dias(prevHasta, desde) > 1) {
+          problemas.push({ grupo: g, tipo: 'hueco', detalle: 'no hay tramo entre ' + prevHasta + ' y ' + desde });
+        }
+      }
+      if (hasta) { prevHasta = hasta; }
+    }
+  }
+  return problemas;
+}
+
+/** Los tramos de un grupo, en el formato de la tabla `Indexacion` de n8n. */
+function tramosDe(grupo, tabla) {
+  var filas = ((tabla || SUPLEMENTO_GASOLEO)[grupo]) || [];
+  var out = [];
+  for (var i = 0; i < filas.length; i++) {
+    if (filas[i][2] === null) { continue; }
+    out.push({ cliente: grupo, pct: String(filas[i][2]), desde: filas[i][0], hasta: filas[i][1] });
+  }
+  return out;
+}
+
+/** Todos los tramos de las seis solapas, listos para buscarPct(). */
+function todosLosTramos(tabla) {
+  var T = tabla || SUPLEMENTO_GASOLEO;
+  var out = [];
+  for (var g in T) {
+    if (Object.prototype.hasOwnProperty.call(T, g)) { out = out.concat(tramosDe(g, T)); }
+  }
+  return out;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    SUPLEMENTO_GASOLEO: SUPLEMENTO_GASOLEO,
+    GRUPOS: GRUPOS,
+    verificarTramos: verificarTramos,
+    tramosDe: tramosDe,
+    todosLosTramos: todosLosTramos
+  };
+}
 
 // ===== CRUCE FICHA<->DOCUMENTO — reglas del modelo "albaran = unidad facturable" =====
 //
@@ -153,20 +367,43 @@ function regimenIndexacion(cliente, origen, destino, clientes, modalidad) {
   //     real lo dan los tramos de pct, no el calendario (ver modalidad-indexacion).
   //   modalidad null (cliente que factura de las dos formas, o sin evidencia) NO
   //     cae al default: devuelve null + motivo para que el viaje vaya a REVISAR.
+  var cl = norm(cliente);
+  var esForesa = cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0;
+
+  // FORESA es el unico cliente MIXTO: parte de sus servicios se indexa por viaje
+  // y parte agregado. Eso NO se resuelve por cliente, se resuelve por RUTA, con
+  // las reglas confirmadas por Julio y verificadas sobre el CSV (cobertura de
+  // linea por ruta): Metanol Villagarcia->Caldas = agregada mensual; destino
+  // Orember = agregada quincenal; el resto (Foresa otros, Villagarcia otros,
+  // Retornos) = por linea. Por eso, para Foresa, la ruta manda AUN cuando el
+  // historico dijo 'mixta' — si dijera 'linea' o 'agregada' a secas seria una
+  // media del cliente, no la del servicio.
+  if (esForesa) {
+    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS')) {
+      return { regimen: 'agregada_mensual', motivo: null };
+    }
+    if (coincideTexto(destino, 'OREMBER')) {
+      return { regimen: 'agregada_quincenal', motivo: null };
+    }
+    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) {
+      return { regimen: 'agregada_quincenal', motivo: null };
+    }
+    return { regimen: 'linea', motivo: null }; // Foresa otros / Villagarcia otros / Retornos (D-06, confirmado).
+  }
+
+  // EVIDENCIA PRIMERO para el resto. Si se inyecto la modalidad deducida del
+  // historico (ficha/modalidad-indexacion.js), manda esa: dice como se le facturo
+  // REALMENTE la indexacion a este cliente, en vez de adivinarla.
+  //   'sin_indexacion' se propaga tal cual (hay clientes cuya factura no la lleva).
+  //   'agregada' se propaga (el corte real lo dan los tramos de pct, no el mes).
+  //   modalidad null (sin evidencia) NO cae al default: null + motivo -> REVISAR.
   if (modalidad && modalidad.fuente && modalidad.fuente !== 'ninguna') {
     if (modalidad.modalidad === null) {
       return { regimen: null, motivo: modalidad.motivo };
     }
     return { regimen: modalidad.modalidad, motivo: modalidad.revisar ? modalidad.motivo : null };
   }
-  var cl = norm(cliente);
   if (cl.indexOf('BALTRANSA') >= 0) { return { regimen: 'incluida', motivo: null }; }
-  var esForesa = cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0;
-  if (esForesa) {
-    if (coincideTexto(origen, 'VILLAGARCIA') && coincideTexto(destino, 'CALDAS DE REIS')) { return { regimen: 'agregada_mensual', motivo: null }; }
-    if (coincideTexto(origen, 'CALDAS') && (coincideTexto(destino, 'OURENSE') || coincideTexto(destino, 'ORENSE'))) { return { regimen: 'agregada_quincenal', motivo: null }; }
-    return { regimen: 'linea', motivo: null }; // FORESA a cualquier otro destino: por viaje (D-06).
-  }
   return { regimen: 'linea', motivo: null }; // QUIMIDROGA, RNM, HELM: por viaje (regla general).
 }
 // nz_local: version standalone de nz (correlacionar.js la tiene con otro nombre;
@@ -549,19 +786,44 @@ function grupoIndexacion(clienteViaje) {
   return { grupo: 'OTROS', motivo: 'grupo_por_defecto: cliente "' + (clienteViaje || '(no leido)') + '" sin regla explicita (D-5)' };
 }
 
-/** Tramo vigente [desde,hasta] (inclusive, string ISO) para un grupo+fecha. null si no hay tramo. */
+/**
+ * Tramo vigente [desde,hasta] (inclusive, texto ISO) para un grupo+fecha.
+ *
+ * SOLAPES: los tramos del Suplemento Gasoleo comparten el dia de corte
+ * (2026-06-01->06-07 y 2026-06-07->06-15), asi que una fecha puede caer en dos.
+ * Quedarse con "el primero que matchea" era arbitrario y en HELM cambia el
+ * numero: el 2026-06-07 cae en un tramo al 0,1256 y en otro al 0,1141.
+ *   - si todos los tramos que matchean tienen el MISMO pct -> no hay ambiguedad
+ *   - si difieren -> NO se elige: se devuelve ambiguo para que el viaje vaya a
+ *     REVISAR con los dos candidatos a la vista. Elegir uno es elegir cuanto se
+ *     factura.
+ *
+ * @returns {{pct, fila, ambiguo:boolean, candidatas:Array}|null}
+ */
 function buscarPct(grupo, fecha, indexacionRows) {
   var filas = Array.isArray(indexacionRows) ? indexacionRows : [];
   if (!fecha) { return null; }
+  var hits = [];
   for (var i = 0; i < filas.length; i++) {
     var f = filas[i];
     if (CRUCE_IDX.norm(f.cliente) !== grupo) { continue; }
     if ((f.desde || '') <= fecha && fecha <= (f.hasta || '')) {
       var pct = parseFloat(f.pct);
-      if (isFinite(pct)) { return { pct: pct, fila: f }; }
+      if (isFinite(pct)) { hits.push({ pct: pct, fila: f }); }
     }
   }
-  return null;
+  if (!hits.length) { return null; }
+  var distintos = {};
+  for (var j = 0; j < hits.length; j++) { distintos[hits[j].pct] = true; }
+  var claves = Object.keys(distintos);
+  if (claves.length === 1) {
+    return { pct: hits[0].pct, fila: hits[0].fila, ambiguo: false, candidatas: hits };
+  }
+  return {
+    pct: null, fila: null, ambiguo: true, candidatas: hits,
+    motivo: 'la fecha ' + fecha + ' cae en ' + hits.length + ' tramos de ' + grupo +
+      ' con porcentajes distintos (' + claves.join(' / ') + '): el suplemento tiene los bordes solapados, hay que decidir cual rige'
+  };
 }
 
 /**
@@ -597,6 +859,7 @@ function indexacionDeFila(viaje, importeLinea, indexacionRows) {
     // llegue la factura. Antes esto quedaba ciego hasta la facturacion.
     var gA = grupoIndexacion(v.cliente);
     var hitA = buscarPct(gA.grupo, v.fecha, indexacionRows);
+    if (hitA && hitA.ambiguo) { hitA = null; }
     var baseA = (typeof importeLinea === 'number' && isFinite(importeLinea)) ? round2(importeLinea) : null;
     return {
       modo: 'regimen_pendiente', pct: hitA ? hitA.pct : null, importe: null,
@@ -612,6 +875,9 @@ function indexacionDeFila(viaje, importeLinea, indexacionRows) {
 
   var g = grupoIndexacion(v.cliente);
   var hit = buscarPct(g.grupo, v.fecha, indexacionRows);
+  if (hit && hit.ambiguo) {
+    return { modo: 'sin_regimen', pct: null, importe: null, grupo: g.grupo, etiqueta: '-', motivo: hit.motivo };
+  }
   if (!hit) {
     return {
       modo: 'sin_regimen', pct: null, importe: null, grupo: g.grupo, etiqueta: '-',
@@ -701,12 +967,15 @@ var CONCEPTOS_PORTE = { 'P': true, 'PI': true };
 // Conceptos que SON lineas de indexacion.
 var CONCEPTOS_INDEXACION = { 'G': true, 'GPT': true, 'G1Q': true, 'G2Q': true };
 
-// Tolerancia al comparar la base de una linea de indexacion contra el importe
-// del porte del mismo albaran: son dos redondeos a 2 decimales de Gesruta.
-var TOL_BASE = 0.02;
-// Cuantas veces el porte tiene que superar la base para considerarla acumulada.
-// 1,5x deja fuera el ruido de redondeo y no confunde un albaran con dos portes.
-var FACTOR_ACUMULADA = 1.5;
+// Umbrales de COBERTURA (fraccion de albaranes con linea propia de indexacion).
+// No son una eleccion: caen en el hueco que deja el dato real. Por ruta de Foresa
+// las coberturas observadas son 2,0 / 3,0 / 6,9 % (agregadas) y 46,2 / 56,2 /
+// 60,0 / 69,6 / 78,0 / 83,3 % (por viaje). Entre 7 y 46 % no hay ninguna.
+var COBERTURA_LINEA = 0.40;
+var COBERTURA_AGREGADA = 0.20;
+// Con menos albaranes que esto, "sin indexacion" no es evidencia: puede ser que
+// en esa muestra no hubo. Decirlo mal deja de facturar un cobro real.
+var ALBARANES_MINIMOS = 8;
 
 function num(x) {
   var n = Number(String(x === null || x === undefined ? '' : x).replace(',', '.'));
@@ -748,7 +1017,25 @@ function modalidadPorHistorico(lineas) {
     if (CONCEPTOS_PORTE[cod]) { albaranes[k].portes.push(reg); } else { albaranes[k].idx.push(reg); }
   }
 
-  // 2) Por cliente, contar de que tipo son sus lineas de indexacion.
+  // 2) Por cliente, contar CUANTOS ALBARANES llevan su propia linea de indexacion.
+  //
+  // CORRECCION 2026-08-26, sobre PRUEBA_2608_LINEA_FACTURACION.CSV: la señal que
+  // se usaba antes (comparar la BASE de la linea contra el porte) casi no aplica
+  // en el dato real. Gesruta escribe el 94 % de las lineas de indexacion como
+  // `cantidad = 1, precio = importe`, sin base explicita; solo 7 de 656 traen la
+  // base en la cantidad. Esa heuristica se apoyaba en los G1Q/G2Q, que son minoria.
+  //
+  // La señal ROBUSTA es la COBERTURA: que fraccion de los albaranes con porte de
+  // ese cliente (o de esa ruta) lleva su propia linea de indexacion.
+  //   ~todos    -> se itemiza por viaje              -> linea
+  //   ~ninguno  -> se acumula y se factura aparte    -> agregada
+  //   todas a 0 -> la tarifa ya la contiene          -> incluida
+  //   ninguna   -> ese cliente no lleva indexacion   -> sin_indexacion
+  //
+  // Y la separacion NO es una eleccion nuestra: esta en el dato. Por ruta de
+  // Foresa las coberturas son 2,0 % / 3,0 % / 6,9 % (las agregadas) y luego
+  // 46,2 % / 56,2 % / 60,0 % / 69,6 % / 78,0 % / 83,3 % (las de por viaje).
+  // Entre el 7 % y el 46 % no hay ninguna ruta: el umbral cae en un hueco real.
   var CONT = {};
   for (var kk in albaranes) {
     if (!Object.prototype.hasOwnProperty.call(albaranes, kk)) { continue; }
@@ -760,31 +1047,11 @@ function modalidadPorHistorico(lineas) {
     var C = CONT[A.cliente];
     C.portes++;
     if (!A.idx.length) { C.sinIndexacion++; continue; }
-
-    var basePorte = 0;
-    for (var p = 0; p < A.portes.length; p++) { basePorte += (A.portes[p].importe || 0); }
-
+    var algunaConValor = false, algunaCero = false;
     for (var j = 0; j < A.idx.length; j++) {
-      var G = A.idx[j];
-      if (!G.importe) { C.enCero++; continue; }         // incluida en precio
-      var base = G.cantidad;
-      // Gesruta escribe la indexacion de dos formas:
-      //   cantidad = base en EUR, precio = pct decimal   (el caso normal)
-      //   cantidad = 1, precio = importe                 (importe suelto)
-      // En la segunda la base no esta escrita: se deduce del importe / pct, que
-      // no tenemos aca. Se juzga por el importe contra el porte.
-      if (base !== null && base > 1.5) {
-        if (basePorte && Math.abs(base - basePorte) <= TOL_BASE) { C.conLinea++; }
-        else if (basePorte && base > basePorte * FACTOR_ACUMULADA) { C.conAgregada++; }
-        else { C.conLinea++; }
-      } else if (basePorte && G.importe > basePorte) {
-        // Importe suelto MAYOR que el porte del albaran: no puede ser la
-        // indexacion de esa sola linea, es el acumulado del periodo.
-        C.conAgregada++;
-      } else {
-        C.conLinea++;
-      }
+      if (A.idx[j].importe) { algunaConValor = true; } else { algunaCero = true; }
     }
+    if (algunaConValor) { C.conLinea++; } else if (algunaCero) { C.enCero++; }
   }
 
   // 3) Decidir la modalidad de cada cliente.
@@ -792,27 +1059,33 @@ function modalidadPorHistorico(lineas) {
   for (var cli2 in CONT) {
     if (!Object.prototype.hasOwnProperty.call(CONT, cli2)) { continue; }
     var v = CONT[cli2];
-    var conIdx = v.conLinea + v.conAgregada + v.enCero;
+    var cobertura = v.portes ? (v.conLinea / v.portes) : 0;
     var modalidad;
-    if (conIdx === 0) {
+    if (v.conLinea === 0 && v.enCero === 0) {
       modalidad = 'sin_indexacion';
-    } else if (v.enCero === conIdx) {
+    } else if (v.conLinea === 0 && v.enCero > 0) {
       modalidad = 'incluida';
-    } else if (v.conAgregada > 0 && v.conLinea === 0) {
-      modalidad = 'agregada';
-    } else if (v.conAgregada > 0) {
-      // Foresa real: parte por linea y parte agregada, segun el servicio. No se
-      // puede decidir por cliente -> se decide por viaje, y hasta entonces
-      // REVISAR. Nunca se elige una de las dos en silencio.
-      modalidad = 'mixta';
-    } else {
+    } else if (cobertura >= COBERTURA_LINEA) {
       modalidad = 'linea';
+    } else if (cobertura <= COBERTURA_AGREGADA) {
+      modalidad = 'agregada';
+    } else {
+      // Zona intermedia: el cliente factura de las dos formas segun el servicio
+      // (Foresa) o la muestra no alcanza. No se elige una: se decide por viaje.
+      modalidad = 'mixta';
     }
+    // EVIDENCIA MINIMA. "Sin indexacion" con 2 o 3 albaranes no es evidencia de
+    // nada: puede ser que en esa muestra no hubo indexacion. Decir que un cliente
+    // no se indexa cuando si se indexa deja de facturar un cobro real.
+    var floja = (v.portes < ALBARANES_MINIMOS) && (modalidad === 'sin_indexacion');
     out[cli2] = {
-      modalidad: modalidad, portes: v.portes, conLinea: v.conLinea,
-      conAgregada: v.conAgregada, enCero: v.enCero, sinIndexacion: v.sinIndexacion,
-      evidencia: v.portes + ' albaranes con porte; ' + v.conLinea + ' indexacion por linea, ' +
-        v.conAgregada + ' acumulada, ' + v.enCero + ' a cero, ' + v.sinIndexacion + ' sin linea'
+      modalidad: floja ? 'mixta' : modalidad,
+      cobertura: Math.round(cobertura * 1000) / 1000,
+      portes: v.portes, conLinea: v.conLinea, conAgregada: v.conAgregada,
+      enCero: v.enCero, sinIndexacion: v.sinIndexacion, evidenciaFloja: floja,
+      evidencia: v.portes + ' albaranes con porte, ' + v.conLinea + ' con linea propia de indexacion (' +
+        Math.round(cobertura * 100) + '%), ' + v.enCero + ' a cero, ' + v.sinIndexacion + ' sin linea' +
+        (floja ? ' — MUESTRA INSUFICIENTE para afirmar que no se indexa' : '')
     };
   }
   return out;
@@ -912,11 +1185,24 @@ function acumularPorPeriodo(viajes, tramos, grupoDe) {
     var grupo = grupoDe ? grupoDe(v.cliente) : null;
     var gNombre = (grupo && grupo.grupo) ? grupo.grupo : String(grupo || '');
 
-    var tramo = null;
+    // Los tramos del suplemento solapan en el dia de corte. Si los que matchean
+    // tienen pct distinto no se elige uno: ese viaje no puede acumularse todavia.
+    var candidatos = [];
     for (var t = 0; t < trs.length; t++) {
       var f = trs[t];
       if (MI_CRUCE.norm(f.cliente) !== gNombre) { continue; }
-      if (fecha && (f.desde || '') <= fecha && fecha <= (f.hasta || '')) { tramo = f; break; }
+      if (fecha && (f.desde || '') <= fecha && fecha <= (f.hasta || '')) { candidatos.push(f); }
+    }
+    var pcts = {}; candidatos.forEach(function (c) { pcts[parseFloat(c.pct)] = true; });
+    var tramo = candidatos.length ? candidatos[0] : null;
+    if (Object.keys(pcts).length > 1) {
+      sinTramo.push({
+        cliente: v.cliente, codigoCliente: v.codigoCliente, fecha: fecha, base: imp,
+        pct: null, importe: null, revisar: true,
+        motivo: 'la fecha ' + fecha + ' cae en ' + candidatos.length + ' tramos de ' + gNombre +
+          ' con porcentajes distintos (' + Object.keys(pcts).join(' / ') + '): hay que decidir cual rige'
+      });
+      continue;
     }
     if (!tramo) {
       sinTramo.push({
@@ -968,6 +1254,220 @@ if (typeof module !== 'undefined' && module.exports) {
     MODALIDAD_CONFIRMADA: MODALIDAD_CONFIRMADA,
     CONCEPTOS_PORTE: CONCEPTOS_PORTE,
     CONCEPTOS_INDEXACION: CONCEPTOS_INDEXACION
+  };
+}
+
+// ===== PERIODO DE FACTURACION Y GRUPO DE INDEXACION, CLIENTE POR CLIENTE ======
+//
+// Tabla entregada por Julio (2026-08-26) y contrastada contra el export real
+// PRUEBA_2608_LINEA_FACTURACION.CSV (2.975 lineas de facturacion).
+//
+// TRES EJES DISTINTOS, que antes se confundian en uno solo:
+//
+//   1) GRUPO DE INDEXACION -> de que solapa del Suplemento Gasoleo sale el
+//      porcentaje. Seis grupos: FORESA-BRESFOR, HELM, QUIMIDROGA, OTROS,
+//      AGENCIA, AUTONOMOS.
+//
+//   2) MODALIDAD -> si la indexacion se itemiza por albaran o se acumula.
+//      OJO: esto NO cambia el importe total. Verificado sobre el CSV: en los
+//      clientes "por linea" el ratio indexacion/porte de cada albaran es
+//      EXACTAMENTE el pct del tramo de esa fecha (Bresfor 0,1838 / 0,1452;
+//      Helm 0,1385; RNM 0,1848). O sea el calculo siempre es base x pct del
+//      tramo; lo unico que cambia es si esa cuenta aparece linea por linea o
+//      sumada. Por eso la factura de Bresfor muestra "una linea por valor de
+//      indexacion segun periodo de fecha" (Julio) aunque el detalle interno de
+//      Gesruta tenga una linea por albaran: al facturar se agrupan por pct.
+//
+//   3) PERIODO DE FACTURACION -> cada cuanto se emite la factura (quincenal o
+//      mensual). Es independiente de los otros dos: casi todos los clientes son
+//      quincenales, incluidos los que no llevan indexacion.
+//
+// LA CONSECUENCIA QUE IMPORTA (advertencia literal de Julio): los tramos del
+// suplemento son ~SEMANALES, asi que una quincena contiene dos o mas tramos. Si
+// en una quincena hubo dos ajustes, esa factura lleva DOS lineas de indexacion
+// con valores distintos. Caso real: HELM 06-01/06-07 = 0,1256 y 06-07/06-15 =
+// 0,1141, las dos en la 1a quincena de junio. Por eso se agrupa por TRAMO y
+// nunca por quincena natural (ver ficha/modalidad-indexacion.js).
+
+'use strict';
+
+var PF_CRUCE = (typeof norm === 'function') ? { norm: norm } : require('./cruce.js');
+
+// --- Eje 3: periodo de facturacion (tabla de Julio) --------------------------
+// El valor es el periodo en que se EMITE la factura. 'quincenal' | 'mensual'.
+// 'mensual_opcional' = se puede facturar de las dos formas; no se asume.
+var PERIODO_FACTURACION = [
+  ['FORESA',                  'mensual_opcional', 'quincenal por defecto; el metanol Villagarcia-Caldas va mensual (mes completo) y los retornos admiten las dos'],
+  ['BRESFOR',                 'quincenal', ''],
+  ['QUIMIDROGA',              'quincenal', ''],
+  ['QUIMIDROGA PORTUGAL',     'quincenal', ''],
+  ['HELM',                    'quincenal', ''],
+  ['RNM',                     'quincenal', ''],
+  ['BALTRANSA',               'quincenal', ''],
+  ['TRANSPORTES SANTOS',      'quincenal', ''],
+  ['MAXLOGTRANS',             'quincenal', ''],
+  ['A.G.E. GODOY',            'quincenal', ''],
+  ['GODOY',                   'quincenal', ''],
+  ['COMATRA',                 'quincenal', ''],
+  ['FERQUIASTUR',             'quincenal', ''],
+  ['TAMATA',                  'quincenal', ''],
+  ['SAO LAZARO',              'quincenal', ''],
+  ['TRANSTAMBRE',             'quincenal', ''],
+  ['A MARTIN',                'quincenal', ''],
+  ['A.MARTIN',                'quincenal', ''],
+  ['CLAVO FOOD',              'mensual_opcional', 'mensual, aunque tambien se puede quincenal'],
+  ['ROTANK',                  'quincenal', ''],
+  ['LOGISTICA CARBALLO',      'quincenal', '']
+];
+
+// --- Eje 1: grupo de indexacion (solapa del Suplemento Gasoleo) --------------
+// Verificado contra el CSV: los porcentajes que aparecen en cada cliente son
+// EXACTAMENTE los de la solapa asignada.
+//   RNM       -> 0,1848 0,15 0,08 0,0766  = OTROS
+//   JARAMA    -> 0,1848 0,15 0,0766       = OTROS
+//   FORESTAL  -> 0,1848 0,15              = OTROS
+//   CLAVO     -> 0,1848 0,15 0,08         = OTROS
+//   QUIMIDROGA-> 0,1848 0,1517 0,1171     = QUIMIDROGA
+//   HELM      -> 0,1385 0,1409 0,1036 ... = HELM
+//   BRESFOR   -> 0,1838 0,1717 0,1452 ... = FORESA-BRESFOR
+var GRUPO_POR_CLIENTE = [
+  ['FORESA',     'FORESA-BRESFOR'],
+  ['BRESFOR',    'FORESA-BRESFOR'],
+  ['QUIMIDROGA', 'QUIMIDROGA'],
+  ['HELM',       'HELM']
+  // Todo lo demas -> OTROS, salvo agencias y autonomos, que no se asignan por
+  // nombre de cliente: no hay regla documentada y el porcentaje viene pactado en
+  // la propia orden (ver PCT_DESDE_ORDEN).
+];
+
+// --- Eje 2: los servicios de FORESA que van AGREGADOS ------------------------
+// Julio: "Para Foresa la indexacion por viaje solo se realiza en los viajes
+// Foresa otros, Villagarcia otros y Retornos". Lo demas va agregado.
+//
+// VERIFICADO sobre el CSV, midiendo que FRACCION de los albaranes de cada ruta
+// lleva su propia linea de indexacion. La separacion es tajante:
+//     CALDAS -> OREMBER      COLA      586 albaranes, 2,0 % con linea  -> AGREGADA
+//     VILLAGARCIA -> CALDAS  METANOL   236 albaranes, 3,0 % con linea  -> AGREGADA
+//     CALDAS -> OREMBER      FINCAT    116 albaranes, 6,9 % con linea  -> AGREGADA
+//     CALDAS -> TERUEL       COLA       42 albaranes, 83,3 % con linea -> POR LINEA
+//     CALDAS -> TERMOLAN     COLA       50 albaranes, 78,0 % con linea -> POR LINEA
+//     VILLAGARCIA -> VALLADOLID METANOL 23 albaranes, 69,6 % con linea -> POR LINEA
+// Entre el 7 % y el 46 % no hay NADA: el umbral no es una eleccion nuestra, es
+// un hueco que esta en el dato.
+//
+// El discriminador entre "metanol Villagarcia->Caldas" (agregado mensual) y un
+// "retorno con destino Caldas" (por linea) es el ORIGEN: el metanol sale de
+// Villagarcia; los retornos vuelven desde donde se hizo la entrega.
+var SERVICIOS_AGREGADOS_FORESA = [
+  { origen: 'VILLAGARCIA', destino: 'CALDAS', periodo: 'mensual',
+    nombre: 'Metanol Villagarcia-Caldas', evidencia: '236 albaranes, 3,0% con linea propia' },
+  { origen: null, destino: 'OREMBER', periodo: 'quincenal',
+    nombre: 'Destino Orember', evidencia: '702 albaranes, 2,7% con linea propia' }
+];
+
+function buscaEn(tabla, texto, col) {
+  var t = PF_CRUCE.norm(texto);
+  if (!t) { return null; }
+  var mejor = null;
+  for (var i = 0; i < tabla.length; i++) {
+    var clave = tabla[i][0];
+    if (t.indexOf(clave) >= 0 && (!mejor || clave.length > mejor[0].length)) { mejor = tabla[i]; }
+  }
+  return mejor ? mejor[col === undefined ? 1 : col] : null;
+}
+
+/**
+ * Periodo en que se EMITE la factura de este cliente.
+ * @returns {{periodo:'quincenal'|'mensual'|'mensual_opcional'|null, revisar, motivo}}
+ */
+function periodoFacturacion(cliente) {
+  var t = PF_CRUCE.norm(cliente);
+  var fila = null;
+  for (var i = 0; i < PERIODO_FACTURACION.length; i++) {
+    var c = PERIODO_FACTURACION[i][0];
+    if (t && t.indexOf(c) >= 0 && (!fila || c.length > fila[0].length)) { fila = PERIODO_FACTURACION[i]; }
+  }
+  if (!fila) {
+    return { periodo: null, revisar: true,
+      motivo: 'el cliente "' + (cliente || '(no leido)') + '" no esta en la tabla de periodos de facturacion' };
+  }
+  return {
+    periodo: fila[1],
+    revisar: fila[1] === 'mensual_opcional',
+    motivo: fila[2] || ''
+  };
+}
+
+/**
+ * Solapa del Suplemento Gasoleo de la que sale el porcentaje.
+ * Por defecto OTROS, que es la regla explicita de Julio ("para el resto usar la
+ * categoria otros"), no una suposicion nuestra.
+ */
+function grupoSuplemento(cliente) {
+  var g = buscaEn(GRUPO_POR_CLIENTE, cliente);
+  if (g) { return { grupo: g, porDefecto: false, motivo: '' }; }
+  return { grupo: 'OTROS', porDefecto: true,
+    motivo: 'cliente sin solapa propia: se usa OTROS (regla de Julio para el resto de clientes)' };
+}
+
+/**
+ * Modalidad de indexacion de un viaje de FORESA, que es el unico cliente que
+ * factura de las dos formas segun el servicio.
+ *
+ * @returns {{modalidad:'agregada'|'linea', periodo:string|null, servicio:string|null, motivo:string}}
+ */
+function servicioForesa(origen, destino) {
+  var o = PF_CRUCE.norm(origen), d = PF_CRUCE.norm(destino);
+  for (var i = 0; i < SERVICIOS_AGREGADOS_FORESA.length; i++) {
+    var s = SERVICIOS_AGREGADOS_FORESA[i];
+    var okDestino = d && d.indexOf(s.destino) >= 0;
+    var okOrigen = (s.origen === null) || (o && o.indexOf(s.origen) >= 0);
+    if (okDestino && okOrigen) {
+      return { modalidad: 'agregada', periodo: s.periodo, servicio: s.nombre,
+        motivo: s.nombre + ': la indexacion NO va por viaje, se acumula por ' + s.periodo + ' (' + s.evidencia + ')' };
+    }
+  }
+  return { modalidad: 'linea', periodo: 'quincenal', servicio: 'Foresa otros / Villagarcia otros / Retornos',
+    motivo: 'servicio de Foresa que SI se indexa por viaje' };
+}
+
+/**
+ * El porcentaje que viene IMPRESO en la orden manda sobre la tabla.
+ *
+ * Julio: "Los clientes que cotizan por viaje, en la OC figura el porcentaje de
+ * indexacion". Confirmado en el CSV: TRANSTAMBRE aplica 0,0532 y 0,0877, y
+ * A.G.E. GODOY 0,0748 — valores que NO estan en ninguna solapa. Son pactados por
+ * operacion. Si se les aplicara la tabla se facturaria un porcentaje que el
+ * cliente no acepto.
+ *
+ * @param {number|null} pctOrden  el leido de la orden (0.0532, no 5.32)
+ * @returns {{pct:number|null, fuente:string, motivo:string}}
+ */
+function pctDeOrden(pctOrden) {
+  if (pctOrden === null || pctOrden === undefined || !isFinite(pctOrden)) {
+    return { pct: null, fuente: 'ninguna', motivo: '' };
+  }
+  var p = Number(pctOrden);
+  // Tolerar que venga como 5.32 en vez de 0.0532: por encima de 1 es un
+  // porcentaje escrito "en cien", no un decimal.
+  if (p > 1) { p = Math.round(p * 100) / 10000; }
+  if (p < 0 || p > 0.5) {
+    return { pct: null, fuente: 'orden_descartada',
+      motivo: 'el porcentaje leido en la orden (' + pctOrden + ') esta fuera de rango; no se aplica' };
+  }
+  return { pct: p, fuente: 'orden',
+    motivo: 'porcentaje tomado de la ORDEN (' + (p * 100).toFixed(2) + '%): manda sobre la tabla del suplemento' };
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    PERIODO_FACTURACION: PERIODO_FACTURACION,
+    GRUPO_POR_CLIENTE: GRUPO_POR_CLIENTE,
+    SERVICIOS_AGREGADOS_FORESA: SERVICIOS_AGREGADOS_FORESA,
+    periodoFacturacion: periodoFacturacion,
+    grupoSuplemento: grupoSuplemento,
+    servicioForesa: servicioForesa,
+    pctDeOrden: pctDeOrden
   };
 }
 

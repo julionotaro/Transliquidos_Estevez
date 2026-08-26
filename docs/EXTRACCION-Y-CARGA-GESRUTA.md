@@ -391,6 +391,138 @@ línea es `null` y se cierra en facturación. Lo que sí se hace ahora es expone
 calcular el cobro: es poder auditarlo** antes de que llegue la factura — que es
 justo cuando ya no se puede verificar.
 
+
+---
+
+## 10 ter. Los tres ejes de la indexación (datos de Julio, 26/08/2026)
+
+Lo que antes era **un** concepto son en realidad **tres, independientes**:
+
+| Eje | Qué decide | Dónde vive |
+|---|---|---|
+| **Grupo** | de qué solapa del Suplemento sale el % | `catalogo/suplemento-gasoleo.js` |
+| **Modalidad** | si se itemiza por albarán o se acumula | `ficha/modalidad-indexacion.js` |
+| **Período** | cada cuánto se emite la factura | `ficha/periodo-facturacion.js` |
+
+### La modalidad NO cambia el importe
+
+Verificado sobre `PRUEBA_2608_LINEA_FACTURACION.CSV`: en los clientes "por
+línea" el **ratio indexación/porte de cada albarán es exactamente el % del tramo
+de esa fecha** — Bresfor 0,1838 y 0,1452; Helm 0,1385; RNM 0,1848.
+
+El cálculo es **siempre** `base × % del tramo`. Lo único que cambia es si esa
+cuenta aparece línea por línea o sumada. Por eso la factura de Bresfor muestra
+*"una línea por valor de indexación según período de fecha"* aunque el detalle
+interno de Gesruta tenga una línea por albarán: **al facturar se agrupan por %**.
+
+### Cómo se detecta la modalidad: por COBERTURA
+
+La señal es qué **fracción de los albaranes** lleva su propia línea de
+indexación. (La heurística anterior —comparar la base contra el porte— resultó
+inaplicable: el 94 % de las líneas se escriben como `cantidad=1, precio=importe`,
+sin base explícita.)
+
+Coberturas reales por ruta de Foresa:
+
+| Ruta | Albaranes | Con línea propia | |
+|---|---|---|---|
+| CALDAS → OREMBER (COLA) | 586 | **2,0 %** | agregada |
+| VILLAGARCÍA → CALDAS (METANOL) | 236 | **3,0 %** | agregada |
+| CALDAS → OREMBER (FINCAT) | 116 | **6,9 %** | agregada |
+| CALDAS → TARRAGONA | 26 | **46,2 %** | por línea |
+| VILLAGARCÍA → VALLADOLID | 23 | **69,6 %** | por línea |
+| CALDAS → TERMOLAN | 50 | **78,0 %** | por línea |
+| CALDAS → TERUEL | 42 | **83,3 %** | por línea |
+
+**Entre el 7 % y el 46 % no hay ninguna ruta.** Los umbrales (20 % / 40 %) caen
+en un hueco que está en el dato, no en una elección nuestra.
+
+Esto confirma exactamente la regla de Julio: *"para Foresa la indexación por
+viaje sólo se realiza en Foresa otros, Villagarcía otros y Retornos"*. Los dos
+servicios agregados son **Metanol Villagarcía→Caldas** (mensual) y **destino
+Orember** (quincenal).
+
+> Un **retorno** también llega a Caldas. Lo que lo distingue del metanol es el
+> **origen**: el metanol sale de Villagarcía; el retorno vuelve desde donde se
+> hizo la entrega.
+
+### Período de facturación (23 clientes)
+
+Casi todos **quincenal**. Dos admiten las dos formas y por eso van a REVISAR en
+vez de asumirse: **FORESA** (el metanol Villagarcía→Caldas es mensual de mes
+completo; los retornos, opcional) y **CLAVO FOOD**.
+
+Un cliente fuera de la tabla → `null` + REVISAR, nunca un período inventado.
+
+### El % de la ORDEN manda sobre la tabla
+
+*"Los clientes que cotizan por viaje, en la OC figura el porcentaje."* Confirmado:
+**TRANSTAMBRE** aplicó 0,0532 y 0,0877; **A.G.E. GODOY** 0,0748 — valores que no
+están en **ninguna** solapa. Son pactados por operación. Aplicarles la tabla
+facturaría un % que el cliente no aceptó.
+
+### Baltransa
+
+`incluida`: línea de indexación a **0 en cada viaje, siempre**. Confirmado en el
+CSV (40 líneas, todas a cero).
+
+---
+
+## 10 quater. Suplemento Gasóleo: los % y los defectos del archivo
+
+`catalogo/suplemento-gasoleo.js` — transcripción literal de las **6 solapas**.
+AGENCIA y AUTONOMOS figuraban como *"pendientes"*: **ya tienen valores**.
+
+### Los tramos son SEMANALES, no quincenales
+
+Por eso una quincena contiene dos o más tramos, y por eso **una factura quincenal
+puede llevar dos líneas de indexación con % distintos**. Está en el archivo:
+
+```
+HELM  2026-06-01 → 06-07 = 0,1256
+HELM  2026-06-07 → 06-15 = 0,1141    ← misma quincena, otro valor
+```
+
+Es la advertencia literal de Julio y la razón de que la agregación vaya **por
+tramo** y nunca por quincena natural.
+
+### Cuatro defectos del archivo — se denuncian, no se corrigen
+
+`verificarTramos()` los reporta. **No se arreglan por nuestra cuenta: inventar un
+tramo es inventar un cobro.**
+
+| # | Defecto | Alcance |
+|---|---|---|
+| 1 | **Fecha corrupta** `1900-01-16` en FORESA-BRESFOR | ver abajo |
+| 2 | **Hueco del 16–17 de mayo** | las **6** solapas |
+| 3 | **Abril sin %** | QUIMIDROGA · OTROS · AGENCIA · AUTONOMOS |
+| 4 | **Solapes en el día de corte** | varias |
+
+### El defecto 1 es el grave, y no es lo que parecía
+
+No deja un hueco: deja un tramo que **se traga cinco meses**. Va de `1900-01-16`
+a `2026-06-21`, así que cubre *todas* las fechas anteriores al 21 de junio y se
+superpone con los ocho tramos correctos de ese rango.
+
+**Medido: de los 153 días de abril a agosto, 55 quedan ambiguos** — todo abril,
+todo mayo y la primera mitad de junio. Un viaje del 20 de abril cae a la vez en
+el 0,1838 (correcto) y en el 0,1279.
+
+Con *"el primero que matchea"* habría devuelto el correcto **por casualidad** —
+por el orden del array — tapando el problema. La guarda de ambigüedad lo saca a
+la luz.
+
+> **Pendiente para Julio:** corregir `1900-01-16` en el Excel. Por el patrón de
+> las otras cinco solapas debería ser `2026-06-15`, pero es un cambio de **dato**,
+> no de código, y no se asume.
+
+### Solapes: cuándo importan y cuándo no
+
+`buscarPct` ya no se queda con el primero que matchea:
+- todos los tramos que matchean con el **mismo** % → se resuelve
+- % **distintos** → `ambiguo`, con los candidatos a la vista. Elegir uno es
+  elegir cuánto se factura.
+
 ---
 
 ## 11. KM
@@ -536,6 +668,8 @@ del año, no hay dato del que deducirla. Es alta de tarifa.
 | **Tarifario histórico** | `catalogo/tarifario-historico.js` | La tarifa realmente aplicada |
 | **Régimen de indexación** | `catalogo/regimen.js` | Por país del cliente (G/GPT) |
 | **Modalidad de indexación** | `ficha/modalidad-indexacion.js` | Por línea o por período |
+| **Suplemento Gasóleo** | `catalogo/suplemento-gasoleo.js` | Los % oficiales + QA del archivo |
+| **Período de facturación** | `ficha/periodo-facturacion.js` | Quincenal/mensual por cliente |
 | Correlación ficha↔documento | `ficha/correlacionar.js` | El cruce y las salvaguardas |
 | **Odómetro por tractora** | `ficha/odometro.js` | Km vacíos y último km registrado |
 | **Los prompts** | `ficha/payload.js` | `PROMPT_FICHAS` y `PROMPT_DOCS` |
