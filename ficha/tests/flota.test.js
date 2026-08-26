@@ -79,9 +79,9 @@ test('el padron se puede inyectar (tabla flota a futuro)', () => {
 });
 
 test('la semilla de flota tiene las 28 tractoras reales y formato valido', () => {
-  assert.strictEqual(FLOTA_TRACTORAS.length, 28);
+  assert.strictEqual(FLOTA_TRACTORAS.length, 31);
   FLOTA_TRACTORAS.forEach(function (m) {
     assert.match(m, /^\d{4}[A-Z]{3}$/, m + ' debe tener formato espanol DDDDLLL');
   });
-  assert.strictEqual(new Set(FLOTA_TRACTORAS).size, 28, 'sin duplicados');
+  assert.strictEqual(new Set(FLOTA_TRACTORAS).size, 31, 'sin duplicados');
 });

@@ -565,3 +565,34 @@ test('todas las paginas de ficha con JSON invalido -> ok:true pero con errores, 
   assert.ok(out.errores >= 1);
   assert.match(out.linea, /Pagina 1:.*no devolvio JSON valido/);
 });
+
+test('PRINCIPIO DEL ENVIO: un solo camion -> los docs con matricula MAL LEIDA no se pierden (bug ejec 1018)', () => {
+  // GPT leyo la matricula de los documentos como 5135LNN cuando la ficha (unico
+  // camion del envio) es 5713LMN. Antes se descartaban los 8 docs y los viajes
+  // quedaban sin documentacion. Ahora: como hay UN solo camion, los docs son de
+  // ese camion; se asignan y se marca REVISAR.
+  const caso = entrada(
+    [hoja([
+      bloque({ orden: 1, fecha_carga: '2026-08-10', fecha_descarga: '2026-08-11', nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'CELLA', tipo_mercancia: 'FORESA RES 0201', cantidad_kg: 23100, km_inicio: 492078, km_final: 492989 }),
+    ], { tractora: '5713LTN' })],
+    [doc({ pagina: 2, tipo_doc: 'albaran', matricula_tractor: '5135LNN', referencia: '108992', fecha: '2026-08-10', origen: 'Caldas', destino: 'Cella', material: 'FORESA RES 0201', kg_neto: 23140, cliente_probable: 'FORESA', emisor: 'FORESA' })]);
+  const res = correlacionar(
+    JSON.parse(caso[0].json.choices[0].message.content),
+    JSON.parse(caso[1].json.choices[0].message.content));
+  assert.strictEqual(res.viajes[0].docs.length, 1, 'el doc con matricula mal leida se asigna igual');
+  assert.strictEqual(res.viajes[0].referencia, '108992');
+  assert.ok(res.avisos.some(function (a) { return /no coincide con el unico camion/.test(a); }), 'se avisa que no corrobora');
+});
+
+test('multi-camion SI exige matricula: un doc sin matricula queda huerfano', () => {
+  // Con dos camiones en el envio, un doc sin matricula no se puede asignar: no se
+  // adivina. (El principio del envio solo aplica cuando hay UN camion.)
+  const caso = entrada(
+    [hoja([bloque({ orden: 1, nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'CELLA', tipo_mercancia: 'COLA', cantidad_kg: 23000, km_inicio: 100, km_final: 200 })], { tractora: '2498KZL' }),
+     hoja([bloque({ orden: 1, nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'NAVIA', tipo_mercancia: 'SOSA', cantidad_kg: 23000, km_inicio: 300, km_final: 400 })], { tractora: '7394LZP' })],
+    [doc({ pagina: 1, tipo_doc: 'albaran', matricula_tractor: null, referencia: 'X1', material: 'COLA', kg_neto: 23000, cliente_probable: 'FORESA' })]);
+  const res = correlacionar(
+    JSON.parse(caso[0].json.choices[0].message.content),
+    JSON.parse(caso[1].json.choices[0].message.content));
+  assert.ok(res.viajes.every(function (v) { return v.docs.length === 0; }), 'sin matricula y 2 camiones -> no se asigna');
+});

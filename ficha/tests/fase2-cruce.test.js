@@ -274,12 +274,28 @@ test('§5 ficha sin doc: bloque sin documentos -> PENDIENTE; otros bloques no se
 // ============================================================================
 // §5 — Documento sin ficha (huerfano visible, no rompe la ingesta)
 // ============================================================================
-test('§5 doc sin ficha: matricula que no matchea -> huerfano visible como error', () => {
-  const h = hoja({ tractora: '1111AAA' }, [bloque({ nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE', cantidad_kg: 25000 })]);
-  const d = albaran({ matricula_tractor: '2222BBB', referencia: '2009999' });
+test('§5 PRINCIPIO DEL ENVIO: un solo camion -> el doc con matricula que no matchea se ASIGNA + aviso', () => {
+  // Cambio 2026-08-26 (encargo Julio): con UN solo camion en el envio, el
+  // documento es de ese camion aunque la matricula leida no coincida (vino en el
+  // mismo sobre). Antes se descartaba; eso perdia documentacion real (ejec 1018,
+  // 8 docs tirados). Ahora se asigna y se avisa para verificar.
+  const h = hoja({ tractora: '1111AAA' }, [bloque({ nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE', cantidad_kg: 25000, tipo_mercancia: 'COLA' })]);
+  const d = albaran({ matricula_tractor: '2222BBB', referencia: '2009999', material: 'COLA' });
   const res = correr([h], [d]);
+  assert.strictEqual(res.viajes[0].docs.length, 1, 'con un solo camion, el doc se asigna');
+  assert.strictEqual(res.viajes[0].referencia, '2009999');
+  assert.ok(res.avisos.some(e => /no coincide con el unico camion/.test(e)), 'se avisa que la matricula no corrobora');
+});
+
+test('§5 MULTI-camion: un doc con matricula que no matchea a ninguno queda huerfano', () => {
+  // Con dos camiones, la matricula SI es necesaria: un doc cuya matricula no
+  // corresponde a ninguno no se puede asignar (no se adivina).
+  const h1 = hoja({ tractora: '2498KZL' }, [bloque({ nombre_carga: 'FORESA', lugar_carga: 'CALDAS', lugar_descarga: 'ORENSE', cantidad_kg: 25000 })]);
+  const h2 = hoja({ pagina: 2, tractora: '7394LZP' }, [bloque({ nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'NAVIA', cantidad_kg: 23000 })]);
+  const d = albaran({ matricula_tractor: '2222BBB', referencia: '2009999' });
+  const res = correr([h1, h2], [d]);
   assert.ok(res.errores.some(e => /2222BBB|no corresponde/.test(e)), 'documento huerfano visible');
-  assert.strictEqual(res.viajes[0].docs.length, 0, 'no se cuelga de un viaje ajeno');
+  assert.ok(res.viajes.every(v => v.docs.length === 0), 'no se cuelga de un viaje ajeno');
 });
 
 // ============================================================================

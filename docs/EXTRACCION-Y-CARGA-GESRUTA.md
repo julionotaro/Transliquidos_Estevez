@@ -74,6 +74,26 @@ matrículas de documento **cercanas** a esa ficha. Las lejanas son otro camión 
 > **Bug real corregido:** exigir unanimidad en todo el lote bloqueaba también los
 > viajes limpios y los dejaba sin documento, sin cliente y sin tarifa.
 
+### PRINCIPIO DEL ENVÍO (2026-08-26) — el más importante para no perder documentos
+Un juego = un sobre escaneado. Cuando tiene **una sola ficha** (un solo camión),
+**TODOS sus documentos son de ese camión**, los subiste juntos. La matrícula del
+documento sirve para **corroborar** y para elegir **a qué viaje** va cada doc —
+**nunca para descartarlo**.
+
+> **Bug real (ejec 1018):** GPT leyó la matrícula de 8 documentos como `5135LNN`
+> (real `5713LMN`). El código los descartó todos por no coincidir, dejando 2
+> viajes sin documentación y perdiendo el cliente HELM, la referencia y el
+> importe de un tercero. Con el principio del envío: los 8 se recuperan, se
+> reparten por material+fecha, y el juego pasa de inservible a facturable.
+
+La matrícula sigue siendo llave rígida **sólo cuando el juego tiene 2+ camiones**
+(ahí sí hay que saber de cuál es cada doc).
+
+### El padrón es AUTORITATIVO (`Listado_de_vehiculos.csv`)
+31 tractoras con su **remolque y chófer**. Reemplazó la semilla vieja de 28 que
+estaba incompleta (le faltaba `7963MDF` de Pablo Carles, de ahí el "no está en la
+flota"). El remolque y el chófer son señales de cruce extra a la matrícula.
+
 ### Trazabilidad
 **Todo cambio de matrícula marca REVISAR con motivo.** Cambiar una matrícula
 decide a qué viaje se pegan los documentos y, aguas abajo, qué se factura: nunca

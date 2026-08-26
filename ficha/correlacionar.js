@@ -481,7 +481,24 @@ function correlacionar(rA, rB, opts) {
     const df = nz(d.fecha);
     const et = 'pag ' + (d.pagina || '?') + ' ' + (nz(d.referencia) || 'sin ref');
     let cands = [];
-    if (dm) {
+    // PRINCIPIO DEL ENVIO (encargo Julio 2026-08-26): cuando el envio tiene UN
+    // SOLO camion (una sola matricula de ficha), TODO documento del envio es de
+    // ese camion — vino en el mismo sobre escaneado que la ficha. La matricula del
+    // documento solo sirve para CORROBORAR, nunca para descartar. Esto rescata el
+    // caso real (ejec 1018): GPT leyo la matricula de 8 documentos como "5135LNN"
+    // (real 5713LMN), y el codigo los tiraba a todos aunque eran del unico camion
+    // del envio, dejando 2 viajes sin documentacion. La matricula sigue usandose
+    // abajo para elegir A QUE VIAJE va cada doc; aca solo decide si PERTENECE.
+    if (listaMatsFicha.length === 1) {
+      cands = viajes.filter(function (v) { return v.tractoraN === listaMatsFicha[0]; });
+      // Si el documento trae matricula y NO corrobora al unico camion, se asigna
+      // igual pero se avisa (puede ser un doc traspapelado de otro envio; el
+      // humano lo verifica). No se descarta: perder la carga es peor.
+      if (dm && dm !== listaMatsFicha[0] && distanciaEdicion(dm, listaMatsFicha[0]) > MATRICULA_DIST_MAX) {
+        avisos.push('Documento ' + et + ': su matricula (' + (nz(d.matricula_tractor) || dm) + ') no coincide con el unico camion del envio (' + listaMatsFicha[0] + '); se asigna a ese camion igual (mismo sobre) y se marca para verificar.');
+        d._mat_no_corrobora = true;
+      }
+    } else if (dm) {
       cands = viajes.filter(function (v) { return v.tractoraN && v.tractoraN === dm; });
       if (cands.length === 0) {
         // Tolerancia: el documento perdio un caracter al leerse ("332LPL" por
@@ -491,18 +508,13 @@ function correlacionar(rA, rB, opts) {
           cands = viajes.filter(function (v) { return v.tractoraN === cercanas[0]; });
           avisos.push('Documento ' + et + ': matricula leida ' + d.matricula_tractor + ' se asocia a ' + cercanas[0] + ' (distancia ' + MATRICULA_DIST_MAX + ', unica ficha candidata) — verificar que sea el mismo camion.');
         } else {
-          docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' });
+          docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio (hay ' + listaMatsFicha.length + ' camiones, no se puede asignar sin matricula fiable)' });
           continue;
         }
       }
-    } else if (listaMatsFicha.length === 1) {
-      // Sin matricula legible PERO el envio tiene UN SOLO camion: el documento es
-      // de ese camion (no hay otro al que pudiera pertenecer). Se desambigua entre
-      // sus viajes con las señales de abajo; si no desambigua, queda ambiguo (no se
-      // le presta la carga a nadie).
-      cands = viajes.filter(function (v) { return v.tractoraN === listaMatsFicha[0]; });
-      avisos.push('Documento ' + et + ': sin matricula legible; el envio tiene un solo camion (' + listaMatsFicha[0] + '), se intenta asignar por peso/emisor/destino.');
     } else {
+      // Multi-camion Y el doc no tiene matricula legible: no se puede saber de cual
+      // es. Queda huerfano para revision (no se le presta a un camion al azar).
       docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible y el envio tiene ' + listaMatsFicha.length + ' camiones' });
       continue;
     }

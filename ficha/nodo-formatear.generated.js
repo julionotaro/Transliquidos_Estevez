@@ -30,14 +30,58 @@
 
 'use strict';
 
-// Semilla: tractoras con >= 50 viajes en el export de Gesruta (8.756 viajes).
-// Las de uso ocasional (subcontratados, <50) quedan fuera a proposito: meterlas
-// acercaria candidatas y generaria ambiguedad sin ganar cobertura real.
+// Padron AUTORITATIVO: exportado del listado de vehiculos de Gesruta
+// (Listado_de_vehiculos.csv, entregado por Julio 2026-08-26). 31 cabezas
+// tractoras con matricula de formato valido. Reemplaza la semilla vieja derivada
+// del historico, que estaba incompleta (le faltaba 7963MDF de Pablo Carles, alta
+// 13/07/26, y otras) — justo lo que hizo que la matricula "no estuviera en la
+// flota" en la corrida real. FLOTA_DETALLE de abajo agrega remolque y chofer por
+// tractora, para usarlos como señales de cruce adicionales.
 var FLOTA_TRACTORAS = [
-  '8168JSD', '3729JLH', '9039KDR', '6124HZT', '5132LMC', '8382JJS', '5358KTF',
-  '8267JJS', '0332LPL', '6516KTH', '0557JMS', '0275JLC', '8262MNC', '2498KZL',
-  '8504KDR', '2256JYX', '8420KKT', '3729JWP', '7347LBB', '2050MZY', '2541HPJ',
-  '5820JDK', '8066HZR', '7778KWG', '5713LMN', '4916NJG', '7394LZP', '7585MCG'
+  '0275JLC', '0332LPL', '0557JMS', '1017JZT', '2050MZY', '2256JYX', '2498KZL',
+  '2541HPJ', '3729JLH', '3729JWP', '4530MXP', '4916NJG', '5132LMC', '5358KTF',
+  '5630GCS', '5713LMN', '5820JDK', '6124HZT', '6516KTH', '6792HZR', '7010JJY',
+  '7347LBB', '7394LZP', '7585MCG', '7963MDF', '8066HZR', '8262MNC', '8420KKT',
+  '8504KDR', '9039KDR', '9223FPD'
+];
+
+// [matricula, remolque, chofer] por tractora. Del mismo listado. El remolque y el
+// chofer son señales de cruce independientes de la matricula: si la matricula del
+// documento se leyo mal pero el remolque o el chofer coinciden con los de una
+// tractora del padron, es la misma. Un remolque puede repetirse entre tractoras
+// (es intercambiable), asi que NO identifica solo; desempata.
+var FLOTA_DETALLE = [
+  ['0275JLC', 'R1943BBL', 'JOSE ENRIQUE ARIAS'],
+  ['0332LPL', 'CR03804R', 'JUAN MANUEL ABAL'],
+  ['0557JMS', 'PO1956R', 'MIGUEL PIRES'],
+  ['1017JZT', 'R3546BBG', 'PEDRO OTERO'],
+  ['2050MZY', 'R2006BDT', 'JOSE MANUEL PAZ'],
+  ['2256JYX', 'R3546BBG', 'MANUEL SABARIS'],
+  ['2498KZL', 'R1007BCV', 'FRANCISCO ASENSI'],
+  ['2541HPJ', 'PO2628R', 'PABLO CARLES SANTOS'],
+  ['3729JLH', 'R7749BDB', 'MARCOS EIRIN FERNANDEZ'],
+  ['3729JWP', 'PO2662R', 'CARLOS ABALO QUINTELA'],
+  ['4530MXP', 'R3546BBG', 'PEDRO OTERO'],
+  ['4916NJG', 'R1783BBJ', 'JOSE CARLOS ALFONSIN'],
+  ['5132LMC', 'R9520BCV', 'JOSE CARLOS RODRIGUEZ'],
+  ['5358KTF', 'R8574BBC', 'PEDRO FRAGA'],
+  ['5630GCS', 'R0110BBG', 'TRANSBUA, S.L.'],
+  ['5713LMN', 'R1639BDD', 'MANUEL ABOY GONZALEZ'],
+  ['5820JDK', 'R1639BDD', 'MANUEL ABOY GONZALEZ'],
+  ['6124HZT', 'R8839BDR', 'LUIS M. TRINANES'],
+  ['6516KTH', 'R1644BDB', 'JOSE RUBEN ABALO RECUNA'],
+  ['6792HZR', '', ''],
+  ['7010JJY', '', 'URBANO ALONSO LAMAS'],
+  ['7347LBB', 'R9990BDD', 'RODRIGO PEREZ BAHAMONDE'],
+  ['7394LZP', '', 'JOSE ANTONIO VAZQUEZ HERMO'],
+  ['7585MCG', '', 'JACOBO GRANDE MENDEZ'],
+  ['7963MDF', 'PO2628R', 'PABLO CARLES SANTOS'],
+  ['8066HZR', '', 'BREOGAN MARQUEZ'],
+  ['8262MNC', 'R4714BCX', 'CANDIDO JAMARDO'],
+  ['8420KKT', 'R3697BDK', 'JOSE RAMON PINEIRO'],
+  ['8504KDR', 'R4905BDF', 'NUNO FILIPE'],
+  ['9039KDR', 'R7936BCV', 'MANUEL FERREIRA GOLDAR'],
+  ['9223FPD', 'R1829BBB', 'MANUEL FERREIRA GOLDAR'],
 ];
 
 // Aciertos posicionales minimos para considerar candidata a una matricula del
@@ -128,6 +172,7 @@ function resolverMatricula(leida, padron) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     FLOTA_TRACTORAS: FLOTA_TRACTORAS,
+    FLOTA_DETALLE: FLOTA_DETALLE,
     ACIERTOS_MINIMOS: ACIERTOS_MINIMOS,
     MARGEN_MINIMO: MARGEN_MINIMO,
     normalizarMatricula: normalizarMatricula,
@@ -1812,7 +1857,24 @@ function correlacionar(rA, rB, opts) {
     const df = nz(d.fecha);
     const et = 'pag ' + (d.pagina || '?') + ' ' + (nz(d.referencia) || 'sin ref');
     let cands = [];
-    if (dm) {
+    // PRINCIPIO DEL ENVIO (encargo Julio 2026-08-26): cuando el envio tiene UN
+    // SOLO camion (una sola matricula de ficha), TODO documento del envio es de
+    // ese camion — vino en el mismo sobre escaneado que la ficha. La matricula del
+    // documento solo sirve para CORROBORAR, nunca para descartar. Esto rescata el
+    // caso real (ejec 1018): GPT leyo la matricula de 8 documentos como "5135LNN"
+    // (real 5713LMN), y el codigo los tiraba a todos aunque eran del unico camion
+    // del envio, dejando 2 viajes sin documentacion. La matricula sigue usandose
+    // abajo para elegir A QUE VIAJE va cada doc; aca solo decide si PERTENECE.
+    if (listaMatsFicha.length === 1) {
+      cands = viajes.filter(function (v) { return v.tractoraN === listaMatsFicha[0]; });
+      // Si el documento trae matricula y NO corrobora al unico camion, se asigna
+      // igual pero se avisa (puede ser un doc traspapelado de otro envio; el
+      // humano lo verifica). No se descarta: perder la carga es peor.
+      if (dm && dm !== listaMatsFicha[0] && distanciaEdicion(dm, listaMatsFicha[0]) > MATRICULA_DIST_MAX) {
+        avisos.push('Documento ' + et + ': su matricula (' + (nz(d.matricula_tractor) || dm) + ') no coincide con el unico camion del envio (' + listaMatsFicha[0] + '); se asigna a ese camion igual (mismo sobre) y se marca para verificar.');
+        d._mat_no_corrobora = true;
+      }
+    } else if (dm) {
       cands = viajes.filter(function (v) { return v.tractoraN && v.tractoraN === dm; });
       if (cands.length === 0) {
         // Tolerancia: el documento perdio un caracter al leerse ("332LPL" por
@@ -1822,18 +1884,13 @@ function correlacionar(rA, rB, opts) {
           cands = viajes.filter(function (v) { return v.tractoraN === cercanas[0]; });
           avisos.push('Documento ' + et + ': matricula leida ' + d.matricula_tractor + ' se asocia a ' + cercanas[0] + ' (distancia ' + MATRICULA_DIST_MAX + ', unica ficha candidata) — verificar que sea el mismo camion.');
         } else {
-          docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio' });
+          docsHuerfanos.push({ d: d, motivo: 'matricula ' + d.matricula_tractor + ' no corresponde a ninguna ficha de este envio (hay ' + listaMatsFicha.length + ' camiones, no se puede asignar sin matricula fiable)' });
           continue;
         }
       }
-    } else if (listaMatsFicha.length === 1) {
-      // Sin matricula legible PERO el envio tiene UN SOLO camion: el documento es
-      // de ese camion (no hay otro al que pudiera pertenecer). Se desambigua entre
-      // sus viajes con las señales de abajo; si no desambigua, queda ambiguo (no se
-      // le presta la carga a nadie).
-      cands = viajes.filter(function (v) { return v.tractoraN === listaMatsFicha[0]; });
-      avisos.push('Documento ' + et + ': sin matricula legible; el envio tiene un solo camion (' + listaMatsFicha[0] + '), se intenta asignar por peso/emisor/destino.');
     } else {
+      // Multi-camion Y el doc no tiene matricula legible: no se puede saber de cual
+      // es. Queda huerfano para revision (no se le presta a un camion al azar).
       docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible y el envio tiene ' + listaMatsFicha.length + ' camiones' });
       continue;
     }

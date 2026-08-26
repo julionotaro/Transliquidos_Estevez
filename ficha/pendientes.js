@@ -96,6 +96,24 @@ function notasDeHistorial(historialStr) {
  * @param {number} [ahoraMs]      instante de referencia (tests deterministas).
  * @returns {Array<object>}
  */
+// El campo origen/destino del viaje puede venir ya con formato "CODIGO · NOMBRE"
+// (lo arma Preparar Filas Viajes con puntoGesruta). Para la tabla se separa: el
+// codigo va a su columna propia y el nombre a la columna origen/destino, sin
+// duplicar el codigo pegado al nombre (era el "COGER · COGER" de la captura).
+var SEP_PUNTO = ' \u00b7 '; // " · "
+function soloNombrePunto(valor) {
+  var s = (valor === null || valor === undefined) ? '' : String(valor);
+  var i = s.indexOf('\u00b7');
+  return (i >= 0) ? s.slice(i + 1).trim() : s.trim();
+}
+function codigoPunto(valor, puntos) {
+  var s = (valor === null || valor === undefined) ? '' : String(valor);
+  var i = s.indexOf('\u00b7');
+  if (i > 0) { return s.slice(0, i).trim(); }       // ya trae el codigo delante
+  var r = PUN.resolverPunto(s, 'documento', puntos); // fila vieja sin codigo: resolver
+  return (r && r.id_punto) ? r.id_punto : null;
+}
+
 function filtrarPendientes(viajes, ahoraMs, puntos) {
   var lista = Array.isArray(viajes) ? viajes : [];
   var out = [];
@@ -122,8 +140,8 @@ function filtrarPendientes(viajes, ahoraMs, puntos) {
       tractora: v.tractora || '',
       semi: v.semi || '',
       conductor: v.conductor || '',
-      origen: v.origen || '',
-      destino: v.destino || '',
+      origen: soloNombrePunto(v.origen),
+      destino: soloNombrePunto(v.destino),
       material: v.material || '',
       referencia: v.referencia || '',
       fecha: v.fecha || '',
@@ -141,8 +159,8 @@ function filtrarPendientes(viajes, ahoraMs, puntos) {
       codigo_cliente: CLIG.codigoCliente(v.cliente).codigo,
       codigo_chofer: GES.resolverChofer(v.conductor).codigo,
       codigo_material: GES.resolverMaterial(v.material).codigo,
-      codigo_origen: (PUN.resolverPunto(v.origen, 'documento', puntos) || {}).id_punto || null,
-      codigo_destino: (PUN.resolverPunto(v.destino, 'documento', puntos) || {}).id_punto || null,
+      codigo_origen: codigoPunto(v.origen, puntos),
+      codigo_destino: codigoPunto(v.destino, puntos),
       // marcas de forma por celda { campo: [motivos] }
       marcas: VF.marcasForma(v)
     });
