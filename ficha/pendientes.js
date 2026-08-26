@@ -31,6 +31,19 @@
 
 // Modulo de validaciones de forma: inlineado antes que este archivo en el nodo
 // (build-nodo.js), o require en tests.
+// Resolvedores de codigo Gesruta (conjunto cerrado). En el nodo se inlinean con
+// build-nodo.js; en tests se hace require. cod_origen/cod_destino necesitan el
+// catalogo de puntos, que llega por parametro (Leer Puntos Pendientes).
+var GES = (typeof resolverMaterial === 'function')
+  ? { resolverMaterial: resolverMaterial, resolverChofer: resolverChofer }
+  : require('../catalogo/gesruta.js');
+var PUN = (typeof resolverPunto === 'function')
+  ? { resolverPunto: resolverPunto }
+  : require('../catalogo/resolver-punto.js');
+var CLIG = (typeof codigoCliente === 'function')
+  ? { codigoCliente: codigoCliente }
+  : require('../catalogo/clientes-gesruta.js');
+
 var VF = (typeof marcasForma === 'function')
   ? { marcasForma: marcasForma, cantidadDe: cantidadDe, dietaDeDetalle: dietaDeDetalle }
   : require('./validaciones-forma.js');
@@ -83,7 +96,7 @@ function notasDeHistorial(historialStr) {
  * @param {number} [ahoraMs]      instante de referencia (tests deterministas).
  * @returns {Array<object>}
  */
-function filtrarPendientes(viajes, ahoraMs) {
+function filtrarPendientes(viajes, ahoraMs, puntos) {
   var lista = Array.isArray(viajes) ? viajes : [];
   var out = [];
   for (var i = 0; i < lista.length; i++) {
@@ -124,6 +137,12 @@ function filtrarPendientes(viajes, ahoraMs) {
       km_vacios: (v.km_vacios === null || v.km_vacios === undefined) ? '' : v.km_vacios,
       dieta: VF.dietaDeDetalle(v.detalle),
       estado_carga: v.estado_carga || 'pendiente_revision',
+      // --- CODIGOS GESRUTA (display, read-only): las columnas amarillas ---
+      codigo_cliente: CLIG.codigoCliente(v.cliente).codigo,
+      codigo_chofer: GES.resolverChofer(v.conductor).codigo,
+      codigo_material: GES.resolverMaterial(v.material).codigo,
+      codigo_origen: (PUN.resolverPunto(v.origen, 'documento', puntos) || {}).id_punto || null,
+      codigo_destino: (PUN.resolverPunto(v.destino, 'documento', puntos) || {}).id_punto || null,
       // marcas de forma por celda { campo: [motivos] }
       marcas: VF.marcasForma(v)
     });
@@ -212,8 +231,9 @@ function accionesHTML(p) {
 }
 
 var COLS_TABLA = [
-  'Matricula tractora', 'Remolque', 'Chofer', 'Cliente', 'Origen', 'Destino',
-  'Material', 'Referencia', 'Fecha de carga', 'Fecha de descarga', 'Cantidad',
+  'Matricula tractora', 'Remolque', 'Chofer', 'Cod. chofer',
+  'Cliente', 'Cod. cliente', 'Cod. origen', 'Origen', 'Cod. destino', 'Destino',
+  'Material', 'Cod. material', 'Referencia', 'Fecha de carga', 'Fecha de descarga', 'Cantidad',
   'Regimen indexacion', 'Km cargado', 'Km vacio', 'Dieta', 'Estado carga', 'Acciones'
 ];
 
@@ -223,12 +243,17 @@ function filasDeViaje(p) {
     celdaEditable(p, 'tractora', p.tractora, 'corregir_celda') +
     celdaEditable(p, 'semi', p.semi, 'corregir_celda') +
     celdaEditable(p, 'conductor', p.conductor, 'corregir_celda') +
+    celdaDisplay(p.codigo_chofer) +
     // cliente: no inline por celda; se corrige por la barra de acciones (verbo
     // corregir, que revalida regimen/pais). Aca solo se muestra el valor.
     '<td class="cli">' + escHtml(p.cliente || '-') + '</td>' +
+    celdaDisplay(p.codigo_cliente) +
+    celdaDisplay(p.codigo_origen) +
     celdaEditable(p, 'origen', p.origen, 'corregir_celda') +
+    celdaDisplay(p.codigo_destino) +
     celdaEditable(p, 'destino', p.destino, 'corregir_celda') +
     celdaEditable(p, 'material', p.material, 'corregir_celda') +
+    celdaDisplay(p.codigo_material) +
     celdaEditable(p, 'referencia', p.referencia, 'corregir_celda') +
     celdaEditable(p, 'fecha', p.fecha, 'corregir_celda') +
     celdaEditable(p, 'fecha_descarga', p.fecha_descarga, 'corregir_celda') +

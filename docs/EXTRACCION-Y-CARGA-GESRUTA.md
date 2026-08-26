@@ -672,6 +672,7 @@ del año, no hay dato del que deducirla. Es alta de tarifa.
 | **Período de facturación** | `ficha/periodo-facturacion.js` | Quincenal/mensual por cliente |
 | Correlación ficha↔documento | `ficha/correlacionar.js` | El cruce y las salvaguardas |
 | **Odómetro por tractora** | `ficha/odometro.js` | Km vacíos y último km registrado |
+| **Código de cliente Gesruta** | `catalogo/clientes-gesruta.js` | Nombre → código (RNM=661…) |
 | **Los prompts** | `ficha/payload.js` | `PROMPT_FICHAS` y `PROMPT_DOCS` |
 | Grafo del workflow | `docs/grafo-ingesta-tarifa.md` | Nodos, conexiones, deploy |
 

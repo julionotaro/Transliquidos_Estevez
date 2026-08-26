@@ -43,6 +43,8 @@ documentos) y las 8.755 líneas del histórico de Gesruta. Contiene:
   independientes; el % de la OC manda sobre la tabla
 - **Suplemento Gasóleo** (§10 quater): los % oficiales y los **cuatro defectos**
   del archivo, entre ellos una fecha corrupta que deja 55 días ambiguos
+- **Código de cliente Gesruta** (`catalogo/clientes-gesruta.js`): nombre → código,
+  minado del CSV de facturación; es el que faltaba para las columnas amarillas
 - **KM** (§11): por qué la cadena de km vacíos va por **tractora** y no por ficha,
   y el padrón de últimos odómetros que se persiste entre ingestas
 - Qué **NO** debe hacer el sistema nunca
