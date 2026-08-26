@@ -137,16 +137,17 @@ function viajeReal(campos) {
   }, campos));
 }
 
-test('CAMBIO 2: la tabla trae las columnas reales (no codigos Gesruta) + Dieta + Estado carga + Confirmar', () => {
-  const html = renderHTML(filtrarPendientes([viajeReal({})]));
-  ['Matricula tractora', 'Remolque', 'Chofer', 'Cliente', 'Origen', 'Destino',
-   'Material', 'Referencia', 'Fecha de carga', 'Fecha de descarga', 'Cantidad',
-   'Regimen indexacion', 'Km cargado', 'Km vacio', 'Dieta', 'Estado carga'].forEach(t => {
+test('FORMATO OBJETIVO (Julio 2026-08-26): la tabla trae codigos Gesruta + precio/importe/regimen', () => {
+  // Cambio de requisito: la vista de pendientes muestra el formato completo
+  // (Excelente_detalle_Code_Tabla): identidad + CODIGOS Gesruta + precio.
+  const html = renderHTML(filtrarPendientes([viajeReal({})], undefined, [], []));
+  ['Viaje', 'Matricula tractora', 'Chofer', 'Cod. chofer', 'Cliente', 'Cod. cliente',
+   'Cod. origen', 'Origen', 'Cod. destino', 'Destino', 'Carga', 'Cod. material',
+   'Referencia', 'Fecha de carga', 'Cantidad', 'Precio', 'Ud.', 'Importe',
+   'Reg.', 'Quinc.', 'Origen del precio', 'Km cargado', 'Km vacio', 'Estado carga'].forEach(t => {
     assert.ok(html.indexOf('>' + t + '<') >= 0, 'columna ' + t);
   });
   assert.match(html, /name="accion" value="confirmar"/);
-  // no debe existir columna de codigo Gesruta
-  assert.ok(html.indexOf('Cod ') === -1 && html.indexOf('cod_') === -1, 'no hay codigos Gesruta');
 });
 
 test('CAMBIO 2 (a): matricula tractora invalida -> celda con "!" y form corregir_celda campo=tractora', () => {

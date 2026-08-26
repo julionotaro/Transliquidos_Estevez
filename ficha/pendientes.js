@@ -44,6 +44,19 @@ var CLIG = (typeof codigoCliente === 'function')
   ? { codigoCliente: codigoCliente }
   : require('../catalogo/clientes-gesruta.js');
 
+// Precio/indexacion: mismos modulos que la Planilla. La vista de pendientes
+// muestra el formato completo (formato objetivo Excelente_detalle_Code_Tabla).
+// El precio contractual sale de la tabla Tarifas; la indexacion, de la tabla
+// Indexacion. Para un viaje incompleto (pendiente) muchas veces no resuelven:
+// la columna queda vacia, que es lo honesto (no se factura lo que falta).
+var TAR = (typeof buscarTarifa === 'function')
+  ? { buscarTarifa: buscarTarifa }
+  : require('./tarifas.js');
+var PERF = (typeof periodoFacturacion === 'function')
+  ? { periodoFacturacion: periodoFacturacion }
+  : require('./periodo-facturacion.js');
+function round2p(n) { return Math.round(n * 100) / 100; }
+
 var VF = (typeof marcasForma === 'function')
   ? { marcasForma: marcasForma, cantidadDe: cantidadDe, dietaDeDetalle: dietaDeDetalle }
   : require('./validaciones-forma.js');
@@ -114,15 +127,50 @@ function codigoPunto(valor, puntos) {
   return (r && r.id_punto) ? r.id_punto : null;
 }
 
-function filtrarPendientes(viajes, ahoraMs, puntos) {
+/**
+ * Precio contractual, importe, regimen pais (G/GPT) y periodo (quincenal/mensual)
+ * de un viaje, para las columnas de facturacion de la tabla. El precio sale de la
+ * tabla Tarifas (contractual); si no resuelve, queda vacio (honesto). El importe
+ * es cantidad x tarifa (o el fijo). El origen del precio dice de donde salio.
+ */
+function calcularPrecioFila(v, tarifas) {
+  var rt = TAR.buscarTarifa({
+    cliente: v.cliente, fecha: v.fecha,
+    origen: soloNombrePunto(v.origen), destino: soloNombrePunto(v.destino)
+  }, tarifas);
+  var precio = null, unidad = '', importe = null, origen_precio = '';
+  if (rt && rt.tarifa) {
+    precio = rt.tarifa.valor;
+    unidad = (rt.tarifa.tipo === 'tn') ? '\u20ac/tn' : '\u20ac/viaje';
+    origen_precio = (rt.estado === 'DIRECTO') ? 'tarifa contractual'
+      : (rt.estado === 'FALLBACK_PROVINCIA') ? 'tarifa contractual (provincia)' : '';
+    var kg = (typeof v.kg_documento === 'number' && isFinite(v.kg_documento)) ? v.kg_documento
+      : (typeof v.kg_hoja === 'number' && isFinite(v.kg_hoja)) ? v.kg_hoja : null;
+    if (rt.tarifa.tipo === 'fijo') { importe = round2p(rt.tarifa.valor); }
+    else if (kg !== null) { importe = round2p((kg / 1000) * rt.tarifa.valor); }
+  } else {
+    origen_precio = (v.cliente ? 'sin tarifa para la ruta' : 'sin cliente');
+  }
+  var per = PERF.periodoFacturacion(v.cliente);
+  var pais = String(v.pais_facturacion || '').toUpperCase();
+  return {
+    precio: precio, unidad: unidad, importe: importe, origen_precio: origen_precio,
+    quincena: per.periodo || '',
+    regimen_pais: (pais === 'PT') ? 'GPT' : (pais === 'ES' ? 'G' : '')
+  };
+}
+
+function filtrarPendientes(viajes, ahoraMs, puntos, tarifas) {
   var lista = Array.isArray(viajes) ? viajes : [];
   var out = [];
   for (var i = 0; i < lista.length; i++) {
     var v = lista[i] || {};
     if (!esPendiente(v)) { continue; }
     var cant = VF.cantidadDe(v);
+    v._precio = calcularPrecioFila(v, tarifas);
     out.push({
       id: v.id,
+      numero: (v.orden === null || v.orden === undefined) ? '' : v.orden,
       // --- resumen (compat cierre-v1) ---
       fecha_carga: v.fecha || null,
       chofer: v.conductor || null,
@@ -161,6 +209,14 @@ function filtrarPendientes(viajes, ahoraMs, puntos) {
       codigo_material: GES.resolverMaterial(v.material).codigo,
       codigo_origen: codigoPunto(v.origen, puntos),
       codigo_destino: codigoPunto(v.destino, puntos),
+      // --- PRECIO / IMPORTE / REGIMEN / PERIODO (formato objetivo) ---
+      // (se calculan una vez por viaje mas abajo y se copian aca via _precio)
+      precio: v._precio.precio,
+      unidad: v._precio.unidad,
+      importe: v._precio.importe,
+      regimen_pais: v._precio.regimen_pais,
+      quincena: v._precio.quincena,
+      origen_precio: v._precio.origen_precio,
       // marcas de forma por celda { campo: [motivos] }
       marcas: VF.marcasForma(v)
     });
@@ -248,16 +304,21 @@ function accionesHTML(p) {
     '</form>';
 }
 
+// Formato objetivo (Excelente_detalle_Code_Tabla). Se mantienen las columnas de
+// trabajo que el formato objetivo no lista pero que la vista editable necesita:
+// Remolque (identidad), Estado carga y Acciones (flujo de confirmacion).
 var COLS_TABLA = [
-  'Matricula tractora', 'Remolque', 'Chofer', 'Cod. chofer',
+  'Viaje', 'Matricula tractora', 'Remolque', 'Chofer', 'Cod. chofer',
   'Cliente', 'Cod. cliente', 'Cod. origen', 'Origen', 'Cod. destino', 'Destino',
-  'Material', 'Cod. material', 'Referencia', 'Fecha de carga', 'Fecha de descarga', 'Cantidad',
-  'Regimen indexacion', 'Km cargado', 'Km vacio', 'Dieta', 'Estado carga', 'Acciones'
+  'Carga', 'Cod. material', 'Referencia', 'Fecha de carga', 'Cantidad',
+  'Precio', 'Ud.', 'Importe', 'Reg.', 'Quinc.', 'Origen del precio',
+  'Km cargado', 'Km vacio', 'Estado carga', 'Acciones'
 ];
 
 /** Fila principal (celdas) + fila de observaciones (faltante/motivo/notas). */
 function filasDeViaje(p) {
   var main = '<tr data-viaje="' + escHtml(p.id) + '">' +
+    celdaDisplay(p.numero) +
     celdaEditable(p, 'tractora', p.tractora, 'corregir_celda') +
     celdaEditable(p, 'semi', p.semi, 'corregir_celda') +
     celdaEditable(p, 'conductor', p.conductor, 'corregir_celda') +
@@ -274,14 +335,18 @@ function filasDeViaje(p) {
     celdaDisplay(p.codigo_material) +
     celdaEditable(p, 'referencia', p.referencia, 'corregir_celda') +
     celdaEditable(p, 'fecha', p.fecha, 'corregir_celda') +
-    celdaEditable(p, 'fecha_descarga', p.fecha_descarga, 'corregir_celda') +
     // cantidad: corrige la columna real (kg_documento o kg_hoja); muestra la
     // U.M. al lado (el numero sin unidad miente). Marca indexada por 'cantidad'.
     celdaCantidad(p) +
-    celdaDisplay(p.regimen_indexacion) +
+    // --- precio / facturacion (formato objetivo, read-only) ---
+    celdaDisplay(p.precio) +
+    celdaDisplay(p.unidad) +
+    celdaDisplay(p.importe) +
+    celdaDisplay(p.regimen_pais) +
+    celdaDisplay(p.quincena) +
+    celdaDisplay(p.origen_precio) +
     celdaEditable(p, 'km_cargados', p.km_cargados, 'corregir_celda') +
     celdaEditable(p, 'km_vacios', p.km_vacios, 'corregir_celda') +
-    celdaDisplay(p.dieta === null ? '' : p.dieta) +
     '<td class="ecarga">' + escHtml(p.estado_carga) + '</td>' +
     '<td>' + accionesHTML(p) + '</td>' +
     '</tr>';
