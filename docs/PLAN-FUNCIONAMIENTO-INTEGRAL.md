@@ -37,7 +37,7 @@ que este plan sea acotable.
 | **F6** | Peso tomado de la OC (23.000 en vez de 23.380) | La guarda existe (excluye órdenes) pero **el documento girado no se asoció**, así que la orden era el único peso | correlación | ⬜ pendiente |
 | **F7** | Referencia equivocada (`2009926` en vez de `2017843`) | Se toma la del primer doc que la traiga; **la regla por cliente sólo vive en el prompt**, no como guarda de código | código | ⬜ pendiente |
 | **F8** | Cliente vacío ⇒ 6 columnas vacías | Sin doc no hay cliente; sin cliente no hay tarifa, régimen ni quincena. **Un dato tumba media fila** | diseño | ⬜ pendiente |
-| **F9** | Origen/destino sin traducir (dirección cruda) | Cuando el literal no resuelve a punto, se guarda la dirección entera del documento | catálogo | ⬜ pendiente |
+| **F9** | Origen/destino mal (TERUEL, ENCE, CARREIRA) | El documento trae la **razón social** del cargador + dirección postal, y a veces la dirección está **mal impresa** (guía RNM: "Asturiana de Zinc … 46002 Teruel", la planta está en Avilés) | catálogo | ✅ **cerrada** (alias empresa) |
 | **F10** | Rutas sin tarifa aunque el viaje sea real | El **tarifario histórico** (fuente robusta) nunca se cargó como tabla en n8n | datos | ⬜ pendiente |
 | **F11** | Fecha del documento mal (18/08 en un viaje del 10/08) | Lectura de visión; hoy no hay guarda que contraste la fecha del doc contra la de la ficha | código | ⬜ pendiente |
 
@@ -81,7 +81,45 @@ excluye.
 | **2.2** | **Cargar el tarifario histórico** como tabla + 2º escalón de la cascada | Cubre las rutas que el contractual no tiene; marca REVISAR (es observada, no pactada) |
 | **2.3** | **Peso**: cuando el único kg viene de una orden → REVISAR explícito, nunca se usa | La guarda existe; falta que el caso sea **visible** en vez de silencioso |
 
-## Fase 3 — Precisión de extracción (F7 · F9 · F11)
+## Fase 2bis — F9 cerrada: alias EMPRESA → punto
+
+`catalogo/alias-empresa-punto.json` + filas en la tabla `puntos` de n8n. El
+documento trae la razón social del cargador/destinatario, no el nombre del
+pueblo, y a veces la dirección postal está mal:
+
+```
+guía RNM (sosa):  origen "Asturiana de Zinc S.A., Avda. de Galicia 46002 Teruel"
+                  → sin alias resolvía a TERUEL (¡la planta está en AVILÉS!)
+                  → con alias "ASTURIANA DE ZINC"→AVILES resuelve a AVILES ✓
+```
+
+La empresa gana sobre la localidad porque aparece **al principio** del literal
+(earliest-position). Cargados: Asturiana de Zinc/Ferquimer→AVILÉS, ENCE→NAVIA,
+Carreira/RNM→FAMALICÃO, Disiclin→SILLEDA. Se cargan más a medida que aparezcan.
+
+---
+
+## ⚠ Techo real: la lectura de GPT VARÍA entre corridas
+
+Comparando **tres corridas del mismo juego** (Manuel Aboy — ejec 1076/1087/1093):
+
+| Campo | Corrida A | Corrida B |
+|---|---|---|
+| Peso V1 | 23.000 | 23.360 |
+| Origen V1 | "CELLA DE ESTACION" | "Asturiana Zinc Teruel" |
+| Matrícula del doc | 5737JXH | 5135LNN / 5715LNN |
+
+**El mismo PDF da lecturas distintas cada vez.** El código es determinista; su
+*input* (lo que lee GPT) no lo es. Por eso "siguen apareciendo errores" aunque
+arreglemos código: las guardas (origen≠destino, material, principio del envío,
+peso desde carga) **mitigan** —convierten el error en REVISAR en vez de en un
+dato falso— pero no pueden hacer determinista algo cuyo input cambia. La única
+forma de subir el piso de lectura es el prompt + la revisión humana de las filas
+en REVISAR. Esto no es un bug a cerrar: es la propiedad del componente de visión.
+
+---
+
+## Fase 3 — Precisión de extracción (F7 · F11)
 
 | Paso | Qué |
 |---|---|

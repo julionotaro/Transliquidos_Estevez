@@ -1,0 +1,9 @@
+{
+  "_nota": "Alias EMPRESA -> punto Gesruta, descubiertos en las ejecuciones reales (F9 del plan). Un documento suele traer la RAZON SOCIAL del cargador/destinatario, no el nombre del pueblo; y a veces la direccion postal esta MAL impresa (guia RNM: 'Asturiana de Zinc ... 46002 Teruel' cuando la planta esta en Aviles). Resolver por la empresa gana sobre la localidad de la direccion porque la empresa aparece al principio del literal (earliest-position). Estos alias se cargan como filas extra en la tabla `puntos` de n8n; resolver-punto indexa todas las filas, asi que una fila {id_punto, alias} agrega ese alias al punto.",
+  "alias": [
+    { "id_punto": "AVILE", "nombre_canonico": "AVILES", "alias": "ASTURIANA DE ZINC|FERQUIQUIMICA|FERQUIMER" },
+    { "id_punto": "NAVIA", "nombre_canonico": "NAVIA", "alias": "ENCE|ENCE NAVIA" },
+    { "id_punto": "FAMAL", "nombre_canonico": "VILANOVA FAMALICAO", "alias": "CARREIRA|RNM PRODUTOS QUIMICOS|RNM PRODUTOS" },
+    { "id_punto": "SILLE", "nombre_canonico": "SILLEDA", "alias": "PRODUCTOS DISICLIN|DISICLIN" }
+  ]
+}
