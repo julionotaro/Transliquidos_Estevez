@@ -23,9 +23,19 @@
 // nunca via cliente, para no inventar una regla de negocio que no esta
 // confirmada.
 //
-// D-03 / nota del encargo: la indexacion AGREGADA (quincenal/mensual) NUNCA
-// se calcula aca -- se cierra en facturacion. Este modulo la marca (regimen
-// visible) y no toca un numero.
+// D-03 / nota del encargo: la indexacion AGREGADA (quincenal/mensual) NO se
+// CIERRA aca -- el importe de la fila sigue siendo null y se cierra en
+// facturacion. Lo que SI hace ahora (2026-08-26) es resolver el tramo vigente y
+// exponer la base que ese viaje aporta al periodo (`base_periodo`), para que
+// ficha/modalidad-indexacion.js la acumule por tramo. Antes el caso agregado
+// quedaba ciego hasta que llegaba la factura, que es justo cuando ya no se puede
+// verificar. Exponer la base no es calcular el cobro: es poder auditarlo.
+//
+// De donde sale el regimen: ficha/modalidad-indexacion.js lo deduce del
+// HISTORICO del cliente (que indexacion se le aplico realmente), no de reglas de
+// ruta cableadas. Ver la cabecera de ese modulo para los tres defectos que eso
+// corrige, entre ellos el default `linea` que le inventaba una indexacion a los
+// clientes que no la llevan.
 
 'use strict';
 
@@ -107,10 +117,27 @@ function indexacionDeFila(viaje, importeLinea, indexacionRows) {
   if (regimen === 'incluida') {
     return { modo: 'incluida', pct: 0, importe: 0, grupo: null, etiqueta: 'incluida', motivo: null };
   }
-  if (regimen === 'agregada_quincenal' || regimen === 'agregada_mensual') {
+  // El cliente NO lleva indexacion (Tank Solutions, Transportes Santos,
+  // Hispalense — confirmado en facturas). Es una respuesta, no un hueco: cero es
+  // el numero correcto y la fila no debe ir a REVISAR por esto.
+  if (regimen === 'sin_indexacion') {
+    return { modo: 'sin_indexacion', pct: 0, importe: 0, grupo: null, etiqueta: 'sin indexacion', motivo: null };
+  }
+  if (regimen === 'agregada_quincenal' || regimen === 'agregada_mensual' || regimen === 'agregada') {
+    // La indexacion agregada NO se cierra por viaje (D-03): el importe de esta
+    // fila sigue siendo null. Pero SI se resuelve el tramo vigente y se expone
+    // la base que este viaje aporta al periodo, para que acumularPorPeriodo()
+    // pueda sumarla y el operador vea cuanto lleva devengado antes de que
+    // llegue la factura. Antes esto quedaba ciego hasta la facturacion.
+    var gA = grupoIndexacion(v.cliente);
+    var hitA = buscarPct(gA.grupo, v.fecha, indexacionRows);
+    var baseA = (typeof importeLinea === 'number' && isFinite(importeLinea)) ? round2(importeLinea) : null;
     return {
-      modo: 'regimen_pendiente', pct: null, importe: null, grupo: null,
-      etiqueta: regimen + ' (pendiente cierre en facturacion)', motivo: null
+      modo: 'regimen_pendiente', pct: hitA ? hitA.pct : null, importe: null,
+      grupo: gA.grupo, base_periodo: baseA, aporta_al_periodo: true,
+      etiqueta: regimen + ' (aporta ' + (baseA === null ? '?' : baseA) + ' EUR al periodo' +
+        (hitA ? ' @ ' + round2(hitA.pct * 100) + '%' : ', sin tramo vigente') + ')',
+      motivo: hitA ? null : ('sin_tramo_vigente: ' + gA.grupo + ' @ ' + (v.fecha || '(sin fecha)'))
     };
   }
   if (regimen !== 'linea') {

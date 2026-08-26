@@ -318,6 +318,81 @@ Verificado sobre las 8.755 líneas — el reparto es limpio:
 
 ---
 
+## 10 bis. Modalidad de indexación — por LÍNEA o por PERÍODO
+
+El §10 resuelve **de qué país** es la indexación (`G` vs `GPT`). Esto resuelve
+**cómo se cobra**: viaje por viaje, o acumulada. Son dos ejes independientes.
+`ficha/modalidad-indexacion.js`.
+
+### Las cuatro modalidades
+
+| Modalidad | Qué significa | Importe de la línea |
+|---|---|---|
+| `linea` | se indexa **cada viaje** sobre su propio importe | se calcula |
+| `agregada` | se indexa el **acumulado del período** | null en la línea, se acumula aparte |
+| `incluida` | la tarifa ya la contiene (**Baltransa**: línea a 0,000) | **0** |
+| `sin_indexacion` | ese cliente **no lleva** indexación | **0** |
+
+### Cómo se distinguen en el histórico
+
+Gesruta escribe la línea de indexación como `CANTIDAD = base · PRECIO = pct
+decimal · IMPORTE = base × pct`. La **base** delata la modalidad:
+
+| Caso real (albarán) | Porte | Base de la indexación | Lectura |
+|---|---|---|---|
+| 50458 | 1.498,56 | **1.498,56** | igual al porte → **por línea** |
+| 50448 | 482,01 | **11.944,32** | 25× el porte → **acumulada** |
+
+Y un cliente con portes y **cero** líneas de indexación es `sin_indexacion`
+— no un cliente al que se nos olvidó indexar.
+
+### La regla que evita el error más caro: **NUNCA `linea` por defecto**
+
+Confirmado contra facturas en `reglas-facturacion.md`: **TANK SOLUTIONS**,
+**TRANSPORTES SANTOS** e **HISPALENSE** facturan *sin* indexación. Un default
+`linea` les inventaba un cobro que su factura no lleva — y eso se descubre en la
+reclamación del cliente, no en la revisión. Sin evidencia → `null` + REVISAR.
+
+### FORESA es MIXTA — y por eso no se decide por cliente
+
+Foresa factura **de las dos formas** según el servicio (metanol mensual,
+Orember quincenal, el resto por línea). Elegir una por mayoría acertaría la mitad
+de las veces. Se marca `mixta` → `null` + REVISAR, y se decide por viaje.
+
+### El período se agrupa por TRAMO DE PCT, no por calendario
+
+Es el punto más importante y está confirmado por escrito en
+`reglas-facturacion.md`:
+
+> *"Los tramos dependen de cómo se actualizó ese mes: puede ser quincenal, una
+> vez al mes, o más. **NO asumir quincenas fijas.**"*
+
+y describe el metanol mensual *"con líneas agregadas por tramo de pct dentro del
+mes"*. O sea: **la unidad real de agregación es el tramo**; quincenal y mensual
+son dos casos particulares de lo mismo.
+
+- Un mes con **dos** actualizaciones de gasóleo → **dos** líneas agregadas.
+- Un mes con **una** → **una**.
+- Las etiquetas `G1Q` / `G2Q` son **texto de Gesruta**: no definen el corte.
+
+Agrupando por tramo salen bien los dos casos conocidos y también el *"o más"*
+que todavía no vimos.
+
+### La base es sólo PORTE (D-08)
+
+Los **repartos** (90 € de traslado), la **paralización** y los **lavados** quedan
+**fuera** de la base de indexación. Confirmado en factura 298.
+
+### Qué se calcula y qué no
+
+La indexación agregada **sigue sin cerrarse por viaje** (D-03): el importe de la
+línea es `null` y se cierra en facturación. Lo que sí se hace ahora es exponer
+`base_periodo` y el tramo vigente, y sumarlos por tramo. **Exponer la base no es
+calcular el cobro: es poder auditarlo** antes de que llegue la factura — que es
+justo cuando ya no se puede verificar.
+
+---
+
 ## 11. KM
 
 **Sólo están en la ficha**; ningún documento los trae.
@@ -404,7 +479,8 @@ del año, no hay dato del que deducirla. Es alta de tarifa.
 | Identidad de cliente | `ficha/clientes.js` | Nombre corto → razón social |
 | Tarifa contractual | `ficha/tarifa-contractual.js` | Tabla Tarifas oficial |
 | **Tarifario histórico** | `catalogo/tarifario-historico.js` | La tarifa realmente aplicada |
-| **Régimen de indexación** | `catalogo/regimen.js` | Por país del cliente |
+| **Régimen de indexación** | `catalogo/regimen.js` | Por país del cliente (G/GPT) |
+| **Modalidad de indexación** | `ficha/modalidad-indexacion.js` | Por línea o por período |
 | Correlación ficha↔documento | `ficha/correlacionar.js` | El cruce y las salvaguardas |
 | **Los prompts** | `ficha/payload.js` | `PROMPT_FICHAS` y `PROMPT_DOCS` |
 | Grafo del workflow | `docs/grafo-ingesta-tarifa.md` | Nodos, conexiones, deploy |

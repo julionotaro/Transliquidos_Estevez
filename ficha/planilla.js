@@ -18,8 +18,12 @@
 
 var CRUCE_PLAN = (typeof norm === 'function') ? { norm: norm } : require('./cruce.js');
 var TARIFAS_PLAN = (typeof buscarTarifa === 'function') ? { buscarTarifa: buscarTarifa } : require('./tarifas.js');
+var MODIDX_PLAN = (typeof acumularPorPeriodo === 'function')
+  ? { acumularPorPeriodo: acumularPorPeriodo }
+  : require('./modalidad-indexacion.js');
+
 var INDEXACION_PLAN = (typeof indexacionDeFila === 'function')
-  ? { indexacionDeFila: indexacionDeFila, deduplicarIndexacion: deduplicarIndexacion }
+  ? { indexacionDeFila: indexacionDeFila, deduplicarIndexacion: deduplicarIndexacion, grupoIndexacion: grupoIndexacion }
   : require('./indexacion.js');
 
 var COLUMNAS = [
@@ -108,6 +112,11 @@ function armarFila(viaje, tarifasRows, indexacionRows) {
     importe: importe,
     pct_indexacion: idx.etiqueta,
     importe_indexacion: idx.importe,
+    // Indexacion por PERIODO: el importe de la fila queda null (no se cierra por
+    // viaje, D-03), pero la base que este viaje aporta al periodo SI se expone,
+    // para que armarAgregadasIndexacion() la sume por tramo. Sin esto el caso
+    // agregado quedaba ciego hasta que llegaba la factura.
+    base_periodo_indexacion: (idx.base_periodo === undefined) ? null : idx.base_periodo,
     tipo_iva: tipoIva(v),
     // metadata de auditoria -- no son columnas del escritorio.
     fecha_carga: v.fecha || null,
@@ -164,6 +173,33 @@ function armarFilas(viajes, tarifasRows, indexacionRowsCrudas) {
   var lista = Array.isArray(viajes) ? viajes : [];
   var indexacionRows = INDEXACION_PLAN.deduplicarIndexacion(indexacionRowsCrudas);
   return lista.map(function (v) { return armarFila(v, tarifasRows, indexacionRows); });
+}
+
+/**
+ * Lineas de indexacion AGREGADA del lote: una por (cliente, tramo de pct
+ * vigente). No es una columna de la planilla sino un bloque aparte, porque no
+ * pertenece a ningun viaje: es el devengado del periodo.
+ *
+ * Se agrupa por TRAMO y no por quincena ni por mes -- ver la cabecera de
+ * ficha/modalidad-indexacion.js: un mes con dos actualizaciones de gasoleo
+ * produce dos lineas, que es lo que se ve en las facturas reales del metanol.
+ *
+ * @param {Array<object>} filas  salida de armarFilas()
+ * @param {Array<object>} indexacionRowsCrudas  tabla Indexacion sin deduplicar
+ * @returns {Array<object>} lineas agregadas listas para mostrar
+ */
+function armarAgregadasIndexacion(filas, indexacionRowsCrudas) {
+  var lista = Array.isArray(filas) ? filas : [];
+  var tramos = INDEXACION_PLAN.deduplicarIndexacion(indexacionRowsCrudas);
+  var aportan = lista.filter(function (f) {
+    return typeof f.base_periodo_indexacion === 'number' && f.base_periodo_indexacion > 0;
+  }).map(function (f) {
+    return {
+      cliente: f.cliente, codigoCliente: f.cliente,
+      fecha: f.fecha_carga, importe_porte: f.base_periodo_indexacion
+    };
+  });
+  return MODIDX_PLAN.acumularPorPeriodo(aportan, tramos, INDEXACION_PLAN.grupoIndexacion);
 }
 
 // --- HTML minimo: mismo estilo que ficha/pendientes.js (sin framework, sin build) --
@@ -278,6 +314,7 @@ if (typeof module !== 'undefined' && module.exports) {
     calcularImporte: calcularImporte,
     textoTarifa: textoTarifa,
     armarFila: armarFila,
+    armarAgregadasIndexacion: armarAgregadasIndexacion,
     valoresEnOrden: valoresEnOrden,
     valoresTabla: valoresTabla,
     armarFilas: armarFilas,

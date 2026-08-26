@@ -7,6 +7,15 @@ Fuente: 32 facturas finales + soportes (23-24/07/2026) + correcciones de Julio e
 - Una factura puede mezclar viajes de meses distintos: el pct se determina por FECHA DEL VIAJE (tramo vigente), no por mes de factura.
 - El pct sale de la solapa del grupo + tramo de fechas. Los tramos dependen de como se actualizo ese mes: puede ser quincenal, una vez al mes, o mas. NO asumir quincenas fijas.
 
+## Modalidad: por linea o por periodo (verificado 2026-08-26 sobre el export)
+- La MODALIDAD se deduce del historico, no de reglas de ruta: `ficha/modalidad-indexacion.js`.
+- La BASE de la linea de indexacion delata la modalidad. Si la base == importe del porte del mismo albaran -> por LINEA (caso real albaran 50458: porte 1.498,56 y base 1.498,56). Si la base es mucho mayor -> ACUMULADA del periodo (albaran 50448: porte 482,01 y base 11.944,32).
+- Cliente con portes y CERO lineas de indexacion -> sin_indexacion. NO es un olvido.
+- NUNCA asumir `linea` por defecto: Tank Solutions, Transportes Santos e Hispalense facturan sin indexacion, y el default les inventaba un cobro.
+- FORESA es MIXTA (factura de las dos formas segun servicio): no se decide por cliente, se decide por viaje. Ambiguo -> REVISAR.
+- La AGREGACION es por TRAMO DE PCT VIGENTE, nunca por quincena o mes natural (ver la nota de arriba: "NO asumir quincenas fijas"). Un mes con dos actualizaciones produce dos lineas agregadas. G1Q/G2Q son etiquetas de Gesruta, no definen el corte.
+- La agregada sigue SIN cerrarse por viaje (D-03), pero cada viaje expone `base_periodo` + tramo vigente para poder auditar el devengado antes de la factura.
+
 ## Grupos de indexacion (confirmado)
 - FORESA y BRESFOR -> solapa FORESA-BRESFOR.
 - QUIMIDROGA -> solapa QUIMIDROGA. HELM -> solapa HELM.

@@ -308,6 +308,10 @@ var CRUCE = (typeof clasificarCantidad === 'function')
   ? { clasificarCantidad: clasificarCantidad, regimenIndexacion: regimenIndexacion, repartirKm: repartirKm, esRutaMultiviaje: esRutaMultiviaje, RUTAS_MULTIVIAJE: RUTAS_MULTIVIAJE, CLIENTES_CONOCIDOS: CLIENTES_CONOCIDOS }
   : require('./cruce.js');
 
+var MODIDX = (typeof modalidadDeViaje === 'function')
+  ? { modalidadDeViaje: modalidadDeViaje }
+  : require('./modalidad-indexacion.js');
+
 // Fuente legible de un dato para el audit trail (§4): que papel/pagina lo aporto.
 var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'doc') + ':pag' + (d.pagina || '?')) : null; };
 
@@ -316,13 +320,17 @@ var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'do
  *
  * @param {object|null} rA JSON de la pasada de fichas   ({hojas:[...]}).
  * @param {object|null} rB JSON de la pasada de documentos ({documentos:[...]}).
- * @param {object} [opts] {rutas, clientes} listas configurables (default cruce.js).
+ * @param {object} [opts] {rutas, clientes, modalidadIndexacion} configurables.
  * @returns {{ok:boolean, hojas:Array, viajes:Array, documentos:Array,
  *            errores:Array, avisos:Array}}
  */
 function correlacionar(rA, rB, opts) {
   const rutas = (opts && opts.rutas) ? opts.rutas : CRUCE.RUTAS_MULTIVIAJE;
   const clientes = (opts && opts.clientes) ? opts.clientes : CRUCE.CLIENTES_CONOCIDOS;
+  // Mapa cliente -> modalidad de indexacion deducida del historico de Gesruta
+  // (ficha/modalidad-indexacion.js). Opcional: sin el, el regimen cae a las
+  // reglas de ruta de cruce.js, que es el comportamiento anterior.
+  const mapaModalidad = (opts && opts.modalidadIndexacion) ? opts.modalidadIndexacion : null;
   if (!rA) {
     logError('la pasada de FICHAS no devolvio JSON valido');
     return { ok: false, hojas: [], viajes: [], documentos: [], errores: [], avisos: [] };
@@ -739,7 +747,14 @@ function correlacionar(rA, rB, opts) {
     // llevo 'linea' en silencio en vez de 'agregada_quincenal'). Ahora falla
     // ruidoso: regimen_indexacion queda null y el viaje va a REVISAR con el valor
     // leido en el motivo, visible sin abrir el escaneo. NO es un alias de FORBA.
-    const ridx = CRUCE.regimenIndexacion(v.cliente, v.origen, v.destino, clientes);
+    // La modalidad (por linea / por periodo / incluida / sin indexacion) sale del
+    // HISTORICO cuando esta cargado: es lo que se le facturo realmente a ese
+    // cliente. Sin historico, regimenIndexacion cae a sus reglas de ruta.
+    const modIdx = MODIDX.modalidadDeViaje(
+      { cliente: v.cliente, codigoCliente: v.codigo_cliente, origen: v.origen, destino: v.destino },
+      mapaModalidad
+    );
+    const ridx = CRUCE.regimenIndexacion(v.cliente, v.origen, v.destino, clientes, modIdx);
     v.regimen_indexacion = ridx.regimen;
     // Fail-loud del cliente: si vino de un emisor pero no se resolvio a un cliente
     // conocido, decirlo con el emisor a la vista (CAMBIO 3), asi el operador sabe

@@ -139,9 +139,25 @@ function esClienteConocido(cliente, clientes) {
  * @returns {{regimen: 'incluida'|'agregada_mensual'|'agregada_quincenal'|'linea'|null,
  *            motivo: string|null}}
  */
-function regimenIndexacion(cliente, origen, destino, clientes) {
+function regimenIndexacion(cliente, origen, destino, clientes, modalidad) {
   if (!esClienteConocido(cliente, clientes)) {
     return { regimen: null, motivo: 'cliente_no_reconocido: ' + (nz_local(cliente) || '(no se leyo)') };
+  }
+  // EVIDENCIA PRIMERO. Si se inyecto la modalidad deducida del historico
+  // (ficha/modalidad-indexacion.js), manda esa: dice como se le facturo REALMENTE
+  // la indexacion a este cliente, en vez de adivinarlo por la ruta. Las reglas de
+  // ruta de abajo quedan como respaldo para cuando no hay historico cargado.
+  //   'sin_indexacion' se propaga tal cual: es una respuesta valida (hay clientes
+  //     cuya factura no lleva indexacion) y hasta ahora se perdia bajo el default.
+  //   'agregada' sin distinguir quincenal/mensual tambien se propaga: el corte
+  //     real lo dan los tramos de pct, no el calendario (ver modalidad-indexacion).
+  //   modalidad null (cliente que factura de las dos formas, o sin evidencia) NO
+  //     cae al default: devuelve null + motivo para que el viaje vaya a REVISAR.
+  if (modalidad && modalidad.fuente && modalidad.fuente !== 'ninguna') {
+    if (modalidad.modalidad === null) {
+      return { regimen: null, motivo: modalidad.motivo };
+    }
+    return { regimen: modalidad.modalidad, motivo: modalidad.revisar ? modalidad.motivo : null };
   }
   var cl = norm(cliente);
   if (cl.indexOf('BALTRANSA') >= 0) { return { regimen: 'incluida', motivo: null }; }
