@@ -80,7 +80,15 @@ function buscarTarifaContractual(viaje, tarifas, catalogo) {
   for (var i = 0; i < tarifas.length; i++) {
     var t = tarifas[i];
     if (!clienteCoincide(viaje.cliente, t.cliente)) { continue; }
-    if (norm(t.origen) !== oc.n || norm(t.destino) !== dc.n) { continue; }
+    // AMBOS LADOS AL CANONICO (bug real ejec 1076): el viaje se traducia a punto
+    // canonico ("FAMALICAO" -> "VILANOVA FAMALICAO") pero la fila de la tabla
+    // Tarifas se comparaba EN CRUDO, donde dice literalmente "FAMALICAO". Nunca
+    // matcheaba -> ninguna tarifa se encontraba nunca. La tabla la cargo un
+    // humano con el nombre corriente; el viaje viene del documento. Solo son
+    // comparables si los DOS pasan por el mismo resolvedor de puntos.
+    var to = canonPunto(t.origen, catalogo);
+    var td = canonPunto(t.destino, catalogo);
+    if (to.n !== oc.n || td.n !== dc.n) { continue; }
     if (!materialCoincide(viaje.material, t.material)) { continue; }
     cand.push(t);
   }

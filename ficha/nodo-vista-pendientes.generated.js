@@ -2586,23 +2586,41 @@ function codigoPunto(valor, puntos) {
  * es cantidad x tarifa (o el fijo). El origen del precio dice de donde salio.
  */
 function calcularPrecioFila(v, tarifas) {
-  var rt = TAR.buscarTarifa({
-    cliente: v.cliente, fecha: v.fecha,
-    origen: soloNombrePunto(v.origen), destino: soloNombrePunto(v.destino)
-  }, tarifas);
+  // UN SOLO MOTOR DE TARIFA (bug real ejec 1076). Antes esta vista RECALCULABA la
+  // tarifa con buscarTarifa() mientras la ingesta la habia calculado con
+  // buscarTarifaContractual(): dos motores distintos, dos resultados distintos con
+  // los mismos datos. La ingesta ya guardo el resultado en las columnas
+  // tarifa_contractual_tn / _fijo / _motivo; la vista LEE eso. Un solo lugar donde
+  // se decide el precio.
+  var tn = (typeof v.tarifa_contractual_tn === 'number' && isFinite(v.tarifa_contractual_tn)) ? v.tarifa_contractual_tn : null;
+  var fijo = (typeof v.tarifa_contractual_fijo === 'number' && isFinite(v.tarifa_contractual_fijo)) ? v.tarifa_contractual_fijo : null;
   var precio = null, unidad = '', importe = null, origen_precio = '';
-  if (rt && rt.tarifa) {
-    precio = rt.tarifa.valor;
-    unidad = (rt.tarifa.tipo === 'tn') ? '\u20ac/tn' : '\u20ac/viaje';
-    origen_precio = (rt.estado === 'DIRECTO') ? 'tarifa contractual'
-      : (rt.estado === 'FALLBACK_PROVINCIA') ? 'tarifa contractual (provincia)' : '';
-    var kg = (typeof v.kg_documento === 'number' && isFinite(v.kg_documento)) ? v.kg_documento
-      : (typeof v.kg_hoja === 'number' && isFinite(v.kg_hoja)) ? v.kg_hoja : null;
-    if (rt.tarifa.tipo === 'fijo') { importe = round2p(rt.tarifa.valor); }
-    else if (kg !== null) { importe = round2p((kg / 1000) * rt.tarifa.valor); }
+
+  var kg = (typeof v.kg_documento === 'number' && isFinite(v.kg_documento)) ? v.kg_documento
+    : (typeof v.kg_hoja === 'number' && isFinite(v.kg_hoja)) ? v.kg_hoja : null;
+
+  if (fijo !== null) {
+    precio = fijo; unidad = '\u20ac/viaje'; importe = round2p(fijo);
+    origen_precio = 'tarifa contractual';
+  } else if (tn !== null) {
+    precio = tn; unidad = '\u20ac/tn';
+    if (kg !== null) { importe = round2p((kg / 1000) * tn); }
+    origen_precio = 'tarifa contractual';
+  } else if (typeof v.tarifa_tn_documento === 'number' && isFinite(v.tarifa_tn_documento)) {
+    // Cascada 3: el precio impreso en la ORDEN del cliente (Baltransa/Transtambre
+    // lo traen). Es un precio pactado por operacion, vale.
+    precio = v.tarifa_tn_documento; unidad = '\u20ac/tn';
+    if (kg !== null) { importe = round2p((kg / 1000) * precio); }
+    origen_precio = 'precio de la orden';
+  } else if (typeof v.importe_documento === 'number' && isFinite(v.importe_documento)) {
+    precio = v.importe_documento; unidad = '\u20ac/viaje'; importe = round2p(v.importe_documento);
+    origen_precio = 'precio de la orden';
   } else {
-    origen_precio = (v.cliente ? 'sin tarifa para la ruta' : 'sin cliente');
+    // Sin precio: el motivo que dejo la ingesta explica POR QUE (sin cliente, sin
+    // tarifa para la ruta, varias candidatas...). Es informacion, no un hueco mudo.
+    origen_precio = String(v.tarifa_contractual_motivo || (v.cliente ? 'sin tarifa para la ruta' : 'sin cliente'));
   }
+
   var per = PERF.periodoFacturacion(v.cliente);
   var pais = String(v.pais_facturacion || '').toUpperCase();
   return {
@@ -2617,7 +2635,11 @@ function filtrarPendientes(viajes, ahoraMs, puntos, tarifas) {
   var out = [];
   for (var i = 0; i < lista.length; i++) {
     var v = lista[i] || {};
-    if (!esPendiente(v)) { continue; }
+    // TODOS los viajes del lote (decision de Julio 2026-08-26). Antes se filtraba
+    // por esPendiente() y los viajes CORRECTOS no se listaban -> "los viajes 2 y 3
+    // no aparecen". La planilla tiene que mostrar el lote completo; el estado de
+    // cada fila dice si requiere accion. esPendiente() sigue usandose para eso.
+    v = v || {};
     var cant = VF.cantidadDe(v);
     v._precio = calcularPrecioFila(v, tarifas);
     out.push({
@@ -2655,6 +2677,10 @@ function filtrarPendientes(viajes, ahoraMs, puntos, tarifas) {
       km_vacios: (v.km_vacios === null || v.km_vacios === undefined) ? '' : v.km_vacios,
       dieta: VF.dietaDeDetalle(v.detalle),
       estado_carga: v.estado_carga || 'pendiente_revision',
+      // Estado legible del eje real: que le falta a esta fila para ser facturable.
+      estado_fila: (v.estado === 'PENDIENTE_DOCUMENTACION') ? 'FALTA DOC'
+        : (v.estado_lectura === 'REVISAR') ? 'REVISAR'
+        : (v.estado_carga === 'confirmada') ? 'confirmada' : 'OK',
       // --- CODIGOS GESRUTA (display, read-only): las columnas amarillas ---
       codigo_cliente: CLIG.codigoCliente(v.cliente).codigo,
       codigo_chofer: GES.resolverChofer(v.conductor).codigo,
@@ -2764,7 +2790,7 @@ var COLS_TABLA = [
   'Cliente', 'Cod. cliente', 'Cod. origen', 'Origen', 'Cod. destino', 'Destino',
   'Carga', 'Cod. material', 'Referencia', 'Fecha de carga', 'Cantidad',
   'Precio', 'Ud.', 'Importe', 'Reg.', 'Quinc.', 'Origen del precio',
-  'Km cargado', 'Km vacio', 'Estado carga', 'Acciones'
+  'Km cargado', 'Km vacio', 'Estado', 'Acciones'
 ];
 
 /** Fila principal (celdas) + fila de observaciones (faltante/motivo/notas). */
@@ -2799,7 +2825,7 @@ function filasDeViaje(p) {
     celdaDisplay(p.origen_precio) +
     celdaEditable(p, 'km_cargados', p.km_cargados, 'corregir_celda') +
     celdaEditable(p, 'km_vacios', p.km_vacios, 'corregir_celda') +
-    '<td class="ecarga">' + escHtml(p.estado_carga) + '</td>' +
+    '<td class="ecarga">' + escHtml(p.estado_fila) + '</td>' +
     '<td>' + accionesHTML(p) + '</td>' +
     '</tr>';
 

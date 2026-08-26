@@ -106,8 +106,27 @@ const tarifaDe = function (v, origenLit, destinoLit) {
 const filas = [];
 for (const v of viajes) {
   // Literal de lugar que SI resuelve a punto (documento, si no la ficha).
-  const origenLit = mejorLiteralPunto(v.origen, v.lugar_carga);
-  const destinoLit = mejorLiteralPunto(v.destino, v.lugar_descarga);
+  let origenLit = mejorLiteralPunto(v.origen, v.lugar_carga);
+  let destinoLit = mejorLiteralPunto(v.destino, v.lugar_descarga);
+  // GUARDA ORIGEN != DESTINO (bug real ejec 1065). GPT leyo el CMR y puso como
+  // ORIGEN el lugar de ENTREGA ("CELLA, TERUEL"); los dos literales resolvieron
+  // al MISMO punto y el viaje quedo "TE · TERUEL -> TE · TERUEL". Ninguna tarifa
+  // existe para una ruta a si misma, asi que ademas se perdia el precio. Un viaje
+  // nunca carga y descarga en el mismo punto: si eso pasa, el documento se leyo
+  // mal -> manda la FICHA. Se compara el PUNTO CANONICO, no el literal, porque el
+  // colapso ocurre justo al traducir ("CELLA, TERUEL" y "CELLA" -> TERUEL).
+  let avisoRuta = '';
+  const pg0 = puntoGesruta(origenLit), pg1 = puntoGesruta(destinoLit);
+  if (pg0 && pg0 === pg1) {
+    const oF = s(v.lugar_carga), dF = s(v.lugar_descarga);
+    if (oF && dF && puntoGesruta(oF) !== puntoGesruta(dF)) {
+      avisoRuta = 'el documento daba el mismo punto como origen y destino (' + pg0 + '); se usa la ruta de la ficha (' + oF + ' -> ' + dF + ')';
+      origenLit = oF; destinoLit = dF;
+    } else {
+      avisoRuta = 'origen y destino resuelven al mismo punto (' + pg0 + ') y la ficha no los distingue; ruta anulada por imposible';
+      origenLit = ''; destinoLit = '';
+    }
+  }
   const tar = tarifaDe(v, origenLit, destinoLit);
   filas.push({
     hoja_id: idDe(v.hoja_idx),
@@ -154,8 +173,10 @@ for (const v of viajes) {
     // Calidad de LECTURA de la ficha (v3.2). Eje distinto de `estado`, que habla
     // de documentacion. Sin valor por defecto: si el correlacionador no lo puso,
     // queda vacio y se ve como no determinado, nunca como un OK.
-    estado_lectura: s(v.estado_lectura),
-    motivo_revision: s(v.motivo_revision),
+    // Si se corrigio la ruta por la guarda origen!=destino, la fila va a REVISAR
+    // aunque la lectura fuera OK: el humano tiene que confirmar la ruta.
+    estado_lectura: avisoRuta ? 'REVISAR' : s(v.estado_lectura),
+    motivo_revision: [s(v.motivo_revision), avisoRuta].filter(Boolean).join('; '),
     pagina_origen: n(v.pagina_origen),
     // Estado UNICO de documentacion (§3). Lo decide el correlacionador.
     estado: s(v.estado),

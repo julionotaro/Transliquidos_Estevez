@@ -50,11 +50,27 @@ test('cierre-v1 pendientes: los dias esperando se calculan bien', () => {
   assert.strictEqual(out[0].dias_esperando, 16);
 });
 
-test('cierre-v1 pendientes: un viaje completo y OK NO aparece', () => {
+test('VISTA COMPLETA (Julio 2026-08-26): un viaje OK SI aparece, marcado OK', () => {
+  // Cambio de requisito: la vista lista TODOS los viajes del lote, no solo los
+  // pendientes. Antes los viajes correctos no se listaban y Julio veia "los
+  // viajes 2 y 3 no aparecen". esPendiente() sigue existiendo, pero ahora
+  // clasifica la fila (columna Estado) en vez de excluirla.
   const v = viajeBase({ estado: 'con_documentacion', estado_lectura: 'OK' });
-  assert.strictEqual(esPendiente(v), false);
+  assert.strictEqual(esPendiente(v), false, 'no requiere accion');
   const out = filtrarPendientes([v]);
-  assert.strictEqual(out.length, 0);
+  assert.strictEqual(out.length, 1, 'pero SI se lista');
+  assert.strictEqual(out[0].estado_fila, 'OK');
+});
+
+test('VISTA COMPLETA: el estado de cada fila distingue FALTA DOC / REVISAR / OK', () => {
+  const out = filtrarPendientes([
+    viajeBase({ estado: 'PENDIENTE_DOCUMENTACION', estado_lectura: 'OK' }),
+    viajeBase({ estado: 'con_documentacion', estado_lectura: 'REVISAR' }),
+    viajeBase({ estado: 'con_documentacion', estado_lectura: 'OK' }),
+  ]);
+  assert.strictEqual(out.length, 3);
+  const estados = out.map(function (p) { return p.estado_fila; }).sort();
+  assert.deepStrictEqual(estados, ['FALTA DOC', 'OK', 'REVISAR']);
 });
 
 test('cierre-v1 pendientes: lista vacia no rompe -> mensaje claro, no error', () => {
@@ -144,7 +160,7 @@ test('FORMATO OBJETIVO (Julio 2026-08-26): la tabla trae codigos Gesruta + preci
   ['Viaje', 'Matricula tractora', 'Chofer', 'Cod. chofer', 'Cliente', 'Cod. cliente',
    'Cod. origen', 'Origen', 'Cod. destino', 'Destino', 'Carga', 'Cod. material',
    'Referencia', 'Fecha de carga', 'Cantidad', 'Precio', 'Ud.', 'Importe',
-   'Reg.', 'Quinc.', 'Origen del precio', 'Km cargado', 'Km vacio', 'Estado carga'].forEach(t => {
+   'Reg.', 'Quinc.', 'Origen del precio', 'Km cargado', 'Km vacio', 'Estado'].forEach(t => {
     assert.ok(html.indexOf('>' + t + '<') >= 0, 'columna ' + t);
   });
   assert.match(html, /name="accion" value="confirmar"/);

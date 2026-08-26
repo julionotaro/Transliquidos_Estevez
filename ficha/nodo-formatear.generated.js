@@ -1694,6 +1694,14 @@ var ODO = (typeof encadenarPorTractora === 'function')
 
 // Resolvedor de material (conjunto cerrado Gesruta): se usa como GUARDA para no
 // pegar un documento de un producto a un viaje de otro producto. Ver el uso.
+// Normalizacion fuerte para comparar LUGARES entre si (mayusculas, sin acentos
+// ni puntuacion). Se usa en la guarda "origen != destino".
+function norm2(x) {
+  return (x === null || x === undefined ? '' : String(x))
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase().replace(/[^A-Z0-9]+/g, ' ').trim();
+}
+
 var MATIDX = (typeof resolverMaterial === 'function')
   ? { resolverMaterial: resolverMaterial }
   : require('../catalogo/gesruta.js');
@@ -2127,6 +2135,25 @@ function correlacionar(rA, rB, opts) {
     const rDestino = pickLugar(TIPOS_DESTINO, 'destino');
     v.origen = rOrigen.valor || v.lugar_carga;
     v.destino = rDestino.valor || v.lugar_descarga;
+    // GUARDA ORIGEN != DESTINO (bug real ejec 1065). GPT leyo el CMR y puso como
+    // ORIGEN el lugar de ENTREGA ("CELLA, TERUEL"), asi que origen y destino
+    // quedaron IGUALES y el viaje se guardo como "TERUEL -> TERUEL". Ninguna
+    // tarifa existe para una ruta a si misma, y el error es invisible en la tabla.
+    // Un viaje nunca carga y descarga en el mismo punto: si el documento dice eso,
+    // el documento se leyo mal -> manda la FICHA (el chofer escribio la ruta real)
+    // y se marca REVISAR. Si la ficha tampoco los distingue, se anulan los dos:
+    // vacio es honesto, "TERUEL -> TERUEL" es un dato falso con pinta de bueno.
+    if (v.origen && v.destino && norm2(v.origen) === norm2(v.destino)) {
+      const oFicha = nz(v.lugar_carga), dFicha = nz(v.lugar_descarga);
+      if (oFicha && dFicha && norm2(oFicha) !== norm2(dFicha)) {
+        marcar(v, 'el documento daba el MISMO lugar como origen y destino (' + v.origen + '); se usa la ruta de la ficha (' + oFicha + ' -> ' + dFicha + ')');
+        v.origen = oFicha; v.destino = dFicha;
+        if (v.origen_campos) { v.origen_campos.origen = 'ficha:lugar_carga'; v.origen_campos.destino = 'ficha:lugar_descarga'; }
+      } else {
+        marcar(v, 'origen y destino son el mismo lugar (' + v.origen + ') y la ficha no los distingue; se anulan por imposibles');
+        v.origen = null; v.destino = null;
+      }
+    }
     const dMt = pick(['cmr', 'carta_porte', 'albaran', 'guia', 'orden_transporte'], 'material');
     v.material = (dMt && nz(dMt.material)) ? nz(dMt.material) : v.tipo_mercancia;
     const dIm = pick(['orden_carga', 'orden_transporte'], 'importe');
