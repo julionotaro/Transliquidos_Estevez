@@ -366,19 +366,21 @@ test('contaminacion: doc de una pata NO presta material/destino a la otra pata d
   assert.strictEqual(v2.estado, 'con_documentacion');
 });
 
-test('contaminacion: sin señal de emisor/destino que desempate, el doc sigue quedando AMBIGUO (no se adivina)', () => {
-  // Mismo escenario pero el CMR no trae emisor/cliente ni destino reconocibles:
-  // no hay con que desempatar -> debe quedar ambiguo, sin prestarle carga a nadie.
+test('contaminacion: MISMO material y sin emisor/destino/kg -> el doc queda AMBIGUO (no se adivina)', () => {
+  // Dos viajes del MISMO producto (SOSA) el mismo camion, en fechas contiguas, y
+  // un CMR sin emisor/destino/kg y con FECHA que cae en los dos. Ni el material
+  // (igual en ambos), ni la fecha exacta (no coincide con una sola), ni el resto
+  // desempatan -> debe quedar ambiguo, sin prestarle carga a nadie.
   const cmrSinSeñal = doc({
     pagina: 5, tipo_doc: 'cmr', referencia: '2601014469',
     matricula_tractor: '2498KZL', fecha: '2026-07-30',
-    origen: null, destino: null, material: 'ACIDO SULFURICO',
+    origen: null, destino: null, material: 'SOSA',
     kg_neto: null, cliente_probable: null, emisor: null,
   });
   const caso = entrada(
     [hoja([
-      bloque({ orden: 1, fecha_carga: '2026-07-29', fecha_descarga: '2026-07-30', nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'BEGEGA', tipo_mercancia: 'SOSA', cantidad_kg: 17900, km_inicio: 845752, km_final: 846406, km_recorridos: null }),
-      bloque({ orden: 2, fecha_carga: '2026-07-30', fecha_descarga: '2026-07-31', nombre_carga: 'ASTURIANA ZINC', lugar_carga: 'SAN JUAN DE NIEVA', lugar_descarga: 'VIANA DO CASTELO', tipo_mercancia: 'ACIDO SULFURICO', cantidad_kg: 24160, km_inicio: 846531, km_final: 847037, km_recorridos: null }),
+      bloque({ orden: 1, fecha_carga: '2026-07-30', fecha_descarga: '2026-07-31', nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'BEGEGA', tipo_mercancia: 'SOSA', cantidad_kg: 17900, km_inicio: 845752, km_final: 846406, km_recorridos: null }),
+      bloque({ orden: 2, fecha_carga: '2026-07-30', fecha_descarga: '2026-07-31', nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'BEGEGA', tipo_mercancia: 'SOSA', cantidad_kg: 24160, km_inicio: 846531, km_final: 847037, km_recorridos: null }),
     ])],
     [cmrSinSeñal]);
   const res = correlacionar(
@@ -387,6 +389,32 @@ test('contaminacion: sin señal de emisor/destino que desempate, el doc sigue qu
   assert.ok(res.viajes.every(function (v) { return v.docs.length === 0; }), 'ningun viaje recibe el doc sin señal');
   assert.ok(res.viajes.some(function (v) { return (v.docs_ambiguos || []).length === 1; }), 'queda adjunto aparte');
   assert.ok(res.avisos.some(function (a) { return /no se pudo desambiguar/.test(a); }), 'la ambiguedad se surfacea');
+});
+
+test('GUARDA MATERIAL: un doc de un producto va al viaje de ESE producto, no al otro (bug ejec 1024)', () => {
+  // Bug real: los CMR/guia de SOSA se pegaban al viaje de ACIDO SULFURICO porque
+  // el desempate por destino matcheaba el cliente (RNM), comun a los dos. El
+  // material los separa: SOSA (51) nunca se pega a un viaje de ACIDO (20).
+  const cmrAcido = doc({
+    pagina: 5, tipo_doc: 'cmr', referencia: '600612599',
+    matricula_tractor: '2498KZL', fecha: '2026-07-30',
+    origen: 'Asturiana Zinc', destino: 'RNM Portugal', material: 'UN 1830, ACIDO SULFURICO, 8, II',
+    kg_neto: 23500, cliente_probable: 'RNM', emisor: null,
+  });
+  const caso = entrada(
+    [hoja([
+      bloque({ orden: 1, fecha_carga: '2026-07-29', fecha_descarga: '2026-07-30', nombre_carga: 'RNM', lugar_carga: 'AVEIRO', lugar_descarga: 'NAVIA', tipo_mercancia: 'SOSA', cantidad_kg: null, km_inicio: 845752, km_final: 846406, km_recorridos: null }),
+      bloque({ orden: 2, fecha_carga: '2026-07-30', fecha_descarga: '2026-07-31', nombre_carga: 'RNM', lugar_carga: 'AVILES', lugar_descarga: 'FAMALICAO', tipo_mercancia: 'ACIDO SULFURICO', cantidad_kg: null, km_inicio: 846531, km_final: 847037, km_recorridos: null }),
+    ])],
+    [cmrAcido]);
+  const res = correlacionar(
+    JSON.parse(caso[0].json.choices[0].message.content),
+    JSON.parse(caso[1].json.choices[0].message.content));
+  const vSosa = res.viajes.find(function (v) { return v.tipo_mercancia === 'SOSA'; });
+  const vAcido = res.viajes.find(function (v) { return v.tipo_mercancia === 'ACIDO SULFURICO'; });
+  assert.strictEqual(vSosa.docs.length, 0, 'el doc de acido NO contamina el viaje de sosa');
+  assert.strictEqual(vAcido.docs.length, 1, 'el doc de acido va al viaje de acido');
+  assert.strictEqual(vAcido.referencia, '600612599');
 });
 
 test('lote mixto: cada viaje lleva su propio estado_lectura', () => {

@@ -316,6 +316,12 @@ var ODO = (typeof encadenarPorTractora === 'function')
   ? { encadenarPorTractora: encadenarPorTractora, filasUltimoOdometro: filasUltimoOdometro }
   : require('./odometro.js');
 
+// Resolvedor de material (conjunto cerrado Gesruta): se usa como GUARDA para no
+// pegar un documento de un producto a un viaje de otro producto. Ver el uso.
+var MATIDX = (typeof resolverMaterial === 'function')
+  ? { resolverMaterial: resolverMaterial }
+  : require('../catalogo/gesruta.js');
+
 // Fuente legible de un dato para el audit trail (§4): que papel/pagina lo aporto.
 var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'doc') + ':pag' + (d.pagina || '?')) : null; };
 
@@ -500,6 +506,24 @@ function correlacionar(rA, rB, opts) {
       docsHuerfanos.push({ d: d, motivo: 'sin matricula de tractor legible y el envio tiene ' + listaMatsFicha.length + ' camiones' });
       continue;
     }
+    // GUARDA DE MATERIAL (bug real ejec 1024): un documento de un producto NO
+    // puede pegarse a un viaje de OTRO producto. Los CMR/guia de SOSA se pegaban
+    // al viaje de ACIDO SULFURICO porque el desempate por destino matcheaba "RNM"
+    // (el cliente, comun a los dos). El material los separa de raiz: SOSA (51) no
+    // es ACIDO SULFURICO (20). Solo descarta cuando AMBOS materiales resuelven a
+    // codigo Gesruta y DIFIEREN; si alguno no resuelve, no se descarta (nunca se
+    // inventa un rechazo). Y si el filtro dejaria cands vacio, se conserva: el doc
+    // no es de ningun producto de la ficha y cae a ambiguo/huerfano por su via.
+    if (cands.length > 1 && MATIDX.resolverMaterial) {
+      const dMat = MATIDX.resolverMaterial(d.material);
+      if (dMat && dMat.codigo) {
+        const compat = cands.filter(function (v) {
+          const vMat = MATIDX.resolverMaterial(v.tipo_mercancia);
+          return !(vMat && vMat.codigo) || vMat.codigo === dMat.codigo;
+        });
+        if (compat.length > 0 && compat.length < cands.length) { cands = compat; }
+      }
+    }
     if (cands.length > 1 && df) {
       const enVentana = cands.filter(function (v) {
         const ini = v.fecha_carga; const fin = v.fecha_descarga || v.fecha_carga;
@@ -509,6 +533,15 @@ function correlacionar(rA, rB, opts) {
         return antes >= -1 && despues >= -1;
       });
       if (enVentana.length > 0) { cands = enVentana; }
+    }
+    // DESEMPATE POR FECHA EXACTA (bug real ejec 1024): dos viajes del MISMO
+    // producto y camion en dias contiguos caen los dos en la ventana ±1 y no se
+    // separan. Pero la fecha del documento suele coincidir EXACTO con la carga o
+    // la descarga de UN solo viaje (la guia del 20/08 es del viaje que carga el
+    // 20/08). Es señal fuerte, no fragil: se usa solo si deja UN candidato.
+    if (cands.length > 1 && df) {
+      const exactos = cands.filter(function (v) { return v.fecha_carga === df || v.fecha_descarga === df; });
+      if (exactos.length === 1) { cands = exactos; }
     }
     if (cands.length > 1) {
       const dk = num(d.kg_neto);

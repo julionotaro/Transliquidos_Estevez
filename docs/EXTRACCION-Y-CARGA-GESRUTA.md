@@ -699,6 +699,8 @@ Se dejan registrados porque cada uno costó una corrida y ninguno era obvio.
 | Visión 97 s y ~1 € por página | GPT-5 **razonando** una tarea de transcripción | Intento con `reasoning_effort:minimal` **falló** (el endpoint lo cuelga); se revirtió y se bajaron los reintentos de 5 a 2 |
 | Rutas activas sin tarifa | El histórico exigía **precio único**; las tarifas se renegocian | Manda el viaje **más reciente** |
 | Rutas descartadas por "unidades mezcladas" | No era ambigüedad: era **cambio de modalidad** (por viaje → por tonelada) | Se toma la modalidad del último viaje |
+| 3 días del mismo camión: docs de SOSA pegados al viaje de ÁCIDO, y 2 viajes sin doc | La cascada de desempate (fecha/kg/emisor/destino) matcheaba el **cliente** (RNM, común a las dos patas) por destino; el **material no se usaba** | **Guarda de material**: un doc de un producto nunca se pega a un viaje de otro (SOSA 51 ≠ ÁCIDO 20) |
+| Dos viajes del mismo producto/camión en días contiguos no se separaban | La ventana de fecha ±1 solapa entre días adyacentes | **Desempate por fecha EXACTA** contra carga/descarga (si deja un solo candidato) |
 
 ---
 
