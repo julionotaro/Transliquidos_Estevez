@@ -190,7 +190,11 @@ for (const nombre of Object.keys(CASOS)) {
       // Fix contaminacion entre patas del mismo camion (2026-08-04):
       'docs_ambiguos',
       // Reconciliacion de matricula ficha<->documento (2026-08-10): lectura original.
-      'tractora_original', 'tractoraN_original'];
+      'tractora_original', 'tractoraN_original',
+      // KM vacios encadenados por tractora (2026-08-26): de donde salio el vacio
+      // (cadena_tabla / cadena_lote) o por que no se pudo calcular. Los valores
+      // de km_vacios NO cambian en estos casos -- se comparan byte a byte.
+      'origen_km_vacios'];
 
     for (let i = 0; i < original.viajes.length; i++) {
       const vo = original.viajes[i];

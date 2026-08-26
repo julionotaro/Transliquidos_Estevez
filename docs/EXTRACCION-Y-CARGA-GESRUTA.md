@@ -395,11 +395,66 @@ justo cuando ya no se puede verificar.
 
 ## 11. KM
 
-**Sólo están en la ficha**; ningún documento los trae.
+**Sólo están en la ficha**; ningún documento los trae. `ficha/odometro.js`.
 
-- **Km cargado** = km final − km inicio.
-- **Km vacío** = km inicio de este viaje − km final del **anterior de la misma
-  ficha**. Por eso importa registrar el km de **cada** viaje, no sólo del último.
+- **Km cargado** = km final − km inicio. Lo calcula **siempre** el sistema; el
+  `km recorridos` que escribe el chófer es **verificación**, no fuente.
+- **Km vacío** = km inicio de este viaje − km final del **viaje anterior de la
+  misma TRACTORA**.
+
+### La cadena es por TRACTORA, no por ficha
+
+El odómetro es **del camión**, no de la hoja ni del chófer. De ahí salen las tres
+consecuencias que definen el diseño:
+
+| | Consecuencia |
+|---|---|
+| Dos fichas del **mismo** camión (dos chóferes, dos semanas) | **encadenan** |
+| Dos bloques de camiones **distintos** | **nunca** encadenan |
+| Orden dentro de la cadena | por **odómetro**, no por posición ni por fecha |
+
+Se ordena por odómetro porque es monótono creciente por construcción, y así no
+depende de que la fecha manuscrita se haya leído bien.
+
+### El padrón de últimos odómetros
+
+El km final del último viaje de cada tractora **se persiste y se relee** en la
+ingesta siguiente. Sin eso el **primer viaje de cada ficha** no puede tener km
+vacío — le falta el dato de dónde venía el camión — y eso es **1 de cada 3
+viajes** (una ficha son 3 bloques), siempre el mismo.
+
+> Éste es el encargo literal: *"el registro de último KM tractora es por viaje,
+> no sólo en el último viaje de cada ficha"*.
+
+Por tractora se toma el `km_final` **más alto**, no el de fecha más reciente: el
+odómetro sólo crece, así que el máximo es el último sin depender del orden en que
+la tabla devuelva las filas.
+
+### Guardas — un km vacío inventado se factura; un null se revisa
+
+| Situación | `origen_km_vacios` | km vacío |
+|---|---|---|
+| encadenado con la tabla | `cadena_tabla` | se calcula |
+| encadenado dentro del lote | `cadena_lote` | se calcula |
+| primer viaje conocido de esa tractora | `sin_odometro_previo` | null |
+| salto **negativo** → falta un viaje intermedio | `negativo` | null + REVISAR |
+| salto **> 1.500 km** → hay viajes sin registrar | `salto_excesivo` | null + REVISAR |
+| sin matrícula resuelta / sin km inicio | `sin_matricula` · `sin_km_inicio` | null |
+
+El umbral de 1.500 km sale de que un retorno largo en vacío (Huelva → Galicia)
+ronda los 900. Por encima, lo probable es que falten viajes, no que el camión
+haya hecho ese vacío.
+
+**El odómetro avanza aunque el vacío no se haya podido calcular:** un eslabón
+roto no rompe la cadena para el viaje siguiente — lo que importa de él es dónde
+quedó el camión.
+
+### Guardas anti-invención del odómetro (ya existían)
+
+- `km cargados <= 0` → se anula.
+- **múltiplo exacto de 500** → los odómetros reales casi nunca lo son; se anulan.
+- **todos los viajes de la hoja dan el mismo km** → se anulan todos.
+- `|km recorridos − (final − inicio)| > 5` → REVISAR.
 
 ---
 
@@ -482,6 +537,7 @@ del año, no hay dato del que deducirla. Es alta de tarifa.
 | **Régimen de indexación** | `catalogo/regimen.js` | Por país del cliente (G/GPT) |
 | **Modalidad de indexación** | `ficha/modalidad-indexacion.js` | Por línea o por período |
 | Correlación ficha↔documento | `ficha/correlacionar.js` | El cruce y las salvaguardas |
+| **Odómetro por tractora** | `ficha/odometro.js` | Km vacíos y último km registrado |
 | **Los prompts** | `ficha/payload.js` | `PROMPT_FICHAS` y `PROMPT_DOCS` |
 | Grafo del workflow | `docs/grafo-ingesta-tarifa.md` | Nodos, conexiones, deploy |
 

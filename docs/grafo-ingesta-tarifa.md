@@ -184,3 +184,27 @@ nodos y columnas nuevos quedan guardados pero inertes (el código viejo de
   confundir con Abal).
 - **Dedup de lectores:** confirmar que un viaje con match no sale marcado como
   "N tarifas posibles" por filas repetidas (blindaje `_leerTabla`).
+
+---
+
+## KM vacíos: qué necesita el grafo (2026-08-26)
+
+El nodo **Formatear Linea Gesruta** ahora lee `$('Leer Viajes Existentes')` para
+armar el padrón de últimos odómetros por tractora. Requisitos del lector:
+
+- **Execute Once** — si no, corre una vez por item de entrada y multiplica.
+- **Always Output Data** — con la tabla vacía debe emitir un item, no cero, o el
+  nodo siguiente se saltea (es el bug que dejó la tabla Viajes vacía).
+
+Si el nodo lector no existe todavía, el wrapper lo tolera: cae en `try/catch` y
+la ingesta sigue sin padrón, con los km vacíos del primer viaje de cada ficha en
+`sin_odometro_previo` (el comportamiento anterior).
+
+**Columna nueva en `viajes`: `origen_km_vacios`** (texto). Como toda columna
+nueva, hay que crearla en la tabla Y mapearla en el nodo dataTable
+**Guardar Viajes** (schema + value). Verificar por readback, no por código.
+
+`datos_json` incluye además `ultimo_odometro_tractora`: array de
+`{matricula_tractora, km_final, fecha_carga, viaje_id, origen}`, listo para
+persistir en una tabla de padrón si se decide materializarla. Hoy el padrón se
+reconstruye leyendo Viajes, que ya es suficiente.

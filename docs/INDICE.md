@@ -39,6 +39,8 @@ documentos) y las 8.755 líneas del histórico de Gesruta. Contiene:
 - La tabla de los **12 bugs reales** con su causa raíz — para no repetirlos
 - **Modalidad de indexación** (§10 bis): por línea o por período, y por qué la
   agregación va por **tramo de pct** y nunca por quincena natural
+- **KM** (§11): por qué la cadena de km vacíos va por **tractora** y no por ficha,
+  y el padrón de últimos odómetros que se persiste entre ingestas
 - Qué **NO** debe hacer el sistema nunca
 
 Notas del análisis documento por documento: `analisis/A..H.md`.

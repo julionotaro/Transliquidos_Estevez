@@ -312,6 +312,10 @@ var MODIDX = (typeof modalidadDeViaje === 'function')
   ? { modalidadDeViaje: modalidadDeViaje }
   : require('./modalidad-indexacion.js');
 
+var ODO = (typeof encadenarPorTractora === 'function')
+  ? { encadenarPorTractora: encadenarPorTractora, filasUltimoOdometro: filasUltimoOdometro }
+  : require('./odometro.js');
+
 // Fuente legible de un dato para el audit trail (§4): que papel/pagina lo aporto.
 var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'doc') + ':pag' + (d.pagina || '?')) : null; };
 
@@ -320,7 +324,7 @@ var fuenteDoc = function (d) { return d ? ('documento:' + (nz(d.tipo_doc) || 'do
  *
  * @param {object|null} rA JSON de la pasada de fichas   ({hojas:[...]}).
  * @param {object|null} rB JSON de la pasada de documentos ({documentos:[...]}).
- * @param {object} [opts] {rutas, clientes, modalidadIndexacion} configurables.
+ * @param {object} [opts] {rutas, clientes, modalidadIndexacion, ultimosOdometros}.
  * @returns {{ok:boolean, hojas:Array, viajes:Array, documentos:Array,
  *            errores:Array, avisos:Array}}
  */
@@ -331,6 +335,12 @@ function correlacionar(rA, rB, opts) {
   // (ficha/modalidad-indexacion.js). Opcional: sin el, el regimen cae a las
   // reglas de ruta de cruce.js, que es el comportamiento anterior.
   const mapaModalidad = (opts && opts.modalidadIndexacion) ? opts.modalidadIndexacion : null;
+  // Ultimo odometro conocido de cada tractora, leido de la tabla Viajes
+  // (ficha/odometro.js:ultimosOdometros). Sin el, el primer viaje de cada ficha
+  // queda sin km vacios: falta el dato de donde venia el camion.
+  const ultimosOdo = (opts && opts.ultimosOdometros) ? opts.ultimosOdometros : null;
+  // Se completa al final; se devuelve para que el nodo lo persista.
+  let ultimoOdometroPorTractora = [];
   if (!rA) {
     logError('la pasada de FICHAS no devolvio JSON valido');
     return { ok: false, hojas: [], viajes: [], documentos: [], errores: [], avisos: [] };
@@ -720,17 +730,11 @@ function correlacionar(rA, rB, opts) {
       errores.push('Viaje ' + (i + 1) + ': la ficha escribe ' + v.km_recorridos + ' km recorridos pero final-inicio da ' + v.km_cargados + '. Odometro mal leido.');
       marcar(v, 'la ficha escribe ' + v.km_recorridos + ' km recorridos pero final-inicio da ' + v.km_cargados + '; odometro mal leido');
     }
-    v.km_vacios = null;
-    if (i > 0 && viajes[i - 1].hoja_idx === v.hoja_idx) {
-      const prev = viajes[i - 1].km_final;
-      if (prev !== null && v.km_inicio !== null) {
-        v.km_vacios = v.km_inicio - prev;
-        if (v.km_vacios < 0) {
-          avisos.push('Viaje ' + (i + 1) + ': km vacios negativos, falta un viaje intermedio.');
-          marcar(v, 'km vacios negativos; falta un viaje intermedio');
-        }
-      }
-    }
+    // Los km VACIOS ya no se calculan aca: encadenar por posicion en el array y
+    // por hoja dejaba sin vacios al primer viaje de cada ficha (1 de cada 3) y
+    // podia restar los odometros de dos camiones distintos. Ahora se encadena
+    // por TRACTORA y arrancando en el ultimo odometro conocido de la tabla, en
+    // una sola pasada al final (ver ficha/odometro.js).
     if (v.docs.length === 0) { errores.push('Viaje ' + (i + 1) + ' (' + (v.nombre_carga || 'sin cliente') + ', ' + (v.fecha_carga_texto || v.fecha_carga || 'sin fecha') + '): SIN DOCUMENTACION. No facturable.'); }
     if (!v.fecha_carga) {
       avisos.push('Viaje ' + (i + 1) + ': sin fecha utilizable (en la ficha: "' + (v.fecha_carga_texto || 'ilegible') + '").');
@@ -900,6 +904,18 @@ function correlacionar(rA, rB, opts) {
     viajes = expandidos;
   }
 
+  // ---- KM VACIOS: una sola pasada, encadenando por TRACTORA ----
+  // Va DESPUES de la guarda C (que anula odometros inventados) y DESPUES de la
+  // expansion multiviaje, para que la cadena se arme sobre los viajes finales y
+  // con los odometros ya depurados. Arranca en el ultimo odometro conocido de
+  // cada tractora (opts.ultimosOdometros, leido de la tabla Viajes): sin eso el
+  // primer viaje de cada ficha no puede tener vacios, por diseño.
+  const cadena = ODO.encadenarPorTractora(viajes, ultimosOdo, marcar);
+  for (const a of cadena.avisos) { avisos.push(a); }
+  ultimoOdometroPorTractora = ODO.filasUltimoOdometro(cadena.ultimos);
+  logInfo('km vacios encadenados=' + cadena.encadenados + '/' + viajes.length +
+    ' tractoras con odometro=' + ultimoOdometroPorTractora.length);
+
   // ---- Estado de lectura por fila ----
   // Cubre la calidad de LECTURA de la ficha. Deliberadamente NO incluye
   // "sin documentacion" (eje aparte, ya cubierto por `estado`) ni la ambiguedad
@@ -916,7 +932,8 @@ function correlacionar(rA, rB, opts) {
     ' errores=' + errores.length + ' avisos=' + avisos.length);
   if (nRevisar > 0) { logInfo(nRevisar + ' viaje(s) marcados REVISAR: la lectura no es confiable, requieren revision humana.'); }
 
-  return { ok: true, hojas: hojasRaw, viajes: viajes, documentos: docsRaw, errores: errores, avisos: avisos };
+  return { ok: true, hojas: hojasRaw, viajes: viajes, documentos: docsRaw, errores: errores, avisos: avisos,
+    ultimo_odometro_tractora: ultimoOdometroPorTractora };
 }
 
 /**
@@ -993,7 +1010,7 @@ function parseRespuesta(it) {
  *
  * @param {Array} respuestas  salida de "Extraer GPT-4o" ($input.all()).
  * @param {Array} metas       $('Preparar Payload').all().map(i => i.json).
- * @param {object} [opts]     {rutas} pasa a correlacionar (default cruce.js).
+ * @param {object} [opts]     {rutas, clientes, ultimosOdometros} pasa a correlacionar.
  */
 function procesar(respuestas, metas, opts) {
   metas = Array.isArray(metas) ? metas : [];
@@ -1044,7 +1061,11 @@ function procesar(respuestas, metas, opts) {
     hojasAll.length + ' ficha(s) leida(s), ' + res.viajes.length + ' viaje(s); ' +
     erroresPrevios.length + ' fallo(s) de lectura de pagina.');
 
-  const salida = { hojas: res.hojas, viajes: res.viajes, documentos: res.documentos, errores: res.errores, avisos: res.avisos };
+  // ultimo_odometro_tractora viaja en el datos_json para que el nodo de escritura
+  // lo persista. Es el "registro de ultimo KM por tractora" del encargo: se
+  // actualiza con cada viaje ingestado, no una vez por ficha.
+  const salida = { hojas: res.hojas, viajes: res.viajes, documentos: res.documentos, errores: res.errores, avisos: res.avisos,
+    ultimo_odometro_tractora: res.ultimo_odometro_tractora || [] };
   const nRevisar = res.viajes.filter(function (v) { return v.estado_lectura === ESTADO_LECTURA.REVISAR; }).length;
   return {
     ok: true,

@@ -14,7 +14,7 @@
 //     sin_documentacion. Ningun consumidor filtra por los valores viejos
 //     (unico lector: Export Viajes Excel, passthrough). Conviven ambos
 //     vocabularios en filas viejas; no hace falta migrar.
-//   - columnas nuevas: regimen_indexacion, origen_km, origen_campos (audit JSON),
+//   - columnas nuevas: regimen_indexacion, origen_km, origen_km_vacios, origen_campos (audit JSON),
 //     pendiente_falta, pendiente_reclamar_a.
 
 const src = $('Formatear Linea Gesruta').first().json;
@@ -145,6 +145,12 @@ for (const v of viajes) {
     km_final: n(v.km_final),
     km_cargados: n(v.km_cargados),
     km_vacios: n(v.km_vacios),
+    // De donde salio el km vacio, o por que no se pudo calcular:
+    //   cadena_tabla        encadenado con el ultimo odometro de la tabla Viajes
+    //   cadena_lote         encadenado con otro viaje del mismo lote
+    //   sin_odometro_previo primer viaje conocido de esa tractora
+    //   sin_km_inicio / sin_matricula / negativo / salto_excesivo
+    origen_km_vacios: s(v.origen_km_vacios),
     // Calidad de LECTURA de la ficha (v3.2). Eje distinto de `estado`, que habla
     // de documentacion. Sin valor por defecto: si el correlacionador no lo puso,
     // queda vacio y se ve como no determinado, nunca como un OK.
