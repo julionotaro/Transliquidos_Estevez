@@ -254,3 +254,52 @@ test('fetch-acciones: sin localStorage / sessionStorage / clipboard / createObje
     assert.ok(html.indexOf(prohibido) === -1, 'no debe usar ' + prohibido);
   });
 });
+
+test('INDEXACION (Fase 2.1): % del tramo x importe, con el grupo del cliente', () => {
+  // RNM -> solapa OTROS. El 19/08/2026 el tramo de OTROS es 0,0766 (7,66%).
+  // Importe 875 (fijo) x 0,0766 = 67,03.
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', fecha: '2026-08-19', estado: 'con_documentacion', estado_lectura: 'OK',
+    kg_documento: 23500, pais_facturacion: 'PT', regimen_indexacion: 'linea',
+    tarifa_contractual_fijo: 875,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].pct_indexacion, '7.66%');
+  assert.strictEqual(out[0].importe_indexacion, 67.03);
+});
+
+test('INDEXACION: sin importe no se inventa la indexacion, se explica por que', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', fecha: '2026-08-19', estado: 'con_documentacion', estado_lectura: 'OK',
+    tarifa_contractual_fijo: null, tarifa_contractual_tn: null,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].importe_indexacion, null);
+  assert.match(out[0].motivo_indexacion, /falta el precio/);
+});
+
+test('INDEXACION: cliente con indexacion INCLUIDA -> cero, no vacio', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'BALTRANSA', fecha: '2026-08-19', estado: 'con_documentacion',
+    estado_lectura: 'OK', regimen_indexacion: 'incluida', tarifa_contractual_fijo: 2050,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].importe_indexacion, 0, 'cero es la respuesta correcta');
+});
+
+test('PRECIO: la vista LEE la tarifa de la ingesta, no la recalcula (motor unico)', () => {
+  // Bug real ejec 1076: la vista recalculaba con otro motor y daba otro resultado.
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', estado: 'con_documentacion', estado_lectura: 'OK',
+    kg_documento: 23000, tarifa_contractual_tn: 29.09,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].precio, 29.09);
+  assert.strictEqual(out[0].importe, 669.07);   // 23 tn x 29,09
+  assert.strictEqual(out[0].origen_precio, 'tarifa contractual');
+});
+
+test('PRECIO: sin tarifa, la columna explica POR QUE (motivo de la ingesta)', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', estado: 'con_documentacion', estado_lectura: 'OK',
+    tarifa_contractual_motivo: 'sin tarifa cargada para AVILES -> NAVIA (cliente RNM)',
+  })], undefined, [], []);
+  assert.strictEqual(out[0].precio, null);
+  assert.match(out[0].origen_precio, /sin tarifa cargada/);
+});

@@ -55,6 +55,12 @@ var TAR = (typeof buscarTarifa === 'function')
 var PERF = (typeof periodoFacturacion === 'function')
   ? { periodoFacturacion: periodoFacturacion }
   : require('./periodo-facturacion.js');
+var IDX = (typeof indexacionDeFila === 'function')
+  ? { grupoIndexacion: grupoIndexacion, buscarPct: buscarPct }
+  : require('./indexacion.js');
+var SUP = (typeof todosLosTramos === 'function')
+  ? { tramosDe: tramosDe }
+  : require('../catalogo/suplemento-gasoleo.js');
 function round2p(n) { return Math.round(n * 100) / 100; }
 
 var VF = (typeof marcasForma === 'function')
@@ -171,10 +177,40 @@ function calcularPrecioFila(v, tarifas) {
 
   var per = PERF.periodoFacturacion(v.cliente);
   var pais = String(v.pais_facturacion || '').toUpperCase();
+
+  // INDEXACION: % del tramo vigente (solapa del cliente + fecha del viaje) sobre
+  // el IMPORTE del porte. El suplemento esta en el repo (79 tramos, 6 solapas);
+  // antes esta vista no lo cruzaba nunca y la columna quedaba siempre vacia.
+  // Si la fecha cae en dos tramos con % distinto, buscarPct devuelve ambiguo y NO
+  // se elige: elegir seria elegir cuanto se factura.
+  var pct = null, importe_idx = null, motivo_idx = '';
+  var g = IDX.grupoIndexacion(v.cliente);
+  if (!v.cliente) {
+    motivo_idx = 'sin cliente';
+  } else if (v.regimen_indexacion === 'incluida') {
+    pct = 0; importe_idx = 0; motivo_idx = 'incluida en el precio';
+  } else if (v.regimen_indexacion === 'sin_indexacion') {
+    pct = 0; importe_idx = 0; motivo_idx = 'el cliente no lleva indexacion';
+  } else {
+    var hit = IDX.buscarPct(g.grupo, v.fecha, SUP.tramosDe(g.grupo));
+    if (hit && hit.ambiguo) {
+      motivo_idx = 'la fecha cae en dos tramos con % distinto: definir cual rige';
+    } else if (hit) {
+      pct = hit.pct;
+      if (importe !== null) { importe_idx = round2p(importe * hit.pct); }
+      else { motivo_idx = 'sin importe: falta el precio para aplicar el %'; }
+    } else {
+      motivo_idx = 'sin tramo de indexacion vigente para ' + g.grupo + ' en ' + (v.fecha || 'sin fecha');
+    }
+  }
+
   return {
     precio: precio, unidad: unidad, importe: importe, origen_precio: origen_precio,
     quincena: per.periodo || '',
-    regimen_pais: (pais === 'PT') ? 'GPT' : (pais === 'ES' ? 'G' : '')
+    regimen_pais: (pais === 'PT') ? 'GPT' : (pais === 'ES' ? 'G' : ''),
+    pct_indexacion: (pct === null) ? null : (round2p(pct * 100) + '%'),
+    importe_indexacion: importe_idx,
+    motivo_indexacion: motivo_idx
   };
 }
 
@@ -243,6 +279,9 @@ function filtrarPendientes(viajes, ahoraMs, puntos, tarifas) {
       regimen_pais: v._precio.regimen_pais,
       quincena: v._precio.quincena,
       origen_precio: v._precio.origen_precio,
+      pct_indexacion: v._precio.pct_indexacion,
+      importe_indexacion: v._precio.importe_indexacion,
+      motivo_indexacion: v._precio.motivo_indexacion,
       // marcas de forma por celda { campo: [motivos] }
       marcas: VF.marcasForma(v)
     });
@@ -337,7 +376,7 @@ var COLS_TABLA = [
   'Viaje', 'Matricula tractora', 'Remolque', 'Chofer', 'Cod. chofer',
   'Cliente', 'Cod. cliente', 'Cod. origen', 'Origen', 'Cod. destino', 'Destino',
   'Carga', 'Cod. material', 'Referencia', 'Fecha de carga', 'Cantidad',
-  'Precio', 'Ud.', 'Importe', 'Reg.', 'Quinc.', 'Origen del precio',
+  'Precio', 'Ud.', 'Importe', 'Reg.', 'Quinc.', '% Index.', 'Indexacion', 'Origen del precio',
   'Km cargado', 'Km vacio', 'Estado', 'Acciones'
 ];
 
@@ -370,6 +409,8 @@ function filasDeViaje(p) {
     celdaDisplay(p.importe) +
     celdaDisplay(p.regimen_pais) +
     celdaDisplay(p.quincena) +
+    celdaDisplay(p.pct_indexacion) +
+    celdaDisplay(p.importe_indexacion) +
     celdaDisplay(p.origen_precio) +
     celdaEditable(p, 'km_cargados', p.km_cargados, 'corregir_celda') +
     celdaEditable(p, 'km_vacios', p.km_vacios, 'corregir_celda') +

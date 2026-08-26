@@ -43,6 +43,8 @@ documentos) y las 8.755 líneas del histórico de Gesruta. Contiene:
   independientes; el % de la OC manda sobre la tabla
 - **Suplemento Gasóleo** (§10 quater): los % oficiales y los **cuatro defectos**
   del archivo, entre ellos una fecha corrupta que deja 55 días ambiguos
+- **PLAN-FUNCIONAMIENTO-INTEGRAL.md**: inventario COMPLETO de falencias con su
+  causa raíz verificada y el orden de cierre. Leerlo antes de tocar la ingesta.
 - **Vista viajes-pendientes**: muestra el FORMATO OBJETIVO completo (23+ columnas:
   identidad + códigos Gesruta + Precio/Ud./Importe/Rég./Quinc./Origen del precio).
   Lee Viajes + Puntos + Tarifas. El precio es el contractual (tabla Tarifas); para
