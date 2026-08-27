@@ -1,0 +1,139 @@
+{
+  "_nota": "QUE y DONDE buscar cada campo, cliente por cliente y documento por documento. Es el punto A: en vez de pedirle al modelo 'datos clave', se le dice la etiqueta impresa exacta y la casilla. ORIGEN DE ESTOS DATOS: observacion directa de los PDF que Julio subio el 27/08/2026. Cada plantilla dice de cuantos documentos salio y que esta pendiente de confirmar con el instructivo por cliente. Una plantilla observada de 1 documento NO es una regla: es una hipotesis con evidencia.",
+  "_schema": {
+    "cliente": "nombre corto tal como se resuelve en el sistema",
+    "razon_social_impresa": "como aparece literalmente en el papel, para identificar al emisor",
+    "documentos": "un bloque por tipo de documento que ese cliente emite",
+    "titulos": "textos impresos que identifican el documento (para clasificarlo)",
+    "campos": "por cada campo facturable: etiqueta impresa, casilla del CMR si aplica, formato esperado y notas",
+    "ignorar": "campos que PARECEN el dato correcto y no lo son. Vale tanto como el resto junto",
+    "estado": "observado | confirmado — solo 'confirmado' cuando Julio lo valide con el instructivo"
+  },
+
+  "plantillas": [
+    {
+      "cliente": "FORESA",
+      "razon_social_impresa": "FORESA IND. QUÍMICAS DEL NOROESTE SA",
+      "nif": "A28141224",
+      "estado": "observado",
+      "observado_de": 1,
+      "fuente": "PDF 20260819180805 pag.1 (viaje del 10.08.2026, tractora 3729JWP)",
+      "documentos": [
+        {
+          "tipo": "cmr_albaran",
+          "titulos": ["CMR/ALBARAN"],
+          "campos": {
+            "referencia": {
+              "donde": "arriba a la derecha, bajo el titulo CMR/ALBARAN, SEGUNDO numero de los dos",
+              "formato": "7 digitos",
+              "ejemplo": "2017065",
+              "nota": "el PRIMER numero (5030294491, 10 digitos) NO es la referencia. Es el error que ya se cometio: se tomo 2009926 en vez de 2017843"
+            },
+            "origen": {
+              "donde": "casilla 4 'Lugar y fecha carga mercancia'",
+              "ejemplo": "Caldas de Reis",
+              "nota": "coincide con la localidad del remitente (casilla 1), que sirve de corroboracion"
+            },
+            "destino": {
+              "donde": "casilla 3 'Destino. Lugar entrega mercancia'",
+              "ejemplo": "TERMOLAN (FABRICA 1), LUGAR DA BARCA - VILA DAS AVES",
+              "nota": "trae la PLANTA, no la localidad del catalogo. Es donde hace falta el alias empresa->punto"
+            },
+            "fecha_carga": {
+              "donde": "casilla 4, junto al lugar",
+              "formato": "DD.MM.AAAA HH:MM:SS",
+              "ejemplo": "10.08.2026 09:04:36"
+            },
+            "material": {
+              "donde": "casilla 8/11, linea de mercancia",
+              "ejemplo": "FORESA RES 3169",
+              "nota": "codigo interno de Foresa; hay que traducirlo al material Gesruta (COLA/METANOL/...)"
+            },
+            "peso_kg": {
+              "donde": "casilla 13 'Peso/Weight (Kg)', y repetido en la linea de mercancia",
+              "formato": "numero con punto de miles",
+              "ejemplo": "22.440",
+              "nota": "aparece DOS veces en la misma hoja; si no coinciden, revisar"
+            },
+            "matricula_tractora": {
+              "donde": "casilla 6/7, etiqueta 'Tractor'",
+              "formato": "NNNNLLL",
+              "ejemplo": "3729JWP"
+            },
+            "matricula_remolque": {
+              "donde": "casilla 6/7, etiqueta 'Plataforma'",
+              "ejemplo": "PO02662R"
+            },
+            "pedido_cliente": {
+              "donde": "columna derecha de la linea de mercancia",
+              "ejemplo": "2005046565-000001",
+              "nota": "hay ademas un 'P.Clte 2026/442' debajo; no confundirlos"
+            }
+          },
+          "ignorar": [
+            "casilla 6 'Porteador': es TRANSPORTES LIQUIDOS ESTEVEZ, o sea nosotros. NUNCA es el cliente",
+            "casilla 2 'CLIENTE/Consignee': es el DESTINATARIO de la mercancia, no quien nos paga el porte. El cliente que factura es el REMITENTE (casilla 1) salvo que la orden diga otra cosa",
+            "casilla 15 'OBSERVACIONES / Entrega': trae otra fecha (07.08.2025) que no es la de carga"
+          ]
+        }
+      ]
+    },
+
+    {
+      "cliente": "BRESFOR",
+      "razon_social_impresa": "BRESFOR IND. DO FORMOL, S.A.",
+      "nif": "PT500047944",
+      "estado": "observado",
+      "observado_de": 1,
+      "fuente": "PDF 20260819180805 pag.2 (viaje del 10.08.2026, tractora 3729JWP)",
+      "documentos": [
+        {
+          "tipo": "cmr_guia_remessa",
+          "titulos": ["CMR/GUIA DE REMESSA", "CIM/DELIVERY NOTE"],
+          "campos": {
+            "referencia": {
+              "donde": "arriba a la derecha, linea 'Doc. int:', SEGUNDO numero",
+              "formato": "7 digitos",
+              "ejemplo": "2017612",
+              "nota": "el primero (5050139937) es el documento interno portugues. Ojo: la regla vieja decia '10 digitos' para Bresfor y este documento dice lo contrario — A CONFIRMAR con el instructivo"
+            },
+            "origen": {
+              "donde": "casilla 4 'Lugar e data carga mercadoria'",
+              "ejemplo": "GAFANHA DA NAZARE"
+            },
+            "destino": {
+              "donde": "casilla 3 'Place of delivery of the goods'",
+              "ejemplo": "Finsa Cella 2, BARRIO DE LA ESTACION, CELLA - TERUEL 44370",
+              "nota": "AQUI ESTA EL ORIGEN DE LA CONFUSION 'CELLA DE ESTACION' / 'TERUEL' de corridas anteriores: el literal mezcla planta, barrio, pueblo y provincia en una linea"
+            },
+            "fecha_carga": {
+              "donde": "casilla 4",
+              "formato": "DD.MM.AAAA HH:MM:SS",
+              "ejemplo": "10.08.2026 17:35:05"
+            },
+            "material": {
+              "donde": "linea de mercancia",
+              "ejemplo": "FORESA RES 1350"
+            },
+            "peso_kg": {
+              "donde": "casilla 13 'Peso/Weight (Kg)'",
+              "ejemplo": "21.980"
+            },
+            "matricula_tractora": { "donde": "etiqueta 'Tractor'", "ejemplo": "3729JWP" },
+            "matricula_remolque": { "donde": "etiqueta 'Plataforma'", "ejemplo": "PO02662R" }
+          },
+          "ignorar": [
+            "'DESTINATARIO/Consignee' (FINANCIERA MADERERA S.A., Santiago de Compostela): es la sede social del cliente final, NO el destino fisico. El destino esta en la casilla 3 y es Cella (Teruel). Confundirlos manda el viaje a Galicia en vez de a Aragon",
+            "'Custo de referencia do gasoleo 2.049000': es una mencion legal portuguesa, no la indexacion que factura TLE"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "_pendiente": [
+    "Confirmar con el instructivo de Julio: la referencia de BRESFOR (observada de 7 digitos, la regla anterior decia 10)",
+    "Anotar el resto de clientes: QUIMIDROGA, RNM, CLAVO, BALTRANSA, TRANSTAMBRE, HELM, Q. DEL JARAMA",
+    "Traducir los codigos de material propios del cliente (FORESA RES 3169, RES 1350) al material Gesruta"
+  ]
+}
