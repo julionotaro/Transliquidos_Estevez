@@ -1,7 +1,7 @@
 # ÍNDICE — Documentación TLE
 
 > **Leer esto primero, siempre.** No hace falta leer todo lo demás: hace falta saber qué existe y dónde está cada cosa.
-> Última actualización: 25/08/2026.
+> Última actualización: 27/08/2026.
 
 ---
 
@@ -126,6 +126,16 @@ Esa matriz deja Baltransa como "pendiente" en porte/IVA, peso, referencia y prec
 - Indexación incluida en el precio, con línea a 0,000 en factura
 - **Sigue pendiente:** de qué documento sale el peso en Baltransa
 
+**R-05 — Por qué falla la búsqueda de tarifa: el tarifario está INCOMPLETO. No es un problema de nombres.** *(27/08/2026, medido)*
+Se había supuesto que el tarifario indexaba por **provincia** y el registro de viajes por **planta consignataria** — dos vocabularios distintos para el mismo punto. **Los datos lo desmienten:** los literales del tarifario están en el catálogo de puntos 294/294 (100%) y los de los viajes 293/295 (99%); las dos tablas mezclan provincia/pueblo/empresa en la misma proporción. **Beben del mismo catálogo de 790 puntos.**
+La causa real: de esos 790, 294 aparecen en tarifas y 295 en viajes, pero **solo 152 en las dos**. Hay 143 puntos a los que se viaja sin tarifa cargada — 532 combinaciones cliente×ruta×material, **1.973 viajes (26% del año)**.
+Cuando el destino no está tarifado, la oficina aplica a mano la tarifa de otra ruta del mismo cliente+origen (ver `catalogo/tarifario-historico.js`). Eso deja huella: el importe coincide **al céntimo**. Los candidatos detectados así están en `catalogo/tarifa-por-analogia.json`.
+**Consecuencia de diseño:** completar alias entre tarifario y viajes no arregla nada, porque no hay nada que traducir ahí. Lo que resuelve estas rutas es el **tarifario histórico**. El problema de alias es **otro y separado**: literal-del-documento → punto del catálogo.
+
+**R-06 — El modelo NO aprende entre corridas; el sistema sí.** *(27/08/2026)*
+GPT/Claude no retienen nada de una ejecución a la siguiente: sin cambios, la corrida 500 sale igual que la corrida 1. Lo que puede aprender es el sistema, y el sitio donde aprende es `ficha/memoria-decisiones.js`: **una duda que un humano resolvió no se vuelve a preguntar**. Solo entra lo decidido por un humano (con autor), el ámbito del cliente manda sobre la regla global, y toda entrada es revocable.
+**El número por el que se mide:** `tasaRevisar()`. Si el % de filas en REVISAR no baja semana a semana, el sistema no está aprendiendo — y hay que mirar eso, no ajustar prompts.
+
 ---
 
 ## Reglas que viven fuera del modelo de dominio
@@ -149,7 +159,11 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 
 | Dónde | Qué |
 |---|---|
-| `datos/` | Exportaciones de Gesruta: puntos geográficos, clientes, chóferes, listado de viajes. **Pendiente de subir por Claude Code** (los CSV grandes no pasan por el ESCRITOR) |
+| `datos/gesruta/` | **Los export originales de Gesruta, versionados** (27/08/2026): `viajes-anio-2026-08-19.xls` (8.755 líneas), `tarifas-general-2026-08-04.xls` (704 tarifas), `puntos-geograficos-2026-08-27.csv` (807 puntos, **cp850**), `linea-facturacion-2026-08-26.csv`. Están en el repo a propósito: cuando se pasaban por chat, cada contenedor nuevo los perdía y había que volver a pedirlos |
+| `datos/` | Otras exportaciones y resúmenes derivados |
+| `catalogo/rutas-por-cliente.json` | **Conjunto CERRADO de rutas por cliente** con la tarifa observada, frecuencia y última fecha. Lo genera `herramientas/construir-matriz-rutas.py` desde el export anual. Sirve para preguntar "¿cuál de las rutas de ESTE cliente es?" en vez de "¿cuál de los 790 puntos es?" |
+| `catalogo/tarifa-por-analogia.json` | Candidatos donde la oficina cobra la tarifa de **otra** ruta del mismo cliente+origen (detectados por coincidencia exacta de importe). `confirmado: false` ⇒ **no se factura con ellos** hasta que Julio los valide |
+| `informes/rutas-sin-tarifa.md` | Qué rutas reales no cubre el tarifario y **por qué**. Regenerable, no escrito a mano |
 | Tabla `tarifas` (n8n) | Tarifas por cliente y ruta. No van a Git |
 | Tabla `indexacion` (n8n) | Tramos de indexación por grupo y fecha. No van a Git |
 | Tabla `viajes` (n8n) | Viajes leídos por la ingesta |
