@@ -13,21 +13,44 @@ empresa REALMENTE facturo, no de lo que alguien supone.
 
 SALIDAS (todas en catalogo/ o informes/):
   catalogo/rutas-por-cliente.json   el conjunto cerrado + tarifa observada
-  catalogo/planta-a-provincia.json  candidatos de traduccion PLANTA -> PROVINCIA
+  catalogo/tarifa-por-analogia.json candidatos: rutas cuya tarifa la oficina toma
+                                    de OTRA ruta del mismo cliente+origen
   informes/rutas-sin-tarifa.md      rutas frecuentes que el tarifario no cubre
 
-EL HALLAZGO QUE ORIGINA ESTE SCRIPT. El tarifario esta indexado por PROVINCIA o
-LOCALIDAD ("TERUEL", "BARCELONA"); el registro operativo esta indexado por la
-PLANTA CONSIGNATARIA ("UTISA TERUEL", "IP DECOR SPAIN, SAU"). Son dos vocabularios
-distintos para el mismo punto, y por eso buscar la tarifa por (cliente, origen,
-destino) fallaba de forma masiva y sistematica -- no por alias sueltos.
-Verificado a la cifra exacta: FORESA CALDAS->IP DECOR se facturo a 72,36, que es
-exactamente la tarifa CALDAS->BARCELONA. IP Decor esta en Barcelona.
+POR QUE FALLA LA BUSQUEDA DE TARIFA — diagnostico verificado, 2026-08-27.
 
-De ahi el puente por PRECIO: si una ruta sin tarifa se facturo a un importe
-IDENTICO al de una unica tarifa del mismo cliente+origen, ese destino tarifado es
-el candidato de traduccion. Es un GENERADOR DE CANDIDATOS, no un oraculo: se
-emite para que un humano lo confirme una vez. Nunca se aplica solo.
+Se descarto una hipotesis propia antes de darla por buena. La hipotesis era que
+el tarifario estaba indexado por PROVINCIA y el registro de viajes por PLANTA
+CONSIGNATARIA, o sea dos vocabularios distintos. LOS DATOS LA DESMIENTEN:
+
+  - Los literales del tarifario estan en el catalogo de puntos: 294/294 = 100 %
+  - Los literales de los viajes, tambien: 293/295 = 99 %
+  - Ambas tablas mezclan provincias, pueblos y empresas en la MISMA proporcion
+    (tarifario destino: 23 % provincia / 9 % empresa / 68 % otro;
+     viajes destino:    17 % provincia / 16 % empresa / 67 % otro)
+
+NO HAY PROBLEMA DE VOCABULARIO entre tarifario y viajes: las dos tablas beben del
+mismo catalogo de 790 puntos. La causa real es mas simple y menos halagadora:
+EL TARIFARIO ESTA INCOMPLETO respecto de lo que la empresa realmente transporta.
+De los 790 puntos, 294 aparecen en tarifas y 295 en viajes, pero solo 152 en las
+dos. Hay 143 puntos a los que se viaja sin tarifa cargada.
+
+Desglose de las 532 combinaciones sin tarifa (1.973 viajes):
+   281 comb /  419 viajes  el CLIENTE no tiene ninguna tarifa cargada
+   138 comb / 1234 viajes  el DESTINO no esta en ninguna tarifa de ese cliente
+    47 comb /  192 viajes  el ORIGEN no esta en ninguna tarifa de ese cliente
+    47 comb /   82 viajes  ni origen ni destino estan
+    19 comb /   46 viajes  existen por separado, pero no esa combinacion
+
+TARIFA POR ANALOGIA. Cuando el destino real no esta tarifado, la oficina aplica a
+mano la tarifa de otra ruta del mismo cliente y origen (regla que Julio describio
+y que documenta catalogo/tarifario-historico.js). Ese gesto deja huella: el
+importe facturado coincide EXACTAMENTE con el de esa otra tarifa. Este script
+detecta esas coincidencias y las emite como candidatos.
+
+Lo que un candidato dice es "para este destino la oficina cobra la tarifa de
+aquel otro", NO "este destino ES aquel otro". Es un GENERADOR DE CANDIDATOS, no
+un oraculo: se emite con confirmado=false para que un humano lo valide una vez.
 
 NO INVENTA NADA: si una ruta tuvo varios precios, los lista todos y marca el
 caso; el precio que manda es el MAS RECIENTE y siempre queda marcado como
@@ -162,7 +185,33 @@ def main():
     for c in por_cliente.values():
         c['rutas'].sort(key=lambda r: -r['n_viajes'])
 
-    # --- Puente por PRECIO: PLANTA -> PROVINCIA -----------------------------
+    # --- Por que NO matchea cada ruta: se calcula, no se supone ------------
+    clientes_tar = {norm(t['cliente']) for t in tarifas}
+    org_de = defaultdict(set); dst_de = defaultdict(set)
+    for t in tarifas:
+        org_de[norm(t['cliente'])].add(norm(t['origen']))
+        dst_de[norm(t['cliente'])].add(norm(t['destino']))
+
+    diag = defaultdict(lambda: [0, 0])   # causa -> [combinaciones, viajes]
+    for cid, c in por_cliente.items():
+        cn = norm(c['nombre'])
+        for R in c['rutas']:
+            if R['en_tarifario_oficial']:
+                continue
+            o, ds = norm(R['nombre_origen']), norm(R['nombre_destino'])
+            if cn not in clientes_tar:
+                k = 'el CLIENTE no tiene ninguna tarifa cargada'
+            elif o not in org_de[cn] and ds not in dst_de[cn]:
+                k = 'ni el origen ni el destino aparecen en las tarifas de ese cliente'
+            elif ds not in dst_de[cn]:
+                k = 'el DESTINO no aparece en ninguna tarifa de ese cliente'
+            elif o not in org_de[cn]:
+                k = 'el ORIGEN no aparece en ninguna tarifa de ese cliente'
+            else:
+                k = 'origen y destino existen por separado, pero NO esa combinacion'
+            diag[k][0] += 1; diag[k][1] += R['n_viajes']
+
+    # --- Tarifa POR ANALOGIA: detectada por coincidencia exacta de importe ---
     # Indice de tarifas por (cliente, origen) para buscar el importe identico.
     por_co = defaultdict(list)
     for t in tarifas:
@@ -183,15 +232,18 @@ def main():
                 continue          # 0 = no hay puente; >1 = ambiguo, no se emite
             puente.append({
                 'cliente': c['nombre'], 'origen': R['nombre_origen'],
-                'planta': R['nombre_destino'], 'provincia_tarifada': iguales[0][0],
+                'destino_real': R['nombre_destino'],
+                'destino_tarifado': iguales[0][0],
                 'precio': R['precio_ultimo'], 'n_viajes': R['n_viajes'],
                 'confirmado': False,
             })
     puente.sort(key=lambda x: -x['n_viajes'])
-    with open(os.path.join(RAIZ, 'catalogo/planta-a-provincia.json'), 'w', encoding='utf-8') as f:
-        json.dump({'nota': 'CANDIDATOS deducidos por coincidencia exacta de precio. '
-                           'Requieren confirmacion humana: poner confirmado=true. '
-                           'Un candidato sin confirmar NO se usa para facturar.',
+    with open(os.path.join(RAIZ, 'catalogo/tarifa-por-analogia.json'), 'w', encoding='utf-8') as f:
+        json.dump({'nota': 'CANDIDATOS de TARIFA POR ANALOGIA, deducidos porque el importe '
+                           'facturado coincide EXACTAMENTE con el de otra ruta del mismo '
+                           'cliente+origen. Significa "aqui se cobra la tarifa de aquella otra '
+                           'ruta", NO "este destino es aquel otro". Requieren confirmacion '
+                           'humana: poner confirmado=true. Sin confirmar NO se factura con ellos.',
                    'candidatos': puente}, f, ensure_ascii=False, indent=1)
 
     os.makedirs(os.path.join(RAIZ, 'informes'), exist_ok=True)
@@ -224,21 +276,34 @@ def main():
     L.append('- viajes que caen en una ruta sin tarifa oficial: **%d** (%.0f%% del total)' %
              (tot_viajes_sin, 100.0*tot_viajes_sin/sum(len(v) for v in celdas.values())))
     L.append('')
-    L.append('## Puente PLANTA -> PROVINCIA deducido por precio')
+    L.append('## Por que no matchea')
     L.append('')
-    L.append('El tarifario indexa por **provincia**; el viaje real, por **planta**.')
-    L.append('Cuando una ruta sin tarifa se facturo a un importe **identico** al de una')
-    L.append('unica tarifa del mismo cliente+origen, ese es el candidato de traduccion.')
-    L.append('**Son candidatos: hay que confirmarlos a mano una vez** (`catalogo/planta-a-provincia.json`).')
+    L.append('No es un problema de vocabulario: **el tarifario y los viajes beben del mismo')
+    L.append('catalogo de puntos** (294/294 y 293/295 de los literales estan en el). La causa')
+    L.append('es que **el tarifario esta incompleto** respecto de lo que se transporta.')
     L.append('')
-    L.append('| viajes | cliente | origen | planta (lo que dice el documento) | provincia (lo que dice el tarifario) | precio |')
-    L.append('|---|---|---|---|---|---|')
-    for x in puente[:40]:
-        L.append('| **%d** | %s | %s | %s | **%s** | %s |' %
-                 (x['n_viajes'], x['cliente'][:26], x['origen'], x['planta'],
-                  x['provincia_tarifada'], x['precio']))
+    L.append('| combinaciones | viajes | causa |')
+    L.append('|---|---|---|')
+    for k, (nc, nv) in sorted(diag.items(), key=lambda x: -x[1][1]):
+        L.append('| %d | **%d** | %s |' % (nc, nv, k))
     L.append('')
-    L.append('- candidatos de traduccion inequivocos: **%d**, que cubren **%d viajes**'
+    L.append('## Tarifa por analogia — candidatos a CONFIRMAR a mano')
+    L.append('')
+    L.append('Cuando el destino real no esta tarifado, la oficina aplica la tarifa de otra')
+    L.append('ruta del mismo cliente y origen. Ese gesto deja huella: el importe facturado')
+    L.append('coincide **exactamente** con el de esa otra tarifa.')
+    L.append('')
+    L.append('Cada fila dice *"para este destino se cobra la tarifa de aquel otro"*, **no**')
+    L.append('*"este destino es aquel otro"*. Confirmar en `catalogo/tarifa-por-analogia.json`.')
+    L.append('')
+    L.append('| # | viajes | cliente | origen | destino REAL | se cobra la tarifa de | precio | ok? |')
+    L.append('|---|---|---|---|---|---|---|---|')
+    for i, x in enumerate(puente[:40], 1):
+        L.append('| %d | **%d** | %s | %s | **%s** | %s | %s |  |' %
+                 (i, x['n_viajes'], x['cliente'][:26], x['origen'], x['destino_real'],
+                  x['destino_tarifado'], x['precio']))
+    L.append('')
+    L.append('- candidatos inequivocos: **%d**, que cubren **%d viajes**'
              % (len(puente), sum(x['n_viajes'] for x in puente)))
     with open(os.path.join(RAIZ, 'informes/rutas-sin-tarifa.md'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(L) + '\n')

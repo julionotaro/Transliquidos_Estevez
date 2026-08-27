@@ -74,35 +74,51 @@
 - de esas, **sin** tarifa oficial: **532** (66%)
 - viajes que caen en una ruta sin tarifa oficial: **1973** (26% del total)
 
-## Puente PLANTA -> PROVINCIA deducido por precio
+## Por que no matchea
 
-El tarifario indexa por **provincia**; el viaje real, por **planta**.
-Cuando una ruta sin tarifa se facturo a un importe **identico** al de una
-unica tarifa del mismo cliente+origen, ese es el candidato de traduccion.
-**Son candidatos: hay que confirmarlos a mano una vez** (`catalogo/planta-a-provincia.json`).
+No es un problema de vocabulario: **el tarifario y los viajes beben del mismo
+catalogo de puntos** (294/294 y 293/295 de los literales estan en el). La causa
+es que **el tarifario esta incompleto** respecto de lo que se transporta.
 
-| viajes | cliente | origen | planta (lo que dice el documento) | provincia (lo que dice el tarifario) | precio |
-|---|---|---|---|---|---|
-| **73** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | CURIA SPAIN, SAU | **VALLADOLID** | 38.66 |
-| **34** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | COGERSA | **ASTURIAS** | 33.1 |
-| **8** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | SERVYECO IBERIA,SL | **CASTELLON** | 64.91 |
-| **3** | AMBERES CHEMICAL, S.A. | TARRAGONA | CUNTIS | **PONTEVEDRA** | 79.95 |
-| **2** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | GERMAN RDGUEZ.IND.SA | **GUADALAJARA** | 48.17 |
-| **2** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | PORRIÑO | **DROGAS VIGO, S.L.** | 12.64 |
-| **2** | QUIMIDROGA, S.A. | BARCELONA | BEGONTE | **LUGO** | 74.73 |
-| **2** | HELM IBERICA, S.A. | BARCELONA | FORESA FRANCE SAS | **AMBARES** | 1350.0 |
-| **2** | AMBERES CHEMICAL, S.A. | TARRAGONA | AZPEITIA | **GUIPUZCOA** | 36.9 |
-| **1** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | CORUÑA | **DROGAS CONDE, S.A.** | 18.61 |
-| **1** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | GIJON | **ASTURIAS** | 33.1 |
-| **1** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | PADRON | **CESURES** | 4.27 |
-| **1** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | LANGREO | **ASTURIAS** | 33.1 |
-| **1** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | GIJON | **ASTURIAS** | 33.1 |
-| **1** | QUIMIDROGA, S.A. | TARRAGONA | AVEIRO | **COIMBRA** | 80.8 |
-| **1** | DROVIGO PORTUGAL UNIPESSOA | TARRAGONA | COIMBRA | **AVEIRO** | 1900.0 |
-| **1** | HELM IBERICA, S.A. | TARRAGONA | CASARRUBIOS | **TOLEDO** | 1050.0 |
-| **1** | AMBERES CHEMICAL, S.A. | TARRAGONA | IRURENA | **GUIPUZCOA** | 36.9 |
-| **1** | AMBERES CHEMICAL, S.A. | TARRAGONA | LOGROÑO | **OYON** | 31.15 |
-| **1** | ACIDEKA, S.A. | ZIERBANA | MONFORTE LEMOS | **LUGO** | 36.57 |
-| **1** | QUIMICAS DEL JARAMA, S.A. | MADRID | PORTUGAL | **LANDIN (PT)** | 46.35 |
+| combinaciones | viajes | causa |
+|---|---|---|
+| 138 | **1234** | el DESTINO no aparece en ninguna tarifa de ese cliente |
+| 281 | **419** | el CLIENTE no tiene ninguna tarifa cargada |
+| 47 | **192** | el ORIGEN no aparece en ninguna tarifa de ese cliente |
+| 47 | **82** | ni el origen ni el destino aparecen en las tarifas de ese cliente |
+| 19 | **46** | origen y destino existen por separado, pero NO esa combinacion |
 
-- candidatos de traduccion inequivocos: **21**, que cubren **140 viajes**
+## Tarifa por analogia — candidatos a CONFIRMAR a mano
+
+Cuando el destino real no esta tarifado, la oficina aplica la tarifa de otra
+ruta del mismo cliente y origen. Ese gesto deja huella: el importe facturado
+coincide **exactamente** con el de esa otra tarifa.
+
+Cada fila dice *"para este destino se cobra la tarifa de aquel otro"*, **no**
+*"este destino es aquel otro"*. Confirmar en `catalogo/tarifa-por-analogia.json`.
+
+| # | viajes | cliente | origen | destino REAL | se cobra la tarifa de | precio | ok? |
+|---|---|---|---|---|---|---|---|
+| 1 | **73** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | **CURIA SPAIN, SAU** | VALLADOLID | 38.66 |  |
+| 2 | **34** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | **COGERSA** | ASTURIAS | 33.1 |  |
+| 3 | **8** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | **SERVYECO IBERIA,SL** | CASTELLON | 64.91 |  |
+| 4 | **3** | AMBERES CHEMICAL, S.A. | TARRAGONA | **CUNTIS** | PONTEVEDRA | 79.95 |  |
+| 5 | **2** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | **GERMAN RDGUEZ.IND.SA** | GUADALAJARA | 48.17 |  |
+| 6 | **2** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | **PORRIÑO** | DROGAS VIGO, S.L. | 12.64 |  |
+| 7 | **2** | QUIMIDROGA, S.A. | BARCELONA | **BEGONTE** | LUGO | 74.73 |  |
+| 8 | **2** | HELM IBERICA, S.A. | BARCELONA | **FORESA FRANCE SAS** | AMBARES | 1350.0 |  |
+| 9 | **2** | AMBERES CHEMICAL, S.A. | TARRAGONA | **AZPEITIA** | GUIPUZCOA | 36.9 |  |
+| 10 | **1** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | **CORUÑA** | DROGAS CONDE, S.A. | 18.61 |  |
+| 11 | **1** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | **GIJON** | ASTURIAS | 33.1 |  |
+| 12 | **1** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | **PADRON** | CESURES | 4.27 |  |
+| 13 | **1** | FORESA IND.QUIMICAS DEL NO | CALDAS DE REIS | **LANGREO** | ASTURIAS | 33.1 |  |
+| 14 | **1** | FORESA IND.QUIMICAS DEL NO | VILLAGARCIA | **GIJON** | ASTURIAS | 33.1 |  |
+| 15 | **1** | QUIMIDROGA, S.A. | TARRAGONA | **AVEIRO** | COIMBRA | 80.8 |  |
+| 16 | **1** | DROVIGO PORTUGAL UNIPESSOA | TARRAGONA | **COIMBRA** | AVEIRO | 1900.0 |  |
+| 17 | **1** | HELM IBERICA, S.A. | TARRAGONA | **CASARRUBIOS** | TOLEDO | 1050.0 |  |
+| 18 | **1** | AMBERES CHEMICAL, S.A. | TARRAGONA | **IRURENA** | GUIPUZCOA | 36.9 |  |
+| 19 | **1** | AMBERES CHEMICAL, S.A. | TARRAGONA | **LOGROÑO** | OYON | 31.15 |  |
+| 20 | **1** | ACIDEKA, S.A. | ZIERBANA | **MONFORTE LEMOS** | LUGO | 36.57 |  |
+| 21 | **1** | QUIMICAS DEL JARAMA, S.A. | MADRID | **PORTUGAL** | LANDIN (PT) | 46.35 |  |
+
+- candidatos inequivocos: **21**, que cubren **140 viajes**
