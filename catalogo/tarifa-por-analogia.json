@@ -1,5 +1,7 @@
 {
  "nota": "CANDIDATOS de TARIFA POR ANALOGIA, deducidos porque el importe facturado coincide EXACTAMENTE con el de otra ruta del mismo cliente+origen. Significa \"aqui se cobra la tarifa de aquella otra ruta\", NO \"este destino es aquel otro\". Requieren confirmacion humana: poner confirmado=true. Sin confirmar NO se factura con ellos.",
+ "veredictos_arrastrados": 20,
+ "veredictos_huerfanos": [],
  "candidatos": [
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -8,7 +10,11 @@
    "destino_tarifado": "VALLADOLID",
    "precio": 38.66,
    "n_viajes": 73,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -17,7 +23,11 @@
    "destino_tarifado": "ASTURIAS",
    "precio": 33.1,
    "n_viajes": 34,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -26,7 +36,11 @@
    "destino_tarifado": "CASTELLON",
    "precio": 64.91,
    "n_viajes": 8,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "AMBERES CHEMICAL, S.A.",
@@ -35,7 +49,11 @@
    "destino_tarifado": "PONTEVEDRA",
    "precio": 79.95,
    "n_viajes": 3,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -44,7 +62,11 @@
    "destino_tarifado": "GUADALAJARA",
    "precio": 48.17,
    "n_viajes": 2,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -53,7 +75,11 @@
    "destino_tarifado": "DROGAS VIGO, S.L.",
    "precio": 12.64,
    "n_viajes": 2,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "QUIMIDROGA, S.A.",
@@ -62,7 +88,11 @@
    "destino_tarifado": "LUGO",
    "precio": 74.73,
    "n_viajes": 2,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "HELM IBERICA, S.A.",
@@ -71,7 +101,11 @@
    "destino_tarifado": "AMBARES",
    "precio": 1350.0,
    "n_viajes": 2,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "negociable",
+   "veredicto": "precio por viaje, se negocia cada vez: no es tarifa estable",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "AMBERES CHEMICAL, S.A.",
@@ -80,7 +114,11 @@
    "destino_tarifado": "GUIPUZCOA",
    "precio": 36.9,
    "n_viajes": 2,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -89,7 +127,11 @@
    "destino_tarifado": "DROGAS CONDE, S.A.",
    "precio": 18.61,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -98,7 +140,11 @@
    "destino_tarifado": "ASTURIAS",
    "precio": 33.1,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -107,7 +153,11 @@
    "destino_tarifado": "CESURES",
    "precio": 4.27,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "tarifa_faltante",
+   "veredicto": "Julio 27/08: PADRON y CESURES son sitios DISTINTOS, separados por unos km. La diferencia de tarifa de TRANSTAMBRE entre los dos (3,34 vs 3,21) esta justificada por la distancia, y las diferencias entre clientes para una misma ruta son acuerdos comerciales. No es alias ni analogia: a FORESA le FALTA la fila CALDAS DE REIS -> PADRON COLA 4,27. Se da de alta en Gesruta; no se resuelve por codigo.",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -116,7 +166,11 @@
    "destino_tarifado": "ASTURIAS",
    "precio": 33.1,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -125,7 +179,11 @@
    "destino_tarifado": "ASTURIAS",
    "precio": 33.1,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "QUIMIDROGA, S.A.",
@@ -134,7 +192,11 @@
    "destino_tarifado": "COIMBRA",
    "precio": 80.8,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "DROVIGO PORTUGAL UNIPESSOAL, LDA",
@@ -143,7 +205,11 @@
    "destino_tarifado": "AVEIRO",
    "precio": 1900.0,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "negociable",
+   "veredicto": "precio por viaje, se negocia cada vez: no es tarifa estable",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "HELM IBERICA, S.A.",
@@ -152,7 +218,11 @@
    "destino_tarifado": "TOLEDO",
    "precio": 1050.0,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "negociable",
+   "veredicto": "precio por viaje, se negocia cada vez: no es tarifa estable",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "AMBERES CHEMICAL, S.A.",
@@ -161,7 +231,11 @@
    "destino_tarifado": "GUIPUZCOA",
    "precio": 36.9,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "AMBERES CHEMICAL, S.A.",
@@ -170,7 +244,11 @@
    "destino_tarifado": "OYON",
    "precio": 31.15,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "ACIDEKA, S.A.",
@@ -179,7 +257,11 @@
    "destino_tarifado": "LUGO",
    "precio": 36.57,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   },
   {
    "cliente": "QUIMICAS DEL JARAMA, S.A.",
@@ -188,7 +270,11 @@
    "destino_tarifado": "LANDIN (PT)",
    "precio": 46.35,
    "n_viajes": 1,
-   "confirmado": false
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
   }
  ]
 }

@@ -241,13 +241,58 @@ def main():
                 'confirmado': False,
             })
     puente.sort(key=lambda x: -x['n_viajes'])
-    with open(os.path.join(RAIZ, 'catalogo/tarifa-por-analogia.json'), 'w', encoding='utf-8') as f:
+
+    # --- LOS VEREDICTOS HUMANOS SOBREVIVEN A LA REGENERACION ----------------
+    # Bug real, 27/08/2026: Julio reviso los 21 candidatos uno por uno y al
+    # re-correr este script para agregar un campo se perdieron TODOS. Un
+    # generador que pisa decisiones humanas es peor que no tener generador: el
+    # trabajo de revision se evapora sin aviso y la cascada se queda sin
+    # analogias en silencio.
+    #
+    # Por eso el archivo se MEZCLA, no se sobrescribe: los candidatos se
+    # recalculan desde el dato, pero estado/veredicto/quien/cuando se arrastran
+    # desde el archivo anterior. Un candidato nuevo nace sin confirmar.
+    destino_json = os.path.join(RAIZ, 'catalogo/tarifa-por-analogia.json')
+    CAMPOS_HUMANOS = ('estado', 'confirmado', 'veredicto', 'revisado_por', 'fecha_revision')
+
+    def firma(x):
+        return (norm(x.get('cliente')), norm(x.get('origen')),
+                norm(x.get('destino_real')), norm(x.get('destino_tarifado')))
+
+    veredictos = {}
+    if os.path.exists(destino_json):
+        try:
+            previo = json.load(open(destino_json, encoding='utf-8'))
+            for x in previo.get('candidatos', []):
+                if x.get('estado'):
+                    veredictos[firma(x)] = {k: x[k] for k in CAMPOS_HUMANOS if k in x}
+        except (ValueError, OSError) as e:
+            raise SystemExit('No se pudo leer %s (%s). Se aborta ANTES de escribir: '
+                             'sobrescribirlo perderia los veredictos humanos.' % (destino_json, e))
+
+    usados = set()
+    for x in puente:
+        v = veredictos.get(firma(x))
+        if v:
+            x.update(v); usados.add(firma(x))
+
+    # Un veredicto cuyo candidato ya no aparece no se tira: se avisa. Puede
+    # significar que la ruta dejo de hacerse, o que cambio de precio y el puente
+    # ya no la detecta — las dos cosas hay que saberlas.
+    huerfanos = [k for k in veredictos if k not in usados]
+
+    with open(destino_json, 'w', encoding='utf-8') as f:
         json.dump({'nota': 'CANDIDATOS de TARIFA POR ANALOGIA, deducidos porque el importe '
                            'facturado coincide EXACTAMENTE con el de otra ruta del mismo '
                            'cliente+origen. Significa "aqui se cobra la tarifa de aquella otra '
                            'ruta", NO "este destino es aquel otro". Requieren confirmacion '
                            'humana: poner confirmado=true. Sin confirmar NO se factura con ellos.',
+                   'veredictos_arrastrados': len(usados),
+                   'veredictos_huerfanos': [' -> '.join(k[2:]) for k in huerfanos],
                    'candidatos': puente}, f, ensure_ascii=False, indent=1)
+    if huerfanos:
+        print('AVISO: %d veredicto(s) sin candidato actual: %s'
+              % (len(huerfanos), '; '.join(' -> '.join(k[2:]) for k in huerfanos)))
 
     os.makedirs(os.path.join(RAIZ, 'informes'), exist_ok=True)
     with open(os.path.join(RAIZ, 'catalogo/rutas-por-cliente.json'), 'w', encoding='utf-8') as f:
