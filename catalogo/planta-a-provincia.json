@@ -1,0 +1,194 @@
+{
+ "nota": "CANDIDATOS deducidos por coincidencia exacta de precio. Requieren confirmacion humana: poner confirmado=true. Un candidato sin confirmar NO se usa para facturar.",
+ "candidatos": [
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "planta": "CURIA SPAIN, SAU",
+   "provincia_tarifada": "VALLADOLID",
+   "precio": 38.66,
+   "n_viajes": 73,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "planta": "COGERSA",
+   "provincia_tarifada": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 34,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "planta": "SERVYECO IBERIA,SL",
+   "provincia_tarifada": "CASTELLON",
+   "precio": 64.91,
+   "n_viajes": 8,
+   "confirmado": false
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "planta": "CUNTIS",
+   "provincia_tarifada": "PONTEVEDRA",
+   "precio": 79.95,
+   "n_viajes": 3,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "planta": "GERMAN RDGUEZ.IND.SA",
+   "provincia_tarifada": "GUADALAJARA",
+   "precio": 48.17,
+   "n_viajes": 2,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "planta": "PORRIÑO",
+   "provincia_tarifada": "DROGAS VIGO, S.L.",
+   "precio": 12.64,
+   "n_viajes": 2,
+   "confirmado": false
+  },
+  {
+   "cliente": "QUIMIDROGA, S.A.",
+   "origen": "BARCELONA",
+   "planta": "BEGONTE",
+   "provincia_tarifada": "LUGO",
+   "precio": 74.73,
+   "n_viajes": 2,
+   "confirmado": false
+  },
+  {
+   "cliente": "HELM IBERICA, S.A.",
+   "origen": "BARCELONA",
+   "planta": "FORESA FRANCE SAS",
+   "provincia_tarifada": "AMBARES",
+   "precio": 1350.0,
+   "n_viajes": 2,
+   "confirmado": false
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "planta": "AZPEITIA",
+   "provincia_tarifada": "GUIPUZCOA",
+   "precio": 36.9,
+   "n_viajes": 2,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "planta": "CORUÑA",
+   "provincia_tarifada": "DROGAS CONDE, S.A.",
+   "precio": 18.61,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "planta": "GIJON",
+   "provincia_tarifada": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "planta": "PADRON",
+   "provincia_tarifada": "CESURES",
+   "precio": 4.27,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "planta": "LANGREO",
+   "provincia_tarifada": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "planta": "GIJON",
+   "provincia_tarifada": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "QUIMIDROGA, S.A.",
+   "origen": "TARRAGONA",
+   "planta": "AVEIRO",
+   "provincia_tarifada": "COIMBRA",
+   "precio": 80.8,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "DROVIGO PORTUGAL UNIPESSOAL, LDA",
+   "origen": "TARRAGONA",
+   "planta": "COIMBRA",
+   "provincia_tarifada": "AVEIRO",
+   "precio": 1900.0,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "HELM IBERICA, S.A.",
+   "origen": "TARRAGONA",
+   "planta": "CASARRUBIOS",
+   "provincia_tarifada": "TOLEDO",
+   "precio": 1050.0,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "planta": "IRURENA",
+   "provincia_tarifada": "GUIPUZCOA",
+   "precio": 36.9,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "planta": "LOGROÑO",
+   "provincia_tarifada": "OYON",
+   "precio": 31.15,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "ACIDEKA, S.A.",
+   "origen": "ZIERBANA",
+   "planta": "MONFORTE LEMOS",
+   "provincia_tarifada": "LUGO",
+   "precio": 36.57,
+   "n_viajes": 1,
+   "confirmado": false
+  },
+  {
+   "cliente": "QUIMICAS DEL JARAMA, S.A.",
+   "origen": "MADRID",
+   "planta": "PORTUGAL",
+   "provincia_tarifada": "LANDIN (PT)",
+   "precio": 46.35,
+   "n_viajes": 1,
+   "confirmado": false
+  }
+ ]
+}
