@@ -111,9 +111,146 @@ function buscarTarifaContractual(viaje, tarifas, catalogo) {
   };
 }
 
+// ===== SEGUNDO ESCALON: TARIFA POR ANALOGIA ==================================
+//
+// Medido sobre el año entero (7.578 portes): 532 combinaciones cliente x ruta x
+// material — 1.973 viajes, el 26 % — no tienen tarifa oficial. No es un problema
+// de nombres: el tarifario y los viajes usan el mismo catalogo de 790 puntos
+// (294/294 y 293/295). El tarifario esta INCOMPLETO respecto de lo que se
+// transporta (ver docs/INDICE.md R-05).
+//
+// Cuando el destino real no esta tarifado, la oficina aplica a mano la tarifa de
+// otra ruta del mismo cliente y origen. Este escalon reproduce ese gesto, y solo
+// con las analogias que Julio CONFIRMO una por una (2026-08-27: 12 confirmadas,
+// 3 "negociables" —precio que se pacta viaje a viaje, no es tarifa—, 5
+// descartadas y 1 que resulto ser sinonimo de punto, no analogia).
+//
+// DOS REGLAS DURAS
+//
+//   1. Solo entra estado === 'confirmado'. Una analogia sin confirmar aplicada
+//      sola es un precio inventado con pinta de bueno: el fallo mas caro que
+//      puede tener este archivo. 'negociable' NO entra: que dos viajes hayan
+//      coincidido de precio no significa que el tercero valga lo mismo.
+//
+//   2. La analogia SIEMPRE marca revisar. Es una tarifa observada, no pactada.
+//      La fila se factura, pero se ve que se factura por analogia.
+
+/**
+ * Las analogias que se pueden usar. Filtra aca, no en el punto de uso: asi no
+ * hay forma de saltarse la regla 1 por olvido.
+ *
+ * Se exigen las DOS condiciones (estado y confirmado) a proposito: un JSON
+ * editado a mano a medias no debe poder colar un precio.
+ */
+function analogiasConfirmadas(analogias) {
+  var lista = (analogias && analogias.candidatos) ? analogias.candidatos
+            : (Array.isArray(analogias) ? analogias : []);
+  var out = [];
+  for (var i = 0; i < lista.length; i++) {
+    if (lista[i].estado === 'confirmado' && lista[i].confirmado === true) { out.push(lista[i]); }
+  }
+  return out;
+}
+
+/**
+ * Busca la analogia que aplica a este viaje.
+ *
+ * El cliente NO se compara por igualdad: el JSON guarda la razon social larga
+ * ("FORESA IND.QUIMICAS DEL NOROESTE, S.A.") porque sale del export de Gesruta,
+ * y el viaje trae el nombre corto que se leyo del documento ("FORESA"). Es el
+ * mismo puente que ya usa la busqueda de tarifa (§ Puente 2); compararlos por
+ * igualdad hacia que ninguna analogia matcheara nunca.
+ */
+function buscarAnalogia(viaje, analogias) {
+  var lista = analogiasConfirmadas(analogias);
+  var o = norm(viaje.origen), d = norm(viaje.destino);
+  for (var i = 0; i < lista.length; i++) {
+    var a = lista[i];
+    if (!clienteCoincide(viaje.cliente, a.cliente)) { continue; }
+    if (norm(a.origen) !== o) { continue; }
+    if (norm(a.destino_real) !== d) { continue; }
+    return a;
+  }
+  return null;
+}
+
+/**
+ * Precio del viaje, con la cascada completa y diciendo SIEMPRE de donde sale.
+ *
+ * 1. tarifa CONTRACTUAL (tabla Tarifas)          -> origen_del_precio 'contractual'
+ * 2. tarifa POR ANALOGIA confirmada              -> 'analogia'   (+ revisar)
+ * 3. precio impreso en la ORDEN del cliente      -> 'orden'      (+ revisar)
+ * 4. nada, con el motivo escrito                 -> null
+ *
+ * El campo origen_del_precio no es decorativo: es lo que permite ver en la
+ * planilla que una fila se esta cobrando por analogia y no por tarifa pactada.
+ *
+ * @param {{cliente,origen,destino,material,precio_orden?}} viaje
+ * @param {Array} tarifas    filas de la tabla Tarifas
+ * @param {object} analogias contenido de catalogo/tarifa-por-analogia.json
+ * @param {Array} [catalogo] filas de la tabla puntos
+ */
+function resolverPrecio(viaje, tarifas, analogias, catalogo) {
+  var motivos = [];
+
+  var contractual = buscarTarifaContractual(viaje, tarifas, catalogo);
+  if (contractual && contractual.tarifa !== null && contractual.tarifa_tn !== undefined) {
+    contractual.origen_del_precio = 'contractual';
+    return contractual;
+  }
+  if (contractual && contractual.motivo) { motivos.push(contractual.motivo); }
+
+  // --- Escalon 2 ---------------------------------------------------------
+  var a = buscarAnalogia(viaje, analogias);
+  if (a) {
+    // Se rehace la busqueda contractual sustituyendo SOLO el destino. No se
+    // copia el precio guardado en la analogia: si la tarifa de la ruta modelo
+    // cambio, el viaje tiene que seguir esa tarifa, no un numero congelado.
+    var comoSi = {
+      cliente: viaje.cliente, origen: viaje.origen,
+      destino: a.destino_tarifado, material: viaje.material,
+    };
+    var t = buscarTarifaContractual(comoSi, tarifas, catalogo);
+    if (t && t.tarifa_tn !== undefined) {
+      t.origen_del_precio = 'analogia';
+      t.revisar = true;              // regla 2: observada, no pactada
+      t.analogia = {
+        destino_real: a.destino_real,
+        destino_tarifado: a.destino_tarifado,
+        confirmado_por: a.revisado_por || null,
+        fecha: a.fecha_revision || null,
+      };
+      t.motivo = 'sin tarifa propia para ' + a.destino_real + ': se aplica la de ' +
+                 a.destino_tarifado + ', analogia confirmada por ' +
+                 (a.revisado_por || 'la oficina');
+      return t;
+    }
+    motivos.push('hay analogia confirmada hacia ' + a.destino_tarifado +
+                 ' pero esa ruta tampoco tiene tarifa');
+  }
+
+  // --- Escalon 3 ---------------------------------------------------------
+  var po = num(viaje.precio_orden);
+  if (po !== null) {
+    return {
+      tarifa_tn: null, precio_fijo: po, material_tarifa: null,
+      origen_del_precio: 'orden', revisar: true,
+      motivo: 'sin tarifa cargada: se usa el precio impreso en la orden del cliente',
+    };
+  }
+
+  return {
+    tarifa: null, origen_del_precio: null, revisar: true,
+    motivo: motivos.length ? motivos.join('; ') : 'sin precio: no hay tarifa ni orden',
+  };
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     buscarTarifaContractual: buscarTarifaContractual,
+    resolverPrecio: resolverPrecio,
+    analogiasConfirmadas: analogiasConfirmadas,
+    buscarAnalogia: buscarAnalogia,
     clienteCoincide: clienteCoincide,
     materialCoincide: materialCoincide,
   };

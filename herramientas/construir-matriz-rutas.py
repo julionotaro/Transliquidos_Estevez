@@ -168,6 +168,7 @@ def main():
             'destino': d, 'nombre_destino': ult['nomdestino'],
             'material': mat, 'nombre_material': ult['nommaterial'],
             'n_viajes': len(vs),
+            'primera_fecha': vs_ord[0]['fecha'],
             'ultima_fecha': ult['fecha'],
             'unidad': ult['unidad'],
             'precio_ultimo': round(float(ult['precio']), 4) if ult['precio'] not in ('', None) else None,
@@ -197,6 +198,7 @@ def main():
         cn = norm(c['nombre'])
         for R in c['rutas']:
             if R['en_tarifario_oficial']:
+                R['causa_sin_tarifa'] = None
                 continue
             o, ds = norm(R['nombre_origen']), norm(R['nombre_destino'])
             if cn not in clientes_tar:
@@ -210,6 +212,7 @@ def main():
             else:
                 k = 'origen y destino existen por separado, pero NO esa combinacion'
             diag[k][0] += 1; diag[k][1] += R['n_viajes']
+            R['causa_sin_tarifa'] = k
 
     # --- Tarifa POR ANALOGIA: detectada por coincidencia exacta de importe ---
     # Indice de tarifas por (cliente, origen) para buscar el importe identico.
