@@ -184,12 +184,52 @@
           ]
         }
       ]
+    },
+
+    {
+      "cliente": "QUIMIDROGA",
+      "razon_social_impresa": "QUIMIDROGA, S.A. — figura como EXPEDIDOR en la orden de transporte. TUSET 26, 08006 Barcelona (sede; NO es el origen del viaje).",
+      "estado": "observado",
+      "observado_de": 4,
+      "fuente": "4 OC 'Orden de transporte' 20260828183738/748/759/808, mas la tabla campo->fuente de Julio (28/08/2026)",
+      "_hallazgo": "Quimidroga es el caso MAS FACIL de todos: su OC es un formulario IMPRESO con etiquetas fijas, y trae la referencia DOS veces con dos anclas distintas que siempre coinciden: 'Orden de transporte NNNNNN' (arriba) y 'Referencia en factura: NNNNNN' (bajo el total). Las 4 observadas: 703965, 704269, 704453, 705439 — 6 digitos, empiezan en 70. La segunda ancla, 'Referencia en factura:', es la mas robusta: el propio documento declara cual de los 5 numeros va a factura.",
+      "documentos": [
+        {
+          "tipo": "orden_transporte",
+          "titulos": ["Quimidroga", "Orden de transporte"],
+          "_forma": "Formulario impreso con etiquetas fijas a la izquierda. Determinista por ancla.",
+          "campos": {
+            "cliente": { "donde": "recuadro 'Expedidor'", "ejemplo": "QUIMIDROGA, S.A.", "nota": "el cliente es el EXPEDIDOR, no el destinatario" },
+            "referencia": {
+              "donde": "ancla 'Referencia en factura:' (bajo el Total). Respaldo: 'Orden de transporte' (arriba). Las dos coinciden siempre.",
+              "formato": "VARIABLE — 6 digitos en estas 4 OC (70xxxx); Julio indica que tambien aparece de 8 (10068385) segun el comprador. NO validar por longitud: validar por el ANCLA.",
+              "ejemplos": ["703965", "704269", "704453", "705439"]
+            },
+            "origen": { "donde": "'Lugar de Carga'", "ejemplos": ["Miranda de Ebro (Burgos)", "Barcelona", "TEPSA Barcelona", "Relisa Barcelona"], "nota": "trae la planta/terminal + localidad" },
+            "destino": { "donde": "'Destino' + 'Fecha de entrega'", "ejemplos": ["Braga (PT)", "BEGONTE (Lugo)", "Leiria (PT) - Cabopol", "SILLEDA-PONTEVEDRA - Nudeza"] },
+            "material": { "donde": "linea 'Posicion', tras el codigo de 6 digitos", "ejemplos": ["MEXIFLEX 911P", "TENSIO-GAL NF", "VINKA-PLAST DINP", "LISINA LIQUIDA 50%"] },
+            "cantidad": { "donde": "'Peso neto' de la linea y del Total", "ejemplos": ["24.000 KG", "25.000 KG"] }
+          },
+          "ignorar": [
+            "'Pedido: 2894017/80' — numero de pedido de Quimidroga, NO la referencia.",
+            "'Ref. cliente: 226024 / 1000000571 / 260875' — referencia del comprador final, NO la de factura.",
+            "el numero suelto bajo el Expedidor (83303431, 83303609...) — interno de Quimidroga.",
+            "'Cargar Tepsa Referencia 7044531 QSA040' — referencia interna de la terminal Tepsa, no la del viaje.",
+            "TUSET 26 / 08006 Barcelona en el Expedidor: es la SEDE de Quimidroga, no el origen. El origen es 'Lugar de Carga'."
+          ]
+        }
+      ]
     }
   ],
 
+  "_principio_extraccion_por_ancla": "LA RESPUESTA a la pregunta de Julio ('sos capaz de dar referencias segun cada documento y formato'). SI, pero la clave NO es adivinar el formato del numero — que Julio confirma que varia (6 digitos, 8 digitos, guia remessa 0941026332, o ninguno). La clave es la ETIQUETA ANCLA que precede al numero, que SI es estable por emisor: Quimidroga 'Referencia en factura:', Foresa el 2do numero bajo 'CMR/ALBARAN', Bresfor el 2do tras 'Doc. int:', RNM 'REF CARGA:' en el mail. Se extrae por ancla, no por formato. El formato sirve solo como verificacion secundaria. Perseguir el formato es fragil (cambia); perseguir el ancla es determinista (no cambia). Por eso cada campo de estas plantillas dice 'donde' (el ancla) antes que 'formato'.",
+
+  "_jerarquia_de_fuentes": "Julio, 28/08: cuando un campo lista varias fuentes ('Observacion OC/Guia Remessa/CMR'), es una JERARQUIA por orden: se usa la 1a que tenga el dato, y si no, la siguiente. Para la referencia de RNM: 1) observacion de la OC, 2) Guia Remessa, 3) CMR. No es que las tres den lo mismo: es un fallback ordenado.",
+
   "_pendiente": [
     "Confirmar con el instructivo de Julio: la referencia de BRESFOR (observada de 7 digitos, la regla anterior decia 10)",
-    "Anotar el resto de clientes: QUIMIDROGA, RNM, CLAVO, BALTRANSA, TRANSTAMBRE, HELM, Q. DEL JARAMA",
-    "Traducir los codigos de material propios del cliente (FORESA RES 3169, RES 1350) al material Gesruta"
+    "Anotar el resto de clientes: CLAVO, BALTRANSA, TRANSTAMBRE, HELM, Q. DEL JARAMA",
+    "Traducir los codigos de material propios del cliente (FORESA RES 3169, Quimidroga MEXIFLEX/TENSIO-GAL, etc.) al material Gesruta",
+    "Confirmar el segundo formato de referencia de Quimidroga (8 digitos, 10068385): en que documento aparece y por que difiere de la orden de transporte"
   ]
 }
