@@ -1,240 +1,361 @@
 {
-  "_nota": "QUE y DONDE buscar cada campo, cliente por cliente y documento por documento. Es el punto A: en vez de pedirle al modelo 'datos clave', se le dice la etiqueta impresa exacta y la casilla. ORIGEN DE ESTOS DATOS: observacion directa de los PDF que Julio subio el 27/08/2026. Cada plantilla dice de cuantos documentos salio y que esta pendiente de confirmar con el instructivo por cliente. Una plantilla observada de 1 documento NO es una regla: es una hipotesis con evidencia.",
-  "_schema": {
-    "cliente": "nombre corto tal como se resuelve en el sistema",
-    "razon_social_impresa": "como aparece literalmente en el papel, para identificar al emisor",
-    "documentos": "un bloque por tipo de documento que ese cliente emite",
-    "titulos": "textos impresos que identifican el documento (para clasificarlo)",
-    "campos": "por cada campo facturable: etiqueta impresa, casilla del CMR si aplica, formato esperado y notas",
-    "ignorar": "campos que PARECEN el dato correcto y no lo son. Vale tanto como el resto junto",
-    "estado": "observado | confirmado — solo 'confirmado' cuando Julio lo valide con el instructivo"
-  },
-
-  "plantillas": [
+ "_nota": "QUE y DONDE buscar cada campo, cliente por cliente y documento por documento. Es el punto A: en vez de pedirle al modelo 'datos clave', se le dice la etiqueta impresa exacta y la casilla. ORIGEN DE ESTOS DATOS: observacion directa de los PDF que Julio subio el 27/08/2026. Cada plantilla dice de cuantos documentos salio y que esta pendiente de confirmar con el instructivo por cliente. Una plantilla observada de 1 documento NO es una regla: es una hipotesis con evidencia.",
+ "_schema": {
+  "cliente": "nombre corto tal como se resuelve en el sistema",
+  "razon_social_impresa": "como aparece literalmente en el papel, para identificar al emisor",
+  "documentos": "un bloque por tipo de documento que ese cliente emite",
+  "titulos": "textos impresos que identifican el documento (para clasificarlo)",
+  "campos": "por cada campo facturable: etiqueta impresa, casilla del CMR si aplica, formato esperado y notas",
+  "ignorar": "campos que PARECEN el dato correcto y no lo son. Vale tanto como el resto junto",
+  "estado": "observado | confirmado — solo 'confirmado' cuando Julio lo valide con el instructivo"
+ },
+ "plantillas": [
+  {
+   "cliente": "FORESA",
+   "razon_social_impresa": "FORESA IND. QUÍMICAS DEL NOROESTE SA",
+   "nif": "A28141224",
+   "estado": "observado",
+   "observado_de": 1,
+   "fuente": "PDF 20260819180805 pag.1 (viaje del 10.08.2026, tractora 3729JWP)",
+   "documentos": [
     {
-      "cliente": "FORESA",
-      "razon_social_impresa": "FORESA IND. QUÍMICAS DEL NOROESTE SA",
-      "nif": "A28141224",
-      "estado": "observado",
-      "observado_de": 1,
-      "fuente": "PDF 20260819180805 pag.1 (viaje del 10.08.2026, tractora 3729JWP)",
-      "documentos": [
-        {
-          "tipo": "cmr_albaran",
-          "titulos": ["CMR/ALBARAN"],
-          "campos": {
-            "referencia": {
-              "donde": "arriba a la derecha, bajo el titulo CMR/ALBARAN, SEGUNDO numero de los dos",
-              "formato": "7 digitos",
-              "ejemplo": "2017065",
-              "nota": "el PRIMER numero (5030294491, 10 digitos) NO es la referencia. Es el error que ya se cometio: se tomo 2009926 en vez de 2017843"
-            },
-            "origen": {
-              "donde": "casilla 4 'Lugar y fecha carga mercancia'",
-              "ejemplo": "Caldas de Reis",
-              "nota": "coincide con la localidad del remitente (casilla 1), que sirve de corroboracion"
-            },
-            "destino": {
-              "donde": "casilla 3 'Destino. Lugar entrega mercancia'",
-              "ejemplo": "TERMOLAN (FABRICA 1), LUGAR DA BARCA - VILA DAS AVES",
-              "nota": "trae la PLANTA, no la localidad del catalogo. Es donde hace falta el alias empresa->punto"
-            },
-            "fecha_carga": {
-              "donde": "casilla 4, junto al lugar",
-              "formato": "DD.MM.AAAA HH:MM:SS",
-              "ejemplo": "10.08.2026 09:04:36"
-            },
-            "material": {
-              "donde": "casilla 8/11, linea de mercancia",
-              "ejemplo": "FORESA RES 3169",
-              "nota": "codigo interno de Foresa; hay que traducirlo al material Gesruta (COLA/METANOL/...)"
-            },
-            "peso_kg": {
-              "donde": "casilla 13 'Peso/Weight (Kg)', y repetido en la linea de mercancia",
-              "formato": "numero con punto de miles",
-              "ejemplo": "22.440",
-              "nota": "aparece DOS veces en la misma hoja; si no coinciden, revisar"
-            },
-            "matricula_tractora": {
-              "donde": "casilla 6/7, etiqueta 'Tractor'",
-              "formato": "NNNNLLL",
-              "ejemplo": "3729JWP"
-            },
-            "matricula_remolque": {
-              "donde": "casilla 6/7, etiqueta 'Plataforma'",
-              "ejemplo": "PO02662R"
-            },
-            "pedido_cliente": {
-              "donde": "columna derecha de la linea de mercancia",
-              "ejemplo": "2005046565-000001",
-              "nota": "hay ademas un 'P.Clte 2026/442' debajo; no confundirlos"
-            }
-          },
-          "ignorar": [
-            "casilla 6 'Porteador': es TRANSPORTES LIQUIDOS ESTEVEZ, o sea nosotros. NUNCA es el cliente",
-            "casilla 2 'CLIENTE/Consignee': es el DESTINATARIO de la mercancia, no quien nos paga el porte. El cliente que factura es el REMITENTE (casilla 1) salvo que la orden diga otra cosa",
-            "casilla 15 'OBSERVACIONES / Entrega': trae otra fecha (07.08.2025) que no es la de carga"
-          ]
-        }
-      ]
-    },
-
-    {
-      "cliente": "BRESFOR",
-      "razon_social_impresa": "BRESFOR IND. DO FORMOL, S.A.",
-      "nif": "PT500047944",
-      "estado": "observado",
-      "observado_de": 1,
-      "fuente": "PDF 20260819180805 pag.2 (viaje del 10.08.2026, tractora 3729JWP)",
-      "documentos": [
-        {
-          "tipo": "cmr_guia_remessa",
-          "titulos": ["CMR/GUIA DE REMESSA", "CIM/DELIVERY NOTE"],
-          "campos": {
-            "referencia": {
-              "donde": "arriba a la derecha, linea 'Doc. int:', SEGUNDO numero",
-              "formato": "7 digitos",
-              "ejemplo": "2017612",
-              "nota": "el primero (5050139937) es el documento interno portugues. Ojo: la regla vieja decia '10 digitos' para Bresfor y este documento dice lo contrario — A CONFIRMAR con el instructivo"
-            },
-            "origen": {
-              "donde": "casilla 4 'Lugar e data carga mercadoria'",
-              "ejemplo": "GAFANHA DA NAZARE"
-            },
-            "destino": {
-              "donde": "casilla 3 'Place of delivery of the goods'",
-              "ejemplo": "Finsa Cella 2, BARRIO DE LA ESTACION, CELLA - TERUEL 44370",
-              "nota": "AQUI ESTA EL ORIGEN DE LA CONFUSION 'CELLA DE ESTACION' / 'TERUEL' de corridas anteriores: el literal mezcla planta, barrio, pueblo y provincia en una linea"
-            },
-            "fecha_carga": {
-              "donde": "casilla 4",
-              "formato": "DD.MM.AAAA HH:MM:SS",
-              "ejemplo": "10.08.2026 17:35:05"
-            },
-            "material": {
-              "donde": "linea de mercancia",
-              "ejemplo": "FORESA RES 1350"
-            },
-            "peso_kg": {
-              "donde": "casilla 13 'Peso/Weight (Kg)'",
-              "ejemplo": "21.980"
-            },
-            "matricula_tractora": { "donde": "etiqueta 'Tractor'", "ejemplo": "3729JWP" },
-            "matricula_remolque": { "donde": "etiqueta 'Plataforma'", "ejemplo": "PO02662R" }
-          },
-          "ignorar": [
-            "'DESTINATARIO/Consignee' (FINANCIERA MADERERA S.A., Santiago de Compostela): es la sede social del cliente final, NO el destino fisico. El destino esta en la casilla 3 y es Cella (Teruel). Confundirlos manda el viaje a Galicia en vez de a Aragon",
-            "'Custo de referencia do gasoleo 2.049000': es una mencion legal portuguesa, no la indexacion que factura TLE"
-          ]
-        }
-      ]
-    },
-
-    {
-      "cliente": "RNM",
-      "razon_social_impresa": "RNM (grupornm.pt) — quien FACTURA es RNM TRANSPORTES QUIMICOS. OJO: no es lo mismo que RNM PRODUTOS QUIMICOS, que es una PLANTA (destino en Vila Nova Famalicao). Mismo grupo, entidades distintas: una paga el porte, la otra recibe carga.",
-      "estado": "observado",
-      "observado_de": 3,
-      "fuente": "PDF OC 20260828173449 / 173513 / 173525, mas la tabla campo->fuente que dio Julio el 28/08/2026",
-      "_mapa_campo_fuente_de_julio": {
-        "_nota": "Tabla que dio Julio: de donde sale cada columna de la planilla. Se transcribe entera porque es el instructivo, no solo los campos del documento. FC=ficha chofer, OC=orden de carga (email), CMR=CMR/Guia Remessa, GES=tabla Gesruta, SYS=calculo del sistema.",
-        "numero_viaje": "SYS (id ficha chofer)",
-        "n_albaran": "SYS (nro de viaje dentro de la ficha)",
-        "cabeza_matricula": "FC", "remolque_matricula": "FC",
-        "chofer": "FC", "cod_chofer": "GES", "proveedor": "FC",
-        "cliente": "OC (mail solicitante)", "cod_cliente": "GES",
-        "origen": "CMR", "cod_origen": "GES",
-        "destino": "CMR/Guia Remessa", "cod_destino": "GES",
-        "carga_material": "CMR", "cod_material": "GES",
-        "referencia": "Observacion de OC / Guia Remessa / CMR",
-        "fecha_carga": "CMR", "cantidad": "CMR/Guia Remessa",
-        "precio": "GES", "importe": "SYS",
-        "regimen_indexacion": "GES", "porcentaje_indexacion": "GES", "indexacion": "SYS",
-        "gastos": "FC", "reparto": "PENDIENTE DE VER (lo marco Julio)",
-        "km_cargado": "FC", "km_vacio": "FC"
+     "tipo": "cmr_albaran",
+     "titulos": [
+      "CMR/ALBARAN"
+     ],
+     "campos": {
+      "referencia": {
+       "donde": "arriba a la derecha, bajo el titulo CMR/ALBARAN, SEGUNDO numero de los dos",
+       "formato": "7 digitos",
+       "ejemplo": "2017065",
+       "nota": "el PRIMER numero (5030294491, 10 digitos) NO es la referencia. Es el error que ya se cometio: se tomo 2009926 en vez de 2017843"
       },
-      "documentos": [
-        {
-          "tipo": "orden_de_carga_email",
-          "titulos": ["mail de grupornm.pt", "Buenos dias Manuel", "Carga en ... Descarga ..."],
-          "_forma": "NO es un formulario con casillas: es un EMAIL EN PROSA. Los campos estan en frases, en orden bastante estable pero sin casilla fija. Es el PEDIDO; el dato definitivo lo confirma el CMR al cargar. OC y CMR se corroboran entre si.",
-          "campos": {
-            "cliente": {
-              "donde": "DOMINIO del remitente del email: @grupornm.pt -> RNM. Regla robusta.",
-              "nota": "El nombre 'RNM' a veces esta en el cuerpo ('la carga es para RNM') y a veces no. El dominio del remitente SIEMPRE esta. No usar el asunto para el cliente."
-            },
-            "origen": {
-              "donde": "frase 'Carga en [fecha] en [lugar]' o 'Carga [fecha] en [lugar]'",
-              "ejemplos": ["FERQUIASTUR, S.L., 33401 AVILLES -> AVILES", "Tepsa de Barcelona -> BARCELONA", "nuestros tanques de aveiro -> AVEIRO"],
-              "nota": "Trae la EMPRESA cargadora o la terminal, no el nombre del pueblo del catalogo. Alimenta alias empresa->punto."
-            },
-            "destino": {
-              "donde": "frase 'Descarga [fecha]: [EMPRESA + direccion postal]'",
-              "ejemplos": ["DIMENSA, 06173 NOGALES - BADAJOZ -> NOGALES", "DIVERSEY ESPAÑA, 28343 VALDEMORO -> VALDEMORO", "RNM PRODUTOS QUIMICOS, 4770-329 VILA NOVA DE FAMALICAO -> FAMALICAO"],
-              "nota": "Igual que el origen: empresa, no pueblo."
-            },
-            "material": { "donde": "frase 'Produto:' o 'Producto:'", "ejemplos": ["Acido Sulfurico 98", "ACIDO FOSFORICO 85%"] },
-            "referencia": {
-              "donde": "JERARQUIA POR PRIORIDAD, no por frecuencia (Julio 28/08): 1) observacion de la OC SI la trae, 2) GUIA REMESSA, 3) CMR.",
-              "fuente_habitual": "GUIA REMESSA. La OC casi nunca trae la referencia: de las 3 OC observadas de RNM, solo 1 (Barcelona) tenia 'REF CARGA: 3100082364'; las otras dos no traian ninguna. Lo NORMAL es que salga de la Guia Remessa.",
-              "formato": "VARIABLE. La Guia Remessa da 10 digitos (0941026332, 0141163512). El mail, cuando la trae, puede dar otro (3100082364). Extraer por ancla, no por formato.",
-              "_falta_documento": "IMPORTANTE: las 3 OC de RNM que hay son EMAILS. La GUIA REMESSA es un documento SEPARADO, aun no aportado, y es la fuente habitual de la referencia. Si a RNM solo llega el mail, la referencia queda vacia casi siempre. Para RNM el sistema NECESITA la Guia Remessa."
-            },
-            "cantidad": { "donde": "frase 'Cantidad:' / 'Cantidade:'", "ejemplo": "25T" }
-          },
-          "ignorar": [
-            "EL ASUNTO del email usa terminos GENERICOS/provinciales ('Aveiro - Madrid', 'SULFURICO AVILES - BADAJOZ'), mientras el CUERPO tiene el punto exacto (Valdemoro, Nogales). Leer el cuerpo, nunca el asunto, para origen/destino.",
-            "'NMR CLIENTE: 628' NO es la referencia del viaje. Es un numero interno de RNM. La referencia es 'REF CARGA'. Mismo tipo de trampa que los dos numeros de Foresa.",
-            "'Precio: Dimme qual es lo que tenemos' — cuando RNM pregunta el precio, NO hay precio en el documento: el precio sale de la tabla Gesruta (tarifa), no de la OC."
-          ]
-        }
-      ]
-    },
-
-    {
-      "cliente": "QUIMIDROGA",
-      "razon_social_impresa": "QUIMIDROGA, S.A. — figura como EXPEDIDOR en la orden de transporte. TUSET 26, 08006 Barcelona (sede; NO es el origen del viaje).",
-      "estado": "observado",
-      "observado_de": 4,
-      "fuente": "4 OC 'Orden de transporte' 20260828183738/748/759/808, mas la tabla campo->fuente de Julio (28/08/2026)",
-      "_hallazgo": "Quimidroga es el caso MAS FACIL de todos: su OC es un formulario IMPRESO con etiquetas fijas, y trae la referencia DOS veces con dos anclas distintas que siempre coinciden: 'Orden de transporte NNNNNN' (arriba) y 'Referencia en factura: NNNNNN' (bajo el total). Las 4 observadas: 703965, 704269, 704453, 705439 — 6 digitos, empiezan en 70. La segunda ancla, 'Referencia en factura:', es la mas robusta: el propio documento declara cual de los 5 numeros va a factura.",
-      "documentos": [
-        {
-          "tipo": "orden_transporte",
-          "titulos": ["Quimidroga", "Orden de transporte"],
-          "_forma": "Formulario impreso con etiquetas fijas a la izquierda. Determinista por ancla.",
-          "campos": {
-            "cliente": { "donde": "recuadro 'Expedidor'", "ejemplo": "QUIMIDROGA, S.A.", "nota": "el cliente es el EXPEDIDOR, no el destinatario" },
-            "referencia": {
-              "donde": "ancla 'Referencia en factura:' (bajo el Total). Respaldo: 'Orden de transporte' (arriba). Las dos coinciden siempre.",
-              "formato": "VARIABLE — 6 digitos en estas 4 OC (70xxxx); Julio indica que tambien aparece de 8 (10068385) segun el comprador. NO validar por longitud: validar por el ANCLA.",
-              "ejemplos": ["703965", "704269", "704453", "705439"]
-            },
-            "origen": { "donde": "'Lugar de Carga'", "ejemplos": ["Miranda de Ebro (Burgos)", "Barcelona", "TEPSA Barcelona", "Relisa Barcelona"], "nota": "trae la planta/terminal + localidad" },
-            "destino": { "donde": "'Destino' + 'Fecha de entrega'", "ejemplos": ["Braga (PT)", "BEGONTE (Lugo)", "Leiria (PT) - Cabopol", "SILLEDA-PONTEVEDRA - Nudeza"] },
-            "material": { "donde": "linea 'Posicion', tras el codigo de 6 digitos", "ejemplos": ["MEXIFLEX 911P", "TENSIO-GAL NF", "VINKA-PLAST DINP", "LISINA LIQUIDA 50%"] },
-            "cantidad": { "donde": "'Peso neto' de la linea y del Total", "ejemplos": ["24.000 KG", "25.000 KG"] }
-          },
-          "ignorar": [
-            "'Pedido: 2894017/80' — numero de pedido de Quimidroga, NO la referencia.",
-            "'Ref. cliente: 226024 / 1000000571 / 260875' — referencia del comprador final, NO la de factura.",
-            "el numero suelto bajo el Expedidor (83303431, 83303609...) — interno de Quimidroga.",
-            "'Cargar Tepsa Referencia 7044531 QSA040' — referencia interna de la terminal Tepsa, no la del viaje.",
-            "TUSET 26 / 08006 Barcelona en el Expedidor: es la SEDE de Quimidroga, no el origen. El origen es 'Lugar de Carga'."
-          ]
-        }
-      ]
+      "origen": {
+       "donde": "casilla 4 'Lugar y fecha carga mercancia'",
+       "ejemplo": "Caldas de Reis",
+       "nota": "coincide con la localidad del remitente (casilla 1), que sirve de corroboracion"
+      },
+      "destino": {
+       "donde": "casilla 3 'Destino. Lugar entrega mercancia'",
+       "ejemplo": "TERMOLAN (FABRICA 1), LUGAR DA BARCA - VILA DAS AVES",
+       "nota": "trae la PLANTA, no la localidad del catalogo. Es donde hace falta el alias empresa->punto"
+      },
+      "fecha_carga": {
+       "donde": "casilla 4, junto al lugar",
+       "formato": "DD.MM.AAAA HH:MM:SS",
+       "ejemplo": "10.08.2026 09:04:36"
+      },
+      "material": {
+       "donde": "casilla 8/11, linea de mercancia",
+       "ejemplo": "FORESA RES 3169",
+       "nota": "codigo interno de Foresa; hay que traducirlo al material Gesruta (COLA/METANOL/...)"
+      },
+      "peso_kg": {
+       "donde": "casilla 13 'Peso/Weight (Kg)', y repetido en la linea de mercancia",
+       "formato": "numero con punto de miles",
+       "ejemplo": "22.440",
+       "nota": "aparece DOS veces en la misma hoja; si no coinciden, revisar"
+      },
+      "matricula_tractora": {
+       "donde": "casilla 6/7, etiqueta 'Tractor'",
+       "formato": "NNNNLLL",
+       "ejemplo": "3729JWP"
+      },
+      "matricula_remolque": {
+       "donde": "casilla 6/7, etiqueta 'Plataforma'",
+       "ejemplo": "PO02662R"
+      },
+      "pedido_cliente": {
+       "donde": "columna derecha de la linea de mercancia",
+       "ejemplo": "2005046565-000001",
+       "nota": "hay ademas un 'P.Clte 2026/442' debajo; no confundirlos"
+      }
+     },
+     "ignorar": [
+      "casilla 6 'Porteador': es TRANSPORTES LIQUIDOS ESTEVEZ, o sea nosotros. NUNCA es el cliente",
+      "casilla 2 'CLIENTE/Consignee': es el DESTINATARIO de la mercancia, no quien nos paga el porte. El cliente que factura es el REMITENTE (casilla 1) salvo que la orden diga otra cosa",
+      "casilla 15 'OBSERVACIONES / Entrega': trae otra fecha (07.08.2025) que no es la de carga"
+     ]
     }
-  ],
-
-  "_principio_extraccion_por_ancla": "LA RESPUESTA a la pregunta de Julio ('sos capaz de dar referencias segun cada documento y formato'). SI, pero la clave NO es adivinar el formato del numero — que Julio confirma que varia (6 digitos, 8 digitos, guia remessa 0941026332, o ninguno). La clave es la ETIQUETA ANCLA que precede al numero, que SI es estable por emisor: Quimidroga 'Referencia en factura:', Foresa el 2do numero bajo 'CMR/ALBARAN', Bresfor el 2do tras 'Doc. int:', RNM 'REF CARGA:' en el mail. Se extrae por ancla, no por formato. El formato sirve solo como verificacion secundaria. Perseguir el formato es fragil (cambia); perseguir el ancla es determinista (no cambia). Por eso cada campo de estas plantillas dice 'donde' (el ancla) antes que 'formato'.",
-
-  "_jerarquia_de_fuentes": "Julio, 28/08: cuando un campo lista varias fuentes ('Observacion OC/Guia Remessa/CMR'), es una JERARQUIA por orden: se usa la 1a que tenga el dato, y si no, la siguiente. Para la referencia de RNM: 1) observacion de la OC, 2) Guia Remessa, 3) CMR. No es que las tres den lo mismo: es un fallback ordenado.",
-
-  "_pendiente": [
-    "Confirmar con el instructivo de Julio: la referencia de BRESFOR (observada de 7 digitos, la regla anterior decia 10)",
-    "Anotar el resto de clientes: CLAVO, BALTRANSA, TRANSTAMBRE, HELM, Q. DEL JARAMA",
-    "Traducir los codigos de material propios del cliente (FORESA RES 3169, Quimidroga MEXIFLEX/TENSIO-GAL, etc.) al material Gesruta",
-    "Confirmar el segundo formato de referencia de Quimidroga (8 digitos, 10068385): en que documento aparece y por que difiere de la orden de transporte"
-  ]
+   ]
+  },
+  {
+   "cliente": "BRESFOR",
+   "razon_social_impresa": "BRESFOR IND. DO FORMOL, S.A.",
+   "nif": "PT500047944",
+   "estado": "observado",
+   "observado_de": 1,
+   "fuente": "PDF 20260819180805 pag.2 (viaje del 10.08.2026, tractora 3729JWP)",
+   "documentos": [
+    {
+     "tipo": "cmr_guia_remessa",
+     "titulos": [
+      "CMR/GUIA DE REMESSA",
+      "CIM/DELIVERY NOTE"
+     ],
+     "campos": {
+      "referencia": {
+       "donde": "arriba a la derecha, linea 'Doc. int:', SEGUNDO numero",
+       "formato": "7 digitos",
+       "ejemplo": "2017612",
+       "nota": "el primero (5050139937) es el documento interno portugues. Ojo: la regla vieja decia '10 digitos' para Bresfor y este documento dice lo contrario — A CONFIRMAR con el instructivo"
+      },
+      "origen": {
+       "donde": "casilla 4 'Lugar e data carga mercadoria'",
+       "ejemplo": "GAFANHA DA NAZARE"
+      },
+      "destino": {
+       "donde": "casilla 3 'Place of delivery of the goods'",
+       "ejemplo": "Finsa Cella 2, BARRIO DE LA ESTACION, CELLA - TERUEL 44370",
+       "nota": "AQUI ESTA EL ORIGEN DE LA CONFUSION 'CELLA DE ESTACION' / 'TERUEL' de corridas anteriores: el literal mezcla planta, barrio, pueblo y provincia en una linea"
+      },
+      "fecha_carga": {
+       "donde": "casilla 4",
+       "formato": "DD.MM.AAAA HH:MM:SS",
+       "ejemplo": "10.08.2026 17:35:05"
+      },
+      "material": {
+       "donde": "linea de mercancia",
+       "ejemplo": "FORESA RES 1350"
+      },
+      "peso_kg": {
+       "donde": "casilla 13 'Peso/Weight (Kg)'",
+       "ejemplo": "21.980"
+      },
+      "matricula_tractora": {
+       "donde": "etiqueta 'Tractor'",
+       "ejemplo": "3729JWP"
+      },
+      "matricula_remolque": {
+       "donde": "etiqueta 'Plataforma'",
+       "ejemplo": "PO02662R"
+      }
+     },
+     "ignorar": [
+      "'DESTINATARIO/Consignee' (FINANCIERA MADERERA S.A., Santiago de Compostela): es la sede social del cliente final, NO el destino fisico. El destino esta en la casilla 3 y es Cella (Teruel). Confundirlos manda el viaje a Galicia en vez de a Aragon",
+      "'Custo de referencia do gasoleo 2.049000': es una mencion legal portuguesa, no la indexacion que factura TLE"
+     ]
+    }
+   ]
+  },
+  {
+   "cliente": "RNM",
+   "razon_social_impresa": "RNM (grupornm.pt) — quien FACTURA es RNM TRANSPORTES QUIMICOS. OJO: no es lo mismo que RNM PRODUTOS QUIMICOS, que es una PLANTA (destino en Vila Nova Famalicao). Mismo grupo, entidades distintas: una paga el porte, la otra recibe carga.",
+   "estado": "observado",
+   "observado_de": 3,
+   "fuente": "PDF OC 20260828173449 / 173513 / 173525, mas la tabla campo->fuente que dio Julio el 28/08/2026",
+   "_mapa_campo_fuente_de_julio": {
+    "_nota": "Tabla que dio Julio: de donde sale cada columna de la planilla. Se transcribe entera porque es el instructivo, no solo los campos del documento. FC=ficha chofer, OC=orden de carga (email), CMR=CMR/Guia Remessa, GES=tabla Gesruta, SYS=calculo del sistema.",
+    "numero_viaje": "SYS (id ficha chofer)",
+    "n_albaran": "SYS (nro de viaje dentro de la ficha)",
+    "cabeza_matricula": "FC",
+    "remolque_matricula": "FC",
+    "chofer": "FC",
+    "cod_chofer": "GES",
+    "proveedor": "FC",
+    "cliente": "OC (mail solicitante)",
+    "cod_cliente": "GES",
+    "origen": "CMR",
+    "cod_origen": "GES",
+    "destino": "CMR/Guia Remessa",
+    "cod_destino": "GES",
+    "carga_material": "CMR",
+    "cod_material": "GES",
+    "referencia": "Observacion de OC / Guia Remessa / CMR",
+    "fecha_carga": "CMR",
+    "cantidad": "CMR/Guia Remessa",
+    "precio": "GES",
+    "importe": "SYS",
+    "regimen_indexacion": "GES",
+    "porcentaje_indexacion": "GES",
+    "indexacion": "SYS",
+    "gastos": "FC",
+    "reparto": "PENDIENTE DE VER (lo marco Julio)",
+    "km_cargado": "FC",
+    "km_vacio": "FC"
+   },
+   "documentos": [
+    {
+     "tipo": "orden_de_carga_email",
+     "titulos": [
+      "mail de grupornm.pt",
+      "Buenos dias Manuel",
+      "Carga en ... Descarga ..."
+     ],
+     "_forma": "NO es un formulario con casillas: es un EMAIL EN PROSA. Los campos estan en frases, en orden bastante estable pero sin casilla fija. Es el PEDIDO; el dato definitivo lo confirma el CMR al cargar. OC y CMR se corroboran entre si.",
+     "campos": {
+      "cliente": {
+       "donde": "DOMINIO del remitente del email: @grupornm.pt -> RNM. Regla robusta.",
+       "nota": "El nombre 'RNM' a veces esta en el cuerpo ('la carga es para RNM') y a veces no. El dominio del remitente SIEMPRE esta. No usar el asunto para el cliente."
+      },
+      "origen": {
+       "donde": "frase 'Carga en [fecha] en [lugar]' o 'Carga [fecha] en [lugar]'",
+       "ejemplos": [
+        "FERQUIASTUR, S.L., 33401 AVILLES -> AVILES",
+        "Tepsa de Barcelona -> BARCELONA",
+        "nuestros tanques de aveiro -> AVEIRO"
+       ],
+       "nota": "Trae la EMPRESA cargadora o la terminal, no el nombre del pueblo del catalogo. Alimenta alias empresa->punto."
+      },
+      "destino": {
+       "donde": "frase 'Descarga [fecha]: [EMPRESA + direccion postal]'",
+       "ejemplos": [
+        "DIMENSA, 06173 NOGALES - BADAJOZ -> NOGALES",
+        "DIVERSEY ESPAÑA, 28343 VALDEMORO -> VALDEMORO",
+        "RNM PRODUTOS QUIMICOS, 4770-329 VILA NOVA DE FAMALICAO -> FAMALICAO"
+       ],
+       "nota": "Igual que el origen: empresa, no pueblo."
+      },
+      "material": {
+       "donde": "frase 'Produto:' o 'Producto:'",
+       "ejemplos": [
+        "Acido Sulfurico 98",
+        "ACIDO FOSFORICO 85%"
+       ]
+      },
+      "referencia": {
+       "donde": "JERARQUIA POR PRIORIDAD, no por frecuencia (Julio 28/08): 1) observacion de la OC SI la trae, 2) GUIA REMESSA, 3) CMR.",
+       "fuente_habitual": "GUIA REMESSA. La OC casi nunca trae la referencia: de las 3 OC observadas de RNM, solo 1 (Barcelona) tenia 'REF CARGA: 3100082364'; las otras dos no traian ninguna. Lo NORMAL es que salga de la Guia Remessa.",
+       "formato": "VARIABLE. La Guia Remessa da 10 digitos (0941026332, 0141163512). El mail, cuando la trae, puede dar otro (3100082364). Extraer por ancla, no por formato.",
+       "_falta_documento": "IMPORTANTE: las 3 OC de RNM que hay son EMAILS. La GUIA REMESSA es un documento SEPARADO, aun no aportado, y es la fuente habitual de la referencia. Si a RNM solo llega el mail, la referencia queda vacia casi siempre. Para RNM el sistema NECESITA la Guia Remessa."
+      },
+      "cantidad": {
+       "donde": "frase 'Cantidad:' / 'Cantidade:'",
+       "ejemplo": "25T"
+      }
+     },
+     "ignorar": [
+      "EL ASUNTO del email usa terminos GENERICOS/provinciales ('Aveiro - Madrid', 'SULFURICO AVILES - BADAJOZ'), mientras el CUERPO tiene el punto exacto (Valdemoro, Nogales). Leer el cuerpo, nunca el asunto, para origen/destino.",
+      "'NMR CLIENTE: 628' NO es la referencia del viaje. Es un numero interno de RNM. La referencia es 'REF CARGA'. Mismo tipo de trampa que los dos numeros de Foresa.",
+      "'Precio: Dimme qual es lo que tenemos' — cuando RNM pregunta el precio, NO hay precio en el documento: el precio sale de la tabla Gesruta (tarifa), no de la OC."
+     ]
+    }
+   ]
+  },
+  {
+   "cliente": "QUIMIDROGA",
+   "razon_social_impresa": "QUIMIDROGA, S.A. — figura como EXPEDIDOR en la orden de transporte. TUSET 26, 08006 Barcelona (sede; NO es el origen del viaje).",
+   "estado": "observado",
+   "observado_de": "4 juegos completos (OC + carta de porte + CMR)",
+   "fuente": "PDF 20260828183738/748/759/808, TODAS sus paginas",
+   "_hallazgo": "Quimidroga es el caso MAS FACIL de todos: su OC es un formulario IMPRESO con etiquetas fijas, y trae la referencia DOS veces con dos anclas distintas que siempre coinciden: 'Orden de transporte NNNNNN' (arriba) y 'Referencia en factura: NNNNNN' (bajo el total). Las 4 observadas: 703965, 704269, 704453, 705439 — 6 digitos, empiezan en 70. La segunda ancla, 'Referencia en factura:', es la mas robusta: el propio documento declara cual de los 5 numeros va a factura.",
+   "documentos": [
+    {
+     "tipo": "orden_transporte",
+     "titulos": [
+      "Quimidroga",
+      "Orden de transporte"
+     ],
+     "_forma": "Formulario impreso con etiquetas fijas a la izquierda. Determinista por ancla.",
+     "campos": {
+      "cliente": {
+       "donde": "recuadro 'Expedidor'",
+       "ejemplo": "QUIMIDROGA, S.A.",
+       "nota": "el cliente es el EXPEDIDOR, no el destinatario"
+      },
+      "referencia": {
+       "donde": "ancla 'Referencia en factura:' (bajo el Total). Respaldo: 'Orden de transporte' (arriba). Las dos coinciden siempre.",
+       "formato": "VARIABLE — 6 digitos en estas 4 OC (70xxxx); Julio indica que tambien aparece de 8 (10068385) segun el comprador. NO validar por longitud: validar por el ANCLA.",
+       "ejemplos": [
+        "703965",
+        "704269",
+        "704453",
+        "705439"
+       ],
+       "_matiz_tepsa": "En el juego cargado en Tepsa, la OC dice \"Referencia en factura: 704453\" y la carta de porte de Tepsa dice \"Referencia pedido: 7044531\" (un digito mas). Es la misma referencia con sufijo de la terminal. MANDA LA OC: es la que el cliente declara para factura."
+      },
+      "origen": {
+       "donde": "'Lugar de Carga'",
+       "ejemplos": [
+        "Miranda de Ebro (Burgos)",
+        "Barcelona",
+        "TEPSA Barcelona",
+        "Relisa Barcelona"
+       ],
+       "nota": "trae la planta/terminal + localidad"
+      },
+      "destino": {
+       "donde": "'Destino' + 'Fecha de entrega'",
+       "ejemplos": [
+        "Braga (PT)",
+        "BEGONTE (Lugo)",
+        "Leiria (PT) - Cabopol",
+        "SILLEDA-PONTEVEDRA - Nudeza"
+       ]
+      },
+      "material": {
+       "donde": "linea 'Posicion', tras el codigo de 6 digitos",
+       "ejemplos": [
+        "MEXIFLEX 911P",
+        "TENSIO-GAL NF",
+        "VINKA-PLAST DINP",
+        "LISINA LIQUIDA 50%"
+       ]
+      },
+      "cantidad": {
+       "donde": "PESO NETO de la CARTA DE PORTE. NUNCA el de la OC.",
+       "_evidencia": "En los 3 juegos con peso comparable, el de la OC es REDONDO y PREVISTO, y el real difiere siempre: OC 24.000 -> real 24.040 | OC 24.000 -> real 23.980 | OC 25.000 -> real 24.300. Facturar con el peso de la OC es facturar mal en los tres.",
+       "donde_por_formato": {
+        "Quimidroga": "\"Peso Neto\" de la linea de mercancia y del TOTAL",
+        "RELISA": "\"NETO:\" (junto a TARA y PESO BRUTO)",
+        "TEPSA": "\"Peso Neto (Kg) / Net Weight\""
+       },
+       "_cierra": "Este es el defecto F6 del plan (peso tomado de la OC), ahora con evidencia documental de por que ocurre."
+      },
+      "n_albaran": {
+       "donde": "OC: numero suelto bajo el recuadro Expedidor. Carta de porte: \"ALBARAN / CARTA DE PORTE\" (formato Quimidroga), \"Pedido Cliente\" (formato RELISA), \"Albaran:\" con ceros a la izquierda (formato TEPSA).",
+       "formato": "8 digitos que empiezan por 833",
+       "ejemplos": [
+        "83303431",
+        "83303609",
+        "83305441",
+        "83309254"
+       ],
+       "_correccion": "ANTES ESTABA EN \"ignorar\" COMO \"interno de Quimidroga\". Era un error: es la LLAVE QUE UNE la OC con su carta de porte. Verificado en los 4 juegos: el numero suelto de la OC reaparece en la carta de porte, en los tres formatos distintos."
+      },
+      "matriculas": {
+       "donde": "Carta de porte y CMR. La OC NO las trae.",
+       "donde_por_formato": {
+        "Quimidroga": "\"Matricula Tractora\" / \"Matricula Remolque\"",
+        "RELISA": "\"TRACTORA...:\" / \"REMOLQUE:\"",
+        "TEPSA": "\"Vehiculo tractor\" / \"Cisterna portatil\""
+       },
+       "ejemplos": [
+        "8504-KDR / R-4905-BDF",
+        "0332 LPL / CR-03804-R",
+        "ES 6557JMS / ES PO01956R"
+       ],
+       "_discrepancia_real": "En el juego de Tepsa la carta de porte dice tractora ES 6557JMS y el CMR dice ES 0557JMS. En el padron de flota la que existe es 0557JMS. Caso real de por que la matricula se resuelve SIEMPRE contra el padron y nunca se copia del papel."
+      },
+      "chofer": {
+       "donde": "CMR, recuadro 23 (firma del transportista): nombre y DNI",
+       "ejemplo": "BREOGAN MARQUEZ SILVA, DNI ES 77412657Q",
+       "nota": "Julio da el chofer como campo de la ficha; el CMR sirve de CORROBORACION independiente."
+      }
+     },
+     "ignorar": [
+      "\"Pedido: 2894017/80\" (OC) — pedido interno de Quimidroga, NO la referencia.",
+      "\"Ref. cliente / Su Referencia\" (226024, 260875, 1000000571) — referencia del COMPRADOR FINAL, no la de factura. Aparece en la OC y se repite en la carta de porte como \"Su Referencia\".",
+      "TUSET 26 / 08006 Barcelona — SEDE de Quimidroga, nunca el origen. El origen es \"Lugar de Carga\" (OC) o \"Cargador\"/\"Planta cargadora\" (carta de porte).",
+      "El PESO de la OC: es previsto y redondo. Ver el campo cantidad.",
+      "En el formato RELISA, \"TRANSPORTISTA: JUAN MANUEL ABAL IGLESIAS\" es el conductor/autonomo; el nuestro figura abajo como \"Transportista Contractual: TRANSPORTES LIQUIDOS ESTEVEZ\"."
+     ]
+    }
+   ],
+   "_correccion_2026_08_29": "ERROR PROPIO CORREGIDO. La primera version de esta plantilla se hizo leyendo solo la PAGINA 1 de cada PDF (la OC). Cada PDF es un JUEGO de 2-3 paginas: 1o OC, 2o CARTA DE PORTE, 3o CMR. Julio lo detecto. Las paginas que faltaban cambian tres conclusiones, y una de ellas al reves.",
+   "_estructura_del_juego": {
+    "1_oc": "Orden de transporte de Quimidroga. Es el PEDIDO: dice lo que se va a cargar. Pesos REDONDOS previstos.",
+    "2_carta_de_porte": "La emite QUIEN CARGA, y por eso CAMBIA DE FORMATO segun la planta. Tres formatos distintos observados en 4 juegos: Quimidroga (ALBARAN/CARTA DE PORTE), RELISA, TEPSA IBERIA. Trae el peso REAL de bascula y las matriculas.",
+    "3_cmr": "Carta de porte internacional. A veces IMPRESA (Tepsa) y a veces MANUSCRITA (juego 1). Trae matriculas, chofer y peso neto.",
+    "nota": "Esto confirma lo que dijo Julio: \"dependiendo donde cargan son los documentos con los que nos encontramos y sus formatos\". El cliente es uno; los formatos de carta de porte son varios."
+   }
+  }
+ ],
+ "_principio_extraccion_por_ancla": "LA RESPUESTA a la pregunta de Julio ('sos capaz de dar referencias segun cada documento y formato'). SI, pero la clave NO es adivinar el formato del numero — que Julio confirma que varia (6 digitos, 8 digitos, guia remessa 0941026332, o ninguno). La clave es la ETIQUETA ANCLA que precede al numero, que SI es estable por emisor: Quimidroga 'Referencia en factura:', Foresa el 2do numero bajo 'CMR/ALBARAN', Bresfor el 2do tras 'Doc. int:', RNM 'REF CARGA:' en el mail. Se extrae por ancla, no por formato. El formato sirve solo como verificacion secundaria. Perseguir el formato es fragil (cambia); perseguir el ancla es determinista (no cambia). Por eso cada campo de estas plantillas dice 'donde' (el ancla) antes que 'formato'.",
+ "_jerarquia_de_fuentes": "Julio, 28/08: cuando un campo lista varias fuentes ('Observacion OC/Guia Remessa/CMR'), es una JERARQUIA por orden: se usa la 1a que tenga el dato, y si no, la siguiente. Para la referencia de RNM: 1) observacion de la OC, 2) Guia Remessa, 3) CMR. No es que las tres den lo mismo: es un fallback ordenado.",
+ "_pendiente": [
+  "Confirmar con el instructivo de Julio: la referencia de BRESFOR (observada de 7 digitos, la regla anterior decia 10)",
+  "Anotar el resto de clientes: CLAVO, BALTRANSA, TRANSTAMBRE, HELM, Q. DEL JARAMA",
+  "RE-LEER TODAS LAS PAGINAS de los PDF anteriores (Foresa, Bresfor, RNM): se leyeron solo las primeras y los juegos tienen hasta 16 paginas. Las plantillas de esos tres clientes estan hechas con evidencia PARCIAL."
+ ]
 }
