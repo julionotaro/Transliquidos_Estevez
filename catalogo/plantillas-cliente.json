@@ -128,6 +128,62 @@
           ]
         }
       ]
+    },
+
+    {
+      "cliente": "RNM",
+      "razon_social_impresa": "RNM (grupornm.pt) — quien FACTURA es RNM TRANSPORTES QUIMICOS. OJO: no es lo mismo que RNM PRODUTOS QUIMICOS, que es una PLANTA (destino en Vila Nova Famalicao). Mismo grupo, entidades distintas: una paga el porte, la otra recibe carga.",
+      "estado": "observado",
+      "observado_de": 3,
+      "fuente": "PDF OC 20260828173449 / 173513 / 173525, mas la tabla campo->fuente que dio Julio el 28/08/2026",
+      "_mapa_campo_fuente_de_julio": {
+        "_nota": "Tabla que dio Julio: de donde sale cada columna de la planilla. Se transcribe entera porque es el instructivo, no solo los campos del documento. FC=ficha chofer, OC=orden de carga (email), CMR=CMR/Guia Remessa, GES=tabla Gesruta, SYS=calculo del sistema.",
+        "numero_viaje": "SYS (id ficha chofer)",
+        "n_albaran": "SYS (nro de viaje dentro de la ficha)",
+        "cabeza_matricula": "FC", "remolque_matricula": "FC",
+        "chofer": "FC", "cod_chofer": "GES", "proveedor": "FC",
+        "cliente": "OC (mail solicitante)", "cod_cliente": "GES",
+        "origen": "CMR", "cod_origen": "GES",
+        "destino": "CMR/Guia Remessa", "cod_destino": "GES",
+        "carga_material": "CMR", "cod_material": "GES",
+        "referencia": "Observacion de OC / Guia Remessa / CMR",
+        "fecha_carga": "CMR", "cantidad": "CMR/Guia Remessa",
+        "precio": "GES", "importe": "SYS",
+        "regimen_indexacion": "GES", "porcentaje_indexacion": "GES", "indexacion": "SYS",
+        "gastos": "FC", "reparto": "PENDIENTE DE VER (lo marco Julio)",
+        "km_cargado": "FC", "km_vacio": "FC"
+      },
+      "documentos": [
+        {
+          "tipo": "orden_de_carga_email",
+          "titulos": ["mail de grupornm.pt", "Buenos dias Manuel", "Carga en ... Descarga ..."],
+          "_forma": "NO es un formulario con casillas: es un EMAIL EN PROSA. Los campos estan en frases, en orden bastante estable pero sin casilla fija. Es el PEDIDO; el dato definitivo lo confirma el CMR al cargar. OC y CMR se corroboran entre si.",
+          "campos": {
+            "cliente": {
+              "donde": "DOMINIO del remitente del email: @grupornm.pt -> RNM. Regla robusta.",
+              "nota": "El nombre 'RNM' a veces esta en el cuerpo ('la carga es para RNM') y a veces no. El dominio del remitente SIEMPRE esta. No usar el asunto para el cliente."
+            },
+            "origen": {
+              "donde": "frase 'Carga en [fecha] en [lugar]' o 'Carga [fecha] en [lugar]'",
+              "ejemplos": ["FERQUIASTUR, S.L., 33401 AVILLES -> AVILES", "Tepsa de Barcelona -> BARCELONA", "nuestros tanques de aveiro -> AVEIRO"],
+              "nota": "Trae la EMPRESA cargadora o la terminal, no el nombre del pueblo del catalogo. Alimenta alias empresa->punto."
+            },
+            "destino": {
+              "donde": "frase 'Descarga [fecha]: [EMPRESA + direccion postal]'",
+              "ejemplos": ["DIMENSA, 06173 NOGALES - BADAJOZ -> NOGALES", "DIVERSEY ESPAÑA, 28343 VALDEMORO -> VALDEMORO", "RNM PRODUTOS QUIMICOS, 4770-329 VILA NOVA DE FAMALICAO -> FAMALICAO"],
+              "nota": "Igual que el origen: empresa, no pueblo."
+            },
+            "material": { "donde": "frase 'Produto:' o 'Producto:'", "ejemplos": ["Acido Sulfurico 98", "ACIDO FOSFORICO 85%"] },
+            "referencia": { "donde": "frase 'REF CARGA:'", "ejemplo": "3100082364", "nota": "puede no venir en la OC; en ese caso sale de la Guia Remessa o el CMR" },
+            "cantidad": { "donde": "frase 'Cantidad:' / 'Cantidade:'", "ejemplo": "25T" }
+          },
+          "ignorar": [
+            "EL ASUNTO del email usa terminos GENERICOS/provinciales ('Aveiro - Madrid', 'SULFURICO AVILES - BADAJOZ'), mientras el CUERPO tiene el punto exacto (Valdemoro, Nogales). Leer el cuerpo, nunca el asunto, para origen/destino.",
+            "'NMR CLIENTE: 628' NO es la referencia del viaje. Es un numero interno de RNM. La referencia es 'REF CARGA'. Mismo tipo de trampa que los dos numeros de Foresa.",
+            "'Precio: Dimme qual es lo que tenemos' — cuando RNM pregunta el precio, NO hay precio en el documento: el precio sale de la tabla Gesruta (tarifa), no de la OC."
+          ]
+        }
+      ]
     }
   ],
 
