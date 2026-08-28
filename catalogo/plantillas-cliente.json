@@ -174,7 +174,12 @@
               "nota": "Igual que el origen: empresa, no pueblo."
             },
             "material": { "donde": "frase 'Produto:' o 'Producto:'", "ejemplos": ["Acido Sulfurico 98", "ACIDO FOSFORICO 85%"] },
-            "referencia": { "donde": "frase 'REF CARGA:'", "ejemplo": "3100082364", "nota": "puede no venir en la OC; en ese caso sale de la Guia Remessa o el CMR" },
+            "referencia": {
+              "donde": "JERARQUIA POR PRIORIDAD, no por frecuencia (Julio 28/08): 1) observacion de la OC SI la trae, 2) GUIA REMESSA, 3) CMR.",
+              "fuente_habitual": "GUIA REMESSA. La OC casi nunca trae la referencia: de las 3 OC observadas de RNM, solo 1 (Barcelona) tenia 'REF CARGA: 3100082364'; las otras dos no traian ninguna. Lo NORMAL es que salga de la Guia Remessa.",
+              "formato": "VARIABLE. La Guia Remessa da 10 digitos (0941026332, 0141163512). El mail, cuando la trae, puede dar otro (3100082364). Extraer por ancla, no por formato.",
+              "_falta_documento": "IMPORTANTE: las 3 OC de RNM que hay son EMAILS. La GUIA REMESSA es un documento SEPARADO, aun no aportado, y es la fuente habitual de la referencia. Si a RNM solo llega el mail, la referencia queda vacia casi siempre. Para RNM el sistema NECESITA la Guia Remessa."
+            },
             "cantidad": { "donde": "frase 'Cantidad:' / 'Cantidade:'", "ejemplo": "25T" }
           },
           "ignorar": [
