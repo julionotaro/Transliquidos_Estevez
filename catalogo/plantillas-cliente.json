@@ -403,6 +403,9 @@
  "_pendiente": [
   "Confirmar con el instructivo de Julio: la referencia de BRESFOR (observada de 7 digitos, la regla anterior decia 10)",
   "Anotar el resto de clientes: CLAVO, BALTRANSA, TRANSTAMBRE, HELM, Q. DEL JARAMA",
-  "RE-LEER TODAS LAS PAGINAS de los PDF anteriores (Foresa, Bresfor, RNM): se leyeron solo las primeras y los juegos tienen hasta 16 paginas. Las plantillas de esos tres clientes estan hechas con evidencia PARCIAL."
- ]
+  "RE-LEER TODAS LAS PAGINAS de los PDF anteriores (Foresa, Bresfor, RNM): se leyeron solo las primeras y los juegos tienen hasta 16 paginas. Las plantillas de esos tres clientes estan hechas con evidencia PARCIAL.",
+  "HELM: la orden de transporte trae el PRECIO impreso (\"Coste de transporte: 2.071,92 EUR\"), y tres numeros distintos que Julio marco a mano: Orden de flete 6100302451, REFERENCIA DE CARGA TPS022186, No PEDIDO 200846006. Falta saber cual es la referencia de factura."
+ ],
+ "_estructura_de_los_pdf": "CORRECCION DE FONDO (29/08). Un PDF NO es un juego de un viaje. Verificado en el de 6 paginas 20260819180805, que contiene TRES viajes de clientes distintos:\n  pag 1  FORESA  CMR/ALBARAN            Caldas -> Termolan\n  pag 2  BRESFOR CMR/GUIA REMESSA       Gafanha -> Finsa Cella\n  pag 3  FINSA   MOVIMIENTO MERCANCIA   bascula de DESCARGA del viaje de la pag 2\n  pag 4  HELM    Orden de transporte    Barcelona -> Foresa Caldas\n  pag 5  MILADERTO Albaran de entrega   el mismo viaje de la pag 4\n  pag 6  FORESA  MOVIMIENTO MERCANCIA   bascula de descarga del viaje de la pag 4\nLos PDF son LOTES escaneados de corrido. Hay que clasificar pagina por pagina por emisor y tipo, y despues agrupar en juegos por matricula + fecha + material. No se puede asumir \"1 PDF = 1 viaje\" ni \"pagina 1 = el documento principal\".",
+ "_hallazgo_ticket_de_bascula": "Aparece un CUARTO tipo de documento que no estaba en ninguna plantilla: el TICKET DE BASCULA de la planta que DESCARGA (\"MOVIMIENTO MERCANCIA\" de FINSA y de FORESA). Da un peso NETO distinto del de carga: 21.980 en el CMR de Bresfor vs 21.960 en la bascula de Finsa; 22.940 en el albaran de Miladerto vs 22.900 en la bascula de Foresa. PREGUNTA PARA JULIO: para facturar, manda el peso de CARGA o el de DESCARGA? La diferencia es chica (20-40 kg) pero es sistematica y hay que fijarla."
 }
