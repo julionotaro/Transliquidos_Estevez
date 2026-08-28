@@ -142,8 +142,8 @@
    "cliente": "RNM",
    "razon_social_impresa": "RNM (grupornm.pt) — quien FACTURA es RNM TRANSPORTES QUIMICOS. OJO: no es lo mismo que RNM PRODUTOS QUIMICOS, que es una PLANTA (destino en Vila Nova Famalicao). Mismo grupo, entidades distintas: una paga el porte, la otra recibe carga.",
    "estado": "observado",
-   "observado_de": 3,
-   "fuente": "PDF OC 20260828173449 / 173513 / 173525, mas la tabla campo->fuente que dio Julio el 28/08/2026",
+   "observado_de": "3 juegos COMPLETOS (todas las paginas)",
+   "fuente": "PDF 20260828173449 (5 pag), 173513 (3 pag), 173525 (3 pag) — leidos enteros el 29/08",
    "_mapa_campo_fuente_de_julio": {
     "_nota": "Tabla que dio Julio: de donde sale cada columna de la planilla. Se transcribe entera porque es el instructivo, no solo los campos del documento. FC=ficha chofer, OC=orden de carga (email), CMR=CMR/Guia Remessa, GES=tabla Gesruta, SYS=calculo del sistema.",
     "numero_viaje": "SYS (id ficha chofer)",
@@ -176,11 +176,12 @@
    },
    "documentos": [
     {
-     "tipo": "orden_de_carga_email",
+     "tipo": "juego_rnm",
      "titulos": [
       "mail de grupornm.pt",
-      "Buenos dias Manuel",
-      "Carga en ... Descarga ..."
+      "Guia Remessa",
+      "ALBARAN/SHIPPING DOCUMENT",
+      "DECLARACAO DE EXPEDICAO INTERNACIONAL"
      ],
      "_forma": "NO es un formulario con casillas: es un EMAIL EN PROSA. Los campos estan en frases, en orden bastante estable pero sin casilla fija. Es el PEDIDO; el dato definitivo lo confirma el CMR al cargar. OC y CMR se corroboran entre si.",
      "campos": {
@@ -189,48 +190,94 @@
        "nota": "El nombre 'RNM' a veces esta en el cuerpo ('la carga es para RNM') y a veces no. El dominio del remitente SIEMPRE esta. No usar el asunto para el cliente."
       },
       "origen": {
-       "donde": "frase 'Carga en [fecha] en [lugar]' o 'Carga [fecha] en [lugar]'",
-       "ejemplos": [
-        "FERQUIASTUR, S.L., 33401 AVILLES -> AVILES",
-        "Tepsa de Barcelona -> BARCELONA",
-        "nuestros tanques de aveiro -> AVEIRO"
+       "donde": "GUIA REMESSA \"Local Carga / Loading loc\" (o \"Cargador\"). Respaldo: CMR casilla 4.",
+       "ejemplos_verificados": [
+        "1052 - LOCAL EXP. AVEIRO -> AVEIRO",
+        "GAFANHA DA NAZARE",
+        "SAN JUAN DE NIEVA"
        ],
-       "nota": "Trae la EMPRESA cargadora o la terminal, no el nombre del pueblo del catalogo. Alimenta alias empresa->punto."
+       "_alias_necesario": "SAN JUAN DE NIEVA es el puerto de AVILES (planta de Asturiana de Zinc). Julio lo anoto \"(AVILES)\" a mano. Hace falta el alias SAN JUAN DE NIEVA -> AVILES."
       },
       "destino": {
-       "donde": "frase 'Descarga [fecha]: [EMPRESA + direccion postal]'",
-       "ejemplos": [
-        "DIMENSA, 06173 NOGALES - BADAJOZ -> NOGALES",
-        "DIVERSEY ESPAÑA, 28343 VALDEMORO -> VALDEMORO",
-        "RNM PRODUTOS QUIMICOS, 4770-329 VILA NOVA DE FAMALICAO -> FAMALICAO"
+       "donde": "GUIA REMESSA: \"Morada de Entrega / Delivery Address\" (o \"Destino mercancia\" en el formato ALBARAN).",
+       "ejemplos_verificados": [
+        "DIVERSEY ESPAÑA PRODUCTION S.L., AVENIDA CONDE DUQUE 5-7-9, 28343 VALDEMORO",
+        "DIMENSA SL, CARRETERA EX-105 KM 101.5, 06173 NOGALES"
        ],
-       "nota": "Igual que el origen: empresa, no pueblo."
+       "_ojo_cmr": "LA CASILLA 3 DEL CMR NO SIEMPRE SIRVE, y Julio lo anoto a mano: \"MAL! DESTINO INCORRECTO SIEMPRE\". Verificado en los 3 juegos, y el patron es mas fino que eso:\n  - Juego Aviles->Nogales: el CMR lo emite FERQUIMER (un tercero) y su casilla 3 dice \"RNM PRODUTOS QUIMICOS, RUA DA FABRICA, CARREIRA PORTUGAL\" = la SEDE de RNM. El destino real era DIMENSA en Nogales (Badajoz). MAL.\n  - Juego Barcelona->Famalicao: CMR emitido con RNM de destinatario, casilla 3 = FAMALICAO. BIEN.\n  - Juego Aveiro->Valdemoro: CMR emitido por RNM, casilla 3 = VALDEMORO. BIEN.\nLA REGLA que explica los tres: cuando el CMR lo emite un TERCERO y RNM figura como CONSIGNATARIO, el CMR describe el tramo hasta RNM, no hasta el cliente final. Por eso la GUIA REMESSA manda para el destino: en los tres juegos es correcta."
       },
       "material": {
-       "donde": "frase 'Produto:' o 'Producto:'",
-       "ejemplos": [
-        "Acido Sulfurico 98",
-        "ACIDO FOSFORICO 85%"
+       "donde": "GUIA REMESSA, Descripcion/Description de la linea.",
+       "ejemplos_verificados": [
+        "CAUSTIC SODA LIQUOR 50% - BULK",
+        "ACIDO SULFURICO 98% - GRANEL",
+        "ACIDO FOSFORICO 80%"
        ]
       },
       "referencia": {
-       "donde": "JERARQUIA POR PRIORIDAD, no por frecuencia (Julio 28/08): 1) observacion de la OC SI la trae, 2) GUIA REMESSA, 3) CMR.",
-       "fuente_habitual": "GUIA REMESSA. La OC casi nunca trae la referencia: de las 3 OC observadas de RNM, solo 1 (Barcelona) tenia 'REF CARGA: 3100082364'; las otras dos no traian ninguna. Lo NORMAL es que salga de la Guia Remessa.",
-       "formato": "VARIABLE. La Guia Remessa da 10 digitos (0941026332, 0141163512). El mail, cuando la trae, puede dar otro (3100082364). Extraer por ancla, no por formato.",
-       "_falta_documento": "IMPORTANTE: las 3 OC de RNM que hay son EMAILS. La GUIA REMESSA es un documento SEPARADO, aun no aportado, y es la fuente habitual de la referencia. Si a RNM solo llega el mail, la referencia queda vacia casi siempre. Para RNM el sistema NECESITA la Guia Remessa."
+       "donde": "JERARQUIA DE JULIO, por prioridad: 1) observacion de la OC si la trae, 2) GUIA REMESSA campo \"Numero/Number\", 3) CMR casilla 5 \"Documentos anexados\".",
+       "fuente_habitual": "GUIA REMESSA, campo \"Numero/Number\" (arriba, junto a la fecha). Julio lo marco a mano como REFERENCIA en los dos juegos que traen guia.",
+       "formato": "10 digitos que empiezan en 0",
+       "ejemplos_verificados": [
+        "0941026332",
+        "0141163512"
+       ],
+       "_confirma_a_julio": "Los dos formatos que Julio dio de memoria (0941026332 / 0141163512) son EXACTAMENTE los dos numeros de guia de estos juegos. Su indicacion era correcta al digito.",
+       "_ancla_secundaria": "El CMR repite el mismo numero en la casilla 5: \"PQ - Guia Remessa No 0141163512\". Y en el encabezado del CMR aparece SIN el cero inicial (141163512): sirve para corroborar, pero la forma que manda es la de la guia, con el 0.",
+       "_no_confundir": "La OC trae \"REF CARGA: 3100082364\" y la carta de porte del cargador \"PEDIDO No 3100082201\". Ese 31000xxxxx es el PEDIDO DE COMPRA de RNM al proveedor, NO la referencia del transporte."
       },
       "cantidad": {
-       "donde": "frase 'Cantidad:' / 'Cantidade:'",
-       "ejemplo": "25T"
+       "donde": "GUIA REMESSA \"Quant./Qty\" y Total. Corrobora con CMR casilla 11 y con el NETO de la carta de porte del cargador.",
+       "ejemplos_verificados": [
+        "23.920",
+        "23.880",
+        "23.740"
+       ],
+       "nota": "En estos 3 juegos la guia y el CMR coinciden. La carta de porte del cargador da ademas tara y bruto."
+      },
+      "matricula": {
+       "donde": "GUIA REMESSA \"Matricula/Plate\" y \"Reboque/Trailer\". Respaldo: CMR casilla 18.",
+       "ejemplos_verificados": [
+        "0557JMS / PO-1956-R",
+        "7585MCG / R3697BDK",
+        "ES 7347LBB / ES 9990BDD"
+       ],
+       "nota": "Julio la marco a mano en los tres. Se resuelve igual contra el padron, nunca se copia."
+      },
+      "chofer": {
+       "donde": "GUIA REMESSA \"Motorista/Driver\". Respaldo: CMR recuadro 23 con DNI.",
+       "ejemplos_verificados": [
+        "BREOGAN MARQUEZ SILVA",
+        "JACOBO GRANDE MENDEZ"
+       ]
+      },
+      "fecha_carga": {
+       "donde": "GUIA REMESSA \"Data Carga/Loading date\" + \"Hora Carga\". Respaldo: CMR casilla 4.",
+       "ejemplos_verificados": [
+        "21.07.2026 08:27:00",
+        "28.07.2026 10:29:27"
+       ]
       }
      },
      "ignorar": [
-      "EL ASUNTO del email usa terminos GENERICOS/provinciales ('Aveiro - Madrid', 'SULFURICO AVILES - BADAJOZ'), mientras el CUERPO tiene el punto exacto (Valdemoro, Nogales). Leer el cuerpo, nunca el asunto, para origen/destino.",
-      "'NMR CLIENTE: 628' NO es la referencia del viaje. Es un numero interno de RNM. La referencia es 'REF CARGA'. Mismo tipo de trampa que los dos numeros de Foresa.",
-      "'Precio: Dimme qual es lo que tenemos' — cuando RNM pregunta el precio, NO hay precio en el documento: el precio sale de la tabla Gesruta (tarifa), no de la OC."
+      "EL ASUNTO del mail usa genericos provinciales (\"Aveiro - Madrid\", \"SULFURICO AVILES - BADAJOZ\") mientras el cuerpo y la guia tienen el punto exacto (Valdemoro, Nogales). Leer el cuerpo, nunca el asunto.",
+      "\"NMR CLIENTE: 628\" (OC) — numero interno de RNM, no es la referencia.",
+      "\"REF CARGA 31000xxxxx\" (OC) y \"PEDIDO No 31000xxxxx\" (carta de porte) — es el pedido de COMPRA de RNM a su proveedor, no la referencia del transporte.",
+      "CASILLA 3 DEL CMR cuando el CMR lo emite un tercero: trae la sede de RNM en Carreira/Landim, no el destino. Ver el campo destino.",
+      "La direccion de RNM en el pie de la guia (Avenida das Searas 132, Landim-Famalicao) es la SEDE del emisor.",
+      "\"Preco de Referencia do Combustivel 1.35EUR/L\" (CMR) — mencion legal portuguesa, no es la indexacion de TLE."
      ]
     }
-   ]
+   ],
+   "_correccion_2026_08_29": "Primera version hecha leyendo solo la pagina 1 (la OC). Los juegos tienen 3 a 5 paginas y la GUIA REMESSA — la fuente habitual de la referencia — estaba en las que no lei.",
+   "_estructura_del_juego": {
+    "1_oc_email": "Pedido por mail de grupornm.pt. Aviso previo; pesos y datos provisionales.",
+    "2_guia_remessa": "La emite RNM. \"Guia Remessa\" o \"ALBARAN/SHIPPING DOCUMENT\". ES EL DOCUMENTO CENTRAL: trae referencia, destino real, matricula, chofer, cantidad y hora de carga.",
+    "3_cmr": "Declaracion de expedicion internacional. Corrobora, y trae la referencia otra vez en la casilla 5.",
+    "4_carta_de_porte_del_cargador": "Opcional, la emite quien carga (Asturiana de Zinc, Tepsa...). Trae pesos de bascula (tara/bruto/neto) y el pedido 31000xxxxx.",
+    "5_certificado_de_calidad": "Opcional. No aporta datos de facturacion."
+   },
+   "_pregunta_para_julio": "Tu tabla dice \"Destino: CMR/Guia Remessa\". Los 3 juegos dicen que para el destino manda la GUIA REMESSA, y que el CMR falla justo cuando lo emite un tercero (el caso Aviles->Nogales que vos mismo marcaste \"MAL\"). Propongo invertir el orden SOLO para el destino: Guia Remessa -> CMR -> OC. Lo dejo sin cambiar en tu tabla hasta que confirmes."
   },
   {
    "cliente": "QUIMIDROGA",

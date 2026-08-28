@@ -1,16 +1,51 @@
 {
-  "_nota": "Alias EMPRESA -> punto Gesruta, descubiertos en las ejecuciones reales (F9 del plan). Un documento suele traer la RAZON SOCIAL del cargador/destinatario, no el nombre del pueblo; y a veces la direccion postal esta MAL impresa (guia RNM: 'Asturiana de Zinc ... 46002 Teruel' cuando la planta esta en Aviles). Resolver por la empresa gana sobre la localidad de la direccion porque la empresa aparece al principio del literal (earliest-position). Estos alias se cargan como filas extra en la tabla `puntos` de n8n; resolver-punto indexa todas las filas, asi que una fila {id_punto, alias} agrega ese alias al punto.",
-  "alias": [
-    { "id_punto": "AVILE", "nombre_canonico": "AVILES", "alias": "ASTURIANA DE ZINC|FERQUIQUIMICA|FERQUIMER" },
-    { "id_punto": "NAVIA", "nombre_canonico": "NAVIA", "alias": "ENCE|ENCE NAVIA" },
-    { "id_punto": "FAMAL", "nombre_canonico": "VILANOVA FAMALICAO", "alias": "CARREIRA|RNM PRODUTOS QUIMICOS|RNM PRODUTOS" },
-    { "id_punto": "SILLE", "nombre_canonico": "SILLEDA", "alias": "PRODUCTOS DISICLIN|DISICLIN" },
-    { "id_punto": "AVILE", "nombre_canonico": "AVILES", "alias": "FERQUIASTUR" },
-    { "id_punto": "VALD", "nombre_canonico": "VALDEMORO", "alias": "DIVERSEY|DIVERSEY ESPANA PRODUCTION" }
-  ],
-  "_pendientes_punto_faltante": [
-    { "empresa": "DIMENSA", "localidad": "NOGALES (BADAJOZ)", "cliente": "RNM", "motivo": "NOGALES no existe en la tabla de puntos de Gesruta. No es un alias que falte: es un PUNTO que hay que dar de alta en Gesruta (igual que PADRON para FORESA). Hasta entonces, un viaje RNM a Nogales queda en REVISAR, que es lo correcto." },
-    { "empresa": "TEPSA", "localidad": "BARCELONA", "cliente": "RNM", "motivo": "Tepsa es una TERMINAL portuaria de graneles en varias ciudades (Barcelona, Bilbao, Tarragona, Valencia). NO se puede mapear 'TEPSA' -> un punto fijo: el punto depende de la ciudad que diga el documento. Se resuelve por la localidad ('Tepsa de Barcelona' -> BARCELONA), no por la empresa. Por eso NO se carga como alias: seria un alias peligroso." }
-  ],
-  "_verificacion_2026_08_28": "FERQUIASTUR y DIVERSEY verificados: sus localidades (AVILES, VALDEMORO) existen en el catalogo, y RNM efectivamente carga en Aviles en el historico (4 viajes AVILES->FAMALICAO). DIMENSA y TEPSA quedan fuera por los motivos de arriba."
+ "_nota": "Alias EMPRESA -> punto Gesruta, descubiertos en las ejecuciones reales (F9 del plan). Un documento suele traer la RAZON SOCIAL del cargador/destinatario, no el nombre del pueblo; y a veces la direccion postal esta MAL impresa (guia RNM: 'Asturiana de Zinc ... 46002 Teruel' cuando la planta esta en Aviles). Resolver por la empresa gana sobre la localidad de la direccion porque la empresa aparece al principio del literal (earliest-position). Estos alias se cargan como filas extra en la tabla `puntos` de n8n; resolver-punto indexa todas las filas, asi que una fila {id_punto, alias} agrega ese alias al punto.",
+ "alias": [
+  {
+   "id_punto": "AVILE",
+   "nombre_canonico": "AVILES",
+   "alias": "ASTURIANA DE ZINC|FERQUIQUIMICA|FERQUIMER"
+  },
+  {
+   "id_punto": "NAVIA",
+   "nombre_canonico": "NAVIA",
+   "alias": "ENCE|ENCE NAVIA"
+  },
+  {
+   "id_punto": "FAMAL",
+   "nombre_canonico": "VILANOVA FAMALICAO",
+   "alias": "CARREIRA|RNM PRODUTOS QUIMICOS|RNM PRODUTOS"
+  },
+  {
+   "id_punto": "SILLE",
+   "nombre_canonico": "SILLEDA",
+   "alias": "PRODUCTOS DISICLIN|DISICLIN"
+  },
+  {
+   "id_punto": "VALD",
+   "nombre_canonico": "VALDEMORO",
+   "alias": "DIVERSEY|DIVERSEY ESPANA PRODUCTION"
+  },
+  {
+   "id_punto": "AVILE",
+   "nombre_canonico": "AVILES",
+   "alias": "SAN JUAN DE NIEVA|ASTURIANA DE ZINC SAU|FERQUIASTUR",
+   "_verificado": "CMR juego RNM Aviles->Nogales: casilla 4 'SAN JUAN DE NIEVA', Julio anoto a mano '(AVILES)'. San Juan de Nieva es el puerto de Aviles, donde esta la planta de Asturiana de Zinc."
+  }
+ ],
+ "_pendientes_punto_faltante": [
+  {
+   "empresa": "DIMENSA",
+   "localidad": "NOGALES (BADAJOZ)",
+   "cliente": "RNM",
+   "motivo": "NOGALES no existe en la tabla de puntos de Gesruta. No es un alias que falte: es un PUNTO que hay que dar de alta en Gesruta (igual que PADRON para FORESA). Hasta entonces, un viaje RNM a Nogales queda en REVISAR, que es lo correcto."
+  },
+  {
+   "empresa": "TEPSA",
+   "localidad": "BARCELONA",
+   "cliente": "RNM",
+   "motivo": "Tepsa es una TERMINAL portuaria de graneles en varias ciudades (Barcelona, Bilbao, Tarragona, Valencia). NO se puede mapear 'TEPSA' -> un punto fijo: el punto depende de la ciudad que diga el documento. Se resuelve por la localidad ('Tepsa de Barcelona' -> BARCELONA), no por la empresa. Por eso NO se carga como alias: seria un alias peligroso."
+  }
+ ],
+ "_verificacion_2026_08_28": "FERQUIASTUR y DIVERSEY verificados: sus localidades (AVILES, VALDEMORO) existen en el catalogo, y RNM efectivamente carga en Aviles en el historico (4 viajes AVILES->FAMALICAO). DIMENSA y TEPSA quedan fuera por los motivos de arriba."
 }
