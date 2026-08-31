@@ -136,6 +136,23 @@ Cuando el destino no está tarifado, la oficina aplica a mano la tarifa de otra 
 GPT/Claude no retienen nada de una ejecución a la siguiente: sin cambios, la corrida 500 sale igual que la corrida 1. Lo que puede aprender es el sistema, y el sitio donde aprende es `ficha/memoria-decisiones.js`: **una duda que un humano resolvió no se vuelve a preguntar**. Solo entra lo decidido por un humano (con autor), el ámbito del cliente manda sobre la regla global, y toda entrada es revocable.
 **El número por el que se mide:** `tasaRevisar()`. Si el % de filas en REVISAR no baja semana a semana, el sistema no está aprendiendo — y hay que mirar eso, no ajustar prompts.
 
+**R-07 — La referencia de FORESA y BRESFOR sigue reglas OPUESTAS.** *(31/08/2026, decisión de Julio)*
+Los dos emiten documentos casi idénticos —mismo diseño, dos números arriba a la derecha— y la regla es la contraria en cada uno:
+
+| Cliente | Cuál manda | Formato | Ejemplos |
+|---|---|---|---|
+| **FORESA** | el **2º** número, bajo `CMR/ALBARAN` | **7 dígitos** | `2016400`, `2017065` |
+| **BRESFOR** | el **1º** número, tras `Doc. int:` | **10 dígitos** | `5050139934`, `5050139937` |
+
+**Consecuencia de diseño:** la referencia **no** se puede extraer con una regla común de "documento tipo CMR". Hay que identificar primero al **emisor** (casilla 1 / remitente) y recién después aplicar su regla. Anclas y campos: `catalogo/plantillas-cliente.json`.
+
+**R-08 — Para facturar manda el peso de CARGA (albarán/CMR).** *(31/08/2026, decisión de Julio)*
+El ticket de báscula de la planta que **descarga** (`MOVIMIENTO MERCANCIA` de FINSA o FORESA) **no se usa para facturar**, aunque dé un neto distinto (21.980 en carga vs 21.960 en descarga); sirve sólo como corroboración. Y dentro de los documentos de carga manda la **carta de porte / albarán** sobre la **OC**, porque la OC trae el previsto redondo: verificado en 3 juegos de Quimidroga (OC 24.000 → real 24.040 / 23.980; OC 25.000 → real 24.300). Cierra la falencia **F6** del plan.
+
+**R-09 — Destino de RNM: manda la GUÍA REMESSA.** *(31/08/2026, Julio invirtió el orden)*
+Jerarquía: **Guía Remessa** (`Morada de Entrega`) → CMR casilla 3 → OC. Motivo verificado sobre 3 juegos: cuando el CMR lo emite un **tercero** y RNM figura como *consignatario*, su casilla 3 trae la sede de RNM (Carreira, Portugal) y no el destino real — pasó en el viaje Avilés→Nogales. La guía es correcta en los tres.
+La **referencia** de RNM mantiene el orden original: observación de la OC (si la trae) → **Guía Remessa** `Número/Number`, 10 dígitos (fuente habitual) → CMR casilla 5.
+
 ---
 
 ## Reglas que viven fuera del modelo de dominio

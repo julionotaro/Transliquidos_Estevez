@@ -14,7 +14,7 @@
    "cliente": "FORESA",
    "razon_social_impresa": "FORESA IND. QUÍMICAS DEL NOROESTE SA",
    "nif": "A28141224",
-   "estado": "observado",
+   "estado": "confirmado",
    "observado_de": "2 albaranes CMR/ALBARAN, uno de ellos ANOTADO A MANO por Julio",
    "fuente": "PDF 20260819180805 pag.1 y 20260831183358 (anotado por Julio el 31/08)",
    "documentos": [
@@ -32,7 +32,8 @@
         "2016400"
        ],
        "_confirmado_por_julio": "En el PDF del 31/08 Julio encerro y rotulo REFERENCIA el 2016400, que es el SEGUNDO. Confirma la lectura.",
-       "_no_confundir": "El PRIMER numero (5030294491 / 5030294310, 10 digitos) NO es la referencia."
+       "_no_confundir": "El PRIMER numero (5030294491 / 5030294310, 10 digitos) NO es la referencia de FORESA. OJO: en BRESFOR es al reves — alli manda el de 10 digitos. Documentos casi identicos, reglas opuestas.",
+       "_decidido_por_julio": "2026-08-31: \"para bresfor es el numero de 10 digitos, para Foresa el de 7\"."
       },
       "origen": {
        "donde": "casilla 1 'Remitente/Sender (Empresa Cargadora)' — Julio lo rotulo ORIGEN ahi. Corrobora con casilla 4 'Lugar y fecha carga'.",
@@ -136,13 +137,14 @@
     "numero_viaje": "Sistema (id ficha)",
     "n_albaran": "Sistema (nro de viaje dentro de la ficha)",
     "reparto": "PENDIENTE DE VER (lo marco Julio)"
-   }
+   },
+   "_confirmado_por": "Julio, 2026-08-31"
   },
   {
    "cliente": "BRESFOR",
    "razon_social_impresa": "BRESFOR IND. DO FORMOL, S.A.",
    "nif": "PT500047944",
-   "estado": "observado",
+   "estado": "confirmado",
    "observado_de": "2 CMR/GUIA DE REMESSA, uno ANOTADO A MANO por Julio",
    "fuente": "PDF 20260819180805 pag.2 y 20260831183405 (anotado por Julio el 31/08)",
    "documentos": [
@@ -154,10 +156,15 @@
      ],
      "campos": {
       "referencia": {
-       "donde": "bajo 'CMR/GUIA DE REMESSA', linea 'Doc. int:' — HAY DOS NUMEROS Y CUAL MANDA ESTA EN DUDA. Ver _pregunta.",
-       "candidato_A": "5050139934 / 5050139937 — el PRIMERO, 10 digitos. Es el que parece encerrado en el recuadro rojo de Julio, y coincide con la regla vieja del repo (\"Bresfor 10 digitos\").",
-       "candidato_B": "2017609 / 2017612 — el SEGUNDO, 7 digitos. Es el que yo habia elegido por analogia con Foresa.",
-       "_pregunta": "JULIO: en el PDF del 31/08 rotulaste REFERENCIA con una flecha sobre esa zona y encerraste \"Doc. int: 5050139934\". Si el recuadro marca el PRIMER numero, entonces Bresfor NO sigue la regla de Foresa y la regla vieja de 10 digitos era la correcta. Confirmame cual de los dos, porque afecta a todas las facturas de Bresfor."
+       "donde": "bajo el titulo 'CMR/GUIA DE REMESSA', linea 'Doc. int:', PRIMER numero",
+       "formato": "10 digitos",
+       "ejemplos_verificados": [
+        "5050139934",
+        "5050139937"
+       ],
+       "_decidido_por_julio": "2026-08-31: \"para bresfor es el numero de 10 digitos, para Foresa el de 7\".",
+       "_no_confundir": "El SEGUNDO numero (2017609 / 2017612, 7 digitos) NO es la referencia de Bresfor, aunque en FORESA el que manda si sea el segundo. Los dos documentos se parecen mucho y la regla es la OPUESTA en cada uno: es la trampa mas facil de este par de clientes.",
+       "_correccion": "Yo habia elegido el segundo por analogia con Foresa y habia dado por equivocada la regla vieja del repo (\"Bresfor 10 digitos\"). La regla vieja era correcta; el error fue mio."
       },
       "origen": {
        "donde": "casilla 1 'Remitente/Sender' — Julio lo rotulo ORIGEN ahi. Corrobora con casilla 4.",
@@ -247,7 +254,8 @@
     "numero_viaje": "Sistema (id ficha)",
     "n_albaran": "Sistema (nro de viaje dentro de la ficha)",
     "reparto": "PENDIENTE DE VER (lo marco Julio)"
-   }
+   },
+   "_confirmado_por": "Julio, 2026-08-31"
   },
   {
    "cliente": "RNM",
@@ -393,7 +401,7 @@
   {
    "cliente": "QUIMIDROGA",
    "razon_social_impresa": "QUIMIDROGA, S.A. — figura como EXPEDIDOR en la orden de transporte. TUSET 26, 08006 Barcelona (sede; NO es el origen del viaje).",
-   "estado": "observado",
+   "estado": "confirmado",
    "observado_de": "4 juegos completos (OC + carta de porte + CMR)",
    "fuente": "PDF 20260828183738/748/759/808, TODAS sus paginas",
    "_hallazgo": "Quimidroga es el caso MAS FACIL de todos: su OC es un formulario IMPRESO con etiquetas fijas, y trae la referencia DOS veces con dos anclas distintas que siempre coinciden: 'Orden de transporte NNNNNN' (arriba) y 'Referencia en factura: NNNNNN' (bajo el total). Las 4 observadas: 703965, 704269, 704453, 705439 — 6 digitos, empiezan en 70. La segunda ancla, 'Referencia en factura:', es la mas robusta: el propio documento declara cual de los 5 numeros va a factura.",
@@ -529,7 +537,8 @@
     "2_carta_de_porte": "La emite QUIEN CARGA, y por eso CAMBIA DE FORMATO segun la planta. Tres formatos distintos observados en 4 juegos: Quimidroga (ALBARAN/CARTA DE PORTE), RELISA, TEPSA IBERIA. Trae el peso REAL de bascula y las matriculas.",
     "3_cmr": "Carta de porte internacional. A veces IMPRESA (Tepsa) y a veces MANUSCRITA (juego 1). Trae matriculas, chofer y peso neto.",
     "nota": "Esto confirma lo que dijo Julio: \"dependiendo donde cargan son los documentos con los que nos encontramos y sus formatos\". El cliente es uno; los formatos de carta de porte son varios."
-   }
+   },
+   "_confirmado_por": "Julio, 2026-08-28 (tabla campo->fuente) y 2026-08-31 (regla de peso de carga)"
   }
  ],
  "_principio_extraccion_por_ancla": "LA RESPUESTA a la pregunta de Julio ('sos capaz de dar referencias segun cada documento y formato'). SI, pero la clave NO es adivinar el formato del numero — que Julio confirma que varia (6 digitos, 8 digitos, guia remessa 0941026332, o ninguno). La clave es la ETIQUETA ANCLA que precede al numero, que SI es estable por emisor: Quimidroga 'Referencia en factura:', Foresa el 2do numero bajo 'CMR/ALBARAN', Bresfor el 2do tras 'Doc. int:', RNM 'REF CARGA:' en el mail. Se extrae por ancla, no por formato. El formato sirve solo como verificacion secundaria. Perseguir el formato es fragil (cambia); perseguir el ancla es determinista (no cambia). Por eso cada campo de estas plantillas dice 'donde' (el ancla) antes que 'formato'.",
@@ -539,5 +548,6 @@
   "HELM: la orden de transporte trae el PRECIO impreso (\"Coste de transporte: 2.071,92 EUR\"), y tres numeros distintos que Julio marco a mano: Orden de flete 6100302451, REFERENCIA DE CARGA TPS022186, No PEDIDO 200846006. Falta saber cual es la referencia de factura."
  ],
  "_estructura_de_los_pdf": "CORRECCION DE FONDO (29/08). Un PDF NO es un juego de un viaje. Verificado en el de 6 paginas 20260819180805, que contiene TRES viajes de clientes distintos:\n  pag 1  FORESA  CMR/ALBARAN            Caldas -> Termolan\n  pag 2  BRESFOR CMR/GUIA REMESSA       Gafanha -> Finsa Cella\n  pag 3  FINSA   MOVIMIENTO MERCANCIA   bascula de DESCARGA del viaje de la pag 2\n  pag 4  HELM    Orden de transporte    Barcelona -> Foresa Caldas\n  pag 5  MILADERTO Albaran de entrega   el mismo viaje de la pag 4\n  pag 6  FORESA  MOVIMIENTO MERCANCIA   bascula de descarga del viaje de la pag 4\nLos PDF son LOTES escaneados de corrido. Hay que clasificar pagina por pagina por emisor y tipo, y despues agrupar en juegos por matricula + fecha + material. No se puede asumir \"1 PDF = 1 viaje\" ni \"pagina 1 = el documento principal\".",
- "_regla_peso": "DECIDIDO POR JULIO 2026-08-31: para facturar MANDA EL PESO DE CARGA, el del ALBARAN / CMR. El ticket de bascula de la planta que DESCARGA (\"MOVIMIENTO MERCANCIA\" de FINSA o FORESA) NO se usa para facturar, aunque de un neto distinto (21.980 carga vs 21.960 descarga). Sirve solo como corroboracion. Y sigue en pie lo de Quimidroga: dentro de los documentos de CARGA, manda la CARTA DE PORTE/ALBARAN (peso real de bascula al cargar), nunca la OC (previsto, redondo)."
+ "_regla_peso": "DECIDIDO POR JULIO 2026-08-31: para facturar MANDA EL PESO DE CARGA, el del ALBARAN / CMR. El ticket de bascula de la planta que DESCARGA (\"MOVIMIENTO MERCANCIA\" de FINSA o FORESA) NO se usa para facturar, aunque de un neto distinto (21.980 carga vs 21.960 descarga). Sirve solo como corroboracion. Y sigue en pie lo de Quimidroga: dentro de los documentos de CARGA, manda la CARTA DE PORTE/ALBARAN (peso real de bascula al cargar), nunca la OC (previsto, redondo).",
+ "_regla_referencia_foresa_bresfor": "FORESA y BRESFOR emiten documentos casi identicos (mismo diseño, dos numeros arriba a la derecha) y la regla de la referencia es la OPUESTA en cada uno. Decidido por Julio el 31/08/2026:\n    FORESA  -> el SEGUNDO numero, 7 digitos   (2016400, 2017065)\n    BRESFOR -> el PRIMER numero, 10 digitos   (5050139934, 5050139937)\nPor eso la referencia NO se puede extraer con una regla comun de \"documento tipo CMR\": hay que identificar primero al EMISOR (casilla 1 / remitente) y recien despues aplicar su regla."
 }
