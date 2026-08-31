@@ -31,6 +31,12 @@
    "nombre_canonico": "AVILES",
    "alias": "SAN JUAN DE NIEVA|ASTURIANA DE ZINC SAU|FERQUIASTUR",
    "_verificado": "CMR juego RNM Aviles->Nogales: casilla 4 'SAN JUAN DE NIEVA', Julio anoto a mano '(AVILES)'. San Juan de Nieva es el puerto de Aviles, donde esta la planta de Asturiana de Zinc."
+  },
+  {
+   "id_punto": "OR",
+   "nombre_canonico": "OREMBER",
+   "alias": "FINSA OREMBER",
+   "_verificado": "Albaran Foresa 20260831183358 casilla 3: 'Finsa Orember, POLIGONO INDUSTRIAL, SAN CIPRIAN DE VIÑAS 32911 Orense'. Julio lo rotulo DESTINO. Es la ruta CALDAS->OREMBER, la mas frecuente de Foresa (586 viajes en el año)."
   }
  ],
  "_pendientes_punto_faltante": [
