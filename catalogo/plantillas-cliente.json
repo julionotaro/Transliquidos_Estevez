@@ -50,8 +50,9 @@
        "nota": "Trae la PLANTA, no el pueblo del catalogo: necesita alias empresa->punto."
       },
       "fecha_carga": {
-       "donde": "FICHA DEL CHOFER (Julio, tabla 31/08). En el albaran, para corroborar: casilla 4.",
-       "ejemplos_documento": [
+       "donde": "FICHA DEL CHOFER. Regla R-01 del INDICE, reconfirmada por Julio el 31/08 para TODOS los clientes SIN EXCEPCION, incluido RNM. Es la excepcion al principio general de que el documento manda sobre la ficha: para la FECHA DE CARGA, y solo para ella, manda la ficha.",
+       "en_el_documento_para_corroborar": "casilla 4.",
+       "ejemplos_en_documento": [
         "03.08.2026 18:18:08",
         "10.08.2026 09:04:36"
        ]
@@ -180,8 +181,9 @@
        "nota": "El literal mezcla planta, barrio, pueblo y provincia en una linea. De aqui salio la confusion \"CELLA DE ESTACION\"/\"TERUEL\"."
       },
       "fecha_carga": {
-       "donde": "FICHA DEL CHOFER (Julio, tabla 31/08). En el documento, casilla 4, para corroborar.",
-       "ejemplos_documento": [
+       "donde": "FICHA DEL CHOFER. Regla R-01 del INDICE, reconfirmada por Julio el 31/08 para TODOS los clientes SIN EXCEPCION, incluido RNM. Es la excepcion al principio general de que el documento manda sobre la ficha: para la FECHA DE CARGA, y solo para ella, manda la ficha.",
+       "en_el_documento_para_corroborar": "FICHA DEL CHOFER (Julio, tabla 31/08). En el documento, casilla 4, para corroborar.",
+       "ejemplos_en_documento": [
         "10.08.2026 16:14:59",
         "10.08.2026 17:35:05"
        ]
@@ -260,7 +262,7 @@
   {
    "cliente": "RNM",
    "razon_social_impresa": "RNM (grupornm.pt) — quien FACTURA es RNM TRANSPORTES QUIMICOS. OJO: no es lo mismo que RNM PRODUTOS QUIMICOS, que es una PLANTA (destino en Vila Nova Famalicao). Mismo grupo, entidades distintas: una paga el porte, la otra recibe carga.",
-   "estado": "observado",
+   "estado": "confirmado",
    "observado_de": "3 juegos COMPLETOS (todas las paginas)",
    "fuente": "PDF 20260828173449 (5 pag), 173513 (3 pag), 173525 (3 pag) — leidos enteros el 29/08",
    "_mapa_campo_fuente_de_julio": {
@@ -281,7 +283,7 @@
     "carga_material": "CMR",
     "cod_material": "GES",
     "referencia": "Observacion de OC / Guia Remessa / CMR",
-    "fecha_carga": "CMR",
+    "fecha_carga": "FICHA CHOFER (R-01, reconfirmado 31/08 para todos)",
     "cantidad": "CMR/Guia Remessa",
     "precio": "GES",
     "importe": "SYS",
@@ -372,8 +374,9 @@
        ]
       },
       "fecha_carga": {
-       "donde": "GUIA REMESSA \"Data Carga/Loading date\" + \"Hora Carga\". Respaldo: CMR casilla 4.",
-       "ejemplos_verificados": [
+       "donde": "FICHA DEL CHOFER. Regla R-01 del INDICE, reconfirmada por Julio el 31/08 para TODOS los clientes SIN EXCEPCION, incluido RNM. Es la excepcion al principio general de que el documento manda sobre la ficha: para la FECHA DE CARGA, y solo para ella, manda la ficha.",
+       "en_el_documento_para_corroborar": "GUIA REMESSA \"Data Carga/Loading date\" + \"Hora Carga\". Respaldo: CMR casilla 4.",
+       "ejemplos_en_documento": [
         "21.07.2026 08:27:00",
         "28.07.2026 10:29:27"
        ]
@@ -396,7 +399,8 @@
     "3_cmr": "Declaracion de expedicion internacional. Corrobora, y trae la referencia otra vez en la casilla 5.",
     "4_carta_de_porte_del_cargador": "Opcional, la emite quien carga (Asturiana de Zinc, Tepsa...). Trae pesos de bascula (tara/bruto/neto) y el pedido 31000xxxxx.",
     "5_certificado_de_calidad": "Opcional. No aporta datos de facturacion."
-   }
+   },
+   "_confirmado_por": "Julio, 2026-08-31"
   },
   {
    "cliente": "QUIMIDROGA",
@@ -513,13 +517,13 @@
        "nota": "Julio da el chofer como campo de la ficha; el CMR sirve de CORROBORACION independiente."
       },
       "fecha_carga": {
-       "donde": "FICHA DEL CHOFER (manda, regla R-01 del INDICE). En el documento, para corroborar: OC \"Fecha de Carga\"; carta de porte \"Fecha emision\"/\"FECHA...:\"/\"Fecha de despacho\"; CMR casilla 4.",
-       "ejemplos_documento": [
+       "donde": "FICHA DEL CHOFER. Regla R-01 del INDICE, reconfirmada por Julio el 31/08 para TODOS los clientes SIN EXCEPCION, incluido RNM. Es la excepcion al principio general de que el documento manda sobre la ficha: para la FECHA DE CARGA, y solo para ella, manda la ficha.",
+       "en_el_documento_para_corroborar": "FICHA DEL CHOFER (manda, regla R-01 del INDICE). En el documento, para corroborar: OC \"Fecha de Carga\"; carta de porte \"Fecha emision\"/\"FECHA...:\"/\"Fecha de despacho\"; CMR casilla 4.",
+       "ejemplos_en_documento": [
         "09/07/2026 (OC)",
         "29-07-2026 09:44 (RELISA)",
         "17/07/2026 17:15 (TEPSA)"
-       ],
-       "_hueco_detectado": "Faltaba: la plantilla no tenia este campo. Detectado auditando las anclas el 31/08."
+       ]
       }
      },
      "ignorar": [
@@ -538,7 +542,10 @@
     "3_cmr": "Carta de porte internacional. A veces IMPRESA (Tepsa) y a veces MANUSCRITA (juego 1). Trae matriculas, chofer y peso neto.",
     "nota": "Esto confirma lo que dijo Julio: \"dependiendo donde cargan son los documentos con los que nos encontramos y sus formatos\". El cliente es uno; los formatos de carta de porte son varios."
    },
-   "_confirmado_por": "Julio, 2026-08-28 (tabla campo->fuente) y 2026-08-31 (regla de peso de carga)"
+   "_confirmado_por": "Julio, 2026-08-28 (tabla campo->fuente) y 2026-08-31 (regla de peso de carga)",
+   "_mapa_campo_fuente_de_julio": {
+    "fecha_carga": "FICHA CHOFER (R-01, reconfirmado 31/08 para todos)"
+   }
   }
  ],
  "_principio_extraccion_por_ancla": "LA RESPUESTA a la pregunta de Julio ('sos capaz de dar referencias segun cada documento y formato'). SI, pero la clave NO es adivinar el formato del numero — que Julio confirma que varia (6 digitos, 8 digitos, guia remessa 0941026332, o ninguno). La clave es la ETIQUETA ANCLA que precede al numero, que SI es estable por emisor: Quimidroga 'Referencia en factura:', Foresa el 2do numero bajo 'CMR/ALBARAN', Bresfor el 2do tras 'Doc. int:', RNM 'REF CARGA:' en el mail. Se extrae por ancla, no por formato. El formato sirve solo como verificacion secundaria. Perseguir el formato es fragil (cambia); perseguir el ancla es determinista (no cambia). Por eso cada campo de estas plantillas dice 'donde' (el ancla) antes que 'formato'.",
@@ -549,5 +556,6 @@
  ],
  "_estructura_de_los_pdf": "CORRECCION DE FONDO (29/08). Un PDF NO es un juego de un viaje. Verificado en el de 6 paginas 20260819180805, que contiene TRES viajes de clientes distintos:\n  pag 1  FORESA  CMR/ALBARAN            Caldas -> Termolan\n  pag 2  BRESFOR CMR/GUIA REMESSA       Gafanha -> Finsa Cella\n  pag 3  FINSA   MOVIMIENTO MERCANCIA   bascula de DESCARGA del viaje de la pag 2\n  pag 4  HELM    Orden de transporte    Barcelona -> Foresa Caldas\n  pag 5  MILADERTO Albaran de entrega   el mismo viaje de la pag 4\n  pag 6  FORESA  MOVIMIENTO MERCANCIA   bascula de descarga del viaje de la pag 4\nLos PDF son LOTES escaneados de corrido. Hay que clasificar pagina por pagina por emisor y tipo, y despues agrupar en juegos por matricula + fecha + material. No se puede asumir \"1 PDF = 1 viaje\" ni \"pagina 1 = el documento principal\".",
  "_regla_peso": "DECIDIDO POR JULIO 2026-08-31: para facturar MANDA EL PESO DE CARGA, el del ALBARAN / CMR. El ticket de bascula de la planta que DESCARGA (\"MOVIMIENTO MERCANCIA\" de FINSA o FORESA) NO se usa para facturar, aunque de un neto distinto (21.980 carga vs 21.960 descarga). Sirve solo como corroboracion. Y sigue en pie lo de Quimidroga: dentro de los documentos de CARGA, manda la CARTA DE PORTE/ALBARAN (peso real de bascula al cargar), nunca la OC (previsto, redondo).",
- "_regla_referencia_foresa_bresfor": "FORESA y BRESFOR emiten documentos casi identicos (mismo diseño, dos numeros arriba a la derecha) y la regla de la referencia es la OPUESTA en cada uno. Decidido por Julio el 31/08/2026:\n    FORESA  -> el SEGUNDO numero, 7 digitos   (2016400, 2017065)\n    BRESFOR -> el PRIMER numero, 10 digitos   (5050139934, 5050139937)\nPor eso la referencia NO se puede extraer con una regla comun de \"documento tipo CMR\": hay que identificar primero al EMISOR (casilla 1 / remitente) y recien despues aplicar su regla."
+ "_regla_referencia_foresa_bresfor": "FORESA y BRESFOR emiten documentos casi identicos (mismo diseño, dos numeros arriba a la derecha) y la regla de la referencia es la OPUESTA en cada uno. Decidido por Julio el 31/08/2026:\n    FORESA  -> el SEGUNDO numero, 7 digitos   (2016400, 2017065)\n    BRESFOR -> el PRIMER numero, 10 digitos   (5050139934, 5050139937)\nPor eso la referencia NO se puede extraer con una regla comun de \"documento tipo CMR\": hay que identificar primero al EMISOR (casilla 1 / remitente) y recien despues aplicar su regla.",
+ "_regla_fecha_de_carga": "FICHA DEL CHOFER. Regla R-01 del INDICE, reconfirmada por Julio el 31/08 para TODOS los clientes SIN EXCEPCION, incluido RNM. Es la excepcion al principio general de que el documento manda sobre la ficha: para la FECHA DE CARGA, y solo para ella, manda la ficha."
 }
