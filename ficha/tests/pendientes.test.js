@@ -295,6 +295,27 @@ test('PRECIO: la vista LEE la tarifa de la ingesta, no la recalcula (motor unico
   assert.strictEqual(out[0].origen_precio, 'tarifa contractual');
 });
 
+test('PRECIO: una tarifa por ANALOGIA se muestra como observada, no como pactada', () => {
+  // El importe se calcula igual, pero la etiqueta tiene que delatar que es una
+  // tarifa observada (analogia confirmada), no una contractual. La ingesta ya
+  // marco origen_del_precio; la vista lo muestra, no lo re-deriva.
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'FORESA', estado: 'con_documentacion', estado_lectura: 'OK',
+    kg_documento: 24000, tarifa_contractual_tn: 38.66, origen_del_precio: 'analogia',
+  })], undefined, [], []);
+  assert.strictEqual(out[0].precio, 38.66);
+  assert.match(out[0].origen_precio, /analogia/);
+  assert.match(out[0].origen_precio, /observada|revisar/);
+});
+
+test('PRECIO: origen_del_precio "orden" se etiqueta como precio de la orden', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'BALTRANSA', estado: 'con_documentacion', estado_lectura: 'OK',
+    tarifa_contractual_fijo: 1150, origen_del_precio: 'orden',
+  })], undefined, [], []);
+  assert.strictEqual(out[0].origen_precio, 'precio de la orden');
+});
+
 test('PRECIO: sin tarifa, la columna explica POR QUE (motivo de la ingesta)', () => {
   const out = filtrarPendientes([viajeBase({
     cliente: 'RNM', estado: 'con_documentacion', estado_lectura: 'OK',

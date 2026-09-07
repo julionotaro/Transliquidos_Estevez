@@ -153,13 +153,26 @@ function calcularPrecioFila(v, tarifas) {
   var kg = (typeof v.kg_documento === 'number' && isFinite(v.kg_documento)) ? v.kg_documento
     : (typeof v.kg_hoja === 'number' && isFinite(v.kg_hoja)) ? v.kg_hoja : null;
 
+  // La ingesta ya decidio de donde salio el precio (columna origen_del_precio:
+  // 'contractual' | 'analogia' | 'orden'). La vista LO MUESTRA, no lo re-deriva:
+  // una analogia es observada, no pactada, y tiene que verse como tal aunque su
+  // importe se calcule igual. Para viajes viejos sin la columna, cae al literal.
+  var etiquetaOrigen = function (porDefecto) {
+    switch (String(v.origen_del_precio || '')) {
+      case 'contractual': return 'tarifa contractual';
+      case 'analogia':    return 'tarifa por analogia (observada \u2014 revisar)';
+      case 'orden':       return 'precio de la orden';
+      default:            return porDefecto;
+    }
+  };
+
   if (fijo !== null) {
     precio = fijo; unidad = '\u20ac/viaje'; importe = round2p(fijo);
-    origen_precio = 'tarifa contractual';
+    origen_precio = etiquetaOrigen('tarifa contractual');
   } else if (tn !== null) {
     precio = tn; unidad = '\u20ac/tn';
     if (kg !== null) { importe = round2p((kg / 1000) * tn); }
-    origen_precio = 'tarifa contractual';
+    origen_precio = etiquetaOrigen('tarifa contractual');
   } else if (typeof v.tarifa_tn_documento === 'number' && isFinite(v.tarifa_tn_documento)) {
     // Cascada 3: el precio impreso en la ORDEN del cliente (Baltransa/Transtambre
     // lo traen). Es un precio pactado por operacion, vale.

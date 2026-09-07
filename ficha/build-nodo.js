@@ -14,6 +14,12 @@ const path = require('path');
 const DIR = __dirname;
 
 // logica: modulos a inlinear delante del wrapper (en orden). [] = wrapper solo.
+//
+// Un elemento string es un modulo .js que se inlinea tal cual. Un elemento
+// { json, as } inlinea un JSON del repo como constante `var <as> = {...};`: es la
+// unica forma de que un catalogo (analogias, plantillas) viaje DENTRO del nodo,
+// porque el Code de n8n no puede leer archivos. La fuente sigue siendo el JSON;
+// el generado es una copia que build regenera, y --check la mantiene en sincronia.
 const TARGETS = [
   {
     nodo: 'Formatear Linea Gesruta',
@@ -38,7 +44,11 @@ const TARGETS = [
     // resolver-punto.js + tarifa-contractual.js: buscan la tarifa pactada (tabla
     // Tarifas) resolviendo antes origen/destino a punto canonico. Van ANTES de
     // dedup.js; tarifa-contractual reusa resolverPunto/normalizar ya inlineados.
-    logica: ['../catalogo/resolver-punto.js', '../catalogo/gesruta.js', 'tarifa-contractual.js', 'conductores.js', 'dedup.js'],
+    logica: ['../catalogo/resolver-punto.js', '../catalogo/gesruta.js', 'tarifa-contractual.js',
+      'rutas-conocidas.js',
+      { json: '../catalogo/tarifa-por-analogia.json', as: 'ANALOGIAS_EMBEBIDAS' },
+      { json: '../catalogo/rutas-por-cliente-test.json', as: 'RUTAS_CLIENTE_EMBEBIDAS' },
+      'conductores.js', 'dedup.js'],
     wrapper: 'nodo-preparar-filas-viajes.wrapper.js',
     salida: 'nodo-preparar-filas-viajes.generated.js',
   },
@@ -65,15 +75,29 @@ const TARGETS = [
   },
 ];
 
+function nombreFuente(f) {
+  return (typeof f === 'string') ? ('ficha/' + f) : ('ficha/' + f.json + ' (como ' + f.as + ')');
+}
+
 function construir(t) {
   const partes = [
     '// ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.',
-    '// Fuente: ' + t.logica.concat([t.wrapper]).map(function (f) { return 'ficha/' + f; }).join(' + '),
+    '// Fuente: ' + t.logica.map(nombreFuente).concat(['ficha/' + t.wrapper]).join(' + '),
     '// Contenido exacto del nodo Code "' + t.nodo + '" (' + (t.workflowId || 'WD0q9Ic0oDvUoJwp') + ').',
     '',
   ];
   for (const f of t.logica) {
-    partes.push(fs.readFileSync(path.join(DIR, f), 'utf8').trimEnd());
+    if (typeof f === 'string') {
+      partes.push(fs.readFileSync(path.join(DIR, f), 'utf8').trimEnd());
+    } else {
+      // { json, as }: catalogo embebido como constante. JSON.parse valida que el
+      // archivo no este roto ANTES de meterlo en el nodo; re-serializar normaliza
+      // el formato y evita que quede a medias.
+      const crudo = fs.readFileSync(path.join(DIR, f.json), 'utf8');
+      const datos = JSON.parse(crudo);
+      partes.push('// datos embebidos de ' + f.json);
+      partes.push('var ' + f.as + ' = ' + JSON.stringify(datos, null, 1) + ';');
+    }
     partes.push('');
   }
   partes.push(fs.readFileSync(path.join(DIR, t.wrapper), 'utf8').trimEnd());

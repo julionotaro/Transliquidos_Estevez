@@ -1,5 +1,5 @@
 // ARCHIVO GENERADO por ficha/build-nodo.js - NO EDITAR A MANO.
-// Fuente: ficha/../catalogo/resolver-punto.js + ficha/../catalogo/gesruta.js + ficha/tarifa-contractual.js + ficha/conductores.js + ficha/dedup.js + ficha/nodo-preparar-filas-viajes.wrapper.js
+// Fuente: ficha/../catalogo/resolver-punto.js + ficha/../catalogo/gesruta.js + ficha/tarifa-contractual.js + ficha/rutas-conocidas.js + ficha/../catalogo/tarifa-por-analogia.json (como ANALOGIAS_EMBEBIDAS) + ficha/../catalogo/rutas-por-cliente-test.json (como RUTAS_CLIENTE_EMBEBIDAS) + ficha/conductores.js + ficha/dedup.js + ficha/nodo-preparar-filas-viajes.wrapper.js
 // Contenido exacto del nodo Code "Preparar Filas Viajes" (WD0q9Ic0oDvUoJwp).
 
 // ===== RESOLVEDOR CANONICO DE PUNTOS (modelo-dominio-lectura.md §9) ==========
@@ -979,6 +979,2308 @@ if (typeof module !== 'undefined' && module.exports) {
   };
 }
 
+// ===== RUTAS CONOCIDAS DEL CLIENTE — el conjunto cerrado que faltaba ==========
+//
+// EL CAMBIO DE PREGUNTA. Hasta ahora el sistema resolvia asi:
+//
+//     "dado este literal de direccion, ¿cual de los 790 puntos es?"
+//
+// Conjunto ABIERTO, 790 opciones, matcheo de texto contra direcciones postales
+// que a veces vienen mal impresas. Es el problema dificil, y es de donde salieron
+// los errores caros: la guia de RNM trae "Asturiana de Zinc ... 46002 Teruel"
+// cuando la planta esta en Aviles, y el sistema resolvia TERUEL tan contento.
+//
+// La pregunta correcta es la que hace la oficina sin pensarlo:
+//
+//     "dado que el cliente es RNM, ¿cual de SUS rutas conocidas es?"
+//
+// Conjunto CERRADO de 5 a 20 opciones, con frecuencias reales. RNM nunca viajo a
+// Teruel: la respuesta mala ni siquiera esta sobre la mesa.
+//
+// El conjunto sale de catalogo/rutas-por-cliente.json, construido desde los
+// 7.578 portes que la empresa facturo de verdad en el año (no de lo que alguien
+// supone que se transporta). Medido: 287 de los 790 puntos se usan alguna vez, y
+// los 40 mas usados cubren el 91,6 % de los usos. El conjunto util es chico.
+//
+// TRES REGLAS
+//
+//   1. NO se rechaza una ruta nueva. Un cliente puede estrenar destino cualquier
+//      dia, y un sistema que dice "eso no existe" ante algo real es inservible.
+//      Lo que se hace es MARCARLA: resuelve, pero con aviso de que ese cliente
+//      nunca fue ahi. Esa es la guarda que caza el TERUEL de RNM.
+//
+//   2. Dentro del conjunto cerrado se puede matchear mas flojo, porque hay 6
+//      candidatos y no 790. "VILANOVA FAMALICAO" no resuelve contra el catalogo
+//      entero, pero contra los 6 destinos de RNM es inequivoco. Fuera del
+//      conjunto ese mismo criterio seria temerario.
+//
+//   3. Empate = no se elige. Si el literal casa con dos destinos conocidos del
+//      cliente, se devuelven los dos y decide un humano. La frecuencia sirve para
+//      ORDENAR lo que se le muestra, nunca para desempatar sola: "el cliente
+//      suele ir a X" no es prueba de que ESTE viaje fue a X.
+//
+// Logica PURA. El JSON de rutas se inyecta; este modulo no lee archivos.
+
+'use strict';
+
+var RC_RP = (typeof resolverPunto === 'function')
+  ? { resolverPunto: resolverPunto, normalizar: normalizar }
+  : require('../catalogo/resolver-punto.js');
+
+var RC_TC = (typeof clienteCoincide === 'function')
+  ? { clienteCoincide: clienteCoincide }
+  : require('./tarifa-contractual.js');
+
+function nrm(s) { return RC_RP.normalizar(s); }
+
+/**
+ * Los puntos que ESTE cliente uso de verdad, en el rol pedido.
+ *
+ * @param {object} rutas  contenido de catalogo/rutas-por-cliente.json
+ * @param {string} cliente  nombre corto leido del documento ("FORESA")
+ * @param {'destino'|'origen'} rol
+ * @param {string} [origen]  si se da, limita a las rutas que salen de ahi
+ * @returns {Array<{nombre, n_viajes, materiales:Array<string>}>} ordenado por frecuencia
+ */
+function puntosConocidos(rutas, cliente, rol, origen) {
+  var clientes = (rutas && rutas.clientes) ? rutas.clientes : {};
+  var campo = (rol === 'origen') ? 'nombre_origen' : 'nombre_destino';
+  var acc = {};
+  var oFiltro = origen ? nrm(origen) : null;
+
+  for (var cid in clientes) {
+    if (!Object.prototype.hasOwnProperty.call(clientes, cid)) { continue; }
+    var c = clientes[cid];
+    // El JSON guarda la razon social larga; el viaje trae el nombre corto.
+    if (!RC_TC.clienteCoincide(cliente, c.nombre)) { continue; }
+    for (var i = 0; i < (c.rutas || []).length; i++) {
+      var R = c.rutas[i];
+      if (oFiltro && rol === 'destino' && nrm(R.nombre_origen) !== oFiltro) { continue; }
+      var nom = R[campo];
+      if (!nom) { continue; }
+      var k = nrm(nom);
+      if (!acc[k]) { acc[k] = { nombre: nom, n_viajes: 0, materiales: [] }; }
+      acc[k].n_viajes += R.n_viajes || 0;
+      if (R.nombre_material && acc[k].materiales.indexOf(R.nombre_material) < 0) {
+        acc[k].materiales.push(R.nombre_material);
+      }
+    }
+  }
+  var out = [];
+  for (var k2 in acc) { if (Object.prototype.hasOwnProperty.call(acc, k2)) { out.push(acc[k2]); } }
+  out.sort(function (a, b) { return b.n_viajes - a.n_viajes; });
+  return out;
+}
+
+// Regla 2: dentro del conjunto cerrado se matchea por contencion de tokens en
+// cualquier sentido ("FAMALICAO" casa con "VILANOVA FAMALICAO" y al reves).
+function casaEnConjunto(literal, nombre) {
+  var a = nrm(literal), b = nrm(nombre);
+  if (!a || !b) { return false; }
+  if (a === b) { return true; }
+  return a.indexOf(b) >= 0 || b.indexOf(a) >= 0;
+}
+
+/**
+ * Resuelve un punto usando primero lo que ESTE cliente hizo de verdad.
+ *
+ * @param {string} literal  lo que dice el documento
+ * @param {{cliente, rol, origen}} ctx
+ * @param {Array} catalogo  filas de la tabla puntos
+ * @param {object} rutas    catalogo/rutas-por-cliente.json
+ * @returns el resultado de resolverPunto, enriquecido con:
+ *          ruta_conocida  true|false|null (null = no se pudo evaluar)
+ *          aviso_ruta     texto cuando el cliente nunca fue ahi
+ *          candidatos     cuando hay empate dentro del conjunto cerrado
+ */
+function resolverPuntoDeCliente(literal, ctx, catalogo, rutas) {
+  ctx = ctx || {};
+  var base = RC_RP.resolverPunto(literal, 'documento', catalogo);
+  var conocidos = puntosConocidos(rutas, ctx.cliente, ctx.rol || 'destino', ctx.origen);
+
+  // Sin cliente resuelto o sin historia, no hay conjunto cerrado que aplicar.
+  if (!ctx.cliente || !conocidos.length) {
+    base.ruta_conocida = null;
+    return base;
+  }
+
+  // --- Caso A: el resolvedor global encontro un punto ---------------------
+  if (base.id_punto) {
+    var enConjunto = null;
+    for (var i = 0; i < conocidos.length; i++) {
+      if (nrm(conocidos[i].nombre) === nrm(base.nombre_canonico)) { enConjunto = conocidos[i]; break; }
+    }
+    if (enConjunto) {
+      base.ruta_conocida = true;
+      base.n_viajes_historicos = enConjunto.n_viajes;
+      base.motivo += '; ruta conocida de ' + ctx.cliente + ' (' + enConjunto.n_viajes + ' viajes)';
+
+      // CORROBORACION — el uso mas valioso del conjunto cerrado, y el que no
+      // era evidente hasta ver correr el resolvedor global.
+      //
+      // resolverPunto ya resuelve "FAMALICAO" -> VILANOVA FAMALICAO por
+      // CONTENCION, pero marca revisar: contra 790 puntos, un nombre contenido
+      // en otro es una apuesta razonable y nada mas. Si ademas resulta que ese
+      // punto es una ruta que ESTE cliente hizo 120 veces, la apuesta deja de
+      // serlo: dos evidencias independientes (el texto y la historia) apuntan al
+      // mismo sitio. Ahi se puede bajar la bandera.
+      //
+      // Solo se corrobora lo DEBIL (contencion / edicion). Un 'canonico' exacto
+      // ya venia sin revisar, y lo que trae revisar por otro motivo —un
+      // duplicado del catalogo, un conflicto doc/ficha— NO se toca: la historia
+      // del cliente no dice nada sobre esos.
+      var debil = (base.metodo === 'contencion' || base.metodo === 'edicion');
+      if (debil && base.revisar) {
+        base.revisar = false;
+        base.confianza = 'alta';
+        base.corroborado_por_historico = true;
+        base.motivo += '; lectura debil CORROBORADA por el historico: se mantiene sin revisar';
+      }
+      return base;
+    }
+    // Regla 1: NO se rechaza. Se marca. Aca es donde se caza el TERUEL de RNM.
+    base.ruta_conocida = false;
+    base.revisar = true;
+    base.aviso_ruta = ctx.cliente + ' nunca ' +
+      (ctx.rol === 'origen' ? 'cargo en ' : 'viajo a ') + base.nombre_canonico +
+      ' en el historico; sus ' + (ctx.rol === 'origen' ? 'origenes' : 'destinos') +
+      ' habituales son ' + conocidos.slice(0, 3).map(function (p) { return p.nombre; }).join(', ');
+    base.motivo += '; ' + base.aviso_ruta;
+    return base;
+  }
+
+  // --- Caso B: el catalogo global no lo resolvio; se prueba el cerrado ----
+  var casan = [];
+  for (var j = 0; j < conocidos.length; j++) {
+    if (casaEnConjunto(literal, conocidos[j].nombre)) { casan.push(conocidos[j]); }
+  }
+  if (casan.length === 1) {
+    var elegido = casan[0];
+    var idx = RC_RP.resolverPunto(elegido.nombre, 'documento', catalogo);
+    if (idx.id_punto) {
+      idx.ruta_conocida = true;
+      idx.n_viajes_historicos = elegido.n_viajes;
+      idx.confianza = 'media';   // se resolvio por el conjunto cerrado, no por el catalogo
+      idx.revisar = false;
+      idx.literal_original = literal;
+      idx.metodo = 'ruta_conocida_cliente';
+      idx.motivo = 'el catalogo no reconocia "' + literal + '", pero es el unico ' +
+        (ctx.rol === 'origen' ? 'origen' : 'destino') + ' de ' + ctx.cliente +
+        ' que encaja (' + elegido.nombre + ', ' + elegido.n_viajes + ' viajes)';
+      return idx;
+    }
+  }
+  if (casan.length > 1) {
+    // Regla 3: empate no se rompe con la frecuencia; solo se ordena por ella.
+    base.ruta_conocida = null;
+    base.candidatos = casan.map(function (p) { return { nombre: p.nombre, n_viajes: p.n_viajes }; });
+    base.motivo += '; encaja con ' + casan.length + ' rutas conocidas de ' + ctx.cliente +
+      ' (' + casan.map(function (p) { return p.nombre; }).join(' / ') + '): decide un humano';
+    return base;
+  }
+
+  base.ruta_conocida = false;
+  return base;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    puntosConocidos: puntosConocidos,
+    resolverPuntoDeCliente: resolverPuntoDeCliente,
+    casaEnConjunto: casaEnConjunto,
+  };
+}
+
+// datos embebidos de ../catalogo/tarifa-por-analogia.json
+var ANALOGIAS_EMBEBIDAS = {
+ "nota": "CANDIDATOS de TARIFA POR ANALOGIA, deducidos porque el importe facturado coincide EXACTAMENTE con el de otra ruta del mismo cliente+origen. Significa \"aqui se cobra la tarifa de aquella otra ruta\", NO \"este destino es aquel otro\". Requieren confirmacion humana: poner confirmado=true. Sin confirmar NO se factura con ellos.",
+ "veredictos_arrastrados": 20,
+ "veredictos_huerfanos": [],
+ "candidatos": [
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "destino_real": "CURIA SPAIN, SAU",
+   "destino_tarifado": "VALLADOLID",
+   "precio": 38.66,
+   "n_viajes": 73,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "destino_real": "COGERSA",
+   "destino_tarifado": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 34,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "destino_real": "SERVYECO IBERIA,SL",
+   "destino_tarifado": "CASTELLON",
+   "precio": 64.91,
+   "n_viajes": 8,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "destino_real": "CUNTIS",
+   "destino_tarifado": "PONTEVEDRA",
+   "precio": 79.95,
+   "n_viajes": 3,
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "destino_real": "GERMAN RDGUEZ.IND.SA",
+   "destino_tarifado": "GUADALAJARA",
+   "precio": 48.17,
+   "n_viajes": 2,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "destino_real": "PORRIÑO",
+   "destino_tarifado": "DROGAS VIGO, S.L.",
+   "precio": 12.64,
+   "n_viajes": 2,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "QUIMIDROGA, S.A.",
+   "origen": "BARCELONA",
+   "destino_real": "BEGONTE",
+   "destino_tarifado": "LUGO",
+   "precio": 74.73,
+   "n_viajes": 2,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "HELM IBERICA, S.A.",
+   "origen": "BARCELONA",
+   "destino_real": "FORESA FRANCE SAS",
+   "destino_tarifado": "AMBARES",
+   "precio": 1350,
+   "n_viajes": 2,
+   "confirmado": false,
+   "estado": "negociable",
+   "veredicto": "precio por viaje, se negocia cada vez: no es tarifa estable",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "destino_real": "AZPEITIA",
+   "destino_tarifado": "GUIPUZCOA",
+   "precio": 36.9,
+   "n_viajes": 2,
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "destino_real": "CORUÑA",
+   "destino_tarifado": "DROGAS CONDE, S.A.",
+   "precio": 18.61,
+   "n_viajes": 1,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "destino_real": "GIJON",
+   "destino_tarifado": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 1,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "destino_real": "PADRON",
+   "destino_tarifado": "CESURES",
+   "precio": 4.27,
+   "n_viajes": 1,
+   "confirmado": false,
+   "estado": "tarifa_faltante",
+   "veredicto": "Julio 27/08: PADRON y CESURES son sitios DISTINTOS, separados por unos km. La diferencia de tarifa de TRANSTAMBRE entre los dos (3,34 vs 3,21) esta justificada por la distancia, y las diferencias entre clientes para una misma ruta son acuerdos comerciales. No es alias ni analogia: a FORESA le FALTA la fila CALDAS DE REIS -> PADRON COLA 4,27. Se da de alta en Gesruta; no se resuelve por codigo.",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "destino_real": "LANGREO",
+   "destino_tarifado": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 1,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "VILLAGARCIA",
+   "destino_real": "GIJON",
+   "destino_tarifado": "ASTURIAS",
+   "precio": 33.1,
+   "n_viajes": 1,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "QUIMIDROGA, S.A.",
+   "origen": "TARRAGONA",
+   "destino_real": "AVEIRO",
+   "destino_tarifado": "COIMBRA",
+   "precio": 80.8,
+   "n_viajes": 1,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "DROVIGO PORTUGAL UNIPESSOAL, LDA",
+   "origen": "TARRAGONA",
+   "destino_real": "COIMBRA",
+   "destino_tarifado": "AVEIRO",
+   "precio": 1900,
+   "n_viajes": 1,
+   "confirmado": false,
+   "estado": "negociable",
+   "veredicto": "precio por viaje, se negocia cada vez: no es tarifa estable",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "HELM IBERICA, S.A.",
+   "origen": "TARRAGONA",
+   "destino_real": "CASARRUBIOS",
+   "destino_tarifado": "TOLEDO",
+   "precio": 1050,
+   "n_viajes": 1,
+   "confirmado": false,
+   "estado": "negociable",
+   "veredicto": "precio por viaje, se negocia cada vez: no es tarifa estable",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "destino_real": "IRURENA",
+   "destino_tarifado": "GUIPUZCOA",
+   "precio": 36.9,
+   "n_viajes": 1,
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "AMBERES CHEMICAL, S.A.",
+   "origen": "TARRAGONA",
+   "destino_real": "LOGROÑO",
+   "destino_tarifado": "OYON",
+   "precio": 31.15,
+   "n_viajes": 1,
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "ACIDEKA, S.A.",
+   "origen": "ZIERBANA",
+   "destino_real": "MONFORTE LEMOS",
+   "destino_tarifado": "LUGO",
+   "precio": 36.57,
+   "n_viajes": 1,
+   "confirmado": false,
+   "estado": "descartado",
+   "veredicto": "Julio no puede confirmarlo",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "QUIMICAS DEL JARAMA, S.A.",
+   "origen": "MADRID",
+   "destino_real": "PORTUGAL",
+   "destino_tarifado": "LANDIN (PT)",
+   "precio": 46.35,
+   "n_viajes": 1,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "confirmado por Julio 2026-08-27",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-08-27"
+  }
+ ]
+};
+
+// datos embebidos de ../catalogo/rutas-por-cliente-test.json
+var RUTAS_CLIENTE_EMBEBIDAS = {
+ "generado_de": "rutas-por-cliente.json",
+ "nota": "RECORTE para pruebas: solo los 4 clientes confirmados y los campos que usa rutas-conocidas.js. Derivado; se regenera con herramientas/recortar-rutas-clientes.py. No editar a mano.",
+ "clientes": {
+  "1": {
+   "nombre": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "nif": "A28141224",
+   "rutas": [
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "OREMBER",
+     "nombre_material": "COLA",
+     "n_viajes": 2131
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "METANOL",
+     "n_viajes": 835
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "OREMBER",
+     "nombre_material": "FINCAT",
+     "n_viajes": 389
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "UTISA TERUEL",
+     "nombre_material": "COLA",
+     "n_viajes": 178
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "IP DECOR SPAIN, SAU",
+     "nombre_material": "COLA",
+     "n_viajes": 167
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TERMOLAN, S.A.",
+     "nombre_material": "COLA",
+     "n_viajes": 132
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "CURIA SPAIN, SAU",
+     "nombre_material": "METANOL",
+     "n_viajes": 73
+    },
+    {
+     "nombre_origen": "HUELVA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "FENOL FUNDIDO",
+     "n_viajes": 61
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "NEFAB PONTEV. SL",
+     "nombre_material": "COLA",
+     "n_viajes": 60
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "URSA IBERICA, S.A.",
+     "nombre_material": "COLA",
+     "n_viajes": 55
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "DIETILENGLICOL",
+     "n_viajes": 46
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "BARCELONA",
+     "nombre_material": "COLA",
+     "n_viajes": 46
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "HARINAS ALMELA,SC",
+     "nombre_material": "COLA",
+     "n_viajes": 41
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TERUEL",
+     "nombre_material": "COLA",
+     "n_viajes": 37
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "ACETATO DE VINILO",
+     "n_viajes": 35
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "COGERSA",
+     "nombre_material": "METANOL",
+     "n_viajes": 34
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "DROGAS VIGO, S.L.",
+     "nombre_material": "METANOL",
+     "n_viajes": 32
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ZNDS TABLEROS, S.L.",
+     "nombre_material": "COLA",
+     "n_viajes": 27
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "AVEIRO",
+     "nombre_material": "METANOL",
+     "n_viajes": 26
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TARRAGONA",
+     "nombre_material": "COLA",
+     "n_viajes": 26
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "DIETILENGLICOL",
+     "n_viajes": 25
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "VALLADOLID",
+     "nombre_material": "METANOL",
+     "n_viajes": 23
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ALCOVER QUIMINA, S.L.",
+     "nombre_material": "FORMOL",
+     "n_viajes": 16
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "VALENCIA",
+     "nombre_material": "COLA",
+     "n_viajes": 16
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "HARINAS ALMELA,SC",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 14
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CLARIANT, S.A.",
+     "nombre_material": "FORMOL",
+     "n_viajes": 14
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "IND.QUIM.CUADRADO,SA",
+     "nombre_material": "METANOL",
+     "n_viajes": 10
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TABLESTUY, S.L.",
+     "nombre_material": "COLA",
+     "n_viajes": 9
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "LORCOL",
+     "nombre_material": "COLA",
+     "n_viajes": 9
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TERUEL",
+     "nombre_material": "PINATURE",
+     "n_viajes": 9
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "SERVYECO IBERIA,SL",
+     "nombre_material": "COLA/FORMOL",
+     "n_viajes": 8
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "SERVYECO IBERIA,SL",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 8
+    },
+    {
+     "nombre_origen": "VIGO",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "HIDROXIDO SODICO",
+     "n_viajes": 8
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "ASTURIAS",
+     "nombre_material": "METANOL",
+     "n_viajes": 7
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "COMERCIAL GODO, S.L.",
+     "nombre_material": "FORMOL",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "VIGO",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "SOSA",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "HELDER ROB.MOREIRA",
+     "nombre_material": "COLA",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ADHESIVOS GIMPEX, S.L",
+     "nombre_material": "COLA",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "DROGAS CONDE, S.A.",
+     "nombre_material": "FORMOL",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "MADERAS BENIGANIM, SAL",
+     "nombre_material": "COLA",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TARRAGONA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TORDERA",
+     "nombre_material": "COLA",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "GARNICA PLYWOOD",
+     "nombre_material": "COLA",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "ORENSE",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "AGUA DESMINER.",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "LUSO FINSA",
+     "nombre_material": "COLA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CATENVA, S.L.",
+     "nombre_material": "COLA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "PURIPLAST IBERICA,SA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "SELENA IBERIA, SLU",
+     "nombre_material": "COLA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "SERVYECO IBERIA,SL",
+     "nombre_material": "FORMOL",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "UTISA TERUEL",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "VACIO",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "SANTIAGO",
+     "nombre_material": "COLA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "PADRON",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "AGUA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "ACETATO DE VINILO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "MADERAS DE LLODIO,SA",
+     "nombre_material": "COLA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "REKAR IBERICA, S.A.",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "REKAR IBERICA, S.A.",
+     "nombre_material": "COLA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TACON DECOR, SL",
+     "nombre_material": "FORMOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "BAKELITE IBERICA, SAU",
+     "nombre_material": "FORMOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ARCHELA CONTRACHAPADOS,SL",
+     "nombre_material": "COLA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "ORENSE",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "AGUA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "UTISA TERUEL",
+     "nombre_material": "PINATURE",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "GERMAN RDGUEZ.IND.SA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "UTISA TERUEL",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CONTRACHAP.LUBADI,SL",
+     "nombre_material": "COLA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CONTRACHAP.LUBADI,SL",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "UTISA TERUEL",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CASTELLON",
+     "nombre_material": "COLA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CASTELLON",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "LA RIOJA",
+     "nombre_material": "COLA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CASTELLON",
+     "nombre_material": "COLA/FORMOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "VALENCIA",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "PORRIÑO",
+     "nombre_material": "METANOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "TERUEL",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "RETORNO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TERMOLAN, S.A.",
+     "nombre_material": "FINCAT",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TABLEROS GARFER, S.A.",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "LICEMA,SA",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ENCE",
+     "nombre_material": "UREA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "ESTARREJA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "HIDROXIDO SODICO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "ADIEGO HERMANOS, S.A.",
+     "nombre_material": "METANOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "BRENNTAG QUIMICA,SA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ITALIA",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "UTISA TERUEL",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "DEVOLUC.COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CONTRACHAPADOS INDUSTRIALES, S.L.",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CONTRACHAPADOS INDUSTRIALES, S.L.",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "COLAS ARTIACH, SL",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ARCHELA CONTRACHAPADOS,SL",
+     "nombre_material": "REPARTOS",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "IP DECOR SPAIN, SAU",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "DEVOLUC.COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "LLODIO",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "UTISA TERUEL",
+     "nombre_material": "FINCAT",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "VARIOS",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "ESTARREJA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "SOSA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "EGGER PANNEAUX",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CESURES",
+     "nombre_material": "FINCAT",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "UTISA TERUEL",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "MADERAS BENIGANIM, SAL",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "LOGROÑO",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TERMOLAN, S.A.",
+     "nombre_material": "ADITIVO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "LUGO",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "AGUA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CASTELLON",
+     "nombre_material": "VARIOS",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "TERUEL",
+     "nombre_material": "FINCAT",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "ALAVA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "TOLEDO",
+     "nombre_material": "METANOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "CORUÑA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "GIJON",
+     "nombre_material": "METANOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "PADRON",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "LA RIOJA",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "SOSA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CALDAS DE REIS",
+     "nombre_destino": "LANGREO",
+     "nombre_material": "FORMOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "VILLAGARCIA",
+     "nombre_destino": "GIJON",
+     "nombre_material": "METANOL",
+     "n_viajes": 1
+    }
+   ]
+  },
+  "42": {
+   "nombre": "BRESFOR IND. DO FORMOL, S.A.",
+   "nif": "PT500047944",
+   "rutas": [
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "UTISA TERUEL",
+     "nombre_material": "COLA",
+     "n_viajes": 336
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "OREMBER",
+     "nombre_material": "COLA",
+     "n_viajes": 38
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "SEVILLA",
+     "nombre_material": "METANOL",
+     "n_viajes": 20
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "KRONOSPAN, S.L.",
+     "nombre_material": "COLA",
+     "n_viajes": 15
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "FORMOL",
+     "n_viajes": 9
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "SEVILLA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "HUELVA",
+     "nombre_material": "METANOL",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "CALDAS DE REIS",
+     "nombre_material": "COLA",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "CORDOBA",
+     "nombre_material": "METANOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "BURGOS",
+     "nombre_material": "COLA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BURGOS",
+     "nombre_destino": "AVEIRO",
+     "nombre_material": "VACIO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "CURIA SPAIN, SAU",
+     "nombre_material": "METANOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "ALCOVER",
+     "nombre_material": "FORMOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "TARRAGONA",
+     "nombre_material": "FORMOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "ORENSE",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "SANTIAGO",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "CADIZ",
+     "nombre_material": "COLA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "IND.QUIM.CUADRADO,SA",
+     "nombre_material": "METANOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "VALLADOLID",
+     "nombre_material": "METANOL",
+     "n_viajes": 1
+    }
+   ]
+  },
+  "403": {
+   "nombre": "QUIMIDROGA, S.A.",
+   "nif": "A08002073",
+   "rutas": [
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ORENSE",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 101
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "BRAGA (PT)",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 78
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 73
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 19
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ZAMORA",
+     "nombre_material": "LISINA",
+     "n_viajes": 19
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SANTAREM",
+     "nombre_material": "QDPOL",
+     "n_viajes": 17
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VILARINHO(PT)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 15
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MEM MARTINS (PT)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 14
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "AVEIRO",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 14
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "LISINA",
+     "n_viajes": 14
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PONTEVEDRA",
+     "nombre_material": "LISINA",
+     "n_viajes": 11
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SOBRALINHO(PT)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 10
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SILLEDA",
+     "nombre_material": "LISINA",
+     "n_viajes": 10
+    },
+    {
+     "nombre_origen": "BURGOS",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 10
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "GUIMARAES",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 8
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PONTEVEDRA",
+     "nombre_material": "ACETATO DE VINILO",
+     "n_viajes": 7
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MENDAVIA",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 7
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 7
+    },
+    {
+     "nombre_origen": "BURGOS",
+     "nombre_destino": "BRAGA (PT)",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 7
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SANTIAGO",
+     "nombre_material": "DIETANOLAMINA",
+     "n_viajes": 6
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MEM MARTINS (PT)",
+     "nombre_material": "ACRELATO BUTILO",
+     "n_viajes": 6
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CASTANHEIRA RIBATEJO(PT)",
+     "nombre_material": "METIL ETER",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SARIEGO",
+     "nombre_material": "SURFACTAN",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "LEON",
+     "nombre_material": "ACETATO METILO",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PORRIÑO",
+     "nombre_material": "SURFACTAN",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "ARTEIXO",
+     "nombre_destino": "BARCELONA",
+     "nombre_material": "Q QUAT",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ORENSE",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 5
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VALLADOLID",
+     "nombre_material": "ACETATO DE ETILO",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "RABADE",
+     "nombre_material": "WHITE SPIRIT",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ZAMORA",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "BURGOS",
+     "nombre_destino": "GUIMARAES",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "GUARDA (PT)",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VILLATUERTA",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LOUSADA",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ERMESINDE(PT)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "GUARDA (PT)",
+     "nombre_material": "LG FLEX",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LOUSADA",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "ARTEIXO",
+     "nombre_destino": "BARCELONA",
+     "nombre_material": "POLICLORURO",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ZAMORA",
+     "nombre_material": "QD FEED",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VALADARES(PT)",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VALLADOLID",
+     "nombre_material": "LISINA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "BENAVENTE(PORT.)",
+     "nombre_material": "LISINA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PONTEVEDRA",
+     "nombre_material": "SURFACTAN",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LUGO",
+     "nombre_material": "WHITE SPIRIT",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BURGOS",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CASTANHEIRA RIBATEJO(PT)",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "LG FLEX",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "GUARDA (PT)",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PAREDES (PT)",
+     "nombre_material": "SURFACTAN",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CARREGADO",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PORRIÑO",
+     "nombre_material": "ISOPROPANOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "OVAR",
+     "nombre_material": "TCPP",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "TABOADA (LU)",
+     "nombre_material": "ACIDO PROPIONICO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "O PORTO",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SANTAREM",
+     "nombre_material": "POLYOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LEON",
+     "nombre_material": "LISINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "TOLEDO",
+     "nombre_material": "METANOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MAIA",
+     "nombre_material": "ISOBUTANOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "GUARNIZO",
+     "nombre_material": "MONOETILENGLICOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PADRON",
+     "nombre_material": "LISINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "GUARNIZO",
+     "nombre_material": "MONOETILENGLICOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SANTAREM",
+     "nombre_material": "POLIOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "VALLADOLID",
+     "nombre_material": "MONOETILENGLICOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VIANA DO CASTELO",
+     "nombre_material": "DIETILENGLICOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "BEGONTE",
+     "nombre_material": "SALMO-GAL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "BURGOS",
+     "nombre_material": "LISINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CORUÑA",
+     "nombre_material": "LISINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SEGOVIA",
+     "nombre_material": "LISINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SEGOVIA",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BURGOS",
+     "nombre_destino": "BRAGA (PT)",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "CAPARROSO",
+     "nombre_destino": "CARREGADO",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "TOTM-S",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "BILBAO",
+     "nombre_material": "ACETATO METILO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "GUARDA (PT)",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "BARCELONA",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MAIA",
+     "nombre_material": "ACETATO METILO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "BEGONTE",
+     "nombre_material": "SALMOGAL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "TABOADA (LU)",
+     "nombre_material": "SALMO-GAL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "RABADE",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ST.PAUL (FR)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "LAVERA",
+     "nombre_destino": "BARCELONA",
+     "nombre_material": "BUTANOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "O PORTO",
+     "nombre_material": "LG FLEX",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "VALDEMORO",
+     "nombre_destino": "VALADARES(PT)",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "LISBOA",
+     "nombre_destino": "LISBOA",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ARNEDO",
+     "nombre_material": "POLIOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "PONTEVEDRA",
+     "nombre_material": "ACETATO DE VINILO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "BRAGA (PT)",
+     "nombre_material": "ACIDO ACRILICO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SOBRALINHO(PT)",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "POLANCO",
+     "nombre_material": "METIL ETER",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "BRAGA (PT)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "SOBRALINHO(PT)",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SONDIKA",
+     "nombre_material": "ESTIRENO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LLEIDA",
+     "nombre_material": "LISINA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CORTEGAÇA(PT)",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MUGARDOS",
+     "nombre_material": "DIETILENGLICOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "ARRANCUDIAGA",
+     "nombre_material": "SURFACTAN",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "ACIDO ACRILICO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VILARINHO(PT)",
+     "nombre_material": "TOTM-S",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "OVAR",
+     "nombre_material": "FOSFATION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "OVAR",
+     "nombre_material": "LISINA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SINDE (PT)",
+     "nombre_material": "QDPOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MAIA",
+     "nombre_material": "VARIOS",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MAIA",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LUGO",
+     "nombre_material": "SALMO-GAL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PORTUGAL",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "MIRANDA DE EBRO",
+     "nombre_destino": "BRAGA (PT)",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CORUÑA",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "PONTEVEDRA",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "ASTURIAS",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LUGO",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LUGO",
+     "nombre_material": "DESCARGA EN SABADO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MEM MARTINS (PT)",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CORUÑA",
+     "nombre_destino": "BARCELONA",
+     "nombre_material": "Q QUAT",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CORUÑA",
+     "nombre_destino": "BARCELONA",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VILARINHO(PT)",
+     "nombre_material": "VARIOS",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VILARINHO(PT)",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CAPARROSO",
+     "nombre_destino": "CARREGADO",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MINDELO",
+     "nombre_material": "ACETATO DE BUTILO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MINDELO",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "AVEIRO",
+     "nombre_material": "POTASA CAUSTICA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "AVEIRO",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "AVEIRO",
+     "nombre_material": "PARALIZACION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "O PORTO",
+     "nombre_material": "MEXIFLEX",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "O PORTO",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MANGUALDE(PT)",
+     "nombre_material": "TRIETANOLAM.",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MANGUALDE(PT)",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BURGOS",
+     "nombre_destino": "GUIMARAES",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "ASTURIAS",
+     "nombre_material": "MONOETILENGLICOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "AZPEITIA",
+     "nombre_material": "ACETATO METILO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "GUARDA (PT)",
+     "nombre_material": "LG FLEX",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "GERONA",
+     "nombre_material": "TCPP",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VISEU",
+     "nombre_material": "DIETANOLAMINA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "OVIEDO",
+     "nombre_material": "BUTILDIGLICOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "CORUÑA",
+     "nombre_material": "DIETILENGLICOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "NAVARRA",
+     "nombre_destino": "CARREGADO",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LISBOA",
+     "nombre_material": "VINKA-PLAST",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MINDELO",
+     "nombre_material": "METILMETACRILATO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "LUGO",
+     "nombre_material": "TENSION",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "O PORTO",
+     "nombre_material": "SURFACTAN",
+     "n_viajes": 1
+    }
+   ]
+  },
+  "514": {
+   "nombre": "QUIMIDROGA PORTUGAL, LDA",
+   "nif": "PT504216260",
+   "rutas": [
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "COIMBRA",
+     "nombre_material": "MONOETILENGLICOL",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "COIMBRA",
+     "nombre_material": "MONOETILENGLICOL",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "SEIXO DE MIRA(PT)",
+     "nombre_material": "MONOETILENGLICOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "MEM MARTINS (PT)",
+     "nombre_material": "DIETILENGLICOL",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VIANA DO CASTELO",
+     "nombre_material": "DIETILENGLICOL",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CAPARROSO",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "GLICERINA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "CAPARROSO",
+     "nombre_destino": "LEIRIA (PT)",
+     "nombre_material": "SUPLEMENTO",
+     "n_viajes": 1
+    }
+   ]
+  },
+  "661": {
+   "nombre": "RNM TRANSPORTES QUIMICOS, LDA",
+   "nif": "PT507663993",
+   "rutas": [
+    {
+     "nombre_origen": "ESTARREJA",
+     "nombre_destino": "HUELVA",
+     "nombre_material": "ACIDO NITRICO",
+     "n_viajes": 9
+    },
+    {
+     "nombre_origen": "AVILES",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "ACIDO SULFURICO",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "ESTARREJA",
+     "nombre_destino": "BADAJOZ",
+     "nombre_material": "ACIDO NITRICO",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "NAVIA",
+     "nombre_material": "SOSA",
+     "n_viajes": 4
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "PONTEVEDRA",
+     "nombre_material": "SOSA",
+     "n_viajes": 3
+    },
+    {
+     "nombre_origen": "BARCELONA",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "ACIDO ACETICO",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "PORRIÑO",
+     "nombre_material": "SOSA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "VIGO",
+     "nombre_destino": "NAVIA",
+     "nombre_material": "SOSA",
+     "n_viajes": 2
+    },
+    {
+     "nombre_origen": "ZAMUDIO",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "SILICATO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TORRELAVEGA",
+     "nombre_destino": "PONTEVEDRA",
+     "nombre_material": "SOSA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVILES",
+     "nombre_destino": "ALCANENA(PT)",
+     "nombre_material": "ACIDO SULFURICO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "VILANOVA FAMALICAO",
+     "nombre_destino": "GUADALAJARA",
+     "nombre_material": "WAC AB",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "ZAMUDIO",
+     "nombre_destino": "VILANOVA FAMALICAO",
+     "nombre_material": "SODIO SILICATO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "JAEN",
+     "nombre_material": "HEXANO",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "LEZO",
+     "nombre_material": "SOSA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AVEIRO",
+     "nombre_destino": "CORUÑA",
+     "nombre_material": "SOSA",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "AZAMBUJA(PT)",
+     "nombre_destino": "SEVILLA",
+     "nombre_material": "INOPON",
+     "n_viajes": 1
+    },
+    {
+     "nombre_origen": "TARRAGONA",
+     "nombre_destino": "CORDOBA",
+     "nombre_material": "ACETATO DE ETILO",
+     "n_viajes": 1
+    }
+   ]
+  },
+  "669": {
+   "nombre": "RNM TRANSPORTES QUIMICOS ESPAÑA,SLU",
+   "nif": "B27880905",
+   "rutas": [
+    {
+     "nombre_origen": "AZAMBUJA(PT)",
+     "nombre_destino": "SILLEDA",
+     "nombre_material": "INOPON",
+     "n_viajes": 1
+    }
+   ]
+  }
+ }
+};
+
 // ===== MINI-MAPA CHOFER -> TIPO DE CONDUCTOR ================================
 //
 // Marca cada viaje con el tipo de conductor (autonomo | dependiente) segun quien
@@ -1259,12 +3561,27 @@ const puntoGesruta = function (literal) {
   const r = resolverPunto(literal, 'documento', puntosTbl);
   return (r && r.id_punto) ? (r.id_punto + ' · ' + r.nombre_canonico) : s(literal);
 };
+// CASCADA DE PRECIO (resolverPrecio, inlineado): 1) tarifa contractual, 2) tarifa
+// por ANALOGIA confirmada por Julio (embebida en ANALOGIAS_EMBEBIDAS), 3) precio
+// impreso en la orden, 4) vacio con motivo. Antes solo corria el escalon 1
+// (buscarTarifaContractual) y las 12 analogias confirmadas no se aplicaban nunca.
+// `origen_del_precio` viaja a la fila para que la vista muestre de donde salio.
+var ANALOGIAS = (typeof ANALOGIAS_EMBEBIDAS !== 'undefined') ? ANALOGIAS_EMBEBIDAS : {};
+var RUTAS_CLIENTE = (typeof RUTAS_CLIENTE_EMBEBIDAS !== 'undefined') ? RUTAS_CLIENTE_EMBEBIDAS : {};
 const tarifaDe = function (v, origenLit, destinoLit) {
-  if (typeof buscarTarifaContractual !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '' }; }
-  const r = buscarTarifaContractual({ cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material }, tarifasTbl, puntosTbl);
-  if (!r) { return { tn: null, fijo: null, motivo: '' }; }
-  if (r.tarifa === null) { return { tn: null, fijo: null, motivo: r.motivo || '' }; }
-  return { tn: r.tarifa_tn, fijo: r.precio_fijo, motivo: r.revisar ? ('tarifa via punto resuelto — verificar (' + s(origenLit) + '->' + s(destinoLit) + ')') : '' };
+  if (typeof resolverPrecio !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '', origen_precio: null }; }
+  const viaje = { cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material, precio_orden: v.tarifa_tn_documento };
+  const r = resolverPrecio(viaje, tarifasTbl, ANALOGIAS, puntosTbl);
+  if (!r) { return { tn: null, fijo: null, motivo: '', origen_precio: null }; }
+  if (r.tarifa === null && r.tarifa_tn === undefined && r.precio_fijo === undefined) {
+    return { tn: null, fijo: null, motivo: r.motivo || '', origen_precio: null };
+  }
+  return {
+    tn: (r.tarifa_tn === undefined ? null : r.tarifa_tn),
+    fijo: (r.precio_fijo === undefined ? null : r.precio_fijo),
+    motivo: r.revisar ? (r.motivo || ('tarifa via punto resuelto — verificar (' + s(origenLit) + '->' + s(destinoLit) + ')')) : '',
+    origen_precio: r.origen_del_precio || null,
+  };
 };
 
 const filas = [];
@@ -1289,6 +3606,18 @@ for (const v of viajes) {
     } else {
       avisoRuta = 'origen y destino resuelven al mismo punto (' + pg0 + ') y la ficha no los distingue; ruta anulada por imposible';
       origenLit = ''; destinoLit = '';
+    }
+  }
+  // CONJUNTO CERRADO DEL CLIENTE (rutas-conocidas, embebido). No cambia QUE punto
+  // se elige: pregunta si ESTE cliente hizo alguna vez esta ruta. No rechaza rutas
+  // nuevas, las MARCA -> la fila va a REVISAR con el motivo. Es la guarda que caza
+  // el TERUEL de RNM: una direccion postal mal impresa que resuelve a un punto al
+  // que el cliente nunca viajo. Un cliente fuera del recorte de prueba (RUTAS
+  // vacio para el) no genera aviso: degrada a silencio, no a falso positivo.
+  if (typeof resolverPuntoDeCliente === 'function' && origenLit && destinoLit) {
+    const rc = resolverPuntoDeCliente(destinoLit, { cliente: v.cliente, rol: 'destino', origen: origenLit }, puntosTbl, RUTAS_CLIENTE);
+    if (rc && rc.ruta_conocida === false && rc.aviso_ruta) {
+      avisoRuta = [avisoRuta, rc.aviso_ruta].filter(Boolean).join('; ');
     }
   }
   const tar = tarifaDe(v, origenLit, destinoLit);
@@ -1322,6 +3651,9 @@ for (const v of viajes) {
     tarifa_contractual_tn: n(tar.tn),
     tarifa_contractual_fijo: n(tar.fijo),
     tarifa_contractual_motivo: s(tar.motivo),
+    // De donde salio el precio: 'contractual' | 'analogia' | 'orden' | ''. La
+    // analogia y la orden son observadas, no pactadas: la vista las muestra a parte.
+    origen_del_precio: s(tar.origen_precio),
     pais_facturacion: paisDe(v.cliente, v.referencia),
     fecha_descarga: s(v.fecha_descarga),
     km_inicio: n(v.km_inicio),

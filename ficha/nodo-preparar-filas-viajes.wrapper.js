@@ -95,12 +95,27 @@ const puntoGesruta = function (literal) {
   const r = resolverPunto(literal, 'documento', puntosTbl);
   return (r && r.id_punto) ? (r.id_punto + ' · ' + r.nombre_canonico) : s(literal);
 };
+// CASCADA DE PRECIO (resolverPrecio, inlineado): 1) tarifa contractual, 2) tarifa
+// por ANALOGIA confirmada por Julio (embebida en ANALOGIAS_EMBEBIDAS), 3) precio
+// impreso en la orden, 4) vacio con motivo. Antes solo corria el escalon 1
+// (buscarTarifaContractual) y las 12 analogias confirmadas no se aplicaban nunca.
+// `origen_del_precio` viaja a la fila para que la vista muestre de donde salio.
+var ANALOGIAS = (typeof ANALOGIAS_EMBEBIDAS !== 'undefined') ? ANALOGIAS_EMBEBIDAS : {};
+var RUTAS_CLIENTE = (typeof RUTAS_CLIENTE_EMBEBIDAS !== 'undefined') ? RUTAS_CLIENTE_EMBEBIDAS : {};
 const tarifaDe = function (v, origenLit, destinoLit) {
-  if (typeof buscarTarifaContractual !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '' }; }
-  const r = buscarTarifaContractual({ cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material }, tarifasTbl, puntosTbl);
-  if (!r) { return { tn: null, fijo: null, motivo: '' }; }
-  if (r.tarifa === null) { return { tn: null, fijo: null, motivo: r.motivo || '' }; }
-  return { tn: r.tarifa_tn, fijo: r.precio_fijo, motivo: r.revisar ? ('tarifa via punto resuelto — verificar (' + s(origenLit) + '->' + s(destinoLit) + ')') : '' };
+  if (typeof resolverPrecio !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '', origen_precio: null }; }
+  const viaje = { cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material, precio_orden: v.tarifa_tn_documento };
+  const r = resolverPrecio(viaje, tarifasTbl, ANALOGIAS, puntosTbl);
+  if (!r) { return { tn: null, fijo: null, motivo: '', origen_precio: null }; }
+  if (r.tarifa === null && r.tarifa_tn === undefined && r.precio_fijo === undefined) {
+    return { tn: null, fijo: null, motivo: r.motivo || '', origen_precio: null };
+  }
+  return {
+    tn: (r.tarifa_tn === undefined ? null : r.tarifa_tn),
+    fijo: (r.precio_fijo === undefined ? null : r.precio_fijo),
+    motivo: r.revisar ? (r.motivo || ('tarifa via punto resuelto — verificar (' + s(origenLit) + '->' + s(destinoLit) + ')')) : '',
+    origen_precio: r.origen_del_precio || null,
+  };
 };
 
 const filas = [];
@@ -125,6 +140,18 @@ for (const v of viajes) {
     } else {
       avisoRuta = 'origen y destino resuelven al mismo punto (' + pg0 + ') y la ficha no los distingue; ruta anulada por imposible';
       origenLit = ''; destinoLit = '';
+    }
+  }
+  // CONJUNTO CERRADO DEL CLIENTE (rutas-conocidas, embebido). No cambia QUE punto
+  // se elige: pregunta si ESTE cliente hizo alguna vez esta ruta. No rechaza rutas
+  // nuevas, las MARCA -> la fila va a REVISAR con el motivo. Es la guarda que caza
+  // el TERUEL de RNM: una direccion postal mal impresa que resuelve a un punto al
+  // que el cliente nunca viajo. Un cliente fuera del recorte de prueba (RUTAS
+  // vacio para el) no genera aviso: degrada a silencio, no a falso positivo.
+  if (typeof resolverPuntoDeCliente === 'function' && origenLit && destinoLit) {
+    const rc = resolverPuntoDeCliente(destinoLit, { cliente: v.cliente, rol: 'destino', origen: origenLit }, puntosTbl, RUTAS_CLIENTE);
+    if (rc && rc.ruta_conocida === false && rc.aviso_ruta) {
+      avisoRuta = [avisoRuta, rc.aviso_ruta].filter(Boolean).join('; ');
     }
   }
   const tar = tarifaDe(v, origenLit, destinoLit);
@@ -158,6 +185,9 @@ for (const v of viajes) {
     tarifa_contractual_tn: n(tar.tn),
     tarifa_contractual_fijo: n(tar.fijo),
     tarifa_contractual_motivo: s(tar.motivo),
+    // De donde salio el precio: 'contractual' | 'analogia' | 'orden' | ''. La
+    // analogia y la orden son observadas, no pactadas: la vista las muestra a parte.
+    origen_del_precio: s(tar.origen_precio),
     pais_facturacion: paisDe(v.cliente, v.referencia),
     fecha_descarga: s(v.fecha_descarga),
     km_inicio: n(v.km_inicio),
