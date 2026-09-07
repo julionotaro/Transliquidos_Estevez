@@ -95,17 +95,44 @@ preguntar. Con `tasaRevisar()`, el número que dice si el sistema aprende.
 Esto es lo que Julio preguntó, y la respuesta honesta es que **hay cuatro cosas**,
 y dos son bloqueantes.
 
-### BLOQUEANTE 1 — Nada de esto está corriendo todavía
+### BLOQUEANTE 1 — Cableado: HECHO en el repo (07/09), falta pegar en n8n
 
-Todo lo de arriba vive en el repo. **El flujo de n8n sigue ejecutando el código
-anterior.** Si se corre una prueba hoy, no mide nada de lo que se construyó.
+El defecto que veníamos arrastrando —módulos construidos pero ningún nodo los
+usaba— está cerrado para **tres** de las cuatro piezas. Ya no vive suelto: está
+**dentro** de los `.generated.js`, embebido por `build-nodo.js` (que ahora sabe
+inlinar un JSON como constante, porque el nodo Code no lee archivos):
 
-Hace falta: pegar en n8n los `.generated.js` regenerados, y cargar
-`plantillas-cliente.json`, `rutas-por-cliente.json` y `tarifa-por-analogia.json`
-donde el flujo pueda leerlos.
+| Pieza | Estado | Dónde |
+|---|---|---|
+| Cascada de precio + 12 analogías | ✅ cableada | `Preparar Filas Viajes` (`resolverPrecio` + `ANALOGIAS_EMBEBIDAS`) |
+| Conjunto cerrado (guarda TERUEL) | ✅ cableada | ídem (`rutas-conocidas` + recorte 42 KB a los 4 clientes) |
+| Guarda de referencia por formato | ✅ cableada | ídem (`verificarReferencia` + plantillas embebidas) |
+| Prompt por emisor | ⬜ **no** — es decisión de diseño, ver B-3 | — |
 
-**Es exactamente el defecto que venimos arrastrando: el hallazgo que no llega a
-producción.** Sin esto, la prueba mide la versión vieja.
+**Lo único que queda de este bloqueante es manual y tuyo:** pegar los
+`.generated.js` en n8n. Ya no hay que cargar los JSON en tablas: viajan dentro
+del nodo. `memoria-decisiones` sigue fuera (necesita el camino de escritura desde
+la tabla editable; no bloquea medir).
+
+### BLOQUEANTE 3 — El prompt por emisor es una reescritura, no un cableado
+
+Al ir a conectarlo apareció que **`PROMPT_DOCS` ya es multi-cliente**: lee un lote
+que puede traer documentos de varios clientes a la vez y descubre el cliente **al
+leer**, no antes. Ya lleva reglas por cliente adentro y está marcado "no tocar".
+El `promptDeCliente()` que se escribió asume un emisor conocido de antemano —
+arquitectura que **no aplica** a este nodo.
+
+Incorporar las anclas confirmadas (Foresa 2.º número/7 díg., Bresfor 1.º/10 díg.,
+cuerpo del mail RNM, etc.) al prompt existente es **reescribir el prompt de
+producción que va a GPT**, y su efecto no se puede medir sin correr GPT. Es
+decisión de diseño de Julio, no implementación a ciegas. `promptDeCliente()`
+queda disponible para el modelo "Claude directo" o un flujo donde el cliente se
+conozca antes de leer.
+
+**Consecuencia para la prueba:** la extracción correrá con el `PROMPT_DOCS`
+actual. La **guarda de referencia por formato** (ya cableada) igual atrapa el
+error Foresa/Bresfor *después* de leer, marcando REVISAR. La comprobación cruzada
+contra los otros números (más potente) espera a que se decida tocar el prompt.
 
 ### BLOQUEANTE 2 — Sin set de control, la prueba vuelve a ser una anécdota
 
