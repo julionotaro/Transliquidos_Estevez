@@ -45,9 +45,10 @@ const TARGETS = [
     // Tarifas) resolviendo antes origen/destino a punto canonico. Van ANTES de
     // dedup.js; tarifa-contractual reusa resolverPunto/normalizar ya inlineados.
     logica: ['../catalogo/resolver-punto.js', '../catalogo/gesruta.js', 'tarifa-contractual.js',
-      'rutas-conocidas.js',
+      'rutas-conocidas.js', 'plantillas.js',
       { json: '../catalogo/tarifa-por-analogia.json', as: 'ANALOGIAS_EMBEBIDAS' },
       { json: '../catalogo/rutas-por-cliente-test.json', as: 'RUTAS_CLIENTE_EMBEBIDAS' },
+      { json: '../catalogo/plantillas-cliente.json', as: 'PLANTILLAS_EMBEBIDAS' },
       'conductores.js', 'dedup.js'],
     wrapper: 'nodo-preparar-filas-viajes.wrapper.js',
     salida: 'nodo-preparar-filas-viajes.generated.js',

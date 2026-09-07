@@ -102,6 +102,19 @@ const puntoGesruta = function (literal) {
 // `origen_del_precio` viaja a la fila para que la vista muestre de donde salio.
 var ANALOGIAS = (typeof ANALOGIAS_EMBEBIDAS !== 'undefined') ? ANALOGIAS_EMBEBIDAS : {};
 var RUTAS_CLIENTE = (typeof RUTAS_CLIENTE_EMBEBIDAS !== 'undefined') ? RUTAS_CLIENTE_EMBEBIDAS : {};
+var PLANTILLAS = (typeof PLANTILLAS_EMBEBIDAS !== 'undefined') ? PLANTILLAS_EMBEBIDAS : {};
+// GUARDA DE REFERENCIA POR EMISOR (verificarReferencia, inlineado). Solo el
+// formato del emisor: Foresa referencia de 7 digitos, Bresfor de 10 — reglas
+// OPUESTAS en documentos casi identicos. Si el numero leido no cumple el formato
+// de ESE cliente, es casi seguro que se tomo el numero equivocado (el otro que hay
+// en el documento) -> REVISAR. La comprobacion CRUZADA contra los demas numeros
+// del documento (mas potente) necesita que el prompt los extraiga por separado;
+// queda para cuando se toque el prompt. Sin plantilla del cliente no opina.
+const chequearReferencia = function (v) {
+  if (typeof verificarReferencia !== 'function' || !v.referencia || !v.cliente) { return ''; }
+  const r = verificarReferencia(v.referencia, v.cliente, PLANTILLAS);
+  return (r && r.ok === false && r.revisar) ? (r.motivo || 'referencia con formato inesperado para el cliente') : '';
+};
 const tarifaDe = function (v, origenLit, destinoLit) {
   if (typeof resolverPrecio !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '', origen_precio: null }; }
   const viaje = { cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material, precio_orden: v.tarifa_tn_documento };
@@ -154,6 +167,7 @@ for (const v of viajes) {
       avisoRuta = [avisoRuta, rc.aviso_ruta].filter(Boolean).join('; ');
     }
   }
+  const avisoRef = chequearReferencia(v);
   const tar = tarifaDe(v, origenLit, destinoLit);
   filas.push({
     hoja_id: idDe(v.hoja_idx),
@@ -205,8 +219,8 @@ for (const v of viajes) {
     // queda vacio y se ve como no determinado, nunca como un OK.
     // Si se corrigio la ruta por la guarda origen!=destino, la fila va a REVISAR
     // aunque la lectura fuera OK: el humano tiene que confirmar la ruta.
-    estado_lectura: avisoRuta ? 'REVISAR' : s(v.estado_lectura),
-    motivo_revision: [s(v.motivo_revision), avisoRuta].filter(Boolean).join('; '),
+    estado_lectura: (avisoRuta || avisoRef) ? 'REVISAR' : s(v.estado_lectura),
+    motivo_revision: [s(v.motivo_revision), avisoRuta, avisoRef].filter(Boolean).join('; '),
     pagina_origen: n(v.pagina_origen),
     // Estado UNICO de documentacion (§3). Lo decide el correlacionador.
     estado: s(v.estado),
