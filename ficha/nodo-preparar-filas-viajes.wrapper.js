@@ -103,16 +103,37 @@ const puntoGesruta = function (literal) {
 var ANALOGIAS = (typeof ANALOGIAS_EMBEBIDAS !== 'undefined') ? ANALOGIAS_EMBEBIDAS : {};
 var RUTAS_CLIENTE = (typeof RUTAS_CLIENTE_EMBEBIDAS !== 'undefined') ? RUTAS_CLIENTE_EMBEBIDAS : {};
 var PLANTILLAS = (typeof PLANTILLAS_EMBEBIDAS !== 'undefined') ? PLANTILLAS_EMBEBIDAS : {};
-// GUARDA DE REFERENCIA POR EMISOR (verificarReferencia, inlineado). Solo el
-// formato del emisor: Foresa referencia de 7 digitos, Bresfor de 10 — reglas
-// OPUESTAS en documentos casi identicos. Si el numero leido no cumple el formato
-// de ESE cliente, es casi seguro que se tomo el numero equivocado (el otro que hay
-// en el documento) -> REVISAR. La comprobacion CRUZADA contra los demas numeros
-// del documento (mas potente) necesita que el prompt los extraiga por separado;
-// queda para cuando se toque el prompt. Sin plantilla del cliente no opina.
+// GUARDA DE REFERENCIA POR EMISOR (verificarReferencia, inlineado). Hace DOS
+// comprobaciones:
+//
+//   a) FORMATO del emisor: Foresa referencia de 7 digitos, Bresfor de 10 —
+//      reglas OPUESTAS en documentos casi identicos. Ya activa.
+//
+//   b) CRUZADA contra los demas numeros del documento: si la referencia leida es
+//      IGUAL a un pedido, a la ref. del comprador o al albaran interno, casi
+//      seguro se tomo el numero equivocado (el documento tiene 3 a 5 numeros que
+//      compiten). Un pedido tiene formato de numero y pasa cualquier chequeo de
+//      forma; SOLO se lo caza comparandolo con el resto. Esta comprobacion es la
+//      mas potente y ya esta CABLEADA: se arma `otros` con los numeros-trampa que
+//      el viaje traiga. Hoy el prompt aun no los extrae por separado, asi que
+//      `otros` queda vacio y la cruzada no dispara (degrada a solo-formato, sin
+//      cambiar nada). Se ACTIVA SOLA en cuanto el prompt empiece a devolver
+//      cualquiera de estos campos. Ese es el unico gancho que le falta al paso 3.
+//
+// CONTRATO para el paso 3 (que el prompt debe devolver, ADEMAS de `referencia`,
+// para activar la cruzada): pedido, pedido_cliente, ref_cliente, pedido_compra,
+// n_albaran_interno, doc_interno, nmr_cliente. Cada uno es uno de los numeros que
+// las secciones "ignorar" de las plantillas marcan como trampa.
+var CAMPOS_OTROS_NUMEROS = ['pedido', 'pedido_cliente', 'ref_cliente', 'pedido_compra',
+  'n_albaran_interno', 'doc_interno', 'nmr_cliente'];
 const chequearReferencia = function (v) {
   if (typeof verificarReferencia !== 'function' || !v.referencia || !v.cliente) { return ''; }
-  const r = verificarReferencia(v.referencia, v.cliente, PLANTILLAS);
+  var otros = {};
+  for (var i = 0; i < CAMPOS_OTROS_NUMEROS.length; i++) {
+    var k = CAMPOS_OTROS_NUMEROS[i];
+    if (v[k] !== undefined && v[k] !== null && String(v[k]).length) { otros[k] = v[k]; }
+  }
+  const r = verificarReferencia(v.referencia, v.cliente, PLANTILLAS, otros);
   return (r && r.ok === false && r.revisar) ? (r.motivo || 'referencia con formato inesperado para el cliente') : '';
 };
 const tarifaDe = function (v, origenLit, destinoLit) {

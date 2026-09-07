@@ -4031,7 +4031,25 @@ var PLANTILLAS_EMBEBIDAS = {
  "_estructura_de_los_pdf": "CORRECCION DE FONDO (29/08). Un PDF NO es un juego de un viaje. Verificado en el de 6 paginas 20260819180805, que contiene TRES viajes de clientes distintos:\n  pag 1  FORESA  CMR/ALBARAN            Caldas -> Termolan\n  pag 2  BRESFOR CMR/GUIA REMESSA       Gafanha -> Finsa Cella\n  pag 3  FINSA   MOVIMIENTO MERCANCIA   bascula de DESCARGA del viaje de la pag 2\n  pag 4  HELM    Orden de transporte    Barcelona -> Foresa Caldas\n  pag 5  MILADERTO Albaran de entrega   el mismo viaje de la pag 4\n  pag 6  FORESA  MOVIMIENTO MERCANCIA   bascula de descarga del viaje de la pag 4\nLos PDF son LOTES escaneados de corrido. Hay que clasificar pagina por pagina por emisor y tipo, y despues agrupar en juegos por matricula + fecha + material. No se puede asumir \"1 PDF = 1 viaje\" ni \"pagina 1 = el documento principal\".",
  "_regla_peso": "DECIDIDO POR JULIO 2026-08-31: para facturar MANDA EL PESO DE CARGA, el del ALBARAN / CMR. El ticket de bascula de la planta que DESCARGA (\"MOVIMIENTO MERCANCIA\" de FINSA o FORESA) NO se usa para facturar, aunque de un neto distinto (21.980 carga vs 21.960 descarga). Sirve solo como corroboracion. Y sigue en pie lo de Quimidroga: dentro de los documentos de CARGA, manda la CARTA DE PORTE/ALBARAN (peso real de bascula al cargar), nunca la OC (previsto, redondo).",
  "_regla_referencia_foresa_bresfor": "FORESA y BRESFOR emiten documentos casi identicos (mismo diseño, dos numeros arriba a la derecha) y la regla de la referencia es la OPUESTA en cada uno. Decidido por Julio el 31/08/2026:\n    FORESA  -> el SEGUNDO numero, 7 digitos   (2016400, 2017065)\n    BRESFOR -> el PRIMER numero, 10 digitos   (5050139934, 5050139937)\nPor eso la referencia NO se puede extraer con una regla comun de \"documento tipo CMR\": hay que identificar primero al EMISOR (casilla 1 / remitente) y recien despues aplicar su regla.",
- "_regla_fecha_de_carga": "FICHA DEL CHOFER. Regla R-01 del INDICE, reconfirmada por Julio el 31/08 para TODOS los clientes SIN EXCEPCION, incluido RNM. Es la excepcion al principio general de que el documento manda sobre la ficha: para la FECHA DE CARGA, y solo para ella, manda la ficha."
+ "_regla_fecha_de_carga": "FICHA DEL CHOFER. Regla R-01 del INDICE, reconfirmada por Julio el 31/08 para TODOS los clientes SIN EXCEPCION, incluido RNM. Es la excepcion al principio general de que el documento manda sobre la ficha: para la FECHA DE CARGA, y solo para ella, manda la ficha.",
+ "_contrato_cruzada_referencia": {
+  "_nota": "La comprobacion CRUZADA de referencia (verificarReferencia con el 4to argumento) compara la referencia leida contra los OTROS numeros del documento. Ya esta cableada en el nodo Preparar Filas Viajes, INERTE hasta que el prompt (paso 3) extraiga estos campos por separado, ademas de \"referencia\". En cuanto el prompt devuelva cualquiera de estos, la cruzada se activa sola. Cada campo es uno de los numeros que las secciones \"ignorar\" marcan como trampa.",
+  "campos_que_el_prompt_debe_extraer": [
+   "pedido",
+   "pedido_cliente",
+   "ref_cliente",
+   "pedido_compra",
+   "n_albaran_interno",
+   "doc_interno",
+   "nmr_cliente"
+  ],
+  "ejemplos_de_trampa_por_cliente": {
+   "FORESA": "pedido_cliente (2005046565-000001) — no confundir con la referencia (2016400)",
+   "QUIMIDROGA": "pedido (2894017/80), ref_cliente (226024), doc_interno bajo el expedidor (83303431)",
+   "RNM": "nmr_cliente (628), pedido_compra (3100082364) — la referencia es la guia remessa",
+   "BRESFOR": "la referencia ES el numero de 10 digitos; el de 7 es la trampa"
+  }
+ }
 };
 
 // ===== MINI-MAPA CHOFER -> TIPO DE CONDUCTOR ================================
@@ -4322,16 +4340,37 @@ const puntoGesruta = function (literal) {
 var ANALOGIAS = (typeof ANALOGIAS_EMBEBIDAS !== 'undefined') ? ANALOGIAS_EMBEBIDAS : {};
 var RUTAS_CLIENTE = (typeof RUTAS_CLIENTE_EMBEBIDAS !== 'undefined') ? RUTAS_CLIENTE_EMBEBIDAS : {};
 var PLANTILLAS = (typeof PLANTILLAS_EMBEBIDAS !== 'undefined') ? PLANTILLAS_EMBEBIDAS : {};
-// GUARDA DE REFERENCIA POR EMISOR (verificarReferencia, inlineado). Solo el
-// formato del emisor: Foresa referencia de 7 digitos, Bresfor de 10 — reglas
-// OPUESTAS en documentos casi identicos. Si el numero leido no cumple el formato
-// de ESE cliente, es casi seguro que se tomo el numero equivocado (el otro que hay
-// en el documento) -> REVISAR. La comprobacion CRUZADA contra los demas numeros
-// del documento (mas potente) necesita que el prompt los extraiga por separado;
-// queda para cuando se toque el prompt. Sin plantilla del cliente no opina.
+// GUARDA DE REFERENCIA POR EMISOR (verificarReferencia, inlineado). Hace DOS
+// comprobaciones:
+//
+//   a) FORMATO del emisor: Foresa referencia de 7 digitos, Bresfor de 10 —
+//      reglas OPUESTAS en documentos casi identicos. Ya activa.
+//
+//   b) CRUZADA contra los demas numeros del documento: si la referencia leida es
+//      IGUAL a un pedido, a la ref. del comprador o al albaran interno, casi
+//      seguro se tomo el numero equivocado (el documento tiene 3 a 5 numeros que
+//      compiten). Un pedido tiene formato de numero y pasa cualquier chequeo de
+//      forma; SOLO se lo caza comparandolo con el resto. Esta comprobacion es la
+//      mas potente y ya esta CABLEADA: se arma `otros` con los numeros-trampa que
+//      el viaje traiga. Hoy el prompt aun no los extrae por separado, asi que
+//      `otros` queda vacio y la cruzada no dispara (degrada a solo-formato, sin
+//      cambiar nada). Se ACTIVA SOLA en cuanto el prompt empiece a devolver
+//      cualquiera de estos campos. Ese es el unico gancho que le falta al paso 3.
+//
+// CONTRATO para el paso 3 (que el prompt debe devolver, ADEMAS de `referencia`,
+// para activar la cruzada): pedido, pedido_cliente, ref_cliente, pedido_compra,
+// n_albaran_interno, doc_interno, nmr_cliente. Cada uno es uno de los numeros que
+// las secciones "ignorar" de las plantillas marcan como trampa.
+var CAMPOS_OTROS_NUMEROS = ['pedido', 'pedido_cliente', 'ref_cliente', 'pedido_compra',
+  'n_albaran_interno', 'doc_interno', 'nmr_cliente'];
 const chequearReferencia = function (v) {
   if (typeof verificarReferencia !== 'function' || !v.referencia || !v.cliente) { return ''; }
-  const r = verificarReferencia(v.referencia, v.cliente, PLANTILLAS);
+  var otros = {};
+  for (var i = 0; i < CAMPOS_OTROS_NUMEROS.length; i++) {
+    var k = CAMPOS_OTROS_NUMEROS[i];
+    if (v[k] !== undefined && v[k] !== null && String(v[k]).length) { otros[k] = v[k]; }
+  }
+  const r = verificarReferencia(v.referencia, v.cliente, PLANTILLAS, otros);
   return (r && r.ok === false && r.revisar) ? (r.motivo || 'referencia con formato inesperado para el cliente') : '';
 };
 const tarifaDe = function (v, origenLit, destinoLit) {

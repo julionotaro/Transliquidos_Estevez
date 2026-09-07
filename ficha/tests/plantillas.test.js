@@ -119,6 +119,22 @@ test('si no choca con nada, la comprobacion cruzada no molesta', () => {
   assert.strictEqual(r.ok, true);
 });
 
+test('CONTRATO de la cruzada: CADA campo declarado dispara si coincide con la referencia', () => {
+  // El wrapper del nodo arma `otros` con estos nombres exactos. Si el prompt
+  // empieza a extraer cualquiera de ellos y coincide con la referencia, la
+  // cruzada tiene que saltar. Este test fija los nombres del contrato: si alguien
+  // los cambia en el JSON sin cambiar el wrapper (o al reves), se entera aca.
+  const contrato = PLANTILLAS._contrato_cruzada_referencia;
+  assert.ok(contrato && Array.isArray(contrato.campos_que_el_prompt_debe_extraer),
+    'el contrato de la cruzada tiene que estar en la fuente de verdad (el JSON)');
+  for (const campo of contrato.campos_que_el_prompt_debe_extraer) {
+    const otros = {}; otros[campo] = '2016400';
+    const r = P.verificarReferencia('2016400', 'FORESA', PLANTILLAS, otros);
+    assert.strictEqual(r.ok, false, 'el campo "' + campo + '" del contrato debe activar la cruzada');
+    assert.match(r.motivo, new RegExp(campo));
+  }
+});
+
 test('referencia vacia se marca, no se deja pasar en silencio', () => {
   const r = P.verificarReferencia('', 'FORESA', PLANTILLAS);
   assert.strictEqual(r.ok, false);
