@@ -135,6 +135,78 @@ test('CONTRATO de la cruzada: CADA campo declarado dispara si coincide con la re
   }
 });
 
+// ============================================================================
+// elegirReferencia — el codigo elige por REGLA, no el modelo por intuicion
+// (raiz del fallo de la corrida 1172: GPT devolvia el numero equivocado)
+// ============================================================================
+test('FORESA: elige el de 7 digitos aunque el modelo haya devuelto otro', () => {
+  const numeros = [
+    { etiqueta: 'CMR/ALBARAN primer numero', valor: '5030294564' },
+    { etiqueta: 'CMR/ALBARAN segundo numero', valor: '2017843' },
+    { etiqueta: 'albaran interno', valor: '492789' },
+  ];
+  const r = P.elegirReferencia('FORESA', numeros, PLANTILLAS, '492789');
+  assert.strictEqual(r.valor, '2017843');
+  assert.strictEqual(r.revisar, false);
+  assert.match(r.fuente, /plantilla/);
+});
+
+test('BRESFOR: elige el de 10 digitos — regla OPUESTA a Foresa sobre los mismos numeros', () => {
+  const numeros = [
+    { etiqueta: 'Doc. int primer numero', valor: '5050139934' },
+    { etiqueta: 'segundo numero', valor: '2017609' },
+  ];
+  const r = P.elegirReferencia('BRESFOR', numeros, PLANTILLAS, '2017609');
+  assert.strictEqual(r.valor, '5050139934');
+  assert.strictEqual(r.revisar, false);
+});
+
+test('RNM: exige 10 digitos que EMPIEZAN en 0 — descarta el CMR y el pedido de compra', () => {
+  const numeros = [
+    { etiqueta: 'CMR numero', valor: '5050139934' },      // 10 dig, NO empieza en 0
+    { etiqueta: 'pedido de compra', valor: '3100082364' }, // 10 dig, NO empieza en 0
+    { etiqueta: 'Guia Remessa Numero', valor: '0141163512' }, // 10 dig, empieza en 0
+  ];
+  const r = P.elegirReferencia('RNM', numeros, PLANTILLAS, '5050139934');
+  assert.strictEqual(r.valor, '0141163512');
+  assert.strictEqual(r.revisar, false);
+});
+
+test('RNM: si no hay ningun 10+0, NO elige el 5050139934 — cae a revisar', () => {
+  // El caso exacto de la 1172: sin la guia buena capturada, el sistema NO debe
+  // quedarse con el numero del CMR (dato lleno y falso). Marca revisar.
+  const numeros = [
+    { etiqueta: 'CMR numero', valor: '5050139934' },
+    { etiqueta: 'pedido de compra', valor: '3100082364' },
+  ];
+  const r = P.elegirReferencia('RNM', numeros, PLANTILLAS, '5050139934');
+  assert.strictEqual(r.revisar, true);
+  assert.notStrictEqual(r.valor, '3100082364');
+});
+
+test('QUIMIDROGA: formato variable -> elige por el ancla "Referencia en factura"', () => {
+  const numeros = [
+    { etiqueta: 'Pedido', valor: '2894017' },
+    { etiqueta: 'Su Referencia', valor: '226024' },
+    { etiqueta: 'Referencia en factura', valor: '703965' },
+  ];
+  const r = P.elegirReferencia('QUIMIDROGA', numeros, PLANTILLAS, '226024');
+  assert.strictEqual(r.valor, '703965');
+  assert.strictEqual(r.revisar, false);
+});
+
+test('sin plantilla: usa la del modelo sin inventar y sin marcar', () => {
+  const r = P.elegirReferencia('CLIENTE NUEVO SL', [{ etiqueta: 'x', valor: '123' }], PLANTILLAS, '999');
+  assert.strictEqual(r.valor, '999');
+  assert.strictEqual(r.revisar, false);
+});
+
+test('sin numeros transcritos: cae al modelo y marca revisar', () => {
+  const r = P.elegirReferencia('FORESA', [], PLANTILLAS, '2017843');
+  assert.strictEqual(r.valor, '2017843');
+  assert.strictEqual(r.revisar, true);
+});
+
 test('referencia vacia se marca, no se deja pasar en silencio', () => {
   const r = P.verificarReferencia('', 'FORESA', PLANTILLAS);
   assert.strictEqual(r.ok, false);

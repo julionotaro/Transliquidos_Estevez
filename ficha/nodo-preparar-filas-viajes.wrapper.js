@@ -136,6 +136,34 @@ const chequearReferencia = function (v) {
   const r = verificarReferencia(v.referencia, v.cliente, PLANTILLAS, otros);
   return (r && r.ok === false && r.revisar) ? (r.motivo || 'referencia con formato inesperado para el cliente') : '';
 };
+
+// SELECCION DE REFERENCIA POR REGLA (elegirReferencia, inlineado). La raiz del
+// error de la corrida 1172: el modelo devolvia UN campo `referencia` y elegia mal
+// (FORESA 492789 en vez del 2017843 de 7 digitos; RNM el numero del CMR en vez de
+// la guia). La cura no es adivinar mejor: es que el modelo TRANSCRIBA todos los
+// numeros con su etiqueta (doc.numeros) y que el CODIGO elija con la regla de la
+// plantilla del emisor (formato / ancla). Degrada seguro: si el prompt aun no
+// manda `numeros`, no toca nada y se comporta como antes (no marca de mas).
+const numerosDelViaje = function (v) {
+  var out = [];
+  var docs = Array.isArray(v.docs) ? v.docs : [];
+  for (var i = 0; i < docs.length; i++) {
+    var ns = docs[i] && docs[i].numeros;
+    if (Array.isArray(ns)) { for (var j = 0; j < ns.length; j++) { if (ns[j]) { out.push(ns[j]); } } }
+  }
+  return out;
+};
+// Aplica la regla y devuelve el motivo de revision si no pudo elegir. Muta
+// v.referencia SOLO cuando la regla eligio un valor (nunca lo borra).
+const seleccionarReferencia = function (v) {
+  if (typeof elegirReferencia !== 'function' || !v.cliente) { return ''; }
+  var numeros = numerosDelViaje(v);
+  if (!numeros.length) { return ''; }  // sin transcripcion -> comportamiento previo
+  var sel = elegirReferencia(v.cliente, numeros, PLANTILLAS, v.referencia);
+  if (!sel) { return ''; }
+  if (sel.valor) { v.referencia = sel.valor; }
+  return sel.revisar ? (sel.motivo || 'no se pudo elegir la referencia por regla') : '';
+};
 const tarifaDe = function (v, origenLit, destinoLit) {
   if (typeof resolverPrecio !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '', origen_precio: null }; }
   const viaje = { cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material, precio_orden: v.tarifa_tn_documento };
@@ -188,7 +216,11 @@ for (const v of viajes) {
       avisoRuta = [avisoRuta, rc.aviso_ruta].filter(Boolean).join('; ');
     }
   }
-  const avisoRef = chequearReferencia(v);
+  // 1) el codigo elige la referencia por la regla del emisor (si el prompt
+  //    transcribio los numeros); 2) la guarda de formato/cruzada revisa el
+  //    resultado. Los dos motivos se acumulan.
+  const avisoSel = seleccionarReferencia(v);
+  const avisoRef = [avisoSel, chequearReferencia(v)].filter(Boolean).join('; ');
   const tar = tarifaDe(v, origenLit, destinoLit);
   filas.push({
     hoja_id: idDe(v.hoja_idx),

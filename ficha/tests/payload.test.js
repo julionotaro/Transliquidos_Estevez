@@ -333,9 +333,14 @@ test('el prompt de ficha coincide byte a byte con el fixture esperado (v3.4)', (
   assert.strictEqual(PROMPT_FICHAS, esperado, 'el prompt de ficha cambio sin actualizar el fixture');
 });
 
-test('el prompt de documentos no cambio', () => {
+test('el prompt de documentos coincide con el fixture (guarda contra cambios accidentales)', () => {
+  // CAMBIO DELIBERADO (08/09, corrida 1172): se agrego el campo `numeros` para que
+  // el modelo TRANSCRIBA todos los numeros con su etiqueta y el CODIGO elija la
+  // referencia por la regla del emisor (elegirReferencia), en vez de que GPT
+  // decida y se equivoque. El fixture se regenero a proposito; sigue siendo la
+  // guarda contra cambios NO intencionales.
   const esperado = fs.readFileSync(path.join(__dirname, 'fixtures', 'prompt-docs-esperado.txt'), 'utf8');
-  assert.strictEqual(PROMPT_DOCS, esperado, 'el prompt de documentos no debe cambiar');
+  assert.strictEqual(PROMPT_DOCS, esperado, 'el prompt de documentos cambio sin actualizar el fixture');
 });
 
 test('el prompt de ficha refleja "una ficha por imagen", no "por pagina del PDF"', () => {

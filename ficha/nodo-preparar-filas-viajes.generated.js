@@ -1351,6 +1351,124 @@ function verificarReferencia(valor, cliente, plantillas, otros) {
 }
 
 /**
+ * Palabras-ancla de la regla de referencia: las frases entrecomilladas de
+ * `campo.donde` ('Referencia en factura:', 'Numero/Number', 'Doc. int:'...).
+ * Sirven para elegir por etiqueta cuando el formato no alcanza (QUIMIDROGA).
+ */
+function anclasDeReferencia(campo) {
+  var d = txt(campo && campo.donde);
+  var out = [], re = /'([^']+)'/g, m;
+  while ((m = re.exec(d)) !== null) {
+    var frase = m[1].replace(/[^0-9a-zA-ZáéíóúñÁÉÍÓÚÑ ]/g, '').trim().toUpperCase();
+    if (frase.length >= 3) { out.push(frase); }
+  }
+  return out;
+}
+
+function _sinAcentos(s) {
+  return txt(s).toUpperCase()
+    .replace(/[ÁÀÄÂ]/g, 'A').replace(/[ÉÈËÊ]/g, 'E').replace(/[ÍÌÏÎ]/g, 'I')
+    .replace(/[ÓÒÖÔ]/g, 'O').replace(/[ÚÙÜÛ]/g, 'U').replace(/Ñ/g, 'N');
+}
+
+/** ¿La etiqueta del numero leido contiene alguna de las anclas de la regla? */
+function etiquetaCoincide(etiqueta, anclas) {
+  var e = _sinAcentos(etiqueta);
+  for (var i = 0; i < anclas.length; i++) {
+    var a = _sinAcentos(anclas[i]);
+    if (a && e.indexOf(a) >= 0) { return true; }
+  }
+  return false;
+}
+
+/**
+ * Elige la referencia POR REGLA, no por la intuicion del modelo.
+ *
+ * El extractor ya no decide cual de los numeros del documento es la referencia:
+ * transcribe TODOS con su etiqueta (doc.numeros = [{etiqueta, valor}]), y esta
+ * funcion aplica la regla de la plantilla del emisor —el formato y, si el formato
+ * no alcanza, el ancla—. Es la raiz del problema de la corrida 1172: el numero
+ * correcto (FORESA 2017843, 7 digitos) ni siquiera lo elegia GPT, que devolvia el
+ * albaran interno (492789) o el numero del CMR de RNM (5050139934, 10 digitos que
+ * NO empiezan en 0). Con la regla aplicada en codigo, esos quedan descartados.
+ *
+ * Si la regla no deja UN solo candidato, se cae a la referencia del modelo y se
+ * marca revisar: nunca se inventa ni se elige a dedo entre empatados.
+ *
+ * @param {string} cliente     emisor resuelto
+ * @param {Array}  numeros     [{etiqueta, valor}] transcritos del documento
+ * @param {object} plantillas  catalogo/plantillas-cliente.json
+ * @param {string} [refModelo] la referencia que devolvio el modelo (respaldo)
+ * @returns {{valor:string|null, fuente:string, revisar:boolean, motivo:string}}
+ */
+function elegirReferencia(cliente, numeros, plantillas, refModelo) {
+  var respaldo = soloDigitos(refModelo) || null;
+  var p = plantillaDe(cliente, plantillas);
+  if (!p) {
+    return { valor: respaldo, fuente: 'modelo', revisar: false,
+             motivo: 'sin plantilla para "' + txt(cliente) + '": se usa la referencia del modelo' };
+  }
+  var campo = null;
+  for (var i = 0; i < (p.documentos || []).length; i++) {
+    var c = (p.documentos[i].campos || {}).referencia;
+    if (c) { campo = c; break; }
+  }
+  if (!campo) { return { valor: respaldo, fuente: 'modelo', revisar: false, motivo: '' }; }
+
+  var cands = [];
+  var lista = Array.isArray(numeros) ? numeros : [];
+  for (var j = 0; j < lista.length; j++) {
+    var val = soloDigitos(lista[j] && lista[j].valor);
+    if (val) { cands.push({ valor: val, etiqueta: txt(lista[j] && lista[j].etiqueta) }); }
+  }
+  if (!cands.length) {
+    return { valor: respaldo, fuente: 'modelo', revisar: (respaldo ? true : true),
+             motivo: 'el documento no transcribio numeros con etiqueta; se usa la referencia del modelo para revisar' };
+  }
+
+  // 1) Por FORMATO cuando la plantilla lo afirma (FORESA 7, BRESFOR 10, RNM 10+0).
+  var mLen = /(\d+)\s*digitos/i.exec(txt(campo.formato));
+  var largo = mLen ? Number(mLen[1]) : null;
+  var empiezaEn0 = /empiez\w*\s+en\s+0/i.test(txt(campo.formato));
+  if (largo) {
+    var porFormato = cands.filter(function (c) {
+      return c.valor.length === largo && (!empiezaEn0 || c.valor.charAt(0) === '0');
+    });
+    if (porFormato.length === 1) {
+      return { valor: porFormato[0].valor, fuente: 'plantilla:formato', revisar: false, motivo: '' };
+    }
+    if (porFormato.length > 1) {
+      // El formato no desempata: probar el ancla dentro de los que cumplen formato.
+      var anclasF = anclasDeReferencia(campo);
+      var porAmbos = porFormato.filter(function (c) { return etiquetaCoincide(c.etiqueta, anclasF); });
+      if (porAmbos.length === 1) {
+        return { valor: porAmbos[0].valor, fuente: 'plantilla:formato+ancla', revisar: false, motivo: '' };
+      }
+      return { valor: respaldo, fuente: 'modelo', revisar: true,
+               motivo: 'varios numeros de ' + p.cliente + ' cumplen el formato (' + porFormato.map(function(c){return c.valor;}).join(', ') + '); no se puede elegir por regla — revisar' };
+    }
+    // Ninguno cumple el formato: el modelo no capturo el numero bueno.
+    return { valor: respaldo, fuente: 'modelo', revisar: true,
+             motivo: 'ningun numero transcrito cumple el formato de ' + p.cliente + ' (' + largo + ' digitos' + (empiezaEn0 ? ' que empiezan en 0' : '') + '); leidos: ' + cands.map(function(c){return c.valor;}).join(', ') + ' — revisar' };
+  }
+
+  // 2) Formato VARIABLE (QUIMIDROGA): elegir por ANCLA de etiqueta.
+  var anclas = anclasDeReferencia(campo);
+  if (anclas.length) {
+    var porAncla = cands.filter(function (c) { return etiquetaCoincide(c.etiqueta, anclas); });
+    if (porAncla.length === 1) {
+      return { valor: porAncla[0].valor, fuente: 'plantilla:ancla', revisar: false, motivo: '' };
+    }
+    if (porAncla.length > 1) {
+      return { valor: respaldo, fuente: 'modelo', revisar: true,
+               motivo: 'varios numeros de ' + p.cliente + ' caen bajo el ancla; no se puede elegir — revisar' };
+    }
+  }
+  return { valor: respaldo, fuente: 'modelo', revisar: true,
+           motivo: 'no se pudo elegir la referencia de ' + p.cliente + ' por regla; se deja la del modelo para revisar' };
+}
+
+/**
  * De donde debe salir un campo segun la tabla que dio Julio: del documento, de
  * la ficha del chofer, de una tabla de Gesruta, o de un calculo.
  *
@@ -1377,6 +1495,9 @@ if (typeof module !== 'undefined' && module.exports) {
     plantillaDe: plantillaDe,
     promptDeCliente: promptDeCliente,
     verificarReferencia: verificarReferencia,
+    elegirReferencia: elegirReferencia,
+    anclasDeReferencia: anclasDeReferencia,
+    etiquetaCoincide: etiquetaCoincide,
     fuenteDelCampo: fuenteDelCampo,
   };
 }
@@ -4373,6 +4494,34 @@ const chequearReferencia = function (v) {
   const r = verificarReferencia(v.referencia, v.cliente, PLANTILLAS, otros);
   return (r && r.ok === false && r.revisar) ? (r.motivo || 'referencia con formato inesperado para el cliente') : '';
 };
+
+// SELECCION DE REFERENCIA POR REGLA (elegirReferencia, inlineado). La raiz del
+// error de la corrida 1172: el modelo devolvia UN campo `referencia` y elegia mal
+// (FORESA 492789 en vez del 2017843 de 7 digitos; RNM el numero del CMR en vez de
+// la guia). La cura no es adivinar mejor: es que el modelo TRANSCRIBA todos los
+// numeros con su etiqueta (doc.numeros) y que el CODIGO elija con la regla de la
+// plantilla del emisor (formato / ancla). Degrada seguro: si el prompt aun no
+// manda `numeros`, no toca nada y se comporta como antes (no marca de mas).
+const numerosDelViaje = function (v) {
+  var out = [];
+  var docs = Array.isArray(v.docs) ? v.docs : [];
+  for (var i = 0; i < docs.length; i++) {
+    var ns = docs[i] && docs[i].numeros;
+    if (Array.isArray(ns)) { for (var j = 0; j < ns.length; j++) { if (ns[j]) { out.push(ns[j]); } } }
+  }
+  return out;
+};
+// Aplica la regla y devuelve el motivo de revision si no pudo elegir. Muta
+// v.referencia SOLO cuando la regla eligio un valor (nunca lo borra).
+const seleccionarReferencia = function (v) {
+  if (typeof elegirReferencia !== 'function' || !v.cliente) { return ''; }
+  var numeros = numerosDelViaje(v);
+  if (!numeros.length) { return ''; }  // sin transcripcion -> comportamiento previo
+  var sel = elegirReferencia(v.cliente, numeros, PLANTILLAS, v.referencia);
+  if (!sel) { return ''; }
+  if (sel.valor) { v.referencia = sel.valor; }
+  return sel.revisar ? (sel.motivo || 'no se pudo elegir la referencia por regla') : '';
+};
 const tarifaDe = function (v, origenLit, destinoLit) {
   if (typeof resolverPrecio !== 'function' || !tarifasTbl.length) { return { tn: null, fijo: null, motivo: '', origen_precio: null }; }
   const viaje = { cliente: v.cliente, origen: origenLit, destino: destinoLit, material: v.material, precio_orden: v.tarifa_tn_documento };
@@ -4425,7 +4574,11 @@ for (const v of viajes) {
       avisoRuta = [avisoRuta, rc.aviso_ruta].filter(Boolean).join('; ');
     }
   }
-  const avisoRef = chequearReferencia(v);
+  // 1) el codigo elige la referencia por la regla del emisor (si el prompt
+  //    transcribio los numeros); 2) la guarda de formato/cruzada revisa el
+  //    resultado. Los dos motivos se acumulan.
+  const avisoSel = seleccionarReferencia(v);
+  const avisoRef = [avisoSel, chequearReferencia(v)].filter(Boolean).join('; ');
   const tar = tarifaDe(v, origenLit, destinoLit);
   filas.push({
     hoja_id: idDe(v.hoja_idx),
