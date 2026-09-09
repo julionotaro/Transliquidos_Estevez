@@ -1,23 +1,32 @@
 {
-  "_nota": "MEMORIA DE DECISIONES HUMANAS. Correcciones y aclaraciones de Julio, la fuente de verdad. Claude LEE este archivo al empezar cada carga y aplica estas reglas ANTES de escribir en la base, para no repetir errores. Cada entrada es una decision de dominio de Julio; Claude no las inventa ni las generaliza mas alla de lo que Julio dijo.",
-  "correcciones": [
+  "_nota": "MEMORIA DE DECISIONES HUMANAS. Reglas confirmadas por Julio, la fuente de verdad. Claude LEE este archivo antes de cada carga y las aplica ANTES de escribir en la base. Claude no las inventa ni las generaliza mas alla de lo que Julio confirmo.",
+  "reglas": [
     {
       "fecha": "2026-09-09",
       "por": "Julio",
       "cliente": "RNM",
       "campo": "destino",
-      "caso": "Juego Pablo Carles 24/08: carga en Asturiana de Zinc / San Juan de Nieva (Aviles), acido sulfurico, mail de grupornm.pt.",
-      "correccion": "El destino es VILANOVA FAMALICAO (codigo FAMAL), NO Carreira. Claude habia elegido Carreira (consignatario del CMR) tratando Famalicao como sede/trampa.",
-      "atencion_regla": "Esto CONTRADICE la regla de plantilla RNM que dice que 'Avenida das Searas, Vila Nova de Famalicao' es la SEDE de RNM y hay que ignorarla. PENDIENTE que Julio confirme la regla general: para RNM, cuando el CMR dice Carreira y el mail dice Famalicao, cual manda? siempre Famalicao? depende del flujo? Hasta que se confirme, respetar la correccion puntual y marcar REVISAR los casos Carreira/Famalicao de RNM."
+      "regla": "CARREIRA NUNCA es una descarga real. Todo viaje de RNM cuyos documentos (CMR/consignatario) digan CARREIRA descarga en realidad en VILANOVA FAMALICAO (codigo FAMAL), a 9 km de la sede de RNM. => destino SIEMPRE = FAMAL. Esto reemplaza la vieja regla de plantilla que trataba Famalicao como sede/trampa.",
+      "estado": "confirmada"
     },
     {
       "fecha": "2026-09-09",
       "por": "Julio",
       "cliente": "RNM",
       "campo": "referencia",
-      "caso": "Juego Pablo Carles 24/08: no vino guia de remessa (10 dig empezando en 0).",
-      "correccion": "Cuando no hay guia de remessa en el juego, la referencia de RNM es la CARTA DE PORTE (ej 2601015975). NUNCA el pedido de compra 31000xxxxx (ese es el pedido de RNM a su proveedor).",
-      "atencion_regla": "Extiende la jerarquia de referencia de RNM: 1) obs de la OC, 2) guia remessa, 3) carta de porte. Confirmado por Julio que el paso 3 (carta de porte) es valido como referencia cuando faltan 1 y 2."
+      "regla": "Jerarquia: 1) obs de la OC, 2) guia de remessa (10 dig empieza en 0), 3) CARTA DE PORTE si no hay 1 ni 2 (ej 2601015975). NUNCA el pedido de compra 31000xxxxx.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-09-09",
+      "por": "Julio",
+      "cliente": "RNM",
+      "campo": "tarifa",
+      "regla": "AVILES -> VILANOVA FAMALICAO, ACIDO SULFURICO: 39,13 EUR/TN vigente. PORTES INTERNACIONALES, IVA 0 (Portugal).",
+      "estado": "confirmada"
     }
+  ],
+  "correcciones_puntuales": [
+    {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura del manuscrito); la correcta es 19/8 como dicen los documentos."}
   ]
 }
