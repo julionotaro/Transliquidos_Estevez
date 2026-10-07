@@ -2,31 +2,36 @@
   "_nota": "MEMORIA DE DECISIONES HUMANAS. Reglas confirmadas por Julio, la fuente de verdad. Claude LEE este archivo antes de cada carga y las aplica ANTES de escribir en la base. Claude no las inventa ni las generaliza mas alla de lo que Julio confirmo.",
   "reglas": [
     {
-      "fecha": "2026-09-09",
-      "por": "Julio",
-      "cliente": "RNM",
-      "campo": "destino",
-      "regla": "CARREIRA NUNCA es una descarga real. Todo viaje de RNM cuyos documentos (CMR/consignatario) digan CARREIRA descarga en realidad en VILANOVA FAMALICAO (codigo FAMAL), a 9 km de la sede de RNM. => destino SIEMPRE = FAMAL. Esto reemplaza la vieja regla de plantilla que trataba Famalicao como sede/trampa.",
+      "fecha": "2026-09-09", "por": "Julio", "cliente": "RNM", "campo": "destino",
+      "regla": "CARREIRA NUNCA es una descarga real. Todo viaje de RNM cuyos documentos (CMR/consignatario) digan CARREIRA descarga en realidad en VILANOVA FAMALICAO (codigo FAMAL), a 9 km de la sede de RNM. => destino SIEMPRE = FAMAL.",
       "estado": "confirmada"
     },
     {
-      "fecha": "2026-09-09",
-      "por": "Julio",
-      "cliente": "RNM",
-      "campo": "referencia",
+      "fecha": "2026-09-09", "por": "Julio", "cliente": "RNM", "campo": "referencia",
       "regla": "Jerarquia: 1) obs de la OC, 2) guia de remessa (10 dig empieza en 0), 3) CARTA DE PORTE si no hay 1 ni 2 (ej 2601015975). NUNCA el pedido de compra 31000xxxxx.",
       "estado": "confirmada"
     },
     {
-      "fecha": "2026-09-09",
-      "por": "Julio",
-      "cliente": "RNM",
-      "campo": "tarifa",
+      "fecha": "2026-09-09", "por": "Julio", "cliente": "RNM", "campo": "tarifa",
       "regla": "AVILES -> VILANOVA FAMALICAO, ACIDO SULFURICO: 39,13 EUR/TN vigente. PORTES INTERNACIONALES, IVA 0 (Portugal).",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-07", "por": "Julio", "cliente": "FORESA (y general)", "campo": "cantidad/viaje",
+      "regla": "Carga de VARIOS productos en una misma ORDEN DE CARGA = UN solo viaje. Se carga el TOTAL en toneladas (suma de los pesos de los productos). Ej: RES 1440 19.200 + RES 2130 4.520 = 23.720 kg = un viaje con total 23.720.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-07", "por": "Julio", "cliente": "TODOS", "campo": "tarifa",
+      "regla": "CASCADA DE TARIFA: si el tarifario no tiene la ruta exacta (destino puntual), buscar el SIGUIENTE NIVEL = la PROVINCIA/ZONA del destino. Ej: Barcelona->Padron (no existe) -> usar Barcelona->PONTEVEDRA. Caldas->Enguera (no existe) -> usar Caldas->VALENCIA. El precio/TN de la zona aplica al viaje.",
       "estado": "confirmada"
     }
   ],
+  "tarifas_resueltas": [
+    {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> VALENCIA (zona, aplica a Enguera)", "precio_tn": 69.38, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
+    {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PONTEVEDRA (zona, aplica a Padron/Silleda/Coruna)", "precio_tn": 79.71, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"}
+  ],
   "correcciones_puntuales": [
-    {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura del manuscrito); la correcta es 19/8 como dicen los documentos."}
+    {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
   ]
 }
