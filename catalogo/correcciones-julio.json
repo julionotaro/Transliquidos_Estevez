@@ -29,7 +29,13 @@
   ],
   "tarifas_resueltas": [
     {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> VALENCIA (zona, aplica a Enguera)", "precio_tn": 69.38, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
-    {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PONTEVEDRA (zona, aplica a Padron/Silleda/Coruna)", "precio_tn": 79.71, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"}
+    {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PONTEVEDRA (zona, aplica a Padron/Silleda/Coruna)", "precio_tn": 79.71, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
+    {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PORTUGAL (zona, aplica a Aveiro/Heliflex)", "material": "VINKA-PLAST", "precio_tn": 88.25, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08 fila 50108 (match exacto: mismo cliente, origen, material y chofer). OJO: Quimidroga S.A. factura este Portugal como PORTES NACIONALES IVA 21, no como internacional."}
+  ],
+  "pendientes_definicion": [
+    {"fecha": "2026-10-07", "cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina, NO ADR)",
+     "que_falta": "regla de REFERENCIA y TARIFA. En historico Forestal solo hay Mugardos->Magne (Francia) de COLA facturado por UNIDAD (~1900-2070 EUR/viaje); esta ruta/producto a Castellon no existe. Candidatos de referencia: Nº Pedido 26P1213 | Ref cliente PP01261285 | Albaran bascula 26065293.",
+     "estado": "esperando_criterio_julio"}
   ],
   "correcciones_puntuales": [
     {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
