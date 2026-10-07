@@ -40,10 +40,35 @@
   "tarifas_resueltas": [
     {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> VALENCIA (zona, aplica a Enguera)", "precio_tn": 69.38, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
     {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PONTEVEDRA (zona, aplica a Padron/Silleda/Coruna)", "precio_tn": 79.71, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
-    {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PORTUGAL (zona, aplica a Aveiro/Heliflex)", "material": "VINKA-PLAST", "precio_tn": 88.25, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08 fila 50108 (match exacto: mismo cliente, origen, material y chofer). OJO: Quimidroga S.A. factura este Portugal como PORTES NACIONALES IVA 21, no como internacional."},
+    {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> AVEIRO (Heliflex/Gafanha)", "material": "VINKA-PLAST", "precio_tn": 84.68, "iva": 21, "concepto": "PORTES NACIONALES", "codcon": "P", "indexacion": "SI aplica, concepto G (INDEXACION GASOLEO) = factor del quincena vigente sobre el porte neto; Gesruta lo aplica por fecha. Ref: junio G=15,17%, G1Q=14,52%, GPT=12,79%. NO aplicar DESCUENTO DUO TRAILER (-5%) salvo que el viaje sea duotrailer: historicamente solo 2 de 60 lineas.", "fuente": "tarifario oficial tarifas-general 2026-08-04 (Barcelona->Aveiro) + facturacion real. CORRIGE el 88,25 anterior: ese era un precio puntual de junio a zona PORTUGAL; el vigente destino Aveiro es 84,68."},
     {"cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina)", "modalidad": "precio fijo por viaje", "precio_viaje": 2025.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "INCLUIDA en el precio (NO sumar indexacion de gasoleo aparte)", "fuente": "Julio 2026-10-07, confirmado directo."}
   ],
   "correcciones_puntuales": [
     {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
-  ]
+  ],
+  "codigos_gesruta": {
+    "_nota": "Gesruta carga TODO por codigo, no por texto tecleado. Estos son los codigos a usar en la planilla. Fuente: datos/gesruta (clientes 321/403 de linea-facturacion col cli_codcli; cargas por literal; puntos de puntos-geograficos; conceptos de col cli_codcon).",
+    "clientes": {
+      "FORESA IND.QUIMICAS DEL NOROESTE, S.A.": "1",
+      "FORESTAL DEL ATLANTICO, S.A.": "321",
+      "QUIMIDROGA, S.A.": "403"
+    },
+    "cargas_literal": {
+      "_nota": "La carga en Gesruta se selecciona por su LITERAL (no hay codigo numerico de mercancia en los export). Usar exactamente el literal.",
+      "FORESTAL cola/resina (Forplas)": "COLA",
+      "QUIMIDROGA Vinka-Plast": "VINKA-PLAST"
+    },
+    "puntos": {
+      "MUGARDOS": "MUGAR", "BARCELONA": "B", "AVEIRO": "AVEIR",
+      "CASTELLON": "CS o CASTE (DUPLICADO en maestro, confirmar cual usa Julio)"
+    },
+    "conceptos_codcon": {
+      "P": "PORTES NACIONALES",
+      "PI": "PORTES INTERNACIONALES (IVA 0)",
+      "G": "INDEXACION GASOLEO (factor decimal en precio, ej 0.1517 = 15,17%, sobre porte neto)",
+      "G1Q": "INDEXACION GASOLEO 1a QUINCENA",
+      "GPT": "INDEXACION GASOLEO PORTUGAL",
+      "DUO": "DESCUENTO DUO TRAILER (-0.05 = -5%), solo si el viaje es duotrailer (raro)"
+    }
+  }
 }
