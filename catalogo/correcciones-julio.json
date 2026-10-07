@@ -25,6 +25,16 @@
       "fecha": "2026-10-07", "por": "Julio", "cliente": "TODOS", "campo": "tarifa",
       "regla": "CASCADA DE TARIFA: si el tarifario no tiene la ruta exacta (destino puntual), buscar el SIGUIENTE NIVEL = la PROVINCIA/ZONA del destino. Ej: Barcelona->Padron (no existe) -> usar Barcelona->PONTEVEDRA. Caldas->Enguera (no existe) -> usar Caldas->VALENCIA. El precio/TN de la zona aplica al viaje.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-07", "por": "Julio", "cliente": "FORESTAL DEL ATLANTICO, S.A.", "campo": "referencia",
+      "regla": "La REFERENCIA que va a facturacion es el Nº PEDIDO de la orden de Forestal (ej: 26P1213). NO la ref cliente (PPxxxxxxxx) ni el albaran de bascula.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-07", "por": "Julio", "cliente": "FORESTAL DEL ATLANTICO, S.A.", "campo": "tarifa",
+      "regla": "Modalidad de tarifa = PRECIO FIJO POR VIAJE (como Mugardos->Magne), no por TN. El importe EUR/viaje por ruta lo define Julio y se anota en tarifas_resueltas cuando lo confirme.",
+      "estado": "confirmada"
     }
   ],
   "tarifas_resueltas": [
@@ -34,8 +44,8 @@
   ],
   "pendientes_definicion": [
     {"fecha": "2026-10-07", "cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina, NO ADR)",
-     "que_falta": "regla de REFERENCIA y TARIFA. En historico Forestal solo hay Mugardos->Magne (Francia) de COLA facturado por UNIDAD (~1900-2070 EUR/viaje); esta ruta/producto a Castellon no existe. Candidatos de referencia: Nº Pedido 26P1213 | Ref cliente PP01261285 | Albaran bascula 26065293.",
-     "estado": "esperando_criterio_julio"}
+     "que_falta": "Solo el IMPORTE EUR/viaje. Modalidad ya confirmada = PRECIO FIJO POR VIAJE. Referencia ya confirmada = Nº Pedido. En historico Forestal solo hay Mugardos->Magne (Francia) de COLA por UNIDAD (~1900-2070 EUR/viaje); esta ruta a Castellon no existe, por eso falta el numero.",
+     "estado": "esperando_importe_julio"}
   ],
   "correcciones_puntuales": [
     {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
