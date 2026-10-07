@@ -53,14 +53,14 @@
       "FORESTAL DEL ATLANTICO, S.A.": "321",
       "QUIMIDROGA, S.A.": "403"
     },
-    "cargas_literal": {
-      "_nota": "La carga en Gesruta se selecciona por su LITERAL (no hay codigo numerico de mercancia en los export). Usar exactamente el literal.",
-      "FORESTAL cola/resina (Forplas)": "COLA",
-      "QUIMIDROGA Vinka-Plast": "VINKA-PLAST"
+    "cargas": {
+      "_nota": "La carga SI tiene codigo numerico en Gesruta (ademas del literal). Confirmado por Julio: COLA=1. Forplas/resina se carga como COLA (cod 1). Codigo de VINKA-PLAST aun no confirmado por Julio.",
+      "COLA": {"cod": "1", "aplica_a": "FORESTAL cola/resina (Forplas) y cualquier cola/resina"},
+      "VINKA-PLAST": {"cod": "(pendiente)", "aplica_a": "QUIMIDROGA Vinka-Plast QD 390"}
     },
     "puntos": {
       "MUGARDOS": "MUGAR", "BARCELONA": "B", "AVEIRO": "AVEIR",
-      "CASTELLON": "CS o CASTE (DUPLICADO en maestro, confirmar cual usa Julio)"
+      "CASTELLON": "CASTE (confirmado por Julio 07/10; el duplicado CS no se usa)"
     },
     "conceptos_codcon": {
       "P": "PORTES NACIONALES",
@@ -69,6 +69,11 @@
       "G1Q": "INDEXACION GASOLEO 1a QUINCENA",
       "GPT": "INDEXACION GASOLEO PORTUGAL",
       "DUO": "DESCUENTO DUO TRAILER (-0.05 = -5%), solo si el viaje es duotrailer (raro)"
+    },
+    "indexacion_gasoleo": {
+      "_nota": "Factor por GRUPO de cliente y QUINCENA. Tabla completa en datos/gesruta/indexacion-gasoleo.json (y xlsx suplemento-gasoleo-2026-10-07.xlsx). Se aplica como linea concepto G sobre el porte neto, segun la FECHA DE CARGA del viaje. Grupos: FORESA-BRESFOR, HELM, QUIMIDROGA, OTROS, AGENCIA, AUTONOMOS. Forestal -> grupo OTROS (pero si la tarifa es precio fijo con indexacion incluida, NO se agrega linea G).",
+      "QUIMIDROGA": {"2026-09 (01-30)": 0.137, "2026-10 (01-31)": 0.145},
+      "OTROS": {"2026-09": 0.137, "2026-10": 0.145}
     }
   }
 }
