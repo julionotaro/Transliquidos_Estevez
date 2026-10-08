@@ -57,6 +57,19 @@ documentos) y las 8.755 líneas del histórico de Gesruta. Contiene:
 
 Notas del análisis documento por documento: `analisis/A..H.md`.
 
+---
+
+## 🚚 CARGA EN GESRUTA Y REGISTRO — `flujo-carga-y-registro.md` **VIGENTE**
+
+Cómo se carga un juego en Gesruta (por control de pantalla, skill `cargar-viajes-gesruta`)
+y dónde queda registrado. Decisión de Julio 08/10/2026:
+
+- **git = libro mayor/respaldo** (`datos/registro-procesamiento.csv`, una fila por albarán);
+  **n8n = operativo** (tabla `Viajes`, se espeja a git); **Gesruta = facturación real**.
+- **1 viaje puede tener varios albaranes** (cada origen→destino = 1 albarán).
+- El **Nº de viaje y Nº de albarán los genera Gesruta**: se **capturan de la pantalla** al
+  grabar, nunca se pasan a mano ni se pre-asignan (no se desincroniza).
+
 **Precedencia:** este documento manda sobre lo que digan los archivos históricos
 en materia de extracción. Si contradice a `modelo-dominio-lectura.md`, gana
 `modelo-dominio-lectura.md` en el modelo de dominio y éste en las reglas de
