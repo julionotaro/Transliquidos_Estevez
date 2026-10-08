@@ -35,6 +35,16 @@
       "fecha": "2026-10-07", "por": "Julio", "cliente": "FORESTAL DEL ATLANTICO, S.A.", "campo": "tarifa",
       "regla": "Modalidad de tarifa = PRECIO FIJO POR VIAJE (como Mugardos->Magne), no por TN. El importe EUR/viaje por ruta lo define Julio y se anota en tarifas_resueltas cuando lo confirme.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-08", "por": "Julio", "cliente": "TODOS", "campo": "estructura viaje/albaran",
+      "regla": "VIAJE (administrativo, en Gesruta) = la(s) hoja(s) de servicio que rinde el chofer; puede abarcar 1 o 2 FICHAS de chofer y VARIOS ALBARANES. Cada ORIGEN->DESTINO (un viaje en terminos practicos) = UN albaran. Gesruta asigna Nº de viaje y Nº de albaran al crearlos; nuestros registros deben guardar ambos por fila. Ej: ficha Asensi 29/09-02/10 = 1 viaje con 2 albaranes (Forestal Mugardos->Castellon; Quimidroga Barcelona->Aveiro). Procedimiento de carga: skill 'cargar-viajes-gesruta'.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-08", "por": "Julio", "cliente": "TODOS", "campo": "kilometros",
+      "regla": "Registrar ODOMETRO inicio y final de cada albaran (vienen en la ficha). Km CARGA del albaran = odometro final - inicio (km con carga, coincide con la ficha). Entre albaranes del mismo viaje hay KM VACIO = odometro inicio del siguiente - odometro final del anterior (reposicionamiento sin carga). En Gesruta el form 'Kilometros' es a nivel viaje: Km carga por albaran (fila Chofer); Km vacio y Nueva lectura los confirma Julio (no reproducir a ciegas). Ej Asensi: alb1 873.922->874.976 (1.054 carga); vacio 874.976->875.255 (279); alb2 875.255->876.375 (1.120).",
+      "estado": "confirmada"
     }
   ],
   "tarifas_resueltas": [
