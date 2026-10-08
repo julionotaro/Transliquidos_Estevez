@@ -1,0 +1,2 @@
+cliente;origen;destino;material;regimen;ciclo_facturacion;vigente_desde;notas;id;createdAt;updatedAt
+FORESA;VILLAGARCIA;CALDAS DE REIS;METANOL;agregada;mensual;2026-01-01;Confirmado por Julio (2026-08). Ruta metanol Villagarcia->Caldas: ciclo MENSUAL (no quincenal).;1;2026-08-20T11:45:20.585Z;2026-08-20T11:45:20.585Z
