@@ -50,13 +50,41 @@
       "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "empresa",
       "regla": "Cada juego/albaran pertenece a una EMPRESA: TLE (Trans. Liquidos Estevez, S.L.) o THEC (Transportes Hermanos Estevez Casal). Determina en Gesruta la 'Seleccion de Empresas' (TLE = 0006 TRANS. LIQUIDOS ESTEVEZ S.L.; THEC = otra empresa, codigo a confirmar) y por ende a que parte del sistema entra y como varia la forma de carga. La columna 'empresa' es obligatoria en la tabla de datos y en la planilla. La empresa sale del membrete de la ficha. Asensi = TLE.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "precio",
+      "regla": "El PRECIO del porte lo manda la ORDEN DE FLETE del cliente cuando existe (ej. HELM 'Coste de transporte'), por encima del tarifario historico.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "fecha_carga",
+      "regla": "Usar la FECHA DE CARGA REAL = la de la ficha del chofer, no la de la orden/doc del cliente si difieren. Importa porque define la quincena de indexacion.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "destino",
+      "regla": "DESTINO: usar el punto MAS PRECISO que TENGA TARIFA. Si el punto exacto no tiene tarifa, usar la ZONA que si la tiene (complemento de la cascada). Ej: HELM entrega en Ribeira de Nisa (sin tarifa) -> se usa PORTALEGRE (cod PORT, con tarifa).",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "HELM", "campo": "general",
+      "regla": "HELM IBERICA (cod cliente 323): factura los viajes a Portugal como PORTES NACIONALES IVA 21 (no internacional). Indexacion: grupo HELM, concepto G. Referencia = el Nº de orden de flete que el propio doc pide incluir en la factura (ej 6100316242). Precio segun 'Coste de transporte' de la orden.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "RNM", "campo": "indexacion",
+      "regla": "RNM internacional (Portugal) a Espana: PORTES INTERNACIONALES IVA 0, indexacion concepto GPT (INDEXACION GASOLEO PORTUGAL) usando el factor del grupo 'Otros' (ej. octubre 2026 = 0,1450).",
+      "estado": "confirmada"
     }
   ],
   "tarifas_resueltas": [
     {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> VALENCIA (zona, aplica a Enguera)", "precio_tn": 69.38, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
     {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PONTEVEDRA (zona, aplica a Padron/Silleda/Coruna)", "precio_tn": 79.71, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
     {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> AVEIRO (Heliflex/Gafanha)", "material": "VINKA-PLAST", "precio_tn": 84.68, "iva": 21, "concepto": "PORTES NACIONALES", "codcon": "P", "indexacion": "SI aplica, concepto G (INDEXACION GASOLEO) = factor del quincena vigente sobre el porte neto; Gesruta lo aplica por fecha. Ref: junio G=15,17%, G1Q=14,52%, GPT=12,79%. NO aplicar DESCUENTO DUO TRAILER (-5%) salvo que el viaje sea duotrailer: historicamente solo 2 de 60 lineas.", "fuente": "tarifario oficial tarifas-general 2026-08-04 (Barcelona->Aveiro) + facturacion real. CORRIGE el 88,25 anterior: ese era un precio puntual de junio a zona PORTUGAL; el vigente destino Aveiro es 84,68."},
-    {"cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina)", "modalidad": "precio fijo por viaje", "precio_viaje": 2025.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "INCLUIDA en el precio (NO sumar indexacion de gasoleo aparte)", "fuente": "Julio 2026-10-07, confirmado directo."}
+    {"cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina)", "modalidad": "precio fijo por viaje", "precio_viaje": 2025.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "INCLUIDA en el precio (NO sumar indexacion de gasoleo aparte)", "fuente": "Julio 2026-10-07, confirmado directo."},
+    {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> TORDERA (IP Decor)", "material": "RES/COLA (resina -> carga COLA cod 1)", "precio_tn": 72.36, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo FORESA-BRESFOR, concepto G", "referencia": "Nº corto que empieza en 20 (ej 2027538), arriba a la derecha del albaran; NO el largo 5030xxxxxx. Peso = albaran.", "fuente": "linea-facturacion 2026-08."},
+    {"cliente": "HELM", "ruta": "BARCELONA -> PORTALEGRE (cod PORT; aplica a Ribeira de Nisa/Selenis)", "material": "MONOETILENGLICOL", "modalidad": "precio fijo por viaje segun orden de flete", "ejemplo_precio": 1800.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo HELM, concepto G", "referencia": "Nº de orden de flete que el doc pide incluir en factura (ej 6100316242)", "fuente": "orden de flete HELM + linea-facturacion 2026-08."},
+    {"cliente": "RNM", "ruta": "AVEIRO -> NAVIA (ENCE/Celulosas Asturias)", "material": "SOSA CAUSTICA", "modalidad": "precio fijo por viaje", "precio_viaje": 900.00, "iva": 0, "concepto": "PORTES INTERNACIONALES", "indexacion": "concepto GPT, factor grupo 'Otros' (ej oct-2026 0,1450)", "referencia": "guia de remessa (10 dig empieza en 0, ej 0141169903)", "fuente": "tarifario 2026-08-04 + Julio 2026-10-09."}
   ],
   "correcciones_puntuales": [
     {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}

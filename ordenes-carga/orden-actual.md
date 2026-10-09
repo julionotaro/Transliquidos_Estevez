@@ -24,13 +24,13 @@
 
 ### Albarán 2 — HELM IBÉRICA (nacional, destino Portugal)
 - Cliente (cód): **323** — HELM IBERICA, S.A.
-- Origen → Destino (cód): **B** (Barcelona, carga en Miladerto) → **Ribeira de Nisa / Portalegre** — ⚠️ REVISAR cód destino (candidatos: RIBEI / PORTALEGRE)
+- Origen → Destino (cód): **B** (Barcelona, carga en Miladerto) → **PORT** (Portalegre; la entrega es en Ribeira de Nisa, pero esa no tiene tarifa propia → se usa la zona con tarifa, Portalegre)
 - Carga: **MONOETILENGLICOL** (si no toma código, doble clic y buscar por nombre)
 - Referencia: **6100316242**  *(el doc HELM dice: "incluya este número en su factura para el pago")*
-- Fecha salida (carga): **30/09/2026** ⚠️ (la ficha dice 30/09; la orden HELM dice 01/10 — REVISAR, afecta la quincena de indexación) · Fecha llegada: **02/10/2026**
-- Línea porte: concepto **P** (PORTES NACIONALES), **U.M. = UN**, cantidad **1**, precio **1.800,00** (fijo, de la orden HELM; el tarifario de referencia marca ~2.069 — se usa el de la orden)
-- Indexación: 2ª línea concepto **G** (HELM lo factura como nacional), cantidad = 1.800,00, factor **0,1176** (septiembre; si la carga fue 01/10 → 0,1298) → **211,68** ⚠️ depende de la fecha
-- IVA: **21%**  → Base s/IVA 2.011,68 · Total c/IVA **2.434,13** (si fecha 01/10: base 2.033,64 · total 2.460,70)
+- Fecha salida (carga): **30/09/2026** (fecha real de la ficha) · Fecha llegada: **02/10/2026**
+- Línea porte: concepto **P** (PORTES NACIONALES), **U.M. = UN**, cantidad **1**, precio **1.800,00** (fijo, según orden HELM)
+- Indexación: 2ª línea concepto **G** (HELM lo factura como nacional), cantidad = 1.800,00, factor **0,1176** (septiembre) → **211,68**
+- IVA: **21%**  → Base s/IVA 2.011,68 · Total c/IVA **2.434,13**
 - Peso (control): 25.000 kg · Km: inicio **437.820** → fin **439.049** = **1.229** km carga
 
 ### Albarán 3 — RNM (internacional, Portugal→España)
@@ -40,8 +40,8 @@
 - Referencia: **0141169903**  *(RNM = guia de remessa, 10 díg. empieza en 0; NUNCA el pedido 4100100800)*
 - Fecha salida (carga): **02/10/2026** · Fecha llegada (descarga): **05/10/2026**
 - Línea porte: concepto **PI** (PORTES INTERNACIONALES), **U.M. = UN**, cantidad **1**, precio **900,00** (fijo, tarifario vigente Aveiro→Navia)
-- Indexación: concepto **GPT** (INDEXACION GASOLEO PORTUGAL) — ⚠️ REVISAR factor (fórmula portuguesa; el CMR cita 1,35 €/L; histórico ~0,0766). IVA 0.
-- IVA: **0%** (internacional, cliente portugués) → Base = 900,00 + indexación GPT
+- Indexación: concepto **GPT** (INDEXACION GASOLEO PORTUGAL), cantidad = 900,00, factor **0,1450** (grupo "Otros") → **130,50**. IVA 0.
+- IVA: **0%** (internacional, cliente portugués) → Base s/IVA **1.030,50** · Total **1.030,50**
 - Peso (control): 23.120 kg · Km: inicio **439.341** → fin **439.949** = **608** km carga
 
 > Km vacíos entre albaranes (reposicionamiento): alb1→alb2 437.690→437.820 = **130**; alb2→alb3 439.049→439.341 = **292**. (En Gesruta el form de Km es a nivel viaje; Km vacío y Nueva lectura los confirma Julio.)
