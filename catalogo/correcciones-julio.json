@@ -45,6 +45,11 @@
       "fecha": "2026-10-08", "por": "Julio", "cliente": "TODOS", "campo": "kilometros",
       "regla": "Registrar ODOMETRO inicio y final de cada albaran (vienen en la ficha). Km CARGA del albaran = odometro final - inicio (km con carga, coincide con la ficha). Entre albaranes del mismo viaje hay KM VACIO = odometro inicio del siguiente - odometro final del anterior (reposicionamiento sin carga). En Gesruta el form 'Kilometros' es a nivel viaje: Km carga por albaran (fila Chofer); Km vacio y Nueva lectura los confirma Julio (no reproducir a ciegas). Ej Asensi: alb1 873.922->874.976 (1.054 carga); vacio 874.976->875.255 (279); alb2 875.255->876.375 (1.120).",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "empresa",
+      "regla": "Cada juego/albaran pertenece a una EMPRESA: TLE (Trans. Liquidos Estevez, S.L.) o THEC (Transportes Hermanos Estevez Casal). Determina en Gesruta la 'Seleccion de Empresas' (TLE = 0006 TRANS. LIQUIDOS ESTEVEZ S.L.; THEC = otra empresa, codigo a confirmar) y por ende a que parte del sistema entra y como varia la forma de carga. La columna 'empresa' es obligatoria en la tabla de datos y en la planilla. La empresa sale del membrete de la ficha. Asensi = TLE.",
+      "estado": "confirmada"
     }
   ],
   "tarifas_resueltas": [
