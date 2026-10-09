@@ -1,0 +1,62 @@
+origen;destino;eur_viaje;eur_tn
+Algeciras (CEPSA);Vilanova Da Rainha-Azambuja (Inchemica);1184.5;51.5
+AVEIRO;BURGOS;888;38.61
+AVEIRO;CORDOBA;41;42.23
+AVEIRO;CORUÑA;669;29.09
+AVEIRO;LEZO;1390;60.43
+AVEIRO;NAVIA;927;40.3
+AVEIRO;PONTEVEDRA;443;19.26
+AVEIRO;PORRIÑO;437;19
+AVEIRO;TOLEDO;888;38.61
+AVILES;ALCANENA(PT);1236;53.74
+AVILES;VILANOVA FAMALICAO;900;39.13
+AZAMBUJA(PT);SEVILLA;840;36.52
+AZAMBUJA(PT);PORRIÑO;686;29.83
+AZAMBUJA(PT);SILLEDA;886;38.52
+BARCELONA;PORRIÑO;1643;71.43
+BARCELONA;VILANOVA FAMALICAO;1957;85.09
+LANTARON;ORENSE;1043;45.35
+MEJORADA DEL CAMPO;PORRIÑO;35;36.05
+ESTARREJA;BADAJOZ;618;26.87
+ESTARREJA;HUELVA;990;43.04
+ESTARREJA;HUELVA;988.8;42.99
+OPORTO;LEON;1114.46;48.45
+PONTEVEDRA;NAVIA;721;31.35
+PORRIÑO;TOLEDO;865;37.61
+TARRAGONA;AVEIRO;1957;85.09
+TARRAGONA;COIMBRA;1957;85.09
+TARRAGONA;JAEN;989;43
+TARRAGONA;PORRIÑO;1663.45;72.32
+TORRELAVEGA;PONTEVEDRA;1000;43.48
+Vilanova Da Rainha-Azambuja (Inchemica);Almeria;1596.5;69.41
+Vilanova Da Rainha-Azambuja (Inchemica);Barcelona;2163;94.04
+Vilanova Da Rainha-Azambuja (Inchemica);Caceres;721;31.35
+Vilanova Da Rainha-Azambuja (Inchemica);Castellon;1725.25;75.01
+Vilanova Da Rainha-Azambuja (Inchemica);Guadalajara;1216;52.87
+Vilanova Da Rainha-Azambuja (Inchemica);Guareña (Badajoz);721;31.35
+Vilanova Da Rainha-Azambuja (Inchemica);Illescas (Toledo);1081.5;47.02
+Vilanova Da Rainha-Azambuja (Inchemica);Jerez de los Caballeros (Badajoz);618;26.87
+Vilanova Da Rainha-Azambuja (Inchemica);Madrid;1081.5;47.02
+Vilanova Da Rainha-Azambuja (Inchemica);Murcia;1699.5;73.89
+Vilanova Da Rainha-Azambuja (Inchemica);Quintanar de la Orden (Toledo);1318.4;57.32
+Vilanova Da Rainha-Azambuja (Inchemica);Sevilla;840;36.52
+Vilanova Da Rainha-Azambuja (Inchemica);Tarragona;2034.25;88.45
+Vilanova Da Rainha-Azambuja (Inchemica);Valencia;1627.4;70.76
+VILANOVA FAMALICAO;GUADALAJARA;1159;50.39
+ZAMUDIO;VILANOVA FAMALICAO;1185;51.52
+ZAMUDIO;PORRIÑO;42;43.26
+ESTARREJA;VALDEMORO;;40
+VIGO;GUADALAJARA;;66
+Vigo;Arance  (Francia CP 64300);;72.5
+Vigo;Vitoria -Araia;;56.5
+Aviles;Badajoz;;55
+Aviles;Vendas Novas (PT);;65
+Aviles;Viana do Castelo (PT);;36.5
+Aveiro;Begega (asturias);;43
+V.de Famalicao;Vitoria;;50
+AVEIRO;ARENAS DE IGUÑA (CANTABRIA);;53
+Aviles;VILANOVA FAMALICAO;;39.13
+Aveiro;Coruña;;29.09
+Estarreja;Porriño;;19.26
+Aveiro;Tordesillas;;32.5
+Landim;Ferrol;;24.75

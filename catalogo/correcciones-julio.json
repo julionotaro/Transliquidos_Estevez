@@ -57,6 +57,11 @@
       "estado": "confirmada"
     },
     {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "tarifario_fuente",
+      "regla": "Fuentes de tarifas en datos/gesruta/tarifarios/ (ver su README). PRIORIDAD: el tarifario de CLIENTE manda sobre el general (mas actualizado y con mas rutas). RNM y QUIMIDROGA tienen archivo propio. Resto -> general. QUIMIDROGA: respetar vigencia (desde/hasta) y usar tramo 40 TN (44 TN solo megacamion). RNM: tiene EUR/viaje y EUR/TN por ruta; usar EUR/TN.",
+      "estado": "confirmada"
+    },
+    {
       "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "fecha_carga",
       "regla": "Usar la FECHA DE CARGA REAL = la de la ficha del chofer, no la de la orden/doc del cliente si difieren. Importa porque define la quincena de indexacion.",
       "estado": "confirmada"
@@ -84,7 +89,7 @@
     {"cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina)", "modalidad": "precio fijo por viaje", "precio_viaje": 2025.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "INCLUIDA en el precio (NO sumar indexacion de gasoleo aparte)", "fuente": "Julio 2026-10-07, confirmado directo."},
     {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> TORDERA (IP Decor)", "material": "RES/COLA (resina -> carga COLA cod 1)", "precio_tn": 72.36, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo FORESA-BRESFOR, concepto G", "referencia": "Nº corto que empieza en 20 (ej 2027538), arriba a la derecha del albaran; NO el largo 5030xxxxxx. Peso = albaran.", "fuente": "linea-facturacion 2026-08."},
     {"cliente": "HELM", "ruta": "BARCELONA -> PORTALEGRE (cod PORT; aplica a Ribeira de Nisa/Selenis)", "material": "MONOETILENGLICOL", "modalidad": "precio fijo por viaje segun orden de flete", "ejemplo_precio": 1800.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo HELM, concepto G", "referencia": "Nº de orden de flete que el doc pide incluir en factura (ej 6100316242)", "fuente": "orden de flete HELM + linea-facturacion 2026-08."},
-    {"cliente": "RNM", "ruta": "AVEIRO -> NAVIA (ENCE/Celulosas Asturias)", "material": "SOSA CAUSTICA (cod 51)", "precio_tn": 40.30, "precio_fijo_alternativo": 900.00, "prioridad": "usar SIEMPRE el EUR/TN (40,30); el fijo de 900 es alternativo", "iva": 0, "concepto": "PORTES INTERNACIONALES", "indexacion": "concepto GPT, factor grupo 'Otros' (ej oct-2026 0,1450)", "referencia": "guia de remessa (10 dig empieza en 0, ej 0141169903)", "fuente": "tarifario de Julio: tiene las DOS tarifas (40,30 EUR/TN y 900 fijo); el xls 2026-08-04 solo tenia el 900."}
+    {"cliente": "RNM", "ruta": "AVEIRO -> NAVIA (ENCE/Celulosas Asturias)", "material": "SOSA CAUSTICA (cod 51)", "precio_tn": 40.30, "precio_viaje": 927.00, "prioridad": "usar SIEMPRE el EUR/TN (40,30); el EUR/viaje 927 es alternativo", "iva": 0, "concepto": "PORTES INTERNACIONALES", "indexacion": "concepto GPT, factor grupo 'Otros' (ej oct-2026 0,1450)", "referencia": "guia de remessa (10 dig empieza en 0, ej 0141169903)", "fuente": "tarifario-RNM-2026 (40,30 EUR/TN y 927 EUR/viaje). El general marcaba 900 flat, desactualizado."}
   ],
   "correcciones_puntuales": [
     {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
