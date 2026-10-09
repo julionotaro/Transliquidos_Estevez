@@ -62,6 +62,11 @@
       "estado": "confirmada"
     },
     {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "archivo_procesados",
+      "regla": "Al mover PDFs a procesados/, organizarlos por CLIENTE y MES de inicio del viaje (fecha de carga): procesados/<CLIENTE>/<YYYY-MM>/. El documento de transporte de cada albaran va a la carpeta de SU cliente/mes. La ficha (compartida por varios albaranes/clientes) se copia a la carpeta de cada cliente del viaje, para que cada carpeta quede autocontenida con todo lo que genero ese albaran.",
+      "estado": "confirmada"
+    },
+    {
       "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "fecha_carga",
       "regla": "Usar la FECHA DE CARGA REAL = la de la ficha del chofer, no la de la orden/doc del cliente si difieren. Importa porque define la quincena de indexacion.",
       "estado": "confirmada"
