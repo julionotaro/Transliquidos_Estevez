@@ -3,15 +3,15 @@
 # Viaje grande: 5 albaranes (2 paginas de ficha). Chofer = Ilidio Miguel Pires (la ficha abrevia "Miguel Pires").
 CABEZA 0557            # tractora 0557JMS; remolque R0110BBG; chofer MIGUEL PIRES (Ilidio Miguel Pires)
 
-ALB 1 RNM / Drogas Vigo   # REVISAR cliente: ficha dice RNM, pero la documentacion es DROGAS VIGO (DROVI)
-  cliente  REVISAR                # RNM (661) o DROGAS VIGO -> confirmar quien factura
+ALB 1 RNM
+  cliente  661                    # RNM TRANSPORTES QUIMICOS, LDA (pedido lo hace RNM por ficha; docs Drogas Vigo)
   origen   AVEIR                  # Aveiro (carga Gafanha da Nazare)
   destino  PADRO                  # Padron (Exlabesa). Sin tarifa propia -> zona Coruña
   carga    51                     # SOSA (sosa caustica liq 50%)
-  ref      1741007450             # albaran/guia DROVI 1741007450 (si fuese RNM, buscar guia RNM)
+  ref      1741007450             # albaran/CMR Drogas Vigo (no hay guia RNM propia en este viaje)
   salida   18/09/2026
   llegada  21/09/2026
-  porte    um=TN cant=22,880 precio=29,09   # RNM Aveiro->Coruña (zona Padron) -> importe 665,58; IVA 0. REVISAR si cliente no es RNM
+  porte    um=TN cant=22,880 precio=29,09   # RNM Aveiro->Coruña (zona Padron) -> importe 665,58; IVA 0
   index    concepto=GPT factor=0,137        # grupo Otros sept; importe 91,18
   km       inicio=1.136.040 fin=1.136.358 carga=318 vacio_previo=–
 
@@ -47,8 +47,8 @@ ALB 4 RNM
   ref      0941027097             # RNM guia de remessa (10 dig empieza en 0)
   salida   28/09/2026
   llegada  29/09/2026
-  porte    um=TN cant=22,800 precio=REVISAR # RNM Aveiro->Toro/Zamora NO esta en el tarifario RNM -> Julio define EUR/TN; IVA 0
-  index    concepto=GPT factor=0,137        # grupo Otros sept (sobre el porte, cuando este el precio)
+  porte    TARIFA PENDIENTE                 # no hay tarifa Aveiro->Toro/Zamora: cargar el albaran (cabecera+km); dejar la linea de porte e indexacion PENDIENTES hasta tener la tarifa. IVA 0
+  index    concepto=GPT factor=0,137        # pendiente hasta tener el porte
   km       inicio=1.139.336 fin=1.139.755 carga=419 vacio_previo=338
 
 ALB 5 RNM
@@ -59,8 +59,8 @@ ALB 5 RNM
   ref      0141169539             # RNM guia req (10 dig empieza en 0)
   salida   30/09/2026
   llegada  01/10/2026
-  porte    um=TN cant=22,080 precio=REVISAR # RNM Aviles->Sines NO esta en el tarifario RNM -> Julio define EUR/TN; IVA 0
-  index    concepto=GPT factor=0,137        # grupo Otros sept (sobre el porte, cuando este el precio)
+  porte    TARIFA PENDIENTE                 # no hay tarifa Aviles->Sines: cargar el albaran (cabecera+km); dejar la linea de porte e indexacion PENDIENTES hasta tener la tarifa. IVA 0
+  index    concepto=GPT factor=0,137        # pendiente hasta tener el porte
   km       inicio=1.140.102 fin=1.141.067 carga=965 vacio_previo=347
 
 # Conceptos: FORESA y QUIMIDROGA nacional -> P (IVA 21). RNM internacional (Portugal) -> PI (IVA 0) + indexacion GPT.
