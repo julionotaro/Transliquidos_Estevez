@@ -3,39 +3,53 @@
 > Archivo fijo: siempre contiene el juego pendiente de cargar. Claude (nube) lo actualiza por juego.
 > Procedimiento de pantalla: skill `cargar-viajes-gesruta`. Facturación real: **no inventar, fallar ruidoso**.
 
-## Juego: ficha Asensi (20261007140856.pdf) — **EMPRESA: TLE**
+## Juego: ficha José Antonio Vázquez Hermo (20261009134006.pdf) — **EMPRESA: TLE**
 
-**EMPRESA = TLE** (Trans. Líquidos Estévez, S.L.). En Gesruta → "Selección de Empresas" →
-**0006 TRANS. LIQUIDOS ESTÉVEZ S.L.** (si fuese **THEC** / Transportes Hermanos Estévez Casal,
-se selecciona la otra empresa y cambia la parte del sistema — confirmar su código).
+**EMPRESA = TLE** → "Selección de Empresas" → **0006 TRANS. LIQUIDOS ESTÉVEZ S.L.**
 
-**1 viaje, 2 albaranes.** Cabeza (tractora) = **2498** (2498KZL → trae solos remolque R1007BCV y chofer FRANCISCO ASENSI).
+**1 viaje, 3 albaranes.** Cabeza (tractora) = **7394** (7394LZP → trae solos remolque **R1832BBC** y chofer **JOSE ANTONIO VAZQUEZ HERMO**).
 
-### Albarán 1 — FORESTAL
-- Cliente (cód): **321** — FORESTAL DEL ATLANTICO, S.A.
-- Origen → Destino (cód): **MUGAR** (Mugardos) → **CASTE** (Castellón)
-- Carga (cód): **1** — COLA
-- Referencia (Nº pedido): **26P1213**
-- Fecha salida (carga): **29/09/2026** · Fecha llegada (descarga): **30/09/2026**
-- Línea porte: concepto **P** (PORTES NACIONALES), **U.M. = UN**, cantidad **1**, precio **2.025,00** (precio fijo; kg NO se cargan)
-- Indexación: **NINGUNA** (incluida en el precio → NO agregar línea G)
-- IVA: 21% (entra solo)
-- Km: odómetro inicio **873.922** → fin **874.976** = **1.054** km carga
+---
 
-### Albarán 2 — QUIMIDROGA
-- Cliente (cód): **403** — QUIMIDROGA, S.A.
-- Origen → Destino (cód): **B** (Barcelona, carga en TEPSA) → **AVEIR** (Aveiro / Heliflex, PT)
-- Carga: **VINKA-PLAST** (si no toma código, doble clic y buscar por nombre)
-- Referencia: **710515**
-- Fecha salida (carga): **30/09/2026** · Fecha llegada (descarga): **02/10/2026**
-- Línea porte: concepto **P**, **U.M. = TN**, cantidad **24,040**, precio **84,68** €/TN (porte 2.035,71)
-- Indexación: 2ª línea, concepto **G**, cantidad = importe del porte (2.035,71), precio (factor) **0,1370** → 278,89. **NO** aplicar descuento DUO.
-- IVA: 21%
-- Km: odómetro inicio **875.255** → fin **876.375** = **1.120** km carga
-- (Km vacío entre albarán 1 y 2: 874.976 → 875.255 = **279** km — reposicionamiento; lo confirma Julio en el form de Km del viaje)
+### Albarán 1 — FORESA (nacional)
+- Cliente (cód): **1** — FORESA IND. QUIMICAS DEL NOROESTE, S.A.
+- Origen → Destino (cód): **1** (Caldas de Reis) → **9731** (Tordera / IP Decor)
+- Carga (cód): **1** — COLA  *(el producto es RES 0540; por regla de Julio resina/cola = COLA cod 1)*
+- Referencia: **2027538**  *(FORESA = nº corto que empieza en 20, arriba a la derecha; NO el largo 5030296937)*
+- Fecha salida (carga): **28/09/2026** · Fecha llegada (descarga): **30/09/2026**
+- Línea porte: concepto **P** (PORTES NACIONALES), **U.M. = TN**, cantidad **23,280**, precio **72,36** €/TN (porte 1.684,54)
+- Indexación: 2ª línea concepto **G**, cantidad = 1.684,54 (porte), factor **0,1386** → **233,48**
+- IVA: **21%**  → Base s/IVA 1.918,02 · Total c/IVA **2.320,80**
+- Km: odómetro inicio **436.483** → fin **437.690** = **1.207** km carga
+
+### Albarán 2 — HELM IBÉRICA (nacional, destino Portugal)
+- Cliente (cód): **323** — HELM IBERICA, S.A.
+- Origen → Destino (cód): **B** (Barcelona, carga en Miladerto) → **Ribeira de Nisa / Portalegre** — ⚠️ REVISAR cód destino (candidatos: RIBEI / PORTALEGRE)
+- Carga: **MONOETILENGLICOL** (si no toma código, doble clic y buscar por nombre)
+- Referencia: **6100316242**  *(el doc HELM dice: "incluya este número en su factura para el pago")*
+- Fecha salida (carga): **30/09/2026** ⚠️ (la ficha dice 30/09; la orden HELM dice 01/10 — REVISAR, afecta la quincena de indexación) · Fecha llegada: **02/10/2026**
+- Línea porte: concepto **P** (PORTES NACIONALES), **U.M. = UN**, cantidad **1**, precio **1.800,00** (fijo, de la orden HELM; el tarifario de referencia marca ~2.069 — se usa el de la orden)
+- Indexación: 2ª línea concepto **G** (HELM lo factura como nacional), cantidad = 1.800,00, factor **0,1176** (septiembre; si la carga fue 01/10 → 0,1298) → **211,68** ⚠️ depende de la fecha
+- IVA: **21%**  → Base s/IVA 2.011,68 · Total c/IVA **2.434,13** (si fecha 01/10: base 2.033,64 · total 2.460,70)
+- Peso (control): 25.000 kg · Km: inicio **437.820** → fin **439.049** = **1.229** km carga
+
+### Albarán 3 — RNM (internacional, Portugal→España)
+- Cliente (cód): **661** — RNM TRANSPORTES QUIMICOS, LDA
+- Origen → Destino (cód): **AVEIR** (Aveiro / carga Gafanha da Nazaré) → **NAVIA** (ENCE / Celulosas de Asturias)
+- Carga: **SOSA** (sosa cáustica líq. 50%)
+- Referencia: **0141169903**  *(RNM = guia de remessa, 10 díg. empieza en 0; NUNCA el pedido 4100100800)*
+- Fecha salida (carga): **02/10/2026** · Fecha llegada (descarga): **05/10/2026**
+- Línea porte: concepto **PI** (PORTES INTERNACIONALES), **U.M. = UN**, cantidad **1**, precio **900,00** (fijo, tarifario vigente Aveiro→Navia)
+- Indexación: concepto **GPT** (INDEXACION GASOLEO PORTUGAL) — ⚠️ REVISAR factor (fórmula portuguesa; el CMR cita 1,35 €/L; histórico ~0,0766). IVA 0.
+- IVA: **0%** (internacional, cliente portugués) → Base = 900,00 + indexación GPT
+- Peso (control): 23.120 kg · Km: inicio **439.341** → fin **439.949** = **608** km carga
+
+> Km vacíos entre albaranes (reposicionamiento): alb1→alb2 437.690→437.820 = **130**; alb2→alb3 439.049→439.341 = **292**. (En Gesruta el form de Km es a nivel viaje; Km vacío y Nueva lectura los confirma Julio.)
+
+---
 
 ## PASO FINAL POR ALBARÁN — capturar el número (siempre, sin que nadie lo pida)
 Al grabar, Gesruta muestra el **Nº de viaje** (cabecera) y el **Nº de albarán** (línea).
-Leerlos de la pantalla (nunca inventarlos ni pre-asignarlos) y reportarlos al cerrar,
-indicando a qué albarán corresponde cada uno, para que queden en el libro mayor
-(`datos/registro-procesamiento.csv`). Si la conversación tiene conector de GitHub, escribirlos ahí directo.
+Leerlos de la pantalla (nunca inventarlos ni pre-asignarlos), emparejar cada uno con su albarán
+por origen→destino, y reportarlos al cerrar el viaje completo, indicando a qué albarán
+corresponde cada uno. No escribir el repositorio: del registro se encarga Claude (nube).
