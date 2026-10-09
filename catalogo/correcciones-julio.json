@@ -53,7 +53,7 @@
     },
     {
       "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "precio",
-      "regla": "El PRECIO del porte lo manda la ORDEN DE FLETE del cliente cuando existe (ej. HELM 'Coste de transporte'), por encima del tarifario historico.",
+      "regla": "La tarifa del albaran va por EUR/TN por defecto (um=TN, cantidad = toneladas), SALVO que la ORDEN DE FLETE/OC indique un precio fijo por viaje (um=UN, cantidad 1; ej. HELM 'Coste de transporte' 1.800). Fuente de verdad de tarifas = el tarifario que maneja Julio; el xls datos/gesruta/tarifas-general-2026-08-04 puede estar DESACTUALIZADO (ej: marcaba Aveiro->Navia 900 fijo cuando el real es 40,30 EUR/TN).",
       "estado": "confirmada"
     },
     {
@@ -84,7 +84,7 @@
     {"cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina)", "modalidad": "precio fijo por viaje", "precio_viaje": 2025.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "INCLUIDA en el precio (NO sumar indexacion de gasoleo aparte)", "fuente": "Julio 2026-10-07, confirmado directo."},
     {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> TORDERA (IP Decor)", "material": "RES/COLA (resina -> carga COLA cod 1)", "precio_tn": 72.36, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo FORESA-BRESFOR, concepto G", "referencia": "Nº corto que empieza en 20 (ej 2027538), arriba a la derecha del albaran; NO el largo 5030xxxxxx. Peso = albaran.", "fuente": "linea-facturacion 2026-08."},
     {"cliente": "HELM", "ruta": "BARCELONA -> PORTALEGRE (cod PORT; aplica a Ribeira de Nisa/Selenis)", "material": "MONOETILENGLICOL", "modalidad": "precio fijo por viaje segun orden de flete", "ejemplo_precio": 1800.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo HELM, concepto G", "referencia": "Nº de orden de flete que el doc pide incluir en factura (ej 6100316242)", "fuente": "orden de flete HELM + linea-facturacion 2026-08."},
-    {"cliente": "RNM", "ruta": "AVEIRO -> NAVIA (ENCE/Celulosas Asturias)", "material": "SOSA CAUSTICA", "modalidad": "precio fijo por viaje", "precio_viaje": 900.00, "iva": 0, "concepto": "PORTES INTERNACIONALES", "indexacion": "concepto GPT, factor grupo 'Otros' (ej oct-2026 0,1450)", "referencia": "guia de remessa (10 dig empieza en 0, ej 0141169903)", "fuente": "tarifario 2026-08-04 + Julio 2026-10-09."}
+    {"cliente": "RNM", "ruta": "AVEIRO -> NAVIA (ENCE/Celulosas Asturias)", "material": "SOSA CAUSTICA (cod 51)", "precio_tn": 40.30, "iva": 0, "concepto": "PORTES INTERNACIONALES", "indexacion": "concepto GPT, factor grupo 'Otros' (ej oct-2026 0,1450)", "referencia": "guia de remessa (10 dig empieza en 0, ej 0141169903)", "fuente": "tarifario de Julio 2026-10-09 (40,30 EUR/TN; el xls 2026-08-04 marcaba 900 fijo, desactualizado)."}
   ],
   "correcciones_puntuales": [
     {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
@@ -98,8 +98,10 @@
     },
     "cargas": {
       "_nota": "La carga SI tiene codigo numerico en Gesruta (ademas del literal). Confirmado por Julio: COLA=1. Forplas/resina se carga como COLA (cod 1). Codigo de VINKA-PLAST aun no confirmado por Julio.",
-      "COLA": {"cod": "1", "aplica_a": "FORESTAL cola/resina (Forplas) y cualquier cola/resina"},
-      "VINKA-PLAST": {"cod": "(pendiente)", "aplica_a": "QUIMIDROGA Vinka-Plast QD 390"}
+      "COLA": {"cod": "1", "aplica_a": "FORESTAL cola/resina (Forplas), FORESA RES, y cualquier cola/resina"},
+      "SOSA": {"cod": "51", "aplica_a": "sosa caustica (hidroxido sodico), ej RNM"},
+      "VINKA-PLAST": {"cod": "(pendiente)", "aplica_a": "QUIMIDROGA Vinka-Plast QD 390"},
+      "MONOETILENGLICOL": {"cod": "(pendiente)", "aplica_a": "HELM / Quimidroga monoetilenglicol"}
     },
     "puntos": {
       "MUGARDOS": "MUGAR", "BARCELONA": "B", "AVEIRO": "AVEIR",
