@@ -275,6 +275,20 @@
    "veredicto": "confirmado por Julio 2026-08-27",
    "revisado_por": "Julio",
    "fecha_revision": "2026-08-27"
+  },
+  {
+   "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+   "origen": "CALDAS DE REIS",
+   "destino_real": "ENGUERA",
+   "razon_social_doc": "HARINAS ALMELA, S.A.",
+   "destino_tarifado": "VALENCIA",
+   "precio": 64.04,
+   "n_viajes": 1,
+   "confirmado": true,
+   "estado": "confirmado",
+   "veredicto": "Julio 2026-10-09: Caldas->Enguera no tiene fila propia; se cobra la del tarifario GENERAL Caldas->Valencia (zona) = 64,04 EUR/TN. Se carga destino ENGUERA (el real) y se toma el precio de VALENCIA. CORRIGE un 69,38 que se habia usado de linea-facturacion.",
+   "revisado_por": "Julio",
+   "fecha_revision": "2026-10-09"
   }
  ]
 }
