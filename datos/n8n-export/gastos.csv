@@ -1,0 +1,7 @@
+hoja_id;conductor;fecha;tipo;importe;forma;id;createdAt;updatedAt
+1;Manuel Aboy;2026-08-10;dieta;433.19;efectivo;1;2026-09-08T14:22:25.009Z;2026-09-08T14:22:25.009Z
+1;Manuel Aboy;2026-08-10;gasoleo;1078;credito;2;2026-09-08T14:22:25.010Z;2026-09-08T14:22:25.010Z
+1;Manuel Aboy;2026-08-10;otro;45.01;credito;3;2026-09-08T14:22:25.012Z;2026-09-08T14:22:25.012Z
+2;Manuel Aboy;2026-08-10;dieta;433.19;efectivo;4;2026-09-08T15:47:51.378Z;2026-09-08T15:47:51.378Z
+2;Manuel Aboy;2026-08-10;gasoleo;1078;credito;5;2026-09-08T15:47:51.379Z;2026-09-08T15:47:51.379Z
+2;Manuel Aboy;2026-08-10;otro;45.01;credito;6;2026-09-08T15:47:51.379Z;2026-09-08T15:47:51.379Z

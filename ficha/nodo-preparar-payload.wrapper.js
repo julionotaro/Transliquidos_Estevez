@@ -1,0 +1,74 @@
+// Envoltorio de n8n para el nodo Code "Preparar Payload" del workflow
+// [ESTEVEZ] Ingesta Viaje — WD0q9Ic0oDvUoJwp.
+//
+// Entrada: los items de "Rasterizar Ficha" (una respuesta del microservicio por
+// PDF, con paginas[]). El base64 de los adjuntos para la pasada de documentos NO
+// se lee de aca: viene ya resuelto en `archivos`, desde "Preparar Rasterizacion"
+// (ver ese nodo: getBinaryDataBuffer resuelve contra la entrada del nodo actual,
+// que aca ya no tiene binarios; leer binary[key].data devuelve "filesystem-v2").
+//
+// Salida (v3.4 — loop por pagina): N+1 items.
+//   - N items pass:'fichas', uno por pagina rasterizada, cada uno con UNA imagen.
+//   - 1 item  pass:'documentos', el PDF entero como type:file.
+// "Extraer GPT-4o" corre una vez por item -> una llamada de ficha por pagina.
+// "Formatear Linea Gesruta" reagrupa por indice contra $('Preparar Payload').
+
+// ===== MODELO DE FICHAS =====
+// Swap 2026-08-07 (encargo swap-modelo-lectura-gpt5): el lector de FICHAS
+// manuscritas pasa de gpt-4o a GPT-5 con vision. gpt-4o (y 4o-mini, 4.1) fallan
+// el origen/destino manuscrito -> factura no emitible ("Avello/Becerra" por
+// "Aveiro/Begega"). Elegido: gpt-5.6-sol, el GPT-5 con vision mas capaz al que
+// la cuenta tiene acceso (verificado con /v1/models + llamada de prueba de vision
+// 2026-08-07: acepta el mismo shape chat/completions con image_url,
+// max_completion_tokens y response_format json_object). El esquema de salida NO
+// cambia; mkPayloadOpenAI ya rutea gpt-5* por max_completion_tokens (esRazonadorOpenAI).
+// Se puede pisar por corrida con `modelo_fichas` en el body del webhook (barrido
+// / A-B de idoneidad y de costo). El nodo HTTP en la UI se sigue llamando
+// "Extraer GPT-4o" -- es solo el nombre, el modelo lo define este payload.
+//
+// DOCS (impresos) siguen en gpt-4o: leen bien lo impreso; el bloqueante era el
+// manuscrito. Se puede subir aparte si hiciera falta.
+const MODELO_FICHAS = 'gpt-5.6-sol';
+const MODELO_DOCS = 'gpt-4o';
+
+const hook = $('Hook Viaje').first();
+const body = (hook.json && hook.json.body) ? hook.json.body : {};
+const empresaHint = body['Empresa'] || hook.json['Empresa'] || '';
+const notas = body['Notas'] || hook.json['Notas'] || '';
+
+// Override por corrida, para el barrido sin tocar el nodo.
+const modeloFichas = body['modelo_fichas'] || MODELO_FICHAS;
+
+// --- Pasada A: una llamada por pagina rasterizada, con bandas ampliadas -----
+// "Rasterizar Ficha" llama a /rasterizar-regiones (incluir_pagina_completa=true),
+// asi cada pagina vuelve con la imagen completa (contexto) + los recortes de sus
+// bandas (matricula, km_v1/v2/v3). B.1: los campos que facturan se leen sobre la
+// banda ampliada, no sobre la A4 entera.
+// NOTA: la entrada directa de este nodo ya no es "Rasterizar Ficha" (ahora la rama
+// Document AI corre en el medio), asi que las paginas rasterizadas se leen por
+// referencia explicita a "Rasterizar Ficha", no de $input.
+const respuestasRast = $('Rasterizar Ficha').all().map(function (it) { return it.json || {}; });
+const paginas = concatPaginasConRegiones(respuestasRast);
+if (paginas.length === 0) {
+  throw new Error('El rasterizador no devolvio ninguna pagina. La ficha NO se puede leer sobre PDF-archivo (rinde mal en manuscrito); se aborta en vez de degradar en silencio.');
+}
+const hint = componerHint(empresaHint, notas);
+const itemsFicha = armarItemsFichaPorPaginaConBandas(modeloFichas, paginas, hint);
+
+// --- Pasada B: adjuntos originales, con el base64 leido aguas arriba --------
+const archivos = ($('Preparar Rasterizacion').first().json || {}).archivos || [];
+if (archivos.length === 0) {
+  throw new Error('No llegaron los adjuntos para la pasada de documentos (Preparar Rasterizacion no devolvio `archivos`).');
+}
+const adjuntosDocs = adjuntosDocsDesdeArchivos(archivos);
+
+logInfo('modelo_fichas=' + modeloFichas + ' modelo_docs=' + MODELO_DOCS +
+  ' llamadas_ficha=' + itemsFicha.length + ' (una por pagina) archivos=' + archivos.length);
+
+// N items de ficha (uno por pagina) + 1 de documentos, en ese orden.
+const out = [];
+for (const it of itemsFicha) {
+  out.push({ json: { pass: 'fichas', pagina: it.pagina, modelo: it.modelo, payload: it.payload } });
+}
+out.push({ json: { pass: 'documentos', modelo: MODELO_DOCS, payload: armarPayloadDocs(MODELO_DOCS, adjuntosDocs, hint) } });
+return out;

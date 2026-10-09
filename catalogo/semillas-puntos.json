@@ -1,0 +1,74 @@
+[
+  {
+    "_nota_general": "Estas semillas ENRIQUECEN por NOMBRE los puntos ya sembrados desde datos/tabla-traduccion-puntos.md (pais/tipo/empresa_sede/alias, columnas que el catalogo Gesruta tiene vacias). Solo crean un punto nuevo si el nombre no esta en la tabla; en ese caso el id_punto es PROVISIONAL (el Cod.Pto. real esta en el catalogo Gesruta completo, no en el repo)."
+  },
+  {
+    "nombre_canonico": "Aveiro",
+    "alias": "PUERTO DE AVEIRO|AVEIRO (PT)",
+    "pais": "PT",
+    "tipo": "puerto",
+    "_nota": "Enriquece AVEIRO (Cod.Pto. AVEIR). Puerto, ORIGEN de carga en Bresfor (no destino), §8. CORRECCION: OREMBER (OR) y ORENSE (OU) son puntos Gesruta DISTINTOS, no alias entre si; se siembran de la tabla."
+  },
+  {
+    "id_punto": "RELISA",
+    "nombre_canonico": "Relisa",
+    "alias": "",
+    "municipio": "Barcelona",
+    "provincia": "Barcelona",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Relisa",
+    "_nota": "Lugar de carga, NO cliente (§3). Quimidroga carga en Relisa."
+  },
+  {
+    "id_punto": "DIVERSEY",
+    "nombre_canonico": "Diversey",
+    "alias": "DIVERSEY ESPANA|DIVERSEY ESPANA PRODUCTION",
+    "municipio": "Valdemoro",
+    "provincia": "Madrid",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Diversey",
+    "_nota": "Lugar de carga, NO cliente (§3). Baltransa carga en Diversey."
+  },
+  {
+    "id_punto": "TEPSA",
+    "nombre_canonico": "Tepsa",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "ES",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Tepsa",
+    "_nota": "Planta cargadora (§8, Quimidroga). Marcarla explicita es la vacuna contra confundir lugar de carga con cliente (§3)."
+  },
+  {
+    "id_punto": "BRESFOR",
+    "nombre_canonico": "Bresfor",
+    "alias": "BREDFOR",
+    "municipio": "Aveiro",
+    "provincia": "Aveiro",
+    "pais": "PT",
+    "tipo": "planta_cargadora",
+    "empresa_sede": "Bresfor",
+    "_nota": "BREDFOR es la variante MAL ESCRITA en nuestro propio docs/catalogo-maestro.md."
+  },
+  {
+    "nombre_canonico": "OREMBER",
+    "alias": "OROMBOR|OROMBER|ORENBER|OREMBEL|ORENTBER|OREMBEA",
+    "empresa_sede": "Finsa",
+    "provincia": "Ourense",
+    "_nota": "Enriquece OREMBER (Cod.Pto. OR), 2do punto mas usado (1.008 viajes). Fuente: datos/alias-fichas-reales.md (30 fichas reales, commit 6fd02d6): el chofer lo escribe de >=7 formas y ninguna pasa el filtro de distancia <=1 del resolvedor -> necesita lista de alias explicita y generosa. OREMBER es planta FINSA en Ourense. NO fusionar con CELLA (otra planta FINSA en Teruel): son dos puntos distintos, desambiguar por localidad (Ourense/Orense->OREMBER; Teruel/Cella->CELLA)."
+  },
+  {
+    "id_punto": "TE",
+    "nombre_canonico": "CELLA",
+    "alias": "FINSA CELLA|CELLA TERUEL",
+    "provincia": "Teruel",
+    "empresa_sede": "Finsa",
+    "_nota": "Cod.Pto. confirmado por Julio: TE (Teruel, codigo PROVINCIAL generico). La oficina usa SIEMPRE TE para la entrega de Cella (planta FINSA). USO INTENCIONAL del codigo de provincia: NO limpiar en ninguna pasada futura que descarte 'zonas amplias' (Francia, Asturias sueltas) — ese descarte es para errores, este es intencional. DISTINTO de UTISA TERUEL (Cod.Pto. UTI, 358 usos): NO fusionar. Distinto tambien de OREMBER (Finsa Ourense, Cod.Pto. OR)."
+  },
+  {
+    "_nota_anleo": "ANLEO->NAVIA: RESUELTO (confirmado por Julio). 'Anleo' es parroquia de Navia; la oficina siempre lo carga como NAVIA. Implementado como OVERRIDE intencional en resolver-punto.js (OVERRIDES_LITERAL): el literal 'ANLEO' resuelve a NAVIA con confianza alta, ganando sobre el canonico Gesruta 'ANLEO' (existe pero no se usa en la practica). Reversible quitando la entrada del map."
+  }
+]

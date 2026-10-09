@@ -1,0 +1,326 @@
+// Tests Cierre v1, pieza 2 — vista de pendientes.
+
+'use strict';
+
+const test = require('node:test');
+const assert = require('node:assert');
+const { filtrarPendientes, renderHTML, diasEsperando, esPendiente } = require('../pendientes.js');
+
+function viajeBase(campos) {
+  return Object.assign({
+    id: 1, fecha: '2026-07-13', conductor: 'Asensi', cliente: 'FORESA',
+    origen: 'CALDAS', destino: 'ORENSE',
+    estado: 'con_documentacion', estado_lectura: 'OK', motivo_revision: '',
+    pendiente_falta: null, pendiente_reclamar_a: null,
+    createdAt: '2026-08-02T12:00:00.000Z'
+  }, campos);
+}
+
+test('cierre-v1 pendientes: viaje PENDIENTE_DOCUMENTACION aparece con su falta y a quien reclamar', () => {
+  const v = viajeBase({
+    estado: 'PENDIENTE_DOCUMENTACION',
+    pendiente_falta: 'documentos del viaje (albaran/CMR/carta de porte)',
+    pendiente_reclamar_a: 'chofer / cliente cargador'
+  });
+  const out = filtrarPendientes([v]);
+  assert.strictEqual(out.length, 1);
+  assert.strictEqual(out[0].que_falta, 'documentos del viaje (albaran/CMR/carta de porte)');
+  assert.strictEqual(out[0].reclamar_a, 'chofer / cliente cargador');
+});
+
+test('cierre-v1 pendientes: viaje REVISAR por cliente_no_reconocido aparece con el valor leido visible', () => {
+  const v = viajeBase({
+    estado: 'con_documentacion', // tiene documentos, no es eso lo que falla
+    estado_lectura: 'REVISAR',
+    motivo_revision: 'cliente_no_reconocido: FORBA'
+  });
+  const out = filtrarPendientes([v]);
+  assert.strictEqual(out.length, 1);
+  assert.match(out[0].motivo_revision, /cliente_no_reconocido: FORBA/);
+  assert.strictEqual(out[0].que_falta, null, 'este viaje no tiene documentacion pendiente, solo lectura dudosa');
+});
+
+test('cierre-v1 pendientes: los dias esperando se calculan bien', () => {
+  const ahora = Date.parse('2026-08-05T12:00:00.000Z');
+  assert.strictEqual(diasEsperando('2026-08-02T12:00:00.000Z', ahora), 3);
+  assert.strictEqual(diasEsperando('2026-08-05T11:00:00.000Z', ahora), 0, 'menos de un dia -> 0, no negativo');
+  assert.strictEqual(diasEsperando(null, ahora), null);
+  const v = viajeBase({ estado: 'PENDIENTE_DOCUMENTACION', createdAt: '2026-07-20T12:00:00.000Z' });
+  const out = filtrarPendientes([v], ahora);
+  assert.strictEqual(out[0].dias_esperando, 16);
+});
+
+test('VISTA COMPLETA (Julio 2026-08-26): un viaje OK SI aparece, marcado OK', () => {
+  // Cambio de requisito: la vista lista TODOS los viajes del lote, no solo los
+  // pendientes. Antes los viajes correctos no se listaban y Julio veia "los
+  // viajes 2 y 3 no aparecen". esPendiente() sigue existiendo, pero ahora
+  // clasifica la fila (columna Estado) en vez de excluirla.
+  const v = viajeBase({ estado: 'con_documentacion', estado_lectura: 'OK' });
+  assert.strictEqual(esPendiente(v), false, 'no requiere accion');
+  const out = filtrarPendientes([v]);
+  assert.strictEqual(out.length, 1, 'pero SI se lista');
+  assert.strictEqual(out[0].estado_fila, 'OK');
+});
+
+test('VISTA COMPLETA: el estado de cada fila distingue FALTA DOC / REVISAR / OK', () => {
+  const out = filtrarPendientes([
+    viajeBase({ estado: 'PENDIENTE_DOCUMENTACION', estado_lectura: 'OK' }),
+    viajeBase({ estado: 'con_documentacion', estado_lectura: 'REVISAR' }),
+    viajeBase({ estado: 'con_documentacion', estado_lectura: 'OK' }),
+  ]);
+  assert.strictEqual(out.length, 3);
+  const estados = out.map(function (p) { return p.estado_fila; }).sort();
+  assert.deepStrictEqual(estados, ['FALTA DOC', 'OK', 'REVISAR']);
+});
+
+test('cierre-v1 pendientes: lista vacia no rompe -> mensaje claro, no error', () => {
+  const out = filtrarPendientes([]);
+  assert.strictEqual(out.length, 0);
+  const html = renderHTML(out);
+  assert.match(html, /No hay viajes pendientes ni en revision/);
+  assert.doesNotThrow(() => renderHTML(null));
+  assert.doesNotThrow(() => renderHTML(undefined));
+});
+
+test('cierre-v1 pendientes: orden por defecto — dias esperando descendente, mas viejo primero', () => {
+  const ahora = Date.parse('2026-08-05T12:00:00.000Z');
+  const viejo = viajeBase({ id: 1, estado: 'PENDIENTE_DOCUMENTACION', createdAt: '2026-07-01T12:00:00.000Z' });
+  const nuevo = viajeBase({ id: 2, estado: 'PENDIENTE_DOCUMENTACION', createdAt: '2026-08-04T12:00:00.000Z' });
+  const out = filtrarPendientes([nuevo, viejo], ahora); // entran en orden inverso al esperado
+  assert.strictEqual(out[0].id, 1, 'el mas viejo (mas dias esperando) va primero');
+  assert.strictEqual(out[1].id, 2);
+});
+
+test('cierre-v1 pendientes: viaje con ambos ejes (pendiente Y revisar) aparece una sola vez', () => {
+  const v = viajeBase({
+    id: 9, estado: 'PENDIENTE_DOCUMENTACION', pendiente_falta: 'albaran', pendiente_reclamar_a: 'cliente',
+    estado_lectura: 'REVISAR', motivo_revision: 'km cargados no positivos'
+  });
+  const out = filtrarPendientes([v]);
+  assert.strictEqual(out.length, 1);
+  assert.strictEqual(out[0].que_falta, 'albaran');
+  assert.match(out[0].motivo_revision, /km cargados/);
+});
+
+test('cierre-v1 pendientes: HTML escapa contenido (motivo con caracteres especiales no rompe el markup)', () => {
+  const v = viajeBase({ estado_lectura: 'REVISAR', motivo_revision: 'cliente_no_reconocido: <script>alert(1)</script>&"test"' });
+  const out = filtrarPendientes([v]);
+  const html = renderHTML(out);
+  // el contenido INYECTADO se escapa (no inyecta un <script> del dato)
+  assert.ok(!html.includes('<script>alert(1)'), 'no debe inyectar el <script> del motivo sin escapar');
+  assert.ok(html.includes('&lt;script&gt;alert(1)&lt;/script&gt;'), 'el motivo va escapado');
+  // el unico <script> permitido es el bloque propio de la pagina (fetch de acciones)
+  assert.strictEqual((html.match(/<script>/g) || []).length, 1, 'solo el script propio de la pagina');
+});
+
+// ============================================================================
+// v1.1 pieza 1 — acciones en la misma pantalla (render)
+// ============================================================================
+test('v1.1 render: cada fila trae los botones de accion (corregir/resolver/incidencia) que postean por fetch', () => {
+  const v = viajeBase({ id: 42, estado: 'PENDIENTE_DOCUMENTACION' });
+  const out = filtrarPendientes([v]);
+  const html = renderHTML(out);
+  // el POST lo hace el fetch al webhook absoluto (no el form nativo)
+  assert.match(html, /studio-julio\.duckdns\.org\/webhook\/viajes-accion/);
+  assert.match(html, /value="42"/, 'id del viaje va en un campo oculto');
+  assert.match(html, /name="accion" value="corregir"/);
+  assert.match(html, /name="accion" value="resolver"/);
+  assert.match(html, /name="accion" value="incidencia"/);
+});
+
+test('v1.1 render: las notas (incidencias) del historial se muestran en la fila', () => {
+  const v = viajeBase({
+    estado: 'PENDIENTE_DOCUMENTACION',
+    historial_correcciones: JSON.stringify([
+      { accion: 'incidencia', usuario: 'julio', fecha: '2026-08-03T10:00:00.000Z', campo: null, valor_anterior: null, valor_nuevo: 'Cliente confirmo por telefono' }
+    ])
+  });
+  const out = filtrarPendientes([v]);
+  assert.deepStrictEqual(out[0].notas, ['Cliente confirmo por telefono']);
+  const html = renderHTML(out);
+  assert.match(html, /Cliente confirmo por telefono/);
+});
+
+// ============================================================================
+// CAMBIO 2 — tabla editable, "!" por celda, faltante prominente, confirmar
+// ============================================================================
+function viajeReal(campos) {
+  return viajeBase(Object.assign({
+    estado: 'con_documentacion', estado_lectura: 'REVISAR', motivo_revision: 'algo a revisar',
+    tractora: '2498KZL', semi: 'R1007BCV', material: 'Tobera', referencia: '2002854',
+    fecha: '2026-07-07', fecha_descarga: '2026-07-08', kg_documento: 23140, kg_hoja: 23000,
+    regimen_indexacion: 'linea', km_cargados: 800, km_vacios: 120
+  }, campos));
+}
+
+test('FORMATO OBJETIVO (Julio 2026-08-26): la tabla trae codigos Gesruta + precio/importe/regimen', () => {
+  // Cambio de requisito: la vista de pendientes muestra el formato completo
+  // (Excelente_detalle_Code_Tabla): identidad + CODIGOS Gesruta + precio.
+  const html = renderHTML(filtrarPendientes([viajeReal({})], undefined, [], []));
+  ['Viaje', 'Matricula tractora', 'Chofer', 'Cod. chofer', 'Cliente', 'Cod. cliente',
+   'Cod. origen', 'Origen', 'Cod. destino', 'Destino', 'Carga', 'Cod. material',
+   'Referencia', 'Fecha de carga', 'Cantidad', 'Precio', 'Ud.', 'Importe',
+   'Reg.', 'Quinc.', 'Origen del precio', 'Km cargado', 'Km vacio', 'Estado'].forEach(t => {
+    assert.ok(html.indexOf('>' + t + '<') >= 0, 'columna ' + t);
+  });
+  assert.match(html, /name="accion" value="confirmar"/);
+});
+
+test('CAMBIO 2 (a): matricula tractora invalida -> celda con "!" y form corregir_celda campo=tractora', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({ tractora: 'AVEIRO' })]));
+  assert.match(html, /class="warn"/);
+  assert.match(html, /name="campo" value="tractora"/);
+  assert.match(html, /name="accion" value="corregir_celda"/);
+});
+
+test('CAMBIO 2 (b): fecha descarga < carga -> ambas celdas de fecha marcadas', () => {
+  const p = filtrarPendientes([viajeReal({ fecha: '2026-07-07', fecha_descarga: '2026-07-05' })])[0];
+  assert.ok(p.marcas.fecha && p.marcas.fecha_descarga, 'ambas fechas marcadas en el modelo de fila');
+});
+
+test('CAMBIO 2 (c): cantidad 0 -> celda cantidad marcada; sin doc alguno, la correccion apunta a kg_hoja', () => {
+  // kg_documento=0 esta PRESENTE (es el 0 malo que se ve): corregir apunta ahi.
+  const conDoc = filtrarPendientes([viajeReal({ kg_documento: 0, kg_hoja: null })])[0];
+  assert.ok(conDoc.marcas.cantidad, 'cantidad 0 marcada');
+  assert.strictEqual(conDoc.cantidad_campo, 'kg_documento', 'el 0 vive en kg_documento; se corrige ahi');
+  // sin kg_documento (null), la cantidad y su correccion caen en kg_hoja
+  const sinDoc = filtrarPendientes([viajeReal({ kg_documento: null, kg_hoja: null })])[0];
+  assert.ok(sinDoc.marcas.cantidad, 'cantidad ausente marcada');
+  assert.strictEqual(sinDoc.cantidad_campo, 'kg_hoja');
+});
+
+test('CAMBIO 2: faltante de documentacion se muestra PROMINENTE (FALTA DOC + que falta + a quien)', () => {
+  const v = viajeReal({ estado: 'PENDIENTE_DOCUMENTACION', estado_lectura: 'OK',
+    pendiente_falta: 'albaran/CMR', pendiente_reclamar_a: 'chofer' });
+  const html = renderHTML(filtrarPendientes([v]));
+  assert.match(html, /FALTA DOC/);
+  assert.match(html, /albaran\/CMR/);
+  assert.match(html, /chofer/);
+});
+
+test('CAMBIO 2 (D conservador): REVISAR se muestra a nivel fila (motivo como observacion), NO atribuido a una celda', () => {
+  const v = viajeReal({ estado_lectura: 'REVISAR', motivo_revision: 'cliente_no_reconocido: FORBA (origen dudoso)' });
+  const p = filtrarPendientes([v])[0];
+  // no hay marca de forma sobre origen (no se inventa atribucion por celda)
+  assert.strictEqual(p.marcas.origen, undefined);
+  const html = renderHTML([p]);
+  assert.match(html, /REVISAR: cliente_no_reconocido: FORBA/);
+});
+
+test('CAMBIO 2: cliente NO se edita por celda (va por la barra, verbo corregir que revalida)', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  assert.ok(html.indexOf('name="campo" value="cliente"') === -1, 'ninguna celda corrige cliente por corregir_celda');
+  assert.match(html, /name="accion" value="corregir"/, 'cliente se corrige por el verbo corregir en la barra');
+});
+
+test('CAMBIO 2: dieta leida del JSON detalle se muestra', () => {
+  const v = viajeReal({ detalle: JSON.stringify({ gastos: [{ tipo: 'dieta', importe: 45 }] }) });
+  const p = filtrarPendientes([v])[0];
+  assert.strictEqual(p.dieta, 45);
+});
+
+// ============================================================================
+// CAMBIO 1 (correcciones-url) — la URL de accion debe ser ABSOLUTA
+// (relativa da DNS_PROBE_FINISHED_NXDOMAIN y no guarda nada). Guard de regresion.
+// ============================================================================
+test('CAMBIO 1: la URL de accion es ABSOLUTA (no relativa)', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  // la URL absoluta esta presente (ahora en el fetch del script, no en un action)
+  assert.match(html, /https:\/\/studio-julio\.duckdns\.org\/webhook\/viajes-accion/);
+  // y NINGUNA ruta relativa
+  assert.ok(!/["'(]\/webhook\/viajes-accion/.test(html), 'no debe quedar ruta raiz-relativa');
+  assert.ok(!/["'(]webhook\/viajes-accion/.test(html), 'no debe quedar ruta path-relativa');
+});
+
+// ============================================================================
+// CAMBIO fetch-acciones — las acciones se envian por FETCH (preventDefault),
+// no por <form> nativo: la pagina NO navega al guardar. Guard del patron.
+// ============================================================================
+test('fetch-acciones: los forms de accion NO tienen action= (no submit nativo); el envio es por fetch con preventDefault', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  // ningun <form> de accion navega de forma nativa (sin atributo action)
+  assert.ok(!/<form[^>]*\baction=/.test(html), 'ningun form de accion debe tener action= (navegaria)');
+  // el transporte es fetch, interceptando el submit
+  assert.match(html, /preventDefault\(\)/);
+  assert.match(html, /fetch\(WEBHOOK/);
+  // sigue habiendo forms (para agrupar inputs) y los botones de accion
+  assert.match(html, /<form class="cell">/);
+  assert.match(html, /<form class="acc">/);
+});
+
+test('fetch-acciones: sin localStorage / sessionStorage / clipboard / createObjectURL (restriccion del estudio)', () => {
+  const html = renderHTML(filtrarPendientes([viajeReal({})]));
+  ['localStorage', 'sessionStorage', 'navigator.clipboard', 'createObjectURL'].forEach(function (prohibido) {
+    assert.ok(html.indexOf(prohibido) === -1, 'no debe usar ' + prohibido);
+  });
+});
+
+test('INDEXACION (Fase 2.1): % del tramo x importe, con el grupo del cliente', () => {
+  // RNM -> solapa OTROS. El 19/08/2026 el tramo de OTROS es 0,0766 (7,66%).
+  // Importe 875 (fijo) x 0,0766 = 67,03.
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', fecha: '2026-08-19', estado: 'con_documentacion', estado_lectura: 'OK',
+    kg_documento: 23500, pais_facturacion: 'PT', regimen_indexacion: 'linea',
+    tarifa_contractual_fijo: 875,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].pct_indexacion, '7.66%');
+  assert.strictEqual(out[0].importe_indexacion, 67.03);
+});
+
+test('INDEXACION: sin importe no se inventa la indexacion, se explica por que', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', fecha: '2026-08-19', estado: 'con_documentacion', estado_lectura: 'OK',
+    tarifa_contractual_fijo: null, tarifa_contractual_tn: null,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].importe_indexacion, null);
+  assert.match(out[0].motivo_indexacion, /falta el precio/);
+});
+
+test('INDEXACION: cliente con indexacion INCLUIDA -> cero, no vacio', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'BALTRANSA', fecha: '2026-08-19', estado: 'con_documentacion',
+    estado_lectura: 'OK', regimen_indexacion: 'incluida', tarifa_contractual_fijo: 2050,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].importe_indexacion, 0, 'cero es la respuesta correcta');
+});
+
+test('PRECIO: la vista LEE la tarifa de la ingesta, no la recalcula (motor unico)', () => {
+  // Bug real ejec 1076: la vista recalculaba con otro motor y daba otro resultado.
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', estado: 'con_documentacion', estado_lectura: 'OK',
+    kg_documento: 23000, tarifa_contractual_tn: 29.09,
+  })], undefined, [], []);
+  assert.strictEqual(out[0].precio, 29.09);
+  assert.strictEqual(out[0].importe, 669.07);   // 23 tn x 29,09
+  assert.strictEqual(out[0].origen_precio, 'tarifa contractual');
+});
+
+test('PRECIO: una tarifa por ANALOGIA se muestra como observada, no como pactada', () => {
+  // El importe se calcula igual, pero la etiqueta tiene que delatar que es una
+  // tarifa observada (analogia confirmada), no una contractual. La ingesta ya
+  // marco origen_del_precio; la vista lo muestra, no lo re-deriva.
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'FORESA', estado: 'con_documentacion', estado_lectura: 'OK',
+    kg_documento: 24000, tarifa_contractual_tn: 38.66, origen_del_precio: 'analogia',
+  })], undefined, [], []);
+  assert.strictEqual(out[0].precio, 38.66);
+  assert.match(out[0].origen_precio, /analogia/);
+  assert.match(out[0].origen_precio, /observada|revisar/);
+});
+
+test('PRECIO: origen_del_precio "orden" se etiqueta como precio de la orden', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'BALTRANSA', estado: 'con_documentacion', estado_lectura: 'OK',
+    tarifa_contractual_fijo: 1150, origen_del_precio: 'orden',
+  })], undefined, [], []);
+  assert.strictEqual(out[0].origen_precio, 'precio de la orden');
+});
+
+test('PRECIO: sin tarifa, la columna explica POR QUE (motivo de la ingesta)', () => {
+  const out = filtrarPendientes([viajeBase({
+    cliente: 'RNM', estado: 'con_documentacion', estado_lectura: 'OK',
+    tarifa_contractual_motivo: 'sin tarifa cargada para AVILES -> NAVIA (cliente RNM)',
+  })], undefined, [], []);
+  assert.strictEqual(out[0].precio, null);
+  assert.match(out[0].origen_precio, /sin tarifa cargada/);
+});

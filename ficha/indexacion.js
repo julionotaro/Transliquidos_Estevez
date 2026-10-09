@@ -1,0 +1,199 @@
+// ===== INDEXACION (suplemento gasoleo) — planilla carga/auditoria (v1.1 p.2) =
+//
+// Resuelve el % de indexacion para viajes en regimen 'linea' contra la tabla
+// real `Indexacion` (or1otD9WsjJ3V8Cr). Schema real confirmado por readback
+// 2026-08-03: cliente (en realidad GRUPO, no el cliente del viaje), tipo,
+// pct (string), desde, hasta.
+//
+// HALLAZGO del readback: la tabla tiene 37.660 filas en bruto, pero son 70
+// tramos reales duplicados exactamente x538 (= el numero de filas de
+// Tarifas -- huella de un bug de carga, probablemente un cruce accidental
+// contra Tarifas al popular la tabla). docs/brief-v3-oficina-agentica.md ya
+// documentaba "70 tramos, 6 solapas oficiales" -- consistente con los 70
+// tramos unicos verificados. deduplicarIndexacion() hace esa limpieza; el
+// nodo que lee la tabla la llama antes de armar la planilla (ver
+// nodo-planilla.wrapper.js). NO corrige la tabla en n8n -- eso es un cambio de
+// datos, fuera de alcance de esta pieza; solo evita arrastrar el bug a la
+// busqueda.
+//
+// Grupos reales confirmados (docs/reglas-facturacion.md "Grupos de indexacion
+// (confirmado)"): FORESA-BRESFOR, QUIMIDROGA, HELM, OTROS, AGENCIA, AUTONOMOS.
+// AGENCIA/AUTONOMOS no tienen regla de asignacion por cliente documentada
+// ("pendientes" en docs/reglas-facturacion.md) -- este modulo NO los asigna
+// nunca via cliente, para no inventar una regla de negocio que no esta
+// confirmada.
+//
+// D-03 / nota del encargo: la indexacion AGREGADA (quincenal/mensual) NO se
+// CIERRA aca -- el importe de la fila sigue siendo null y se cierra en
+// facturacion. Lo que SI hace ahora (2026-08-26) es resolver el tramo vigente y
+// exponer la base que ese viaje aporta al periodo (`base_periodo`), para que
+// ficha/modalidad-indexacion.js la acumule por tramo. Antes el caso agregado
+// quedaba ciego hasta que llegaba la factura, que es justo cuando ya no se puede
+// verificar. Exponer la base no es calcular el cobro: es poder auditarlo.
+//
+// De donde sale el regimen: ficha/modalidad-indexacion.js lo deduce del
+// HISTORICO del cliente (que indexacion se le aplico realmente), no de reglas de
+// ruta cableadas. Ver la cabecera de ese modulo para los tres defectos que eso
+// corrige, entre ellos el default `linea` que le inventaba una indexacion a los
+// clientes que no la llevan.
+
+'use strict';
+
+var CRUCE_IDX = (typeof norm === 'function') ? { norm: norm } : require('./cruce.js');
+
+function round2(n) { return Math.round(n * 100) / 100; }
+
+/**
+ * Limpia la duplicacion x538 de la tabla real (ver nota de cabecera): agrupa
+ * por (cliente, tipo, pct, desde, hasta) y se queda con una fila por
+ * combinacion unica. Idempotente -- correrla sobre datos ya limpios no cambia
+ * nada. NO escribe de vuelta en n8n, solo filtra en memoria para la busqueda.
+ */
+function deduplicarIndexacion(indexacionRows) {
+  var filas = Array.isArray(indexacionRows) ? indexacionRows : [];
+  var vistos = {};
+  var out = [];
+  for (var i = 0; i < filas.length; i++) {
+    var f = filas[i];
+    var clave = [f.cliente, f.tipo, f.pct, f.desde, f.hasta].join('|');
+    if (vistos[clave]) { continue; }
+    vistos[clave] = true;
+    out.push(f);
+  }
+  return out;
+}
+
+/**
+ * Grupo de indexacion (solapa) para un cliente de viaje, segun
+ * docs/reglas-facturacion.md "Grupos de indexacion (confirmado)":
+ *   FORESA, BRESFOR -> FORESA-BRESFOR
+ *   QUIMIDROGA -> QUIMIDROGA
+ *   HELM -> HELM
+ *   RNM -> OTROS (RNM no tiene solapa propia, confirmado en factura)
+ *   QUIMICAS DEL JARAMA -> OTROS (confirmado, "indexacion (OTROS)")
+ *   cualquier otro cliente -> OTROS por defecto (D-5), con aviso visible.
+ */
+function grupoIndexacion(clienteViaje) {
+  var cl = CRUCE_IDX.norm(clienteViaje);
+  if (cl && (cl.indexOf('FORESA') >= 0 || cl.indexOf('BRESFOR') >= 0)) { return { grupo: 'FORESA-BRESFOR', motivo: null }; }
+  if (cl && cl.indexOf('QUIMIDROGA') >= 0) { return { grupo: 'QUIMIDROGA', motivo: null }; }
+  if (cl && cl.indexOf('HELM') >= 0) { return { grupo: 'HELM', motivo: null }; }
+  if (cl && cl.indexOf('RNM') >= 0) { return { grupo: 'OTROS', motivo: null }; }
+  if (cl && cl.indexOf('JARAMA') >= 0) { return { grupo: 'OTROS', motivo: null }; }
+  return { grupo: 'OTROS', motivo: 'grupo_por_defecto: cliente "' + (clienteViaje || '(no leido)') + '" sin regla explicita (D-5)' };
+}
+
+/**
+ * Tramo vigente [desde,hasta] (inclusive, texto ISO) para un grupo+fecha.
+ *
+ * SOLAPES: los tramos del Suplemento Gasoleo comparten el dia de corte
+ * (2026-06-01->06-07 y 2026-06-07->06-15), asi que una fecha puede caer en dos.
+ * Quedarse con "el primero que matchea" era arbitrario y en HELM cambia el
+ * numero: el 2026-06-07 cae en un tramo al 0,1256 y en otro al 0,1141.
+ *   - si todos los tramos que matchean tienen el MISMO pct -> no hay ambiguedad
+ *   - si difieren -> NO se elige: se devuelve ambiguo para que el viaje vaya a
+ *     REVISAR con los dos candidatos a la vista. Elegir uno es elegir cuanto se
+ *     factura.
+ *
+ * @returns {{pct, fila, ambiguo:boolean, candidatas:Array}|null}
+ */
+function buscarPct(grupo, fecha, indexacionRows) {
+  var filas = Array.isArray(indexacionRows) ? indexacionRows : [];
+  if (!fecha) { return null; }
+  var hits = [];
+  for (var i = 0; i < filas.length; i++) {
+    var f = filas[i];
+    if (CRUCE_IDX.norm(f.cliente) !== grupo) { continue; }
+    if ((f.desde || '') <= fecha && fecha <= (f.hasta || '')) {
+      var pct = parseFloat(f.pct);
+      if (isFinite(pct)) { hits.push({ pct: pct, fila: f }); }
+    }
+  }
+  if (!hits.length) { return null; }
+  var distintos = {};
+  for (var j = 0; j < hits.length; j++) { distintos[hits[j].pct] = true; }
+  var claves = Object.keys(distintos);
+  if (claves.length === 1) {
+    return { pct: hits[0].pct, fila: hits[0].fila, ambiguo: false, candidatas: hits };
+  }
+  return {
+    pct: null, fila: null, ambiguo: true, candidatas: hits,
+    motivo: 'la fecha ' + fecha + ' cae en ' + hits.length + ' tramos de ' + grupo +
+      ' con porcentajes distintos (' + claves.join(' / ') + '): el suplemento tiene los bordes solapados, hay que decidir cual rige'
+  };
+}
+
+/**
+ * Indexacion para una fila de la planilla. NUNCA calcula un importe para
+ * regimen agregado (D-03): solo marca el regimen. Para 'linea' SI calcula,
+ * sobre el importe de transporte de la linea (D-08).
+ *
+ * @param {object} viaje  {cliente, fecha, regimen_indexacion}
+ * @param {number|null} importeLinea  cantidad x tarifa ya calculado (D-08 base).
+ * @param {Array<object>} indexacionRows  filas DEDUPLICADAS de Indexacion.
+ * @returns {{modo:'calculada'|'regimen_pendiente'|'incluida'|'sin_regimen',
+ *            pct:number|null, importe:number|null, grupo:string|null,
+ *            etiqueta:string, motivo:string|null}}
+ */
+function indexacionDeFila(viaje, importeLinea, indexacionRows) {
+  var v = viaje || {};
+  var regimen = v.regimen_indexacion;
+
+  if (regimen === 'incluida') {
+    return { modo: 'incluida', pct: 0, importe: 0, grupo: null, etiqueta: 'incluida', motivo: null };
+  }
+  // El cliente NO lleva indexacion (Tank Solutions, Transportes Santos,
+  // Hispalense — confirmado en facturas). Es una respuesta, no un hueco: cero es
+  // el numero correcto y la fila no debe ir a REVISAR por esto.
+  if (regimen === 'sin_indexacion') {
+    return { modo: 'sin_indexacion', pct: 0, importe: 0, grupo: null, etiqueta: 'sin indexacion', motivo: null };
+  }
+  if (regimen === 'agregada_quincenal' || regimen === 'agregada_mensual' || regimen === 'agregada') {
+    // La indexacion agregada NO se cierra por viaje (D-03): el importe de esta
+    // fila sigue siendo null. Pero SI se resuelve el tramo vigente y se expone
+    // la base que este viaje aporta al periodo, para que acumularPorPeriodo()
+    // pueda sumarla y el operador vea cuanto lleva devengado antes de que
+    // llegue la factura. Antes esto quedaba ciego hasta la facturacion.
+    var gA = grupoIndexacion(v.cliente);
+    var hitA = buscarPct(gA.grupo, v.fecha, indexacionRows);
+    if (hitA && hitA.ambiguo) { hitA = null; }
+    var baseA = (typeof importeLinea === 'number' && isFinite(importeLinea)) ? round2(importeLinea) : null;
+    return {
+      modo: 'regimen_pendiente', pct: hitA ? hitA.pct : null, importe: null,
+      grupo: gA.grupo, base_periodo: baseA, aporta_al_periodo: true,
+      etiqueta: regimen + ' (aporta ' + (baseA === null ? '?' : baseA) + ' EUR al periodo' +
+        (hitA ? ' @ ' + round2(hitA.pct * 100) + '%' : ', sin tramo vigente') + ')',
+      motivo: hitA ? null : ('sin_tramo_vigente: ' + gA.grupo + ' @ ' + (v.fecha || '(sin fecha)'))
+    };
+  }
+  if (regimen !== 'linea') {
+    return { modo: 'sin_regimen', pct: null, importe: null, grupo: null, etiqueta: '-', motivo: 'sin_regimen_indexacion' };
+  }
+
+  var g = grupoIndexacion(v.cliente);
+  var hit = buscarPct(g.grupo, v.fecha, indexacionRows);
+  if (hit && hit.ambiguo) {
+    return { modo: 'sin_regimen', pct: null, importe: null, grupo: g.grupo, etiqueta: '-', motivo: hit.motivo };
+  }
+  if (!hit) {
+    return {
+      modo: 'sin_regimen', pct: null, importe: null, grupo: g.grupo, etiqueta: '-',
+      motivo: 'sin_tramo_vigente: ' + g.grupo + ' @ ' + (v.fecha || '(sin fecha)')
+    };
+  }
+  var importe = (typeof importeLinea === 'number' && isFinite(importeLinea)) ? round2(importeLinea * hit.pct) : null;
+  return {
+    modo: 'calculada', pct: hit.pct, importe: importe, grupo: g.grupo,
+    etiqueta: round2(hit.pct * 100) + '%' + (g.motivo ? ' (' + g.motivo + ')' : ''),
+    motivo: null
+  };
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    deduplicarIndexacion: deduplicarIndexacion,
+    grupoIndexacion: grupoIndexacion,
+    buscarPct: buscarPct,
+    indexacionDeFila: indexacionDeFila
+  };
+}

@@ -1,0 +1,58 @@
+{
+ "Viajes": {
+  "filas": 13,
+  "cols": 48
+ },
+ "documentos": {
+  "filas": 4,
+  "cols": 15
+ },
+ "hojas": {
+  "filas": 2,
+  "cols": 16
+ },
+ "gastos": {
+  "filas": 6,
+  "cols": 9
+ },
+ "correcciones": {
+  "filas": 8,
+  "cols": 10
+ },
+ "ultimo_km_tractora": {
+  "filas": 4,
+  "cols": 6
+ },
+ "clientes": {
+  "filas": 13,
+  "cols": 11
+ },
+ "puntos": {
+  "filas": 394,
+  "cols": 12
+ },
+ "Tarifas": {
+  "filas": 698,
+  "cols": 10
+ },
+ "Indexacion": {
+  "filas": 53,
+  "cols": 8
+ },
+ "regimen_ruta": {
+  "filas": 1,
+  "cols": 11
+ },
+ "facturacion_reglas": {
+  "filas": 0,
+  "cols": 0
+ },
+ "actividad_oficina": {
+  "filas": 8,
+  "cols": 11
+ },
+ "aprobaciones_pendientes": {
+  "filas": 0,
+  "cols": 0
+ }
+}
