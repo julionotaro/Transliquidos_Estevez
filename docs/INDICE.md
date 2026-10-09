@@ -87,6 +87,7 @@ extracción concretas.
 | `reglas-facturacion.md` | Reglas derivadas de contrastar 32 facturas reales de junio 2026: estructura de factura, grupos de indexación, Baltransa, paralizaciones, repartos, rectificativas, clientes menores | Antes de tocar el auditor o cualquier regla de cobro | **VIGENTE — muy denso** |
 | `reglas-por-cliente.md` | Matriz por cliente: porte/IVA, fuente del peso, referencia, indexación, precio. Variantes de Foresa | Antes de tocar reglas de un cliente | **VIGENTE con correcciones** |
 | `reglas-por-cliente-addendum.md` | Corrige el anterior. HELM: manda el precio del documento | Siempre junto al anterior | **VIGENTE — prevalece** |
+| `catalogo/correcciones-julio.json` | **MEMORIA OPERATIVA DE CARGA.** Reglas, tarifas resueltas, correcciones puntuales y códigos Gesruta confirmados por Julio sesión a sesión. Claude la LEE antes de cada carga y la aplica antes de escribir en el registro | **Siempre antes de generar una orden o cargar viajes en Gesruta** | **VIGENTE — fuente de verdad de carga** |
 | `decisiones-dominio.md` | D-01 a D-05: cantidad a facturar, €/tonelada vs €/viaje, los cuatro regímenes de indexación, grupo por defecto | Antes de tocar cantidad, precio o indexación | **VIGENTE** |
 | `decisiones-dominio-indexacion.md` | Detalle de indexación | Al trabajar indexación | Por revisar |
 | `catalogo-maestro.md` | Empresas, flota, clientes y rutas frecuentes, estructura de archivo, **ciclo de facturación** | Al armar catálogos de clientes, puntos o rutas | **VIGENTE** |

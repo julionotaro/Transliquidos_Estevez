@@ -14,7 +14,7 @@ ALB 1 FORESA
   ref      2027535                # FORESA nº corto 20xxxxx
   salida   25/09/2026
   llegada  01/10/2026
-  porte    um=TN cant=24,380 precio=64,04   # REVISAR tarifa: 64,04 (general, cascada Caldas->Valencia) vs 69,38 (juego anterior). REVISAR peso multiproducto. importe 1.561,30, IVA 21
+  porte    um=TN cant=24,380 precio=64,04   # importe 1.561,30, IVA 21 (tarifa general, confirmado Julio; peso = suma total 24.380)
   index    concepto=G factor=0,1386         # importe 216,40
   km       inicio=352.600 fin=353.695 carga=1.059 vacio_previo=–
 
@@ -54,24 +54,24 @@ ALB 2 FORESA
   ref      2027312                # FORESA nº corto 20xxxxx
   salida   01/10/2026
   llegada  01/10/2026
-  porte    TARIFA PENDIENTE                 # FORESA Caldas->Orense no esta en el tarifario general -> Julio define. Cargar albaran; porte+index pendientes. IVA 21
-  index    concepto=G factor=0,1664         # pendiente hasta tener el porte
+  porte    um=TN cant=24,640 precio=13,85   # importe 341,26, IVA 21 (FORESA Caldas->Orember/Orense, viaje frecuente)
+  index    concepto=G factor=0,1664         # importe 56,79 (Oct)
   km       inicio=4.569 fin=4.693 carga=124 vacio_previo=21
 
 ALB 3 RNM
   cliente  661                    # RNM TRANSPORTES QUIMICOS, LDA
   origen   AVEIR                  # Aveiro
-  destino  REVISAR                # Montehermoso / Caceres (Acenorca) -> sin codigo de punto, confirmar
+  destino  SIN CODIGO             # Montehermoso / Caceres (Acenorca) -> NO existe punto en Gesruta, Julio debe darlo de alta o indicar equivalente
   carga    51                     # SOSA
   ref      0941027205             # RNM guia de remessa
   salida   05/10/2026
   llegada  06/10/2026
-  porte    TARIFA PENDIENTE                 # RNM Aveiro->Montehermoso/Caceres no esta en el tarifario RNM -> Julio define. Cargar albaran; porte+index pendientes. IVA 0
+  porte    TARIFA PENDIENTE                 # VERIFICADO 09/10: no hay Aveiro->Caceres/Montehermoso ni localidad cercana en tarifario RNM ni en historico. Julio define tarifa. IVA 0
   index    concepto=GPT factor=0,145        # pendiente hasta tener el porte
   km       inicio=5.136 fin=5.604 carga=468 vacio_previo=443
 
-# NOTA JUEGO B: aparecio un doc de FENOL (Moeve/Huelva -> FORESA Caldas, 07/10) con el remolque R4905BDF de Nuno,
-# pero NO esta en la ficha. ¿Es un viaje a cargar (FORESA entrante)? Confirmar.
+# NOTA JUEGO B: el doc de FENOL (Moeve/Huelva -> FORESA Caldas, 07/10, remolque R4905BDF) corresponde
+# a un viaje YA DECLARADO en una ficha anterior al inicio de las pruebas (Julio confirma). NO se carga.
 
 # ================== JUEGO C ==================
 # ORDEN — JOSE CARLOS ALFONSIN — EMPRESA: TLE

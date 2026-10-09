@@ -85,10 +85,16 @@
       "fecha": "2026-10-09", "por": "Julio", "cliente": "RNM", "campo": "indexacion",
       "regla": "RNM internacional (Portugal) a Espana: PORTES INTERNACIONALES IVA 0, indexacion concepto GPT (INDEXACION GASOLEO PORTUGAL) usando el factor del grupo 'Otros' (ej. octubre 2026 = 0,1450).",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "archivo_procesados/nombre",
+      "regla": "Al procesar y guardar un ALBARAN (documento de transporte), RENOMBRARLO con su Nº de REFERENCIA + .pdf (ej 20261009185425.pdf -> 2027535.pdf). Si hay una orden de carga asociada al mismo albaran, '<ref>-orden.pdf'. Las FICHAS del chofer conservan su nombre original (son compartidas por varios albaranes). El path renombrado se refleja en la columna pdf_doc del registro.",
+      "estado": "confirmada"
     }
   ],
   "tarifas_resueltas": [
-    {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> VALENCIA (zona, aplica a Enguera)", "precio_tn": 69.38, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
+    {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> VALENCIA (zona, aplica a Enguera/Harinas Almela)", "precio_tn": 64.04, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo FORESA-BRESFOR, concepto G", "fuente": "tarifario GENERAL. Julio 2026-10-09: para Enguera usar la del tarifario general (64,04). CORRIGE el 69,38 anterior (era de linea-facturacion, no se usa para esta ruta)."},
+    {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> OREMBER / ORENSE (Finsa Orember, San Ciprian de Viñas)", "material": "COLA (resina, ej ABEIRO 3009)", "precio_tn": 13.85, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo FORESA-BRESFOR, concepto G", "nota": "Viaje FRECUENTE. En el tarifario figura como CALDAS DE REIS -> OREMBER (= Orense). Para FINCAT seria 20,16, pero la carga habitual es COLA = 13,85.", "fuente": "tarifario FORESA, Julio 2026-10-09 (confirmo que Caldas->Orense es Orember)."},
     {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> PONTEVEDRA (zona, aplica a Padron/Silleda/Coruna)", "precio_tn": 79.71, "iva": 21, "concepto": "PORTES NACIONALES", "fuente": "linea-facturacion 2026-08, por cascada de zona"},
     {"cliente": "QUIMIDROGA", "ruta": "BARCELONA -> AVEIRO (Heliflex/Gafanha)", "material": "VINKA-PLAST", "precio_tn": 84.68, "iva": 21, "concepto": "PORTES NACIONALES", "codcon": "P", "indexacion": "SI aplica, concepto G (INDEXACION GASOLEO) = factor del quincena vigente sobre el porte neto; Gesruta lo aplica por fecha. Ref: junio G=15,17%, G1Q=14,52%, GPT=12,79%. NO aplicar DESCUENTO DUO TRAILER (-5%) salvo que el viaje sea duotrailer: historicamente solo 2 de 60 lineas.", "fuente": "tarifario oficial tarifas-general 2026-08-04 (Barcelona->Aveiro) + facturacion real. CORRIGE el 88,25 anterior: ese era un precio puntual de junio a zona PORTUGAL; el vigente destino Aveiro es 84,68."},
     {"cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina)", "modalidad": "precio fijo por viaje", "precio_viaje": 2025.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "INCLUIDA en el precio (NO sumar indexacion de gasoleo aparte)", "fuente": "Julio 2026-10-07, confirmado directo."},
