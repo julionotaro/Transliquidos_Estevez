@@ -84,7 +84,7 @@
     {"cliente": "FORESTAL DEL ATLANTICO, S.A.", "ruta": "MUGARDOS -> CASTELLON (Quimialmel)", "material": "FORPLAS (cola/resina)", "modalidad": "precio fijo por viaje", "precio_viaje": 2025.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "INCLUIDA en el precio (NO sumar indexacion de gasoleo aparte)", "fuente": "Julio 2026-10-07, confirmado directo."},
     {"cliente": "FORESA", "ruta": "CALDAS DE REIS -> TORDERA (IP Decor)", "material": "RES/COLA (resina -> carga COLA cod 1)", "precio_tn": 72.36, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo FORESA-BRESFOR, concepto G", "referencia": "Nº corto que empieza en 20 (ej 2027538), arriba a la derecha del albaran; NO el largo 5030xxxxxx. Peso = albaran.", "fuente": "linea-facturacion 2026-08."},
     {"cliente": "HELM", "ruta": "BARCELONA -> PORTALEGRE (cod PORT; aplica a Ribeira de Nisa/Selenis)", "material": "MONOETILENGLICOL", "modalidad": "precio fijo por viaje segun orden de flete", "ejemplo_precio": 1800.00, "iva": 21, "concepto": "PORTES NACIONALES", "indexacion": "grupo HELM, concepto G", "referencia": "Nº de orden de flete que el doc pide incluir en factura (ej 6100316242)", "fuente": "orden de flete HELM + linea-facturacion 2026-08."},
-    {"cliente": "RNM", "ruta": "AVEIRO -> NAVIA (ENCE/Celulosas Asturias)", "material": "SOSA CAUSTICA (cod 51)", "precio_tn": 40.30, "iva": 0, "concepto": "PORTES INTERNACIONALES", "indexacion": "concepto GPT, factor grupo 'Otros' (ej oct-2026 0,1450)", "referencia": "guia de remessa (10 dig empieza en 0, ej 0141169903)", "fuente": "tarifario de Julio 2026-10-09 (40,30 EUR/TN; el xls 2026-08-04 marcaba 900 fijo, desactualizado)."}
+    {"cliente": "RNM", "ruta": "AVEIRO -> NAVIA (ENCE/Celulosas Asturias)", "material": "SOSA CAUSTICA (cod 51)", "precio_tn": 40.30, "precio_fijo_alternativo": 900.00, "prioridad": "usar SIEMPRE el EUR/TN (40,30); el fijo de 900 es alternativo", "iva": 0, "concepto": "PORTES INTERNACIONALES", "indexacion": "concepto GPT, factor grupo 'Otros' (ej oct-2026 0,1450)", "referencia": "guia de remessa (10 dig empieza en 0, ej 0141169903)", "fuente": "tarifario de Julio: tiene las DOS tarifas (40,30 EUR/TN y 900 fijo); el xls 2026-08-04 solo tenia el 900."}
   ],
   "correcciones_puntuales": [
     {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
@@ -97,11 +97,12 @@
       "QUIMIDROGA, S.A.": "403"
     },
     "cargas": {
-      "_nota": "La carga SI tiene codigo numerico en Gesruta (ademas del literal). Confirmado por Julio: COLA=1. Forplas/resina se carga como COLA (cod 1). Codigo de VINKA-PLAST aun no confirmado por Julio.",
-      "COLA": {"cod": "1", "aplica_a": "FORESTAL cola/resina (Forplas), FORESA RES, y cualquier cola/resina"},
+      "_nota": "CATALOGO COMPLETO de materiales (codigo;carga;descripcion) en datos/gesruta/materiales.csv (559 materiales, Julio 2026-10-09). El codigo puede ser numerico (COLA=1) o alfanumerico (VINKA-PLAST=VINKA). Buscar siempre el codigo ahi para no tener que 'BUSCAR por nombre' en Gesruta. Los de abajo son los de uso frecuente.",
+      "COLA": {"cod": "1", "aplica_a": "FORESTAL cola/resina (Forplas), FORESA RES, y cualquier cola/resina (hay RESINA=23 aparte, pero FORESA->Tordera se factura como COLA)"},
       "SOSA": {"cod": "51", "aplica_a": "sosa caustica (hidroxido sodico), ej RNM"},
-      "VINKA-PLAST": {"cod": "(pendiente)", "aplica_a": "QUIMIDROGA Vinka-Plast QD 390"},
-      "MONOETILENGLICOL": {"cod": "(pendiente)", "aplica_a": "HELM / Quimidroga monoetilenglicol"}
+      "VINKA-PLAST": {"cod": "VINKA", "aplica_a": "QUIMIDROGA Vinka-Plast QD 390"},
+      "MONOETILENGLICOL": {"cod": "MONOE", "aplica_a": "HELM / Quimidroga monoetilenglicol"},
+      "FORMOL": {"cod": "3"}, "METANOL": {"cod": "5"}, "RESINA": {"cod": "23"}, "POTASA CAUSTICA": {"cod": "POTASA"}
     },
     "puntos": {
       "MUGARDOS": "MUGAR", "BARCELONA": "B", "AVEIRO": "AVEIR",

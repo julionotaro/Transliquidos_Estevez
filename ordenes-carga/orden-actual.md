@@ -18,7 +18,7 @@ ALB 2 HELM
   cliente  323                    # HELM IBERICA, S.A.
   origen   B                      # Barcelona (carga Miladerto)
   destino  PORT                   # Portalegre (entrega real Ribeira de Nisa; zona con tarifa)
-  carga    BUSCAR:MONOETILENGLICOL # Monoetilenglicol
+  carga    MONOE                  # Monoetilenglicol
   ref      6100316242
   salida   30/09/2026
   llegada  02/10/2026
