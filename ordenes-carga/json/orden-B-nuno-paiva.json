@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "juego": "B - Nuno Paiva",
+    "ficha": "procesados/.../20261009185502.pdf",
+    "fecha_extraccion": "2026-10-09",
+    "nota": "RECOMENDADO como primer test del bot: km internamente consistentes; ejercita Destino por codigo (OR=OREMBER) y Carga por codigo (1=COLA, 51=SOSA), mas el camino tarifa_pendiente (ALB3). ALB3 ademas tiene destino sin codigo (Montehermoso) -> no cargable hasta dar de alta el punto."
+  },
+  "empresa": "TLE",
+  "viaje": {
+    "cabeza": "8504",
+    "verificar": { "matricula": "8504KDR", "remolque": "R4905BDF", "chofer": "NUNO PAIVA" }
+  },
+  "albaranes": [
+    {
+      "cliente":    { "codigo": "661", "esperado": "RNM TRANSPORTES QUIMICOS, LDA" },
+      "origen":     { "codigo": "AVEIR", "esperado": "AVEIRO" },
+      "destino":    { "codigo": "PO", "esperado": "PONTEVEDRA" },
+      "carga":      { "codigo": "51", "buscar": "", "esperado": "SOSA" },
+      "referencia": "0141169643",
+      "salida":     "30/09/2026",
+      "llegada":    "02/10/2026",
+      "lineas": {
+        "porte":      { "um": "TN", "cantidad": "24,240", "precio": "19,26", "concepto_esperado": "PI", "iva_esperado": "0" },
+        "indexacion": { "concepto": "GPT", "cantidad": "466,86", "factor": "0,1370" }
+      },
+      "km": { "inicio": "4252", "fin": "4548", "carga": "296" },
+      "tarifa_pendiente": false
+    },
+    {
+      "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
+      "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
+      "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+      "carga":      { "codigo": "1", "buscar": "", "esperado": "COLA" },
+      "referencia": "2027312",
+      "salida":     "01/10/2026",
+      "llegada":    "01/10/2026",
+      "lineas": {
+        "porte":      { "um": "TN", "cantidad": "24,640", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+        "indexacion": { "concepto": "G", "cantidad": "341,26", "factor": "0,1664" }
+      },
+      "km": { "inicio": "4569", "fin": "4693", "carga": "124" },
+      "tarifa_pendiente": false
+    },
+    {
+      "_bloqueo": "NO CARGABLE AUN: destino Montehermoso/Caceres (Acenorca) no existe como punto en Gesruta y no hay tarifa RNM para la ruta. Julio debe dar de alta el punto e indicar tarifa. Incluido para que quede el registro.",
+      "cliente":    { "codigo": "661", "esperado": "RNM TRANSPORTES QUIMICOS, LDA" },
+      "origen":     { "codigo": "AVEIR", "esperado": "AVEIRO" },
+      "destino":    { "codigo": null, "esperado": "MONTEHERMOSO / CACERES (Acenorca)" },
+      "carga":      { "codigo": "51", "buscar": "", "esperado": "SOSA" },
+      "referencia": "0941027205",
+      "salida":     "05/10/2026",
+      "llegada":    "06/10/2026",
+      "lineas": {
+        "porte":      null,
+        "indexacion": null
+      },
+      "km": { "inicio": "5136", "fin": "5604", "carga": "468" },
+      "tarifa_pendiente": true
+    }
+  ]
+}
