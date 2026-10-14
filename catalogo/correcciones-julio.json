@@ -105,6 +105,11 @@
       "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "fuente_de_precios",
       "regla": "Las TARIFAS no se copian aqui (se desactualizan). Viven en sus stores y correcciones-julio solo las referencia. Ver _fuente_tarifas.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-14", "por": "Julio", "cliente": "TODOS", "campo": "estructura viaje (matriculas)",
+      "regla": "Si DENTRO de una misma ficha cambia la TRACTORA o el REMOLQUE, se parte en VIAJES distintos: en Gesruta hay que crear un viaje nuevo para cargar las matriculas nuevas. Cada viaje de la orden lleva una sola tractora+remolque. Ej: shuttle Pedro Fraga (tractora 5358KTF) con remolque R8574BBC en 2 albaranes y R3487BCD en 4 -> 2 viajes, aunque el odometro corra continuo.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {

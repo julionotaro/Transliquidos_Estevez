@@ -14,9 +14,12 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
       "cabecera": {
         "cabeza": "4916",          // código tractora = matrícula sin letras
         "verificar": { "matricula", "remolque", "chofer" },   // valores esperados para verificar
-        "buscar":    { "remolque": "178", "chofer": "JOSE" }  // pocos chars para el buscador
+        "buscar":    { "remolque": "178", "chofer": "JOSE" }  // pocos chars (3 díg) para el buscador
       },
       "albaranes": [ { ...albarán... } ]
+      // REGLA: cada viaje = UNA tractora + UN remolque. Si en la ficha cambia la tractora
+      // o el remolque, se parte en un viaje nuevo (Gesruta crea otro viaje para las
+      // matrículas nuevas), aunque el odómetro corra continuo.
     }
   ]
 }

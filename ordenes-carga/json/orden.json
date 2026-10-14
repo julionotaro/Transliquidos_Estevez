@@ -1,11 +1,12 @@
 {
   "_meta": {
     "origen_datos": "fichas choferes TLE, extraccion 2026-10-09 y 2026-10-14",
-    "viajes": "A Pablo Carles (2), B Nuno Paiva (2 cargables + 1 Pedido), C Jose Carlos Alfonsin (3), D Pedro Fraga shuttle FORESA Caldas->Orense (6)",
+    "viajes": "A Pablo Carles (2), B Nuno Paiva (2 cargables + 1 Pedido), C Jose Carlos Alfonsin (3), D1 Pedro Fraga R8574BBC (2), D2 Pedro Fraga R3487BCD (4). D1+D2 = shuttle FORESA Caldas->Orember partido por cambio de remolque.",
     "notas_bot": [
       "origen: va por CODIGO (el bot borra el autocompletado y escribe el codigo; FORESA autocompleta Caldas=1 igual).",
       "carga: siempre por codigo (catalogo completo en datos/gesruta/materiales.csv).",
-      "albaran con tarifa_pendiente=true -> cargar solo cabecera + km en estado PEDIDO (sin lineas). Ver _bloqueo si destino.codigo es null."
+      "albaran con tarifa_pendiente=true -> cargar solo cabecera + km en estado PEDIDO (sin lineas). Ver _bloqueo si destino.codigo es null.",
+      "cada viaje = UNA tractora + UN remolque. Si en la ficha cambia la tractora o el remolque, es un viaje nuevo (Gesruta necesita crear otro viaje para las matriculas nuevas)."
     ]
   },
   "empresa": "TLE",
@@ -157,10 +158,10 @@
     },
     {
       "cabecera": {
-        "_nota_remolque": "El odometro corre continuo (415513 -> 416834) = un solo viaje/tractora. El remolque cambio: albaranes 2029398 y 2029388 (05/10) con R8574BBC; los otros 4 con R3487BCD. Verificar en pantalla lo que trae la cabeza 5358.",
+        "_nota": "Shuttle FORESA Caldas->Orember partido en 2 viajes por cambio de remolque (regla 2026-10-14: cambio de tractora/remolque = viaje nuevo). Viaje D1 = remolque R8574BBC (05/10).",
         "cabeza": "5358",
-        "verificar": { "matricula": "5358KTF", "remolque": "R3487BCD", "chofer": "PEDRO FRAGA ESTEVEZ" },
-        "buscar":    { "remolque": "348", "chofer": "PEDRO" }
+        "verificar": { "matricula": "5358KTF", "remolque": "R8574BBC", "chofer": "PEDRO FRAGA ESTEVEZ" },
+        "buscar":    { "remolque": "857", "chofer": "PEDRO" }
       },
       "albaranes": [
         {
@@ -192,7 +193,17 @@
           },
           "km": { "inicio": "415759", "fin": "415882", "carga": "123" },
           "tarifa_pendiente": false
-        },
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "_nota": "Viaje D2 del shuttle: remolque R3487BCD (06-09/10).",
+        "cabeza": "5358",
+        "verificar": { "matricula": "5358KTF", "remolque": "R3487BCD", "chofer": "PEDRO FRAGA ESTEVEZ" },
+        "buscar":    { "remolque": "348", "chofer": "PEDRO" }
+      },
+      "albaranes": [
         {
           "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
           "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
