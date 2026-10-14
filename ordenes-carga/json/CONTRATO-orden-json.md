@@ -13,8 +13,10 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
     {
       "cabecera": {
         "cabeza": "4916",          // código tractora = matrícula sin letras
-        "verificar": { "matricula", "remolque", "chofer" },   // valores esperados para verificar
-        "buscar":    { "remolque": "178", "chofer": "JOSE" }  // pocos chars (3 díg) para el buscador
+        "verificar": { "matricula": "4916NJG", "remolque": "R1783BBJ", "chofer": "JOSE CARLOS ALFONSIN" }
+        // matrícula y remolque COMPLETOS y correctos. El bot se encarga de buscarlos:
+        // la extracción NO explica cómo buscar ni manda fragmentos (criterio Julio 2026-10-14:
+        // cuanto más estándar y simple, menos puntos de fallo). SIN objeto "buscar".
       },
       "albaranes": [ { ...albarán... } ]
       // REGLA: cada viaje = UNA tractora + UN remolque. Si en la ficha cambia la tractora
