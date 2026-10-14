@@ -25,13 +25,14 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
 ## Campos del albarán
 
 - `cliente`: `{ "codigo", "esperado" }` — código Gesruta + razón social para verificar.
-- `origen`: **solo el nombre** (string). El bot borra lo que haya y lo escribe (FORESA
-  autocompleta Caldas; se reescribe igual).
+- `origen`: `{ "codigo", "esperado" }` — **por código**, igual que destino (Caldas=1,
+  Barcelona=B, Aveiro=AVEIR). El bot borra el autocompletado y escribe el código (FORESA
+  autocompleta Caldas=1; se reescribe igual).
 - `destino`: `{ "codigo", "esperado" }`. Si el punto no existe en Gesruta → `codigo: null`
-  (albarán no cargable; ver `_bloqueo`).
+  (ver `_bloqueo`; con `tarifa_pendiente: true` se carga como Pedido en cuanto haya punto).
 - `carga`: `{ "codigo", "esperado" }` — **siempre por código** (catálogo completo en
-  `datos/gesruta/materiales.csv`). Si no hay código, el buscador por nombre tampoco lo
-  encontraría → se reporta, no se inventa.
+  `datos/gesruta/materiales.csv`). Si no hay código, se reporta, no se inventa (el buscador
+  por nombre tampoco lo encontraría).
 - `referencia`: string.
 - `salida` / `llegada`: `dd/mm/aaaa` (fecha de carga / descarga reales de la ficha).
 - `lineas.porte`: `{ um: "TN"|"UN", cantidad, precio, concepto_esperado: "P"|"PI", iva_esperado }`.

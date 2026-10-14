@@ -1,11 +1,11 @@
 {
   "_meta": {
-    "origen_datos": "fichas choferes TLE, extraccion 2026-10-09 (km Carles re-verificados 2026-10-14)",
-    "viajes": "A Pablo Carles (2 alb), B Nuno Paiva (2 cargables + 1 bloqueado), C Jose Carlos Alfonsin (3 alb)",
+    "origen_datos": "fichas choferes TLE, extraccion 2026-10-09 y 2026-10-14",
+    "viajes": "A Pablo Carles (2), B Nuno Paiva (2 cargables + 1 Pedido), C Jose Carlos Alfonsin (3), D Pedro Fraga shuttle FORESA Caldas->Orense (6)",
     "notas_bot": [
-      "origen: el bot borra lo que haya y escribe el nombre (FORESA autocompleta Caldas; se reescribe igual).",
-      "carga: siempre va por codigo (catalogo completo en datos/gesruta/materiales.csv).",
-      "albaran con destino.codigo=null o tarifa_pendiente=true -> NO cargar linea; ver _bloqueo."
+      "origen: va por CODIGO (el bot borra el autocompletado y escribe el codigo; FORESA autocompleta Caldas=1 igual).",
+      "carga: siempre por codigo (catalogo completo en datos/gesruta/materiales.csv).",
+      "albaran con tarifa_pendiente=true -> cargar solo cabecera + km en estado PEDIDO (sin lineas). Ver _bloqueo si destino.codigo es null."
     ]
   },
   "empresa": "TLE",
@@ -19,7 +19,7 @@
       "albaranes": [
         {
           "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
-          "origen":     "CALDAS DE REIS",
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
           "destino":    { "codigo": "HARIN", "esperado": "HARINAS ALMELA,SC" },
           "carga":      { "codigo": "1", "esperado": "COLA" },
           "referencia": "2027535",
@@ -34,7 +34,7 @@
         },
         {
           "cliente":    { "codigo": "403", "esperado": "QUIMIDROGA, S.A." },
-          "origen":     "BARCELONA",
+          "origen":     { "codigo": "B", "esperado": "BARCELONA" },
           "destino":    { "codigo": "PADRO", "esperado": "PADRON" },
           "carga":      { "codigo": "62", "esperado": "LISINA" },
           "referencia": "710250",
@@ -58,7 +58,7 @@
       "albaranes": [
         {
           "cliente":    { "codigo": "661", "esperado": "RNM TRANSPORTES QUIMICOS, LDA" },
-          "origen":     "AVEIRO",
+          "origen":     { "codigo": "AVEIR", "esperado": "AVEIRO" },
           "destino":    { "codigo": "PO", "esperado": "PONTEVEDRA" },
           "carga":      { "codigo": "51", "esperado": "SOSA" },
           "referencia": "0141169643",
@@ -73,7 +73,7 @@
         },
         {
           "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
-          "origen":     "CALDAS DE REIS",
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
           "destino":    { "codigo": "OR", "esperado": "OREMBER" },
           "carga":      { "codigo": "1", "esperado": "COLA" },
           "referencia": "2027312",
@@ -87,9 +87,9 @@
           "tarifa_pendiente": false
         },
         {
-          "_bloqueo": "NO CARGAR: destino Montehermoso/Caceres (Acenorca) no existe como punto en Gesruta y RNM no tiene tarifa Aveiro->Caceres ni a provincia cercana (verificado 14/10: Caceres solo esta tarifado desde Vilanova da Rainha, no desde Aveiro). Julio pide tarifa por mail + alta de punto.",
+          "_bloqueo": "Cargar en estado PEDIDO (tarifa_pendiente). Destino Montehermoso/Caceres (Acenorca) sin punto en Gesruta y sin tarifa: Caceres solo esta tarifado desde Vilanova da Rainha, no desde Aveiro (verificado 14/10). Julio pide tarifa por mail + alta del punto.",
           "cliente":    { "codigo": "661", "esperado": "RNM TRANSPORTES QUIMICOS, LDA" },
-          "origen":     "AVEIRO",
+          "origen":     { "codigo": "AVEIR", "esperado": "AVEIRO" },
           "destino":    { "codigo": null, "esperado": "MONTEHERMOSO / CACERES (Acenorca)" },
           "carga":      { "codigo": "51", "esperado": "SOSA" },
           "referencia": "0941027205",
@@ -110,7 +110,7 @@
       "albaranes": [
         {
           "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
-          "origen":     "CALDAS DE REIS",
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
           "destino":    { "codigo": "9731", "esperado": "TORDERA" },
           "carga":      { "codigo": "1", "esperado": "COLA" },
           "referencia": "2028736",
@@ -125,7 +125,7 @@
         },
         {
           "cliente":    { "codigo": "403", "esperado": "QUIMIDROGA, S.A." },
-          "origen":     "BARCELONA",
+          "origen":     { "codigo": "B", "esperado": "BARCELONA" },
           "destino":    { "codigo": "CORTE", "esperado": "CORTEGAÇA(PT)" },
           "carga":      { "codigo": "VINKA", "esperado": "VINKA-PLAST" },
           "referencia": "710701",
@@ -140,7 +140,7 @@
         },
         {
           "cliente":    { "codigo": "661", "esperado": "RNM TRANSPORTES QUIMICOS, LDA" },
-          "origen":     "AVEIRO",
+          "origen":     { "codigo": "AVEIR", "esperado": "AVEIRO" },
           "destino":    { "codigo": "PO", "esperado": "PONTEVEDRA" },
           "carga":      { "codigo": "51", "esperado": "SOSA" },
           "referencia": "0141170178",
@@ -151,6 +151,106 @@
             "indexacion": { "concepto": "GPT", "cantidad": "461,85", "factor": "0,1450" }
           },
           "km": { "inicio": "89381", "fin": "89673", "carga": "292" },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "_nota_remolque": "El odometro corre continuo (415513 -> 416834) = un solo viaje/tractora. El remolque cambio: albaranes 2029398 y 2029388 (05/10) con R8574BBC; los otros 4 con R3487BCD. Verificar en pantalla lo que trae la cabeza 5358.",
+        "cabeza": "5358",
+        "verificar": { "matricula": "5358KTF", "remolque": "R3487BCD", "chofer": "PEDRO FRAGA ESTEVEZ" },
+        "buscar":    { "remolque": "348", "chofer": "PEDRO" }
+      },
+      "albaranes": [
+        {
+          "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+          "carga":      { "codigo": "1", "esperado": "COLA" },
+          "referencia": "2029398",
+          "salida":     "05/10/2026",
+          "llegada":    "05/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "24,320", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "336,83", "factor": "0,1664" }
+          },
+          "km": { "inicio": "415513", "fin": "415637", "carga": "124" },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+          "carga":      { "codigo": "1", "esperado": "COLA" },
+          "referencia": "2029388",
+          "salida":     "05/10/2026",
+          "llegada":    "05/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "24,740", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "342,65", "factor": "0,1664" }
+          },
+          "km": { "inicio": "415759", "fin": "415882", "carga": "123" },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+          "carga":      { "codigo": "1", "esperado": "COLA" },
+          "referencia": "2029393",
+          "salida":     "06/10/2026",
+          "llegada":    "06/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "25,780", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "357,05", "factor": "0,1664" }
+          },
+          "km": { "inicio": "416002", "fin": "416126", "carga": "124" },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+          "carga":      { "codigo": "1", "esperado": "COLA" },
+          "referencia": "2029384",
+          "salida":     "06/10/2026",
+          "llegada":    "06/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "25,640", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "355,11", "factor": "0,1664" }
+          },
+          "km": { "inicio": "416254", "fin": "416377", "carga": "123" },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+          "carga":      { "codigo": "1", "esperado": "COLA" },
+          "referencia": "2029397",
+          "salida":     "08/10/2026",
+          "llegada":    "09/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "26,240", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "363,42", "factor": "0,1664" }
+          },
+          "km": { "inicio": "416454", "fin": "416578", "carga": "124" },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente":    { "codigo": "1", "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A." },
+          "origen":     { "codigo": "1", "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+          "carga":      { "codigo": "1", "esperado": "COLA" },
+          "referencia": "2031077",
+          "salida":     "09/10/2026",
+          "llegada":    "09/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "25,780", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "357,05", "factor": "0,1664" }
+          },
+          "km": { "inicio": "416711", "fin": "416834", "carga": "123" },
           "tarifa_pendiente": false
         }
       ]
