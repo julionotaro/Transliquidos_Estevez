@@ -112,14 +112,24 @@
       "estado": "confirmada"
     },
     {
-      "fecha": "2026-10-15", "por": "derivado de facturacion historica", "cliente": "BRESFOR", "campo": "general",
-      "regla": "BRESFOR IND. DO FORMOL, S.A. = cliente Gesruta cod 42. Carga en AVEIRO (Gafanha da Nazare, Portugal). Sus viajes a Espana son INTERNACIONALES: concepto PI (PORTES INTERNACIONALES), IVA 0. Indexacion: concepto GPT etiquetado 'INDEXACION GASOLEO BRESFOR', factor del grupo FORESA-BRESFOR (oct-2026 = 0,1664). Resinas (RES xxxx) -> carga COLA. Tarifa Aveiro->Teruel (Finsa Cella) = 56,00 EUR/TN. Derivado de linea-facturacion; confirmar con Julio.",
-      "estado": "a_confirmar"
+      "fecha": "2026-10-15", "por": "Julio", "cliente": "BRESFOR", "campo": "general",
+      "regla": "BRESFOR IND. DO FORMOL, S.A. = cliente Gesruta cod 42. Carga en AVEIRO (Gafanha da Nazare, Portugal). Sus viajes a Espana son INTERNACIONALES: concepto PI (PORTES INTERNACIONALES), IVA 0. Indexacion: concepto GPT (los unicos conceptos de indexacion son G nacional / GPT internacional), factor del grupo FORESA-BRESFOR (oct-2026 = 0,1664). Resinas (RES xxxx) -> carga COLA. Tarifa Aveiro->Teruel = 56,00 EUR/TN.",
+      "estado": "confirmada"
     },
     {
-      "fecha": "2026-10-15", "por": "derivado de facturacion historica", "cliente": "FORESA/BRESFOR", "campo": "destino",
-      "regla": "La planta FINSA de Teruel (los docs la nombran 'Finsa Cella', Cella-Teruel) figura en Gesruta como punto 'UTISA TERUEL', cod UTI. Toda la facturacion historica Aveiro/Caldas -> Teruel va a UTISA TERUEL. Tarifa Caldas->Teruel (FORESA) = 56,00 EUR/TN. CONFIRMAR el mapeo Cella=UTI con Julio.",
-      "estado": "a_confirmar"
+      "fecha": "2026-10-15", "por": "Julio", "cliente": "FORESA/BRESFOR", "campo": "destino/tarifa",
+      "regla": "Planta FINSA de Teruel (docs la nombran 'Finsa Cella', Cella-Teruel): se CARGA destino TERUEL (cod TE), porque la TARIFA vive bajo TERUEL en el tarifario (Caldas->TERUEL FORESA 56,00 PN; Aveiro->TERUEL BRESFOR 56,00 PI). El punto UTISA TERUEL (UTI) existe pero NO tiene esa tarifa. Regla general: usar el punto que TIENE la tarifa; si ninguno la tiene, el mas especifico.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-15", "por": "Julio", "cliente": "FORESA", "campo": "indexacion",
+      "regla": "Rutas FORESA Caldas->Orember y Villagarcia->Caldas (Metanol): NO llevan linea de indexacion por albaran. La indexacion de esas rutas se carga en la FACTURACION como un unico importe acumulado del periodo. En la orden del bot: indexacion = null; en el registro: base = porte (sin idx).",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-15", "por": "Julio", "cliente": "BALTRANSA", "campo": "indexacion",
+      "regla": "Baltransa: ademas de la linea de porte (importe unitario que viene en la orden de carga), hay que agregar una segunda linea de INDEXACION con cantidad = 1 e importe = 0 (linea de indexacion en cero).",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {

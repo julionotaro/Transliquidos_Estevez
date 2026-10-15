@@ -33,8 +33,8 @@
             "esperado": "AVEIRO"
           },
           "destino": {
-            "codigo": "UTI",
-            "esperado": "UTISA TERUEL"
+            "codigo": "TE",
+            "esperado": "TERUEL"
           },
           "carga": {
             "codigo": "1",
@@ -63,7 +63,7 @@
             "carga": "877"
           },
           "tarifa_pendiente": false,
-          "_nota": "Destino Finsa Cella (Teruel) mapeado al punto Gesruta UTISA TERUEL (UTI): la facturacion historica de Teruel va asi. VERIFICAR en pantalla."
+          "_destino_nota": "Finsa Cella (Teruel): se carga destino TERUEL (TE), que es donde esta la tarifa (56 EUR/TN). UTISA TERUEL no la tiene."
         },
         {
           "cliente": {
@@ -116,8 +116,8 @@
             "esperado": "CALDAS DE REIS"
           },
           "destino": {
-            "codigo": "UTI",
-            "esperado": "UTISA TERUEL"
+            "codigo": "TE",
+            "esperado": "TERUEL"
           },
           "carga": {
             "codigo": "1",
@@ -145,7 +145,8 @@
             "fin": "879900",
             "carga": "925"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_destino_nota": "Finsa Cella (Teruel): se carga destino TERUEL (TE), que es donde esta la tarifa (56 EUR/TN). UTISA TERUEL no la tiene."
         }
       ]
     }

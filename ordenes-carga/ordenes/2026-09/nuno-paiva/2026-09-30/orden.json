@@ -92,18 +92,15 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": {
-              "concepto": "G",
-              "cantidad": "341,26",
-              "factor": "0,1664"
-            }
+            "indexacion": null
           },
           "km": {
             "inicio": "4569",
             "fin": "4693",
             "carga": "124"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "_bloqueo": "Cargar en estado PEDIDO (tarifa_pendiente). Destino Montehermoso/Caceres (Acenorca) sin punto en Gesruta y sin tarifa: Caceres solo esta tarifado desde Vilanova da Rainha, no desde Aveiro (verificado 14/10). Julio pide tarifa por mail + alta del punto.",

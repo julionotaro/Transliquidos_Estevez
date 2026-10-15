@@ -52,18 +52,15 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": {
-              "concepto": "G",
-              "cantidad": "336,83",
-              "factor": "0,1664"
-            }
+            "indexacion": null
           },
           "km": {
             "inicio": "415513",
             "fin": "415637",
             "carga": "124"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -93,18 +90,15 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": {
-              "concepto": "G",
-              "cantidad": "342,65",
-              "factor": "0,1664"
-            }
+            "indexacion": null
           },
           "km": {
             "inicio": "415759",
             "fin": "415882",
             "carga": "123"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
         }
       ]
     },
@@ -146,18 +140,15 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": {
-              "concepto": "G",
-              "cantidad": "357,05",
-              "factor": "0,1664"
-            }
+            "indexacion": null
           },
           "km": {
             "inicio": "416002",
             "fin": "416126",
             "carga": "124"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -187,18 +178,15 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": {
-              "concepto": "G",
-              "cantidad": "355,11",
-              "factor": "0,1664"
-            }
+            "indexacion": null
           },
           "km": {
             "inicio": "416254",
             "fin": "416377",
             "carga": "123"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -228,18 +216,15 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": {
-              "concepto": "G",
-              "cantidad": "363,42",
-              "factor": "0,1664"
-            }
+            "indexacion": null
           },
           "km": {
             "inicio": "416454",
             "fin": "416578",
             "carga": "124"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -269,18 +254,15 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": {
-              "concepto": "G",
-              "cantidad": "357,05",
-              "factor": "0,1664"
-            }
+            "indexacion": null
           },
           "km": {
             "inicio": "416711",
             "fin": "416834",
             "carga": "123"
           },
-          "tarifa_pendiente": false
+          "tarifa_pendiente": false,
+          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
         }
       ]
     }

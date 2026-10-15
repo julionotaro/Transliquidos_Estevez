@@ -1,17 +1,18 @@
 # Índice de órdenes de carga
 
-Cada orden es un archivo propio (un juego/ficha). No se acumulan en un solo JSON.
-El seguimiento detallado por albarán está en el libro maestro `datos/registro-procesamiento.csv`.
+Estructura: `ordenes-carga/ordenes/<AAAA-MM>/<chofer>/<AAAA-MM-DD>/` con la **ficha del chofer** y la **orden.json** juntas.
+El AAAA-MM y la fecha salen de la **primera fecha de carga** del viaje.
+Seguimiento por albarán: libro maestro `datos/registro-procesamiento.csv`.
 
-| Fecha inicio | Chofer | Cabeza | Remolque(s) | Viajes | Albaranes | Archivo | Estado |
-|---|---|---|---|---|---|---|---|
-| 2026-09-25 | PABLO CARLES | 7963 | PO0628R | 1 | 2 | `orden_2026-09-25_pablo-carles_7963.json` | pendiente_carga |
-| 2026-09-30 | NUNO PAIVA | 8504 | R4905BDF | 1 | 3 | `orden_2026-09-30_nuno-paiva_8504.json` | pendiente_carga |
-| 2026-10-02 | JOSE CARLOS ALFONSIN | 4916 | R1783BBJ | 1 | 3 | `orden_2026-10-02_jose-carlos-alfonsin_4916.json` | pendiente_carga |
-| 2026-10-05 | FRANCISCO ASENSI | 2498 | R1007BCV | 1 | 3 | `orden_2026-10-05_francisco-asensi_2498.json` | pendiente_carga |
-| 2026-10-05 | PEDRO FRAGA ESTEVEZ | 5358 | R3487BCD/R8574BBC | 2 | 6 | `orden_2026-10-05_pedro-fraga-estevez_5358.json` | pendiente_carga |
+| Mes | Fecha inicio | Chofer | Cabeza | Viajes | Albaranes | Carpeta |
+|---|---|---|---|---|---|---|
+| 2026-09 | 2026-09-25 | PABLO CARLES | 7963 | 1 | 2 | `2026-09/pablo-carles/2026-09-25/` |
+| 2026-09 | 2026-09-30 | NUNO PAIVA | 8504 | 1 | 3 | `2026-09/nuno-paiva/2026-09-30/` |
+| 2026-10 | 2026-10-02 | JOSE CARLOS ALFONSIN | 4916 | 1 | 3 | `2026-10/jose-carlos-alfonsin/2026-10-02/` |
+| 2026-10 | 2026-10-05 | FRANCISCO ASENSI | 2498 | 1 | 3 | `2026-10/francisco-asensi/2026-10-05/` |
+| 2026-10 | 2026-10-05 | PEDRO FRAGA ESTEVEZ | 5358 | 2 | 6 | `2026-10/pedro-fraga-estevez/2026-10-05/` |
 
 ## Referencias
-- **Contrato del formato** (qué espera el bot): `ordenes-carga/CONTRATO-orden-json.md`
-- **Libro maestro** (seguimiento por albarán): `datos/registro-procesamiento.csv`
-- Documentos archivados por cliente/mes en `procesados/<CLIENTE>/<YYYY-MM>/`, cada albarán renombrado por su referencia.
+- Contrato del formato: `ordenes-carga/CONTRATO-orden-json.md`
+- Libro maestro: `datos/registro-procesamiento.csv`
+- Documentos por cliente/mes: `procesados/<CLIENTE>/<AAAA-MM>/` (albaranes por referencia).
