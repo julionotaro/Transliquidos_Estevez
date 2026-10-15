@@ -1,0 +1,111 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-09-25",
+    "chofer": "PABLO CARLES",
+    "cabeza": "7963",
+    "remolques": [
+      "PO0628R"
+    ],
+    "viajes": 1,
+    "albaranes": 2,
+    "estado": "pendiente_carga",
+    "source_ficha": "(lote inicial, re-archivado)"
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "7963",
+        "verificar": {
+          "matricula": "7963MDF",
+          "remolque": "PO0628R",
+          "chofer": "PABLO CARLES"
+        }
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "HARIN",
+            "esperado": "HARINAS ALMELA,SC"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2027535",
+          "salida": "25/09/2026",
+          "llegada": "01/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,380",
+              "precio": "64,04",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.561,30",
+              "factor": "0,1386"
+            }
+          },
+          "km": {
+            "inicio": "352600",
+            "fin": "353659",
+            "carga": "1059"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "PADRO",
+            "esperado": "PADRON"
+          },
+          "carga": {
+            "codigo": "62",
+            "esperado": "LISINA"
+          },
+          "referencia": "710250",
+          "salida": "02/10/2026",
+          "llegada": "06/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,680",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.967,24",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "354095",
+            "fin": "355362",
+            "carga": "1267"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

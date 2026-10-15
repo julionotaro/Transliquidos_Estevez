@@ -37,6 +37,12 @@
    "nombre_canonico": "OREMBER",
    "alias": "FINSA OREMBER",
    "_verificado": "Albaran Foresa 20260831183358 casilla 3: 'Finsa Orember, POLIGONO INDUSTRIAL, SAN CIPRIAN DE VIÑAS 32911 Orense'. Julio lo rotulo DESTINO. Es la ruta CALDAS->OREMBER, la mas frecuente de Foresa (586 viajes en el año)."
+  },
+  {
+   "id_punto": "UTI",
+   "nombre_canonico": "UTISA TERUEL",
+   "alias": "FINSA CELLA|FINSA CELLA 2|CELLA",
+   "_inferido": "Docs FORESA/BRESFOR 2026-10 (albaranes 2028845, 2029451) casilla destino: 'Finsa Cella 2, Barrio de la Estacion, CELLA-TERUEL 44370 Teruel'. En Gesruta toda la facturacion historica a la planta Finsa de Teruel va al punto 'UTISA TERUEL' (cod UTI); no existe punto 'CELLA'. PENDIENTE de confirmar con Julio."
   }
  ],
  "_pendientes_punto_faltante": [

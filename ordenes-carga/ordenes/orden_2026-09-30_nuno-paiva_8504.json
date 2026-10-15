@@ -1,0 +1,143 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-09-30",
+    "chofer": "NUNO PAIVA",
+    "cabeza": "8504",
+    "remolques": [
+      "R4905BDF"
+    ],
+    "viajes": 1,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "source_ficha": "(lote inicial, re-archivado)"
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "8504",
+        "verificar": {
+          "matricula": "8504KDR",
+          "remolque": "R4905BDF",
+          "chofer": "NUNO PAIVA"
+        }
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "PO",
+            "esperado": "PONTEVEDRA"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "0141169643",
+          "salida": "30/09/2026",
+          "llegada": "02/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,240",
+              "precio": "19,26",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "466,86",
+              "factor": "0,1370"
+            }
+          },
+          "km": {
+            "inicio": "4252",
+            "fin": "4548",
+            "carga": "296"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2027312",
+          "salida": "01/10/2026",
+          "llegada": "01/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,640",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "341,26",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "4569",
+            "fin": "4693",
+            "carga": "124"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "_bloqueo": "Cargar en estado PEDIDO (tarifa_pendiente). Destino Montehermoso/Caceres (Acenorca) sin punto en Gesruta y sin tarifa: Caceres solo esta tarifado desde Vilanova da Rainha, no desde Aveiro (verificado 14/10). Julio pide tarifa por mail + alta del punto.",
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "MONTEHERMOSO / CACERES (Acenorca)"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "0941027205",
+          "salida": "05/10/2026",
+          "llegada": "06/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "5136",
+            "fin": "5604",
+            "carga": "468"
+          },
+          "tarifa_pendiente": true
+        }
+      ]
+    }
+  ]
+}

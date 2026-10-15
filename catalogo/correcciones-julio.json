@@ -110,6 +110,16 @@
       "fecha": "2026-10-14", "por": "Julio", "cliente": "TODOS", "campo": "estructura viaje (matriculas)",
       "regla": "Si DENTRO de una misma ficha cambia la TRACTORA o el REMOLQUE, se parte en VIAJES distintos: en Gesruta hay que crear un viaje nuevo para cargar las matriculas nuevas. Cada viaje de la orden lleva una sola tractora+remolque. Ej: shuttle Pedro Fraga (tractora 5358KTF) con remolque R8574BBC en 2 albaranes y R3487BCD en 4 -> 2 viajes, aunque el odometro corra continuo.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-15", "por": "derivado de facturacion historica", "cliente": "BRESFOR", "campo": "general",
+      "regla": "BRESFOR IND. DO FORMOL, S.A. = cliente Gesruta cod 42. Carga en AVEIRO (Gafanha da Nazare, Portugal). Sus viajes a Espana son INTERNACIONALES: concepto PI (PORTES INTERNACIONALES), IVA 0. Indexacion: concepto GPT etiquetado 'INDEXACION GASOLEO BRESFOR', factor del grupo FORESA-BRESFOR (oct-2026 = 0,1664). Resinas (RES xxxx) -> carga COLA. Tarifa Aveiro->Teruel (Finsa Cella) = 56,00 EUR/TN. Derivado de linea-facturacion; confirmar con Julio.",
+      "estado": "a_confirmar"
+    },
+    {
+      "fecha": "2026-10-15", "por": "derivado de facturacion historica", "cliente": "FORESA/BRESFOR", "campo": "destino",
+      "regla": "La planta FINSA de Teruel (los docs la nombran 'Finsa Cella', Cella-Teruel) figura en Gesruta como punto 'UTISA TERUEL', cod UTI. Toda la facturacion historica Aveiro/Caldas -> Teruel va a UTISA TERUEL. Tarifa Caldas->Teruel (FORESA) = 56,00 EUR/TN. CONFIRMAR el mapeo Cella=UTI con Julio.",
+      "estado": "a_confirmar"
     }
   ],
   "_fuente_tarifas": {

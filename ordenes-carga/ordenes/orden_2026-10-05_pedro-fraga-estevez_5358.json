@@ -1,0 +1,288 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-05",
+    "chofer": "PEDRO FRAGA ESTEVEZ",
+    "cabeza": "5358",
+    "remolques": [
+      "R3487BCD",
+      "R8574BBC"
+    ],
+    "viajes": 2,
+    "albaranes": 6,
+    "estado": "pendiente_carga",
+    "source_ficha": "(lote inicial, re-archivado)"
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "5358",
+        "verificar": {
+          "matricula": "5358KTF",
+          "remolque": "R8574BBC",
+          "chofer": "PEDRO FRAGA ESTEVEZ"
+        }
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2029398",
+          "salida": "05/10/2026",
+          "llegada": "05/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,320",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "336,83",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "415513",
+            "fin": "415637",
+            "carga": "124"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2029388",
+          "salida": "05/10/2026",
+          "llegada": "05/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,740",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "342,65",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "415759",
+            "fin": "415882",
+            "carga": "123"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "5358",
+        "verificar": {
+          "matricula": "5358KTF",
+          "remolque": "R3487BCD",
+          "chofer": "PEDRO FRAGA ESTEVEZ"
+        }
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2029393",
+          "salida": "06/10/2026",
+          "llegada": "06/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,780",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "357,05",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "416002",
+            "fin": "416126",
+            "carga": "124"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2029384",
+          "salida": "06/10/2026",
+          "llegada": "06/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,640",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "355,11",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "416254",
+            "fin": "416377",
+            "carga": "123"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2029397",
+          "salida": "08/10/2026",
+          "llegada": "09/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "26,240",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "363,42",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "416454",
+            "fin": "416578",
+            "carga": "124"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2031077",
+          "salida": "09/10/2026",
+          "llegada": "09/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,780",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "357,05",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "416711",
+            "fin": "416834",
+            "carga": "123"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

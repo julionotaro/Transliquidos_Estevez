@@ -1,0 +1,153 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-05",
+    "chofer": "FRANCISCO ASENSI",
+    "cabeza": "2498",
+    "remolques": [
+      "R1007BCV"
+    ],
+    "viajes": 1,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261015125839.pdf"
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2498",
+        "verificar": {
+          "matricula": "2498KZL",
+          "remolque": "R1007BCV",
+          "chofer": "FRANCISCO ASENSI"
+        }
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "UTI",
+            "esperado": "UTISA TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2028845",
+          "salida": "05/10/2026",
+          "llegada": "06/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,840",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.335,04",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "876455",
+            "fin": "877332",
+            "carga": "877"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "Destino Finsa Cella (Teruel) mapeado al punto Gesruta UTISA TERUEL (UTI): la facturacion historica de Teruel va asi. VERIFICAR en pantalla."
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "BEGON",
+            "esperado": "BEGONTE"
+          },
+          "carga": {
+            "codigo": "SALMO",
+            "esperado": "SALMO-GAL"
+          },
+          "referencia": "710690",
+          "salida": "07/10/2026",
+          "llegada": "09/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,840",
+              "precio": "74,73",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.781,56",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "877797",
+            "fin": "878840",
+            "carga": "1043"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "UTI",
+            "esperado": "UTISA TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2029451",
+          "salida": "09/10/2026",
+          "llegada": "10/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,740",
+              "precio": "56,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.329,44",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "878975",
+            "fin": "879900",
+            "carga": "925"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

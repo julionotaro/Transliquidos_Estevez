@@ -1,0 +1,152 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-02",
+    "chofer": "JOSE CARLOS ALFONSIN",
+    "cabeza": "4916",
+    "remolques": [
+      "R1783BBJ"
+    ],
+    "viajes": 1,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "source_ficha": "(lote inicial, re-archivado)"
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "4916",
+        "verificar": {
+          "matricula": "4916NJG",
+          "remolque": "R1783BBJ",
+          "chofer": "JOSE CARLOS ALFONSIN"
+        }
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2028736",
+          "salida": "02/10/2026",
+          "llegada": "05/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "22,940",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.659,94",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "86816",
+            "fin": "88016",
+            "carga": "1200"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "CORTE",
+            "esperado": "CORTEGAÇA(PT)"
+          },
+          "carga": {
+            "codigo": "VINKA",
+            "esperado": "VINKA-PLAST"
+          },
+          "referencia": "710701",
+          "salida": "06/10/2026",
+          "llegada": "08/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "22,220",
+              "precio": "84,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.881,59",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "88143",
+            "fin": "89313",
+            "carga": "1170"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "PO",
+            "esperado": "PONTEVEDRA"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "0141170178",
+          "salida": "08/10/2026",
+          "llegada": "09/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,980",
+              "precio": "19,26",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "461,85",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "89381",
+            "fin": "89673",
+            "carga": "292"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
