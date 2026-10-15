@@ -62,8 +62,8 @@
       "estado": "confirmada"
     },
     {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "archivo_procesados",
-      "regla": "Al mover PDFs a procesados/, organizarlos por CLIENTE y MES de inicio del viaje (fecha de carga): procesados/<CLIENTE>/<YYYY-MM>/. El documento de transporte de cada albaran va a la carpeta de SU cliente/mes. La ficha (compartida por varios albaranes/clientes) se copia a la carpeta de cada cliente del viaje, para que cada carpeta quede autocontenida con todo lo que genero ese albaran.",
+      "fecha": "2026-10-15", "por": "Julio", "cliente": "TODOS", "campo": "archivo_procesados",
+      "regla": "DOS archivos con rol distinto, sin duplicar: (1) procesados/<CLIENTE>/<YYYY-MM>/ guarda SOLO los documentos de transporte (albaranes) de cada albaran, renombrados por su Nº de referencia, en la carpeta de su cliente y mes de carga. (2) La FICHA del chofer vive en UN SOLO lugar: ordenes-carga/ordenes/<YYYY-MM>/<chofer>/<YYYY-MM-DD>/, junto a la orden.json de ese viaje. La ficha NO se copia a procesados.",
       "estado": "confirmada"
     },
     {

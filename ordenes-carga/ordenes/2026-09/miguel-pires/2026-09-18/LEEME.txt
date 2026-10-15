@@ -1,0 +1,1 @@
+Juego del lote inicial (procesado antes del formato orden.json). Solo ficha; sin orden.json. Detalle en datos/registro-procesamiento.csv.
