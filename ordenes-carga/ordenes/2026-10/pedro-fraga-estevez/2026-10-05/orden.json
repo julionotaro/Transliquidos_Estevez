@@ -64,7 +64,8 @@
           "km": {
             "inicio": "415513",
             "fin": "415637",
-            "carga": "124"
+            "carga": "124",
+            "vacio": "123"
           },
           "tarifa_pendiente": false,
           "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
@@ -107,7 +108,8 @@
           "km": {
             "inicio": "415759",
             "fin": "415882",
-            "carga": "123"
+            "carga": "123",
+            "vacio": "124"
           },
           "tarifa_pendiente": false,
           "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
@@ -163,7 +165,8 @@
           "km": {
             "inicio": "416002",
             "fin": "416126",
-            "carga": "124"
+            "carga": "124",
+            "vacio": "123"
           },
           "tarifa_pendiente": false,
           "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
@@ -206,7 +209,8 @@
           "km": {
             "inicio": "416254",
             "fin": "416377",
-            "carga": "123"
+            "carga": "123",
+            "vacio": "124"
           },
           "tarifa_pendiente": false,
           "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
@@ -249,7 +253,8 @@
           "km": {
             "inicio": "416454",
             "fin": "416578",
-            "carga": "124"
+            "carga": "124",
+            "vacio": "123"
           },
           "tarifa_pendiente": false,
           "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
@@ -292,7 +297,8 @@
           "km": {
             "inicio": "416711",
             "fin": "416834",
-            "carga": "123"
+            "carga": "123",
+            "vacio": "124"
           },
           "tarifa_pendiente": false,
           "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."

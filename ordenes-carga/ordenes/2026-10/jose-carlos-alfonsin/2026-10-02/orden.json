@@ -62,7 +62,8 @@
           "km": {
             "inicio": "86816",
             "fin": "88016",
-            "carga": "1200"
+            "carga": "1200",
+            "vacio": "127"
           },
           "tarifa_pendiente": false
         },
@@ -103,7 +104,8 @@
           "km": {
             "inicio": "88143",
             "fin": "89313",
-            "carga": "1170"
+            "carga": "1170",
+            "vacio": "68"
           },
           "tarifa_pendiente": false
         },
@@ -144,7 +146,8 @@
           "km": {
             "inicio": "89381",
             "fin": "89673",
-            "carga": "292"
+            "carga": "292",
+            "vacio": "42"
           },
           "tarifa_pendiente": false
         }
