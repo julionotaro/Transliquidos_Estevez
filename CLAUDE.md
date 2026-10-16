@@ -78,3 +78,11 @@ normalización. El byte `0xA5` es `Ñ`.
 Criterio de éxito: la suite en verde. Los tests de dominio (rotaciones Foresa, deduplicación, peso de
 origen) son regresiones críticas: si uno rompe, **parar y reportar** — puede ser una regla correcta
 que el encargo nuevo no contempló.
+
+## Validador del pipeline TLE-carga (OBLIGATORIO antes de cada commit)
+
+Correr **`python3 -I herramientas/validar_carga.py`** antes de commitear cambios en órdenes,
+registro o catálogo. Chequea: JSON de catálogo válidos; registro con 28 columnas y **sin `;` en
+observaciones** (bug recurrente), `pdf_doc` existente y `total ≈ base·(1+iva)`; esquema de cada
+`orden.json`; y que cada carpeta de orden tenga su ficha. Si falla (exit 1), **no commitear**:
+arreglar primero.
