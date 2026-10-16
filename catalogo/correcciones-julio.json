@@ -113,7 +113,7 @@
     },
     {
       "fecha": "2026-10-15", "por": "Julio", "cliente": "BRESFOR", "campo": "general",
-      "regla": "BRESFOR IND. DO FORMOL, S.A. = cliente Gesruta cod 42. Carga en AVEIRO (Gafanha da Nazare, Portugal). Sus viajes a Espana son INTERNACIONALES: concepto PI (PORTES INTERNACIONALES), IVA 0. Indexacion: concepto GPT (los unicos conceptos de indexacion son G nacional / GPT internacional), factor del grupo FORESA-BRESFOR (oct-2026 = 0,1664). Resinas (RES xxxx) -> carga COLA. Tarifa Aveiro->Teruel = 56,00 EUR/TN.",
+      "regla": "BRESFOR IND. DO FORMOL, S.A. = cliente Gesruta cod 42. Carga en AVEIRO (Gafanha da Nazare, Portugal). Sus viajes a Espana son INTERNACIONALES: concepto PI (PORTES INTERNACIONALES), IVA 0. Indexacion: concepto GPT (los unicos conceptos de indexacion son G nacional / GPT internacional), factor del grupo FORESA-BRESFOR (oct-2026 = 0,1664). Resinas (RES xxxx) -> carga COLA. Tarifa Aveiro->Teruel = 56,00 EUR/TN. REFERENCIA = el Nº que empieza en 5050 (el 'Doc int' del CMR, que es el Nº de albaran de la guia de remessa, el mismo que aparece en el ticket FINSA), NO el corto 20xxxxx. (OJO: distinto de FORESA, que SI usa el corto 20xxxxx).",
       "estado": "confirmada"
     },
     {
@@ -122,13 +122,18 @@
       "estado": "confirmada"
     },
     {
-      "fecha": "2026-10-15", "por": "Julio", "cliente": "FORESA", "campo": "indexacion",
-      "regla": "Rutas FORESA Caldas->Orember y Villagarcia->Caldas (Metanol): NO llevan linea de indexacion por albaran. La indexacion de esas rutas se carga en la FACTURACION como un unico importe acumulado del periodo. En la orden del bot: indexacion = null; en el registro: base = porte (sin idx).",
+      "fecha": "2026-10-16", "por": "Julio", "cliente": "FORESA", "campo": "indexacion",
+      "regla": "Rutas FORESA Caldas->Orember y Villagarcia->Caldas (Metanol): la indexacion NO se carga como linea por albaran en Gesruta (se carga en la FACTURACION como un unico importe acumulado del periodo). PERO el importe SIEMPRE se calcula y se guarda, para control de totales de facturacion: en el LIBRO MAESTRO (registro) la base/total incluyen la idx (factor 0,1664) con marca 'IDX ACUMULADA'; en la ORDEN del bot la indexacion va con el importe y el flag 'cargar': false (el bot no la carga por albaran, pero el dato esta). Resolucion acordada con Julio 2026-10-16.",
       "estado": "confirmada"
     },
     {
       "fecha": "2026-10-15", "por": "Julio", "cliente": "BALTRANSA", "campo": "indexacion",
       "regla": "Baltransa: ademas de la linea de porte (importe unitario que viene en la orden de carga), hay que agregar una segunda linea de INDEXACION con cantidad = 1 e importe = 0 (linea de indexacion en cero).",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-16", "por": "Julio", "cliente": "TODOS", "campo": "chofer_tipo/kilometros",
+      "regla": "Choferes AUTONOMOS (hoy solo 3: FRAGA, ALFONSIN, ABAL) vs PROPIOS. En Gesruta (empresa TLE): PROPIO -> km en el formulario Kilometros + viaticos en Gastos. AUTONOMO -> SIN viaticos y los KM van en GASTOS (no en el formulario Kilometros). Los autonomos anotan en su ficha km CARGADOS y km VACIOS (cada uno con su formato); hay que extraer AMBOS y pasarlos en cada linea de albaran (km.carga y km.vacio). En la orden: cabecera.tipo = 'propio' | 'autonomo'.",
       "estado": "confirmada"
     }
   ],

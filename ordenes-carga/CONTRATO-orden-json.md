@@ -43,11 +43,24 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
 - `lineas.porte`: `{ um: "TN"|"UN", cantidad, precio, concepto_esperado: "P"|"PI", iva_esperado }`.
   Números con **coma decimal** y punto de miles (`"1.561,30"`). Los kg no van. UN = precio
   fijo con cantidad "1".
-- `lineas.indexacion`: `null` si no aplica; si aplica `{ concepto: "G"|"GPT", cantidad, factor }`
-  donde `cantidad` = importe del porte y `factor` = factor de la quincena.
-- `km`: `{ inicio, fin, carga }` como enteros string, sin separador de miles. `carga` = fin − inicio.
-  El vacío entre albaranes lo calcula el bot en pantalla.
+- `lineas.indexacion`: `null` si no aplica; si aplica `{ concepto: "G"|"GPT", cantidad, factor, cargar? }`
+  donde `cantidad` = importe del porte y `factor` = factor de la quincena. Conceptos: **solo
+  G (nacional) o GPT (internacional)**. `cargar` (opcional, default `true`): si es `false`, el
+  importe se conoce (queda para control de totales) pero el bot **NO** carga la línea por albarán;
+  esa indexación se acumula en facturación (p.ej. FORESA Caldas→Orember, metanol).
+- `km`: `{ inicio, fin, carga, vacio? }` como enteros string, sin separador de miles. `carga` =
+  fin − inicio. Para chofer **propio** el vacío lo calcula el bot en pantalla; para **autónomo**
+  va explícito en `vacio` (sale de la ficha) porque sus km se cargan en *Gastos*, no en el
+  formulario Kilómetros.
 - `tarifa_pendiente`: `true` → solo cabecera + km, Estado "Pedido" (sin líneas). `false` normal.
+
+## Cabecera — campos extra
+
+- `cabecera.tipo`: `"propio"` | `"autonomo"`. Autónomo (hoy Fraga, Alfonsín, Abal) → km en
+  *Gastos*, sin viáticos; la orden trae `km.vacio` por albarán.
+- **A futuro** (ver `docs/flujos-carga.md`): `empresa` (TLE/THEC/PROVE + `proveedor`),
+  `viaje_tipo` (convencional/metanol/frigo) y `gastos`. Todavía NO implementados; hoy solo
+  flujo convencional TLE.
 
 ## Reglas de seguridad para el bot
 

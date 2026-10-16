@@ -10,7 +10,8 @@
     "viajes": 1,
     "albaranes": 3,
     "estado": "pendiente_carga",
-    "source_ficha": "(lote inicial, re-archivado)"
+    "source_ficha": "(lote inicial, re-archivado)",
+    "choferes_tipo": "propio"
   },
   "viajes": [
     {
@@ -20,7 +21,8 @@
           "matricula": "8504KDR",
           "remolque": "R4905BDF",
           "chofer": "NUNO PAIVA"
-        }
+        },
+        "tipo": "propio"
       },
       "albaranes": [
         {
@@ -92,7 +94,12 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": null
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "341,26",
+              "factor": "0,1664",
+              "cargar": false
+            }
           },
           "km": {
             "inicio": "4569",
@@ -100,7 +107,7 @@
             "carga": "124"
           },
           "tarifa_pendiente": false,
-          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
+          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "_bloqueo": "Cargar en estado PEDIDO (tarifa_pendiente). Destino Montehermoso/Caceres (Acenorca) sin punto en Gesruta y sin tarifa: Caceres solo esta tarifado desde Vilanova da Rainha, no desde Aveiro (verificado 14/10). Julio pide tarifa por mail + alta del punto.",

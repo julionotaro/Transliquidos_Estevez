@@ -10,7 +10,8 @@
     "viajes": 1,
     "albaranes": 2,
     "estado": "pendiente_carga",
-    "source_ficha": "(lote inicial, re-archivado)"
+    "source_ficha": "(lote inicial, re-archivado)",
+    "choferes_tipo": "propio"
   },
   "viajes": [
     {
@@ -20,7 +21,8 @@
           "matricula": "7963MDF",
           "remolque": "PO0628R",
           "chofer": "PABLO CARLES"
-        }
+        },
+        "tipo": "propio"
       },
       "albaranes": [
         {

@@ -11,7 +11,8 @@
     "viajes": 2,
     "albaranes": 6,
     "estado": "pendiente_carga",
-    "source_ficha": "(lote inicial, re-archivado)"
+    "source_ficha": "(lote inicial, re-archivado)",
+    "choferes_tipo": "autonomo"
   },
   "viajes": [
     {
@@ -21,7 +22,8 @@
           "matricula": "5358KTF",
           "remolque": "R8574BBC",
           "chofer": "PEDRO FRAGA ESTEVEZ"
-        }
+        },
+        "tipo": "autonomo"
       },
       "albaranes": [
         {
@@ -52,7 +54,12 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": null
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "336,83",
+              "factor": "0,1664",
+              "cargar": false
+            }
           },
           "km": {
             "inicio": "415513",
@@ -60,7 +67,7 @@
             "carga": "124"
           },
           "tarifa_pendiente": false,
-          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
+          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -90,7 +97,12 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": null
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "342,65",
+              "factor": "0,1664",
+              "cargar": false
+            }
           },
           "km": {
             "inicio": "415759",
@@ -98,7 +110,7 @@
             "carga": "123"
           },
           "tarifa_pendiente": false,
-          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
+          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
         }
       ]
     },
@@ -109,7 +121,8 @@
           "matricula": "5358KTF",
           "remolque": "R3487BCD",
           "chofer": "PEDRO FRAGA ESTEVEZ"
-        }
+        },
+        "tipo": "autonomo"
       },
       "albaranes": [
         {
@@ -140,7 +153,12 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": null
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "357,05",
+              "factor": "0,1664",
+              "cargar": false
+            }
           },
           "km": {
             "inicio": "416002",
@@ -148,7 +166,7 @@
             "carga": "124"
           },
           "tarifa_pendiente": false,
-          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
+          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -178,7 +196,12 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": null
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "355,11",
+              "factor": "0,1664",
+              "cargar": false
+            }
           },
           "km": {
             "inicio": "416254",
@@ -186,7 +209,7 @@
             "carga": "123"
           },
           "tarifa_pendiente": false,
-          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
+          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -216,7 +239,12 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": null
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "363,42",
+              "factor": "0,1664",
+              "cargar": false
+            }
           },
           "km": {
             "inicio": "416454",
@@ -224,7 +252,7 @@
             "carga": "124"
           },
           "tarifa_pendiente": false,
-          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
+          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
         },
         {
           "cliente": {
@@ -254,7 +282,12 @@
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
-            "indexacion": null
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "357,05",
+              "factor": "0,1664",
+              "cargar": false
+            }
           },
           "km": {
             "inicio": "416711",
@@ -262,7 +295,7 @@
             "carga": "123"
           },
           "tarifa_pendiente": false,
-          "_idx": "Sin linea de indexacion: FORESA Caldas->Orember se indexa acumulado en facturacion."
+          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
         }
       ]
     }

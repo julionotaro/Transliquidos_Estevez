@@ -10,7 +10,8 @@
     "viajes": 1,
     "albaranes": 3,
     "estado": "pendiente_carga",
-    "source_ficha": "20261015125839.pdf"
+    "source_ficha": "20261015125839.pdf",
+    "choferes_tipo": "propio"
   },
   "viajes": [
     {
@@ -20,7 +21,8 @@
           "matricula": "2498KZL",
           "remolque": "R1007BCV",
           "chofer": "FRANCISCO ASENSI"
-        }
+        },
+        "tipo": "propio"
       },
       "albaranes": [
         {
@@ -40,7 +42,7 @@
             "codigo": "1",
             "esperado": "COLA"
           },
-          "referencia": "2028845",
+          "referencia": "5050141127",
           "salida": "05/10/2026",
           "llegada": "06/10/2026",
           "lineas": {

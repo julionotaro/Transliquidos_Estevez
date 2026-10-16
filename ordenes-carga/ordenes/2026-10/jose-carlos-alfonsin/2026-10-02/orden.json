@@ -10,7 +10,8 @@
     "viajes": 1,
     "albaranes": 3,
     "estado": "pendiente_carga",
-    "source_ficha": "(lote inicial, re-archivado)"
+    "source_ficha": "(lote inicial, re-archivado)",
+    "choferes_tipo": "autonomo"
   },
   "viajes": [
     {
@@ -20,7 +21,8 @@
           "matricula": "4916NJG",
           "remolque": "R1783BBJ",
           "chofer": "JOSE CARLOS ALFONSIN"
-        }
+        },
+        "tipo": "autonomo"
       },
       "albaranes": [
         {
