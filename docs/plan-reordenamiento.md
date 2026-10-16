@@ -101,6 +101,15 @@ archivo de cliente como fuente. No duplicar importes en `correcciones` (ya se li
   archivos), `prompts/`, `briefs/`, `pruebas/` son de la etapa anterior (n8n). Decidir si este
   repo es SOLO el pipeline TLE-carga (y mover lo demás a `archivo/` o a otro repo) o sigue siendo
   el repo global. No borrar nada sin confirmar.
+- **MINAR ANTES DE ARCHIVAR (revisado 2026-10-16).** Esas carpetas NO son chatarra: tienen
+  conocimiento que hoy NO usamos y nos sirve. Confirmado al inspeccionarlas:
+  `ficha/conductores.js` (autónomos Abal/Fraga/Alfonsín + regla token, no substring),
+  `informes/rutas-sin-tarifa.md` (42 rutas reales sin tarifa → backlog),
+  `ficha/flota.js` (padrón tractora/remolque/chofer), `catalogo/rutas-por-cliente.json`
+  (rutas conocidas por cliente, evita destinos imposibles), `ficha/indexacion.js` /
+  `periodo-facturacion.js` / `odometro.js` / `tarifa-contractual.js` (lógica de dominio).
+  Plan: tratar `ficha/` como **`referencia/`** (no archivar), cosechar lo vigente al catálogo
+  activo, y archivar solo la plomería n8n muerta (`nodo-*.generated.js`, wrappers, `build-nodo.js`).
 
 ## 7. Plan por fases
 

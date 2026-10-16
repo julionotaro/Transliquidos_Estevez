@@ -43,3 +43,26 @@ real en Gesruta con su precio para que autocomplete.
 
 ---
 _Fuentes: `catalogo/alias-empresa-punto.json`, `catalogo/tarifa-por-analogia.json`, `datos/gesruta/tarifarios/`, `datos/registro-procesamiento.csv`._
+
+## E. Rutas reales facturadas SIN tarifa oficial (rescatado de la etapa n8n)
+
+Fuente: `informes/rutas-sin-tarifa.md` (42 rutas del export anual, con Nº de viajes reales y
+último precio). Son candidatas fuertes a cargar en Gesruta. Las de mayor volumen:
+
+- [ ] **BRESFOR Aveiro→UTISA TERUEL** COLA — 336 viajes, últ. 54,9 €/TN. *(ver discrepancia abajo)*
+- [ ] **FORESA Caldas→UTISA TERUEL** COLA — 178 viajes, últ. **60,66** €/TN (4 precios distintos). *(ver discrepancia)*
+- [ ] **FORESA Caldas→IP Decor (Tordera)** COLA — 167 viajes, 72,36.
+- [ ] **QUIMIDROGA Miranda de Ebro→Braga(PT)** MEXIFLEX — 78 viajes, 61,65.
+- [ ] **FORESA Villagarcía→Curia / Cogersa** METANOL — 73 / 34 viajes.
+- [ ] **FORESA Caldas→Harinas Almela (Enguera)** COLA — 41 viajes, 64,04. *(coincide con lo que usamos)*
+- [ ] **BALTRANSA Valdemoro→Curtis/Coruña/…** SOSA/ácidos — precio fijo UN (~1.150).
+- [ ] (resto de 42 rutas en el informe)
+
+## ⚠️ DISCREPANCIA A RESOLVER — tarifa FORESA Caldas→Teruel
+
+- General de Gesruta (vigente ~abr-jul 2026): **56,00 €/TN** bajo punto **TERUEL (TE)**.
+- Histórico facturado (informe): **60,66 €/TN** (4 precios distintos) bajo **UTISA TERUEL**.
+- BRESFOR Aveiro→Teruel: general 56,00 vs histórico 54,9.
+- **Usé 56,00** (del general) en el juego de Asensi (albaranes 2029451 y 5050141127).
+- **Confirmar con Julio cuál es la tarifa VIGENTE** para Caldas→Teruel y Aveiro→Teruel; si no es
+  56,00 hay que corregir esos albaranes.
