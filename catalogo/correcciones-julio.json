@@ -123,7 +123,7 @@
     },
     {
       "fecha": "2026-10-16", "por": "Julio", "cliente": "FORESA", "campo": "indexacion",
-      "regla": "Rutas FORESA Caldas->Orember y Villagarcia->Caldas (Metanol): la indexacion NO se carga como linea por albaran en Gesruta (se carga en la FACTURACION como un unico importe acumulado del periodo). PERO el importe SIEMPRE se calcula y se guarda, para control de totales de facturacion: en el LIBRO MAESTRO (registro) la base/total incluyen la idx (factor 0,1664) con marca 'IDX ACUMULADA'; en la ORDEN del bot la indexacion va con el importe y el flag 'cargar': false (el bot no la carga por albaran, pero el dato esta). Resolucion acordada con Julio 2026-10-16.",
+      "regla": "Servicios FORESA con indexacion ACUMULADA (no linea por albaran): destino OREMBER (cualquier origen; 702 albaranes historicos) y Villagarcia->Caldas METANOL (236 albaranes). Fuente: ficha/periodo-facturacion.js (SERVICIOS_AGREGADOS_FORESA), confirmado por Julio. La idx NO se carga como linea por albaran (se acumula en facturacion), PERO el importe SIEMPRE se calcula y se guarda para control de totales: en el LIBRO MAESTRO base/total incluyen la idx (grupo FORESA-BRESFOR) con marca 'IDX ACUMULADA'; en la ORDEN va con el flag 'cargar': false. El resto de servicios FORESA (otros destinos, retornos) SI se indexan por linea.",
       "estado": "confirmada"
     },
     {

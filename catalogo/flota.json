@@ -1,0 +1,160 @@
+{
+ "_nota": "Padron de flota (tractora -> remolque habitual -> chofer). Cosechado de ficha/flota.js (export Gesruta real). Sirve para VERIFICAR la cabecera: si la ficha trae una matricula/chofer que no coincide, parar. tipo: autonomo si el apellido (token exacto) es ABAL/FRAGA/ALFONSIN; OJO ABAL != ABALO/ABELO.",
+ "tractoras": {
+  "0275JLC": {
+   "remolque": "R1943BBL",
+   "chofer": "JOSE ENRIQUE ARIAS",
+   "tipo": "propio"
+  },
+  "0332LPL": {
+   "remolque": "CR03804R",
+   "chofer": "JUAN MANUEL ABAL",
+   "tipo": "autonomo"
+  },
+  "0557JMS": {
+   "remolque": "PO1956R",
+   "chofer": "MIGUEL PIRES",
+   "tipo": "propio"
+  },
+  "1017JZT": {
+   "remolque": "R3546BBG",
+   "chofer": "PEDRO OTERO",
+   "tipo": "propio"
+  },
+  "2050MZY": {
+   "remolque": "R2006BDT",
+   "chofer": "JOSE MANUEL PAZ",
+   "tipo": "propio"
+  },
+  "2256JYX": {
+   "remolque": "R3546BBG",
+   "chofer": "MANUEL SABARIS",
+   "tipo": "propio"
+  },
+  "2498KZL": {
+   "remolque": "R1007BCV",
+   "chofer": "FRANCISCO ASENSI",
+   "tipo": "propio"
+  },
+  "2541HPJ": {
+   "remolque": "PO2628R",
+   "chofer": "PABLO CARLES SANTOS",
+   "tipo": "propio"
+  },
+  "3729JLH": {
+   "remolque": "R7749BDB",
+   "chofer": "MARCOS EIRIN FERNANDEZ",
+   "tipo": "propio"
+  },
+  "3729JWP": {
+   "remolque": "PO2662R",
+   "chofer": "CARLOS ABALO QUINTELA",
+   "tipo": "propio"
+  },
+  "4530MXP": {
+   "remolque": "R3546BBG",
+   "chofer": "PEDRO OTERO",
+   "tipo": "propio"
+  },
+  "4916NJG": {
+   "remolque": "R1783BBJ",
+   "chofer": "JOSE CARLOS ALFONSIN",
+   "tipo": "autonomo"
+  },
+  "5132LMC": {
+   "remolque": "R9520BCV",
+   "chofer": "JOSE CARLOS RODRIGUEZ",
+   "tipo": "propio"
+  },
+  "5358KTF": {
+   "remolque": "R8574BBC",
+   "chofer": "PEDRO FRAGA",
+   "tipo": "autonomo"
+  },
+  "5630GCS": {
+   "remolque": "R0110BBG",
+   "chofer": "TRANSBUA, S.L.",
+   "tipo": "propio"
+  },
+  "5713LMN": {
+   "remolque": "R1639BDD",
+   "chofer": "MANUEL ABOY GONZALEZ",
+   "tipo": "propio"
+  },
+  "5820JDK": {
+   "remolque": "R1639BDD",
+   "chofer": "MANUEL ABOY GONZALEZ",
+   "tipo": "propio"
+  },
+  "6124HZT": {
+   "remolque": "R8839BDR",
+   "chofer": "LUIS M. TRINANES",
+   "tipo": "propio"
+  },
+  "6516KTH": {
+   "remolque": "R1644BDB",
+   "chofer": "JOSE RUBEN ABALO RECUNA",
+   "tipo": "propio"
+  },
+  "6792HZR": {
+   "remolque": null,
+   "chofer": null,
+   "tipo": ""
+  },
+  "7010JJY": {
+   "remolque": null,
+   "chofer": "URBANO ALONSO LAMAS",
+   "tipo": "propio"
+  },
+  "7347LBB": {
+   "remolque": "R9990BDD",
+   "chofer": "RODRIGO PEREZ BAHAMONDE",
+   "tipo": "propio"
+  },
+  "7394LZP": {
+   "remolque": null,
+   "chofer": "JOSE ANTONIO VAZQUEZ HERMO",
+   "tipo": "propio"
+  },
+  "7585MCG": {
+   "remolque": null,
+   "chofer": "JACOBO GRANDE MENDEZ",
+   "tipo": "propio"
+  },
+  "7963MDF": {
+   "remolque": "PO2628R",
+   "chofer": "PABLO CARLES SANTOS",
+   "tipo": "propio"
+  },
+  "8066HZR": {
+   "remolque": null,
+   "chofer": "BREOGAN MARQUEZ",
+   "tipo": "propio"
+  },
+  "8262MNC": {
+   "remolque": "R4714BCX",
+   "chofer": "CANDIDO JAMARDO",
+   "tipo": "propio"
+  },
+  "8420KKT": {
+   "remolque": "R3697BDK",
+   "chofer": "JOSE RAMON PINEIRO",
+   "tipo": "propio"
+  },
+  "8504KDR": {
+   "remolque": "R4905BDF",
+   "chofer": "NUNO FILIPE",
+   "tipo": "propio"
+  },
+  "9039KDR": {
+   "remolque": "R7936BCV",
+   "chofer": "MANUEL FERREIRA GOLDAR",
+   "tipo": "propio"
+  },
+  "9223FPD": {
+   "remolque": "R1829BBB",
+   "chofer": "MANUEL FERREIRA GOLDAR",
+   "tipo": "propio"
+  }
+ }
+}
