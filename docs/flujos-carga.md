@@ -70,6 +70,10 @@ Es el flujo que ya estamos haciendo (TLE propio y autónomo). Falta el camino TH
 Tipos: **lavaderos · gasoil · AdBlue · taller · ITV · dietas/viáticos**. Hoy solo registramos
 dietas/viáticos y, para autónomos, km. Falta definir cómo se cargan los demás.
 
+- **Autónomos (Alfonsín, Abal, Fraga) con tractora propia:** sus km van en **Gastos** con los
+  conceptos de Gesruta **KILOMETROS** (= `km.carga`) y **KILOMETROS EN VACIO** (= `km.vacio`),
+  NO en el formulario Kilómetros. La extracción ya entrega `km.carga`, `km.vacio` y `cabecera.tipo`.
+
 ---
 
 ## Qué implica para el formato `orden.json` (propuesta, a confirmar)
