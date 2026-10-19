@@ -37,9 +37,17 @@ docs físicos/email → entrada/ (git)
 "re-codea" por juego — ese es el eslabón que hay que eliminar (no escala a 20/día y se rompe al
 perder contexto).
 
-## Estado del bot v1 (congelado — registro durable por si se pierde el chat del escritorio)
+## Bot — resumen REPORTADO POR JULIO (no es el código; dominio del chat de escritorio)
 
-`robot_viajes.py` (pyautogui + Win32), TLE:
+> ⚠️ **Aclaración de alcance.** Esto NO es el código del bot ni lo generé yo: es la
+> transcripción de lo que Julio me pegó del chat de escritorio. **No tengo acceso al código
+> del bot.** Por la división de tareas acordada (yo = extracción de datos; chat de escritorio =
+> bot), **el código y el spec autoritativo del bot los versiona el chat de escritorio**, no yo.
+> Lo dejo acá SOLO como respaldo de contexto (por la compresión) hasta que el chat de escritorio
+> lo suba a git como corresponde. Lo mío de verdad es la INTERFAZ: `orden.json` (entrada) y
+> `resultado.json` (salida).
+
+`robot_viajes.py` (pyautogui + Win32), TLE — según lo reportado:
 - Cabecera auto (tractora/remolque/chofer) + verificación; BUSCAR remolque (doble clic código →
   dígitos → lupa → doble clic fila).
 - Albarán: refe, fechas, cliente, origen (sobre-selección), destino, carga; líneas con
