@@ -4,6 +4,38 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## v2 — `viajes-2` (2026-10-20) — GASTOS para choferes autónomos
+
+`robot_viajes_v2.py` (copia de v1 + integración de Gastos). **v1 (`robot_viajes.py`) queda
+intacta y estable.**
+
+- **Disparador:** `cabecera.tipo === "autonomo"` → el bot **salta el formulario Kilómetros** y
+  carga los km en **Gastos**.
+- Por albarán, dentro de la ventana Gastos: una fila **KILOMETROS** = `km.carga` y una fila
+  **KILOMETROS EN VACIO** = `km.vacio`, **tomados directo del `orden.json`** (no se recalcula
+  `fin−inicio`: para autónomos el valor bueno es el de la ficha). Cierra con **F2**.
+- Mecanismo de fila: seleccionar concepto → **hoja blanca** ("Añadir registro nuevo", no F3) →
+  clic en la celda **Cantidad** → teclear → Enter. La fila nueva se inserta abajo (índice = nº de
+  albarán). Coordenadas 1920×1080 validadas en vivo.
+- Fail-loud: si falta `km.carga` o `km.vacio` en un albarán autónomo, **aborta** (no inventa).
+- El flujo de chofer **propio** no cambia respecto de v1.
+
+### Validación del mecanismo de Gastos — 2026-10-20 (en vivo)
+
+Corrida de `gastos_test.py` + verificación por control de escritorio en un albarán de prueba
+(00050948, estado "Borrado"): se cargaron KILOMETROS 1.200/1.170 y KM EN VACIO 120/130, cada uno
+en su concepto, con autocompletado correcto (matrícula/chófer/precio 0,95/fecha). **F2 grabó y
+persistió** (confirmado reabriendo Gastos). Fix clave: abrir la fila con la **hoja blanca** en vez
+de F3 (la tecla F3 se perdía sin foco exacto en la ventana).
+
+### Pendiente en v2
+
+- `resultado.json` (contrato de salida) — ver `ordenes-carga/CONTRATO-resultado-json.md`.
+- Probar `viajes-2` con un viaje autónomo real (hasta ahora probado el mecanismo de Gastos
+  aislado; falta la corrida integrada cabecera→albaranes→gastos→grabar).
+
+---
+
 ## v1 — `viajes-1` (2026-10-15) — PRIMERA VERSIÓN ESTABLE
 
 Primer bot funcional de carga **multi-viaje en continuo**. Congelado como respaldo

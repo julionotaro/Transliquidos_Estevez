@@ -21,8 +21,10 @@ Etapa 2 del pipeline TLE. Automatiza la **carga** de viajes y albaranes en **Ges
   las coordenadas del formulario km se **anclan al rectángulo de la ventana** (robusto aunque
   abra corrida).
 - Graba cada albarán, **graba el viaje** (foco + F2) y **encadena** al siguiente.
-- **En desarrollo** (`gastos_test.py`): choferes **autónomos** (Fraga, Alfonsín, Abal) → sus km
-  van en **Gastos** (conceptos KILOMETROS / KILOMETROS EN VACIO), no en el formulario Kilómetros.
+- **Choferes autónomos** (Fraga, Alfonsín, Abal) → integrado en **`robot_viajes_v2.py`**: con
+  `cabecera.tipo="autonomo"` el bot salta el formulario Kilómetros y carga los km en **Gastos**
+  (conceptos KILOMETROS / KILOMETROS EN VACIO), usando `km.carga` y `km.vacio` del `orden.json`.
+  Mecanismo validado en vivo 2026-10-20; falta la corrida integrada con un viaje autónomo real.
 
 ## Reglas de oro
 
@@ -47,9 +49,10 @@ Scripts:
 
 | Archivo | Para qué |
 |---|---|
-| `robot_viajes.py` / `.bat` | **Bot principal v1**: multi-viaje en continuo. |
+| `robot_viajes_v2.py` / `.bat` | **Bot actual v2**: multi-viaje en continuo + **Gastos** para autónomos (`tipo="autonomo"`). |
+| `robot_viajes.py` / `.bat` | **v1 estable** (congelada): multi-viaje, solo chofer propio. |
 | `robot_viaje.py` / `.bat`  | Variante de un solo viaje, multi-albarán (matrículas cargadas a mano). |
-| `gastos_test.py` / `.bat`  | **WIP**: prueba de carga de km en *Gastos* para autónomos. |
+| `gastos_test.py` / `.bat`  | Prueba aislada del mecanismo de *Gastos* (usado para validar v2). |
 | `inspector/run_inspect.bat` | Inspector **solo lectura**: vuelca el árbol de ventanas/controles de Gesruta (`gesruta_tree.txt`) y la identidad del ejecutable (`gesruta_identidad.txt`). No teclea ni graba nada. |
 
 ---
@@ -86,4 +89,4 @@ viaje/albarán que genere Gesruta. El formato lo define la etapa 1. **No impleme
 - Regla de foco: el Tab **selecciona** el contenido del campo (teclear reemplaza); el clic de mouse
   **no** selecciona (teclear agrega). Por eso Origen se reescribe sobre la selección del Tab.
 
-Versión actual: **v1** (`VERSION = "viajes-1"` en `robot_viajes.py`). Ver `CHANGELOG.md`.
+Versión actual: **v2** (`VERSION = "viajes-2"` en `robot_viajes_v2.py`; v1 estable en `robot_viajes.py`). Ver `CHANGELOG.md`.
