@@ -1,0 +1,9 @@
+# Dependencias del bot de carga (Python 3.x en Windows).
+# Instalar con:  pip install -r requirements.txt
+pyautogui            # mover mouse / teclear / teclas
+pygetwindow          # encontrar y enfocar la ventana de Gesruta
+pyperclip            # leer campos por portapapeles (verificación)
+
+# NOTA: NO se usa pywin32. El acceso Win32 (EnumWindows, GetWindowRect, etc.)
+# se hace con ctypes, que es parte de la librería estándar.
+# Pillow es opcional (solo para pyautogui.screenshot, que el bot NO usa).

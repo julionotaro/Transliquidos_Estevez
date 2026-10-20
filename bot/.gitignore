@@ -1,0 +1,22 @@
+# ---- Datos reales y salidas de ejecución (NO se versionan) ----
+orden_actual.json        # orden real que el bot carga (se copia a mano al correr)
+orden.json               # idem, nombre del contrato
+resultado.json           # salida futura (Nº viaje/albarán que genera Gesruta)
+*_log.txt                # robot_log.txt, gastos_log.txt
+gesruta_tree.txt         # volcado del inspector
+gesruta_identidad.txt    # identidad del ejecutable (ruta de red interna)
+gesruta_run_log.txt
+
+# ---- Credenciales / configuración con secretos ----
+# El bot NO almacena la clave de Gesruta (la teclea el usuario). Si algún día
+# se agrega un config con datos sensibles, debe ignorarse aquí y subir solo el .ejemplo.
+config.json
+config.local.*
+*.secret
+.env
+
+# ---- Python ----
+__pycache__/
+*.pyc
+.venv/
+venv/

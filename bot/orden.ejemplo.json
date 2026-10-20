@@ -1,0 +1,54 @@
+{
+  "_comentario": "EJEMPLO del formato de entrada del bot. Formato canónico = ordenes-carga/CONTRATO-orden-json.md. Datos ficticios, solo para ilustrar la estructura. El bot lee el orden.json real desde ordenes-carga/ordenes/<AAAA-MM>/<chofer>/<AAAA-MM-DD>/orden.json (hoy: copia local orden_actual.json).",
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "tipo": "propio",
+        "cabeza": "5358",
+        "verificar": { "matricula": "5358KTF", "remolque": "R8574BBC", "chofer": "NOMBRE CHOFER" }
+      },
+      "albaranes": [
+        {
+          "cliente":    { "codigo": "1",  "esperado": "RAZON SOCIAL CLIENTE" },
+          "origen":     { "codigo": "1",  "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "OR", "esperado": "OREMBER" },
+          "carga":      { "codigo": "1",  "esperado": "COLA" },
+          "referencia": "2029398",
+          "salida":     "05/10/2026",
+          "llegada":    "05/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "24,320", "precio": "13,85", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "336,83", "factor": "0,1664" }
+          },
+          "km": { "inicio": "415513", "fin": "415637", "carga": "124" },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "tipo": "autonomo",
+        "cabeza": "4916",
+        "verificar": { "matricula": "4916NJG", "remolque": "R1783BBJ", "chofer": "JOSE CARLOS ALFONSIN" }
+      },
+      "albaranes": [
+        {
+          "cliente":    { "codigo": "1",    "esperado": "RAZON SOCIAL CLIENTE" },
+          "origen":     { "codigo": "1",    "esperado": "CALDAS DE REIS" },
+          "destino":    { "codigo": "9731", "esperado": "TORDERA" },
+          "carga":      { "codigo": "1",    "esperado": "COLA" },
+          "referencia": "2028736",
+          "salida":     "02/10/2026",
+          "llegada":    "05/10/2026",
+          "lineas": {
+            "porte":      { "um": "TN", "cantidad": "22,940", "precio": "72,36", "concepto_esperado": "P", "iva_esperado": "21" },
+            "indexacion": { "concepto": "G", "cantidad": "1.659,94", "factor": "0,1664" }
+          },
+          "km": { "inicio": "86816", "fin": "88016", "carga": "1200", "vacio": "120" },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
