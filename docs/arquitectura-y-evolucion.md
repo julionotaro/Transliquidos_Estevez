@@ -15,6 +15,37 @@
 | **Orquesta** | Julio | git + ejecutar el bot | pull orden → corre bot → push resultado. |
 | **Medio / fuente de verdad** | **git** | repo | Handoff entre etapas y memoria durable. |
 
+## Protocolo de coordinación (quién lidera y cómo nos sincronizamos)
+
+**Nadie lidera "todo".** Cada Claude lidera SU dominio; **Julio lidera las prioridades y las
+decisiones de negocio**. La sincronización entre los dos Claudes **NO es que hablemos entre
+nosotros**: es **a través de git, vía los CONTRATOS**.
+
+- **Extracción (nube)** es dueña de `orden.json` y su formato → `CONTRATO-orden-json.md`.
+- **Bot (escritorio)** es dueño del comportamiento del bot y de `resultado.json` →
+  `CONTRATO-resultado-json.md`.
+- **Los dos contratos son el punto de sincronización.** Viven en git.
+
+**Reglas de coordinación:**
+1. **Nadie toca el dominio del otro.** La nube no toca `bot/`; el escritorio no toca
+   `ordenes-carga/`, `catalogo/`, `datos/`, `docs/`, `.claude/`.
+2. **Un cambio de interfaz se hace EN EL CONTRATO (git), no de palabra.** Si la extracción
+   agrega un campo (ej. el flag `cargar`), lo documenta en `CONTRATO-orden-json.md`. Si el bot
+   necesita un dato nuevo, lo pide en el contrato. Julio relaya el aviso entre chats.
+3. **El estado siempre está en git**, nunca en la memoria de un chat. Si un chat se comprime, el
+   otro lado no se entera: lee el contrato y sigue.
+4. **Julio orquesta:** decide prioridades, relaya los cambios de contrato, aprueba.
+
+Ejemplo real (ya ocurrido): la extracción agregó `indexacion.cargar` → lo documentó en el
+contrato → Julio lo pasó al escritorio → el bot lo implementa. Nunca hablamos directamente.
+
+## Gestión del plan de evolución
+
+El plan vive en git (`docs/arquitectura-y-evolucion.md` + `docs/plan-reordenamiento.md`) y es la
+hoja de ruta compartida. **Julio prioriza** qué fase sigue; cada fase dice **quién hace qué**
+(nube / bot / Julio). Un cambio de plan se commitea acá. Así ningún chat necesita "acordarse"
+del plan: lo lee.
+
 ## El flujo (objetivo)
 
 ```
