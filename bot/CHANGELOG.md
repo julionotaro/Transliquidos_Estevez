@@ -75,7 +75,10 @@ Tras la primera corrida integrada, Julio reportó 4 problemas. Diagnóstico y ar
    única) **se perdía** — el mismo síntoma que tuvo F2 en Gastos. Verificado en vivo: con la ventana
    del viaje enfocada, **F2 sí graba** (los campos Cabeza/Chófer quedan en gris). **Fix:** se
    mantiene F2 (es el cierre que Julio definió) pero con **`keyDown`/`keyUp` sostenido + reintento
-   con re-foco**, para que no se pierda la pulsación.
+   con re-foco**, para que no se pierda la pulsación. **Fallback preparado:** flag
+   `GRABAR_VIAJE_CON_DISQUETE` (por defecto `False`) + constante `VIAJE_SAVE` — si F2 no responde en
+   la prueba, se confirma **en vivo** el disquete de grabar y se activa el flag (coordenada marcada
+   SIN VERIFICAR hasta confirmarla; no se inventa).
 3. **Nº de albarán:** confirmado = **índice dentro del viaje** (`01`,`02`,`03`). Ya implementado.
 4. **Nº de viaje NO es legible por software.** El campo bajo "Entrada de Viajes" (p. ej. `00050961`)
    es **owner-drawn** (lo pinta Gesruta): no lo lee el portapapeles (Ctrl+C siempre copia la fila de
@@ -91,7 +94,10 @@ Tras la primera corrida integrada, Julio reportó 4 problemas. Diagnóstico y ar
   Windows) por si el control expone el texto por esa API aunque sea owner-drawn; (c) **manual** — la
   extracción lo completa a mano al cerrar el bucle. Mientras tanto el bot entrega `""` (fail-loud).
 - Validar en vivo la próxima corrida integrada que los dos fixes (fila 0 en Gastos y F2 robusto)
-  resuelven los Puntos 1 y 2.
+  resuelven los Puntos 1 y 2. **Plan de prueba:** `PRUEBA-viajes2-2026-10-22.md`.
+- Diagnóstico del Nº de viaje (Punto 4): `inspector/test_nro_viaje.py` (+ `.bat`) — barrido Win32 de
+  solo lectura que vuelca todos los controles con texto; correr en **Entrada de Viajes** y en
+  **Entrada de Albaranes** (idea de Julio: el Nº de viaje también se ve en la pantalla de albaranes).
 
 ---
 
