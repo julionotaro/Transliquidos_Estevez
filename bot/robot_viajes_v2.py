@@ -279,6 +279,20 @@ def _add_gasto_row(concept_xy, concept_name, row_idx, cantidad):
     pyautogui.write(str(cantidad),interval=0.05); time.sleep(0.2); pyautogui.press('enter'); time.sleep(0.5)
     log("  [gastos] %s fila %d = %s"%(concept_name,row_idx,cantidad))
 
+def despejar_avisos_si(timeout, tag):
+    """Despeja avisos clicando Si (grabar albaran / convertir pedido) o Esc, hasta que no quede
+    ninguno por ~1.8s (mismo caso que abrir el formulario Kilometros). Devuelve cuantos despejo."""
+    t0=time.time(); n=0; last=time.time()
+    while time.time()-t0<timeout:
+        h,t=find_kw(ALL_KW+("GRABAR","CONVERTIR","PEDIDO"))
+        if h:
+            if click_si(h): log("    [%s] aviso %r -> Si"%(tag,t)); n+=1
+            else: log("    [%s] aviso %r -> Esc"%(tag,t)); pyautogui.press('esc')
+            last=time.time(); time.sleep(0.9); continue
+        if time.time()-last>1.8: break
+        time.sleep(0.3)
+    return n
+
 def do_gastos_autonomo(km, ai):
     """Autonomo: carga en GASTOS KILOMETROS=km.carga y KM EN VACIO=km.vacio (del orden.json, SIN recalcular).
     Una fila por concepto por albaran; la rejilla es a nivel viaje, por eso la fila nueva cae en el indice ai."""
@@ -289,19 +303,16 @@ def do_gastos_autonomo(km, ai):
         log("  ABORTO autonomo: falta km.vacio en la orden (lo informa la ficha; no invento)."); return False
     log("  --- GASTOS (autonomo) ---  carga=%s vacio=%s (albaran idx %d)"%(carga,vacio,ai))
     ensure_ges()
-    pyautogui.moveTo(*GASTOS_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*GASTOS_BTN); time.sleep(1.0)
-    t0=time.time(); ok=False
-    while time.time()-t0<8:
-        if has_window("GASTOS"): ok=True; break
-        time.sleep(0.3)
-    if not ok:
-        log("  ABORTO: no abrio la ventana Gastos (boton tapado / ventana no maximizada)."); return False
-    time.sleep(0.4)
+    pyautogui.moveTo(*GASTOS_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*GASTOS_BTN); time.sleep(0.8)
+    # IGUAL QUE KILOMETROS: al clicar Gastos, Gesruta pregunta "grabar el albaran para continuar?"
+    # y "convertir el pedido en albaran?" -> Si a AMBOS, y recien ahi abre la pantalla Gastos.
+    nd=despejar_avisos_si(16.0, "abrir-gastos")
+    log("  [gastos] avisos despejados al abrir: %d"%nd)
+    time.sleep(0.6); ensure_ges()
     _add_gasto_row(G_KILOMETROS, "KILOMETROS",          ai, num(carga))
     _add_gasto_row(G_KM_VACIO,   "KILOMETROS EN VACIO", ai, num(vacio))
     ensure_ges(); time.sleep(0.3); pyautogui.press('f2'); time.sleep(1.2)   # F2 guarda Gastos y cierra
-    handle_si(2.5,"post-gastos")
-    if has_window("GASTOS"): log("  AVISO: la ventana Gastos sigue abierta tras F2")
+    despejar_avisos_si(3.0, "post-gastos-f2")
     log("  [gastos] grabado con F2 (vuelve al albaran)")
     return True
 

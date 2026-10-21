@@ -28,6 +28,15 @@ en su concepto, con autocompletado correcto (matrícula/chófer/precio 0,95/fech
 persistió** (confirmado reabriendo Gastos). Fix clave: abrir la fila con la **hoja blanca** en vez
 de F3 (la tecla F3 se perdía sin foco exacto en la ventana).
 
+### Fix 2026-10-21 — avisos al abrir Gastos
+
+En la corrida integrada, al clicar **Gastos** (igual que Kilómetros) Gesruta lanza dos avisos
+—"¿grabar el albarán para continuar?" y "¿convertir el pedido en albarán?"— que hay que
+confirmar con **Sí** antes de que abra la pantalla Gastos. v2 no los despejaba y seguía de largo.
+Arreglado con `despejar_avisos_si()` (mismo patrón que `open_km_form`). Además se quitó la
+detección por `has_window("GASTOS")`, no fiable: la ventana Gastos persiste de fondo como hija
+MDI (visto en el árbol del inspector), así que daba falso positivo.
+
 ### Pendiente en v2
 
 - `resultado.json` (contrato de salida) — ver `ordenes-carga/CONTRATO-resultado-json.md`.
