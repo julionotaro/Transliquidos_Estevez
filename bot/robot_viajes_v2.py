@@ -314,9 +314,12 @@ def do_gastos_autonomo(km, ai):
     pyautogui.moveTo(*GASTOS_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*GASTOS_BTN); time.sleep(1.2)
     despejar_avisos_si(2.0, "gastos-avisos-2")   # por si quedara algun aviso suelto
     ensure_ges(); time.sleep(0.3)
-    # 3) Cargar los dos conceptos (concepto -> hoja blanca -> clic Cantidad -> teclear -> Enter)
-    _add_gasto_row(G_KILOMETROS, "KILOMETROS",          ai, num(carga))
-    _add_gasto_row(G_KM_VACIO,   "KILOMETROS EN VACIO", ai, num(vacio))
+    # 3) Cargar los dos conceptos (concepto -> hoja blanca -> clic Cantidad -> teclear -> Enter).
+    #    OJO: la grilla de Gastos es POR ALBARAN (no acumula a nivel viaje), asi que la fila nueva
+    #    de cada concepto esta SIEMPRE en la fila 0 (y=184). (Antes se usaba 'ai' y en el 2do/3er
+    #    albaran el clic caia en una fila vacia y la cantidad no entraba.)
+    _add_gasto_row(G_KILOMETROS, "KILOMETROS",          0, num(carga))
+    _add_gasto_row(G_KM_VACIO,   "KILOMETROS EN VACIO", 0, num(vacio))
     # 4) Guardar con el DISQUETE (clic), NO con F2 (la tecla se pierde si el foco no esta exacto).
     #    El disquete graba Gastos, cierra la ventana y vuelve al albaran (que queda numerado).
     ensure_ges(); time.sleep(0.3)
@@ -590,14 +593,20 @@ try:
             grabados+=1
         if grabados!=len(albs):
             log("### NO grabo viaje %d: %d/%d albaranes ###"%(vpos+1,grabados,len(albs))); break
-        log("--- GRABAR VIAJE (foco + F2) ---")
+        log("--- GRABAR VIAJE (foco + F2 robusto) ---")
         if not has_window("ENTRADA DE VIAJES"): log("  AVISO: no detecto 'Entrada de Viajes' al grabar")
-        ensure_ges(); time.sleep(0.4)
-        # dar FOCO de teclado a la ventana del viaje antes de F2 (click inofensivo en el navegador de Nro)
-        pyautogui.moveTo(*VIAJE_FOCUS,duration=0.12); time.sleep(0.1); pyautogui.click(*VIAJE_FOCUS); time.sleep(0.5)
-        pyautogui.press('f2'); time.sleep(1.8); handle_si(3.0,"grabar viaje?"); time.sleep(0.8)
+        # Julio define F2 como el cierre del viaje. El problema NO era F2 en si (en vivo, con la
+        # ventana enfocada, F2 graba y los campos quedan en gris), sino que la pulsacion UNICA
+        # pyautogui.press('f2') se PERDIA -- el mismo sintoma que tuvo F2 en Gastos. Se usa
+        # keyDown/keyUp con hold (fiable) y un reintento con re-foco, por si la primera se pierde.
+        for intento in range(2):
+            ensure_ges(); time.sleep(0.4)
+            # foco de teclado en la ventana del viaje (clic inofensivo en el navegador de Nº)
+            pyautogui.moveTo(*VIAJE_FOCUS,duration=0.12); time.sleep(0.1); pyautogui.click(*VIAJE_FOCUS); time.sleep(0.5)
+            pyautogui.keyDown('f2'); time.sleep(0.12); pyautogui.keyUp('f2')
+            time.sleep(1.8); handle_si(3.0,"grabar viaje? intento %d"%(intento+1)); time.sleep(0.6)
         vres["estado"]="grabado"; vres["nro_viaje_gesruta"]=capturar_nro_viaje()
-        log("  grabado viaje %d (foco+F2). activa=%r"%(vpos+1,active_title()))
+        log("  grabado viaje %d (foco+F2 robusto). activa=%r"%(vpos+1,active_title()))
         viajes_ok+=1
     log("Viajes grabados: %d/%d"%(viajes_ok,len(viajes)))
     escribir_resultado(resultados, orden.get("empresa"), orden.get("orden") or "")

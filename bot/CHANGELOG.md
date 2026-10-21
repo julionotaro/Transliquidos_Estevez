@@ -63,10 +63,35 @@ verificado paso a paso en la misma corrida.
     candidatos → `""`, no inventa). Pendiente de confirmar que ese control expone texto por Win32
     (si fuera owner-drawn, hay que otra vía) — se verifica con `test_nro_viaje.py`.
 
+### Fix 2026-10-21 (tarde) — revisión de la corrida integrada (4 puntos de Julio)
+
+Tras la primera corrida integrada, Julio reportó 4 problemas. Diagnóstico y arreglo:
+
+1. **Gastos del 2º/3er albarán no grababan la cantidad (quedaba en `1`).** Causa: la grilla de
+   Gastos es **por albarán** (cada albarán abre su Gastos vacío), no acumulativa a nivel viaje; el
+   robot clicaba la celda Cantidad en la fila índice `ai`, que en el 2º/3er albarán era una fila
+   vacía. **Fix:** la fila nueva de cada concepto está **siempre en la fila 0** (`_add_gasto_row(…, 0, …)`).
+2. **No grababa el viaje al cerrar el 3er albarán.** Causa: `pyautogui.press('f2')` (pulsación
+   única) **se perdía** — el mismo síntoma que tuvo F2 en Gastos. Verificado en vivo: con la ventana
+   del viaje enfocada, **F2 sí graba** (los campos Cabeza/Chófer quedan en gris). **Fix:** se
+   mantiene F2 (es el cierre que Julio definió) pero con **`keyDown`/`keyUp` sostenido + reintento
+   con re-foco**, para que no se pierda la pulsación.
+3. **Nº de albarán:** confirmado = **índice dentro del viaje** (`01`,`02`,`03`). Ya implementado.
+4. **Nº de viaje NO es legible por software.** El campo bajo "Entrada de Viajes" (p. ej. `00050961`)
+   es **owner-drawn** (lo pinta Gesruta): no lo lee el portapapeles (Ctrl+C siempre copia la fila de
+   la grilla) **ni** Win32 `GetWindowText` (`test_nro_viaje.py` → **0 candidatos**). Queda pendiente
+   decidir la vía de captura (ver abajo). El robot **falla ruidoso**: deja `nro_viaje_gesruta=""`,
+   no inventa.
+
 ### Pendiente en v2
 
-- Confirmar la lectura Win32 del Nº de viaje (`test_nro_viaje.py`) y, si no expone texto, buscar
-  otra vía.
+- **Nº de viaje (Punto 4) — decisión de Julio.** Al no ser legible por portapapeles ni Win32, las
+  opciones son: (a) **captura de pantalla + OCR** de la región del Nº justo tras grabar (el bot ya
+  sabe grabar; añadiría recorte + OCR local); (b) **UIA / MSAA** (automatización de accesibilidad de
+  Windows) por si el control expone el texto por esa API aunque sea owner-drawn; (c) **manual** — la
+  extracción lo completa a mano al cerrar el bucle. Mientras tanto el bot entrega `""` (fail-loud).
+- Validar en vivo la próxima corrida integrada que los dos fixes (fila 0 en Gastos y F2 robusto)
+  resuelven los Puntos 1 y 2.
 
 ---
 
