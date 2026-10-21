@@ -48,11 +48,25 @@ Cambios en `do_gastos_autonomo`: se agrega el **segundo clic en Gastos** tras de
 Gastos persiste de fondo como hija MDI). El resto de la carga (cabecera, albarán, líneas) quedó
 verificado paso a paso en la misma corrida.
 
+### 2026-10-21 — corrida integrada OK + captura de Nº para resultado.json
+
+- **Corrida integrada autónoma OK** (Alfonsín, 3 albaranes): cabecera→albaranes→Gastos→grabar
+  viaje, todo grabado (1/1). La secuencia de Gastos (2 avisos + 2º clic + disquete) funcionó en
+  los 3 albaranes. El `resultado_actual.json` salió con la estructura del contrato y `estado`
+  correctos; faltaban los números.
+- **Captura de Nº implementada** para `resultado.json`:
+  - `nro_albaran_gesruta` = **índice dentro del viaje** (`01`,`02`,`03`…): Gesruta numera así los
+    albaranes y el bot los crea en orden → `capturar_nro_albaran(ai)` = `"%02d"%(ai+1)`.
+  - `nro_viaje_gesruta` = por **Win32 GetWindowText**: los campos de Nº son de SOLO LECTURA (el
+    portapapeles no los lee, verificado en vivo), pero el texto del control sí se puede leer por
+    Win32. `capturar_nro_viaje()` busca el control con patrón `0\d{7}`; fail-loud (0 o >1
+    candidatos → `""`, no inventa). Pendiente de confirmar que ese control expone texto por Win32
+    (si fuera owner-drawn, hay que otra vía) — se verifica con `test_nro_viaje.py`.
+
 ### Pendiente en v2
 
-- `resultado.json` (contrato de salida) — ver `ordenes-carga/CONTRATO-resultado-json.md`.
-- Probar `viajes-2` con un viaje autónomo real (hasta ahora probado el mecanismo de Gastos
-  aislado; falta la corrida integrada cabecera→albaranes→gastos→grabar).
+- Confirmar la lectura Win32 del Nº de viaje (`test_nro_viaje.py`) y, si no expone texto, buscar
+  otra vía.
 
 ---
 

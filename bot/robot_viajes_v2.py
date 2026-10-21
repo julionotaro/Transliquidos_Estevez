@@ -10,7 +10,7 @@
 #   Regla km:  Km carga = fin - inicio (cargado) ;  Km vacio = inicio_real - Tacografo.
 #   inicio_real se reconstruye del tacografo (el chofer escribe los ultimos N digitos).
 
-import json, ctypes, time, sys, os, datetime
+import json, ctypes, time, sys, os, datetime, re
 
 VERSION = "viajes-2"
 # viajes-2: agrega soporte de choferes AUTONOMOS (cabecera.tipo=="autonomo"):
@@ -325,12 +325,24 @@ def do_gastos_autonomo(km, ai):
     log("  [gastos] grabado con DISQUETE (vuelve al albaran)")
     return True
 
-def capturar_nro(label):
-    """Captura el Nº que genera Gesruta (viaje/albaran) de la pantalla, para resultado.json.
-    PENDIENTE DE CALIBRAR en vivo (ubicacion del campo 'Viaje/Nº Alb.' y si es legible por
-    portapapeles). Hasta entonces devuelve "" (vacio): no se inventa (regla 'no inventar, fallar ruidoso')."""
-    log("  [resultado] captura de nro_%s pendiente de calibrar -> vacio"%label)
-    return ""
+def capturar_nro_albaran(ai):
+    """El Nº de albaran DENTRO del viaje es su indice (01, 02, 03...): el bot los crea en orden,
+    y Gesruta los numera asi (campo 'Viaje/Nº Alb.' = viaje + Nº local). No hay que leer nada."""
+    return "%02d"%(ai+1)
+
+def capturar_nro_viaje():
+    """El Nº de viaje (ej '00050961') es un campo de SOLO LECTURA: el portapapeles NO lo lee
+    (verificado en vivo 2026-10-21). Se lee por Win32 GetWindowText buscando el control cuyo
+    texto tenga ese patron (8 digitos, 0xxxxxxx). Fail-loud: si hay 0 o >1 candidatos distintos,
+    devuelve "" (no inventa)."""
+    cands=[]
+    for h in all_hwnds():
+        t=(_text(h) or "").strip()
+        if re.fullmatch(r"0\d{7}", t): cands.append(t)
+    uniq=list(dict.fromkeys(cands))
+    if len(uniq)==1:
+        log("  [resultado] nro_viaje leido (Win32) -> %s"%uniq[0]); return uniq[0]
+    log("  [resultado] nro_viaje NO resuelto (candidatos=%r) -> vacio"%uniq); return ""
 
 def escribir_resultado(resultados, empresa, orden_hint):
     """Escribe resultado_actual.json segun ordenes-carga/CONTRATO-resultado-json.md.
@@ -574,7 +586,7 @@ try:
             if not do_albaran(alb, ai, autonomo):
                 ar["motivo"]="cadena detenida en este albaran"
                 log("### CADENA DETENIDA en albaran %d ###"%(ai+1)); break
-            ar["estado"]="grabado"; ar["nro_albaran_gesruta"]=capturar_nro("albaran")
+            ar["estado"]="grabado"; ar["nro_albaran_gesruta"]=capturar_nro_albaran(ai)
             grabados+=1
         if grabados!=len(albs):
             log("### NO grabo viaje %d: %d/%d albaranes ###"%(vpos+1,grabados,len(albs))); break
@@ -584,7 +596,7 @@ try:
         # dar FOCO de teclado a la ventana del viaje antes de F2 (click inofensivo en el navegador de Nro)
         pyautogui.moveTo(*VIAJE_FOCUS,duration=0.12); time.sleep(0.1); pyautogui.click(*VIAJE_FOCUS); time.sleep(0.5)
         pyautogui.press('f2'); time.sleep(1.8); handle_si(3.0,"grabar viaje?"); time.sleep(0.8)
-        vres["estado"]="grabado"; vres["nro_viaje_gesruta"]=capturar_nro("viaje")
+        vres["estado"]="grabado"; vres["nro_viaje_gesruta"]=capturar_nro_viaje()
         log("  grabado viaje %d (foco+F2). activa=%r"%(vpos+1,active_title()))
         viajes_ok+=1
     log("Viajes grabados: %d/%d"%(viajes_ok,len(viajes)))
