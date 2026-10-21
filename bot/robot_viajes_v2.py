@@ -62,6 +62,7 @@ G_ADD_BTN    = (310,953)    # "hoja blanca" = Anadir registro nuevo (NO F3: la t
 G_CANT_X     = 690          # x de la celda Cantidad
 G_ROW1_Y     = 184          # y de la fila 1 del concepto
 G_ROWH       = 28           # alto de fila (la fila nueva se inserta ABAJO; rejilla filtrada por concepto)
+GASTOS_SAVE  = (22,1007)     # disquete (guardar) de la ventana Gastos: abajo-izquierda. Graba, cierra y vuelve al albaran.
 def _gcant_xy(row_idx): return (G_CANT_X, G_ROW1_Y + row_idx*G_ROWH)
 
 RISK_KW=("RIESGO","SITUAC"); INFO_KW=("AVISO","ATENCION","ATENCIÓN")  # quitado "CONSULTA": matcheaba "Consulta de Albaranes" (ventana normal)
@@ -303,17 +304,25 @@ def do_gastos_autonomo(km, ai):
         log("  ABORTO autonomo: falta km.vacio en la orden (lo informa la ficha; no invento)."); return False
     log("  --- GASTOS (autonomo) ---  carga=%s vacio=%s (albaran idx %d)"%(carga,vacio,ai))
     ensure_ges()
+    # 1) PRIMER clic en Gastos: dispara 2 avisos ("grabar el albaran para continuar?" y
+    #    "convertir el pedido en albaran?") -> Si a AMBOS. El albaran se graba pero Gastos NO abre.
     pyautogui.moveTo(*GASTOS_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*GASTOS_BTN); time.sleep(0.8)
-    # IGUAL QUE KILOMETROS: al clicar Gastos, Gesruta pregunta "grabar el albaran para continuar?"
-    # y "convertir el pedido en albaran?" -> Si a AMBOS, y recien ahi abre la pantalla Gastos.
-    nd=despejar_avisos_si(16.0, "abrir-gastos")
-    log("  [gastos] avisos despejados al abrir: %d"%nd)
+    nd=despejar_avisos_si(16.0, "gastos-avisos")
+    log("  [gastos] avisos despejados (grabar albaran + convertir pedido): %d"%nd)
     time.sleep(0.6); ensure_ges()
+    # 2) SEGUNDO clic en Gastos: AHORA SI abre la pantalla (el albaran ya quedo grabado, sin avisos).
+    pyautogui.moveTo(*GASTOS_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*GASTOS_BTN); time.sleep(1.2)
+    despejar_avisos_si(2.0, "gastos-avisos-2")   # por si quedara algun aviso suelto
+    ensure_ges(); time.sleep(0.3)
+    # 3) Cargar los dos conceptos (concepto -> hoja blanca -> clic Cantidad -> teclear -> Enter)
     _add_gasto_row(G_KILOMETROS, "KILOMETROS",          ai, num(carga))
     _add_gasto_row(G_KM_VACIO,   "KILOMETROS EN VACIO", ai, num(vacio))
-    ensure_ges(); time.sleep(0.3); pyautogui.press('f2'); time.sleep(1.2)   # F2 guarda Gastos y cierra
-    despejar_avisos_si(3.0, "post-gastos-f2")
-    log("  [gastos] grabado con F2 (vuelve al albaran)")
+    # 4) Guardar con el DISQUETE (clic), NO con F2 (la tecla se pierde si el foco no esta exacto).
+    #    El disquete graba Gastos, cierra la ventana y vuelve al albaran (que queda numerado).
+    ensure_ges(); time.sleep(0.3)
+    pyautogui.moveTo(*GASTOS_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*GASTOS_SAVE); time.sleep(1.4)
+    despejar_avisos_si(2.0, "post-gastos")
+    log("  [gastos] grabado con DISQUETE (vuelve al albaran)")
     return True
 
 def capturar_nro(label):

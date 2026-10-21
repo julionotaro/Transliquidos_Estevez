@@ -28,14 +28,25 @@ en su concepto, con autocompletado correcto (matrícula/chófer/precio 0,95/fech
 persistió** (confirmado reabriendo Gastos). Fix clave: abrir la fila con la **hoja blanca** en vez
 de F3 (la tecla F3 se perdía sin foco exacto en la ventana).
 
-### Fix 2026-10-21 — avisos al abrir Gastos
+### Fix 2026-10-21 — secuencia correcta de Gastos (aprendida en vivo)
 
-En la corrida integrada, al clicar **Gastos** (igual que Kilómetros) Gesruta lanza dos avisos
-—"¿grabar el albarán para continuar?" y "¿convertir el pedido en albarán?"— que hay que
-confirmar con **Sí** antes de que abra la pantalla Gastos. v2 no los despejaba y seguía de largo.
-Arreglado con `despejar_avisos_si()` (mismo patrón que `open_km_form`). Además se quitó la
-detección por `has_window("GASTOS")`, no fiable: la ventana Gastos persiste de fondo como hija
-MDI (visto en el árbol del inspector), así que daba falso positivo.
+Carga en vivo del primer albarán autónomo (Alfonsín, viaje de prueba) para aprender la secuencia
+exacta donde el robot se descoordinaba. La secuencia correcta de Gastos es:
+
+1. **Primer clic en Gastos** → 2 avisos: "¿grabar el albarán para continuar?" (**Sí**) y
+   "¿convertir el pedido en albarán?" (**Sí**). El albarán se graba **pero Gastos NO abre**.
+2. **Segundo clic en Gastos** → ahora **sí abre** (el albarán ya está grabado, sin avisos).
+3. Cargar conceptos: concepto → hoja blanca → clic Cantidad → teclear → Enter.
+4. **Guardar con el DISQUETE** (clic, abajo-izquierda de la ventana Gastos), **NO con F2**: graba,
+   cierra la ventana y vuelve al albarán (que queda numerado). El robot usaba F2, que se perdía
+   por foco → "salía por la flecha" y seguía descoordinado.
+5. Disquete del **albarán** (`ALB_SAVE`) → graba el albarán y vuelve a "Entrada de Viajes".
+
+Cambios en `do_gastos_autonomo`: se agrega el **segundo clic en Gastos** tras despejar los avisos
+(`despejar_avisos_si`, patrón de `open_km_form`), y se reemplaza `F2` por el clic en el **disquete**
+(`GASTOS_SAVE=(22,1007)`). Se quitó la detección por `has_window("GASTOS")`, no fiable (la ventana
+Gastos persiste de fondo como hija MDI). El resto de la carga (cabecera, albarán, líneas) quedó
+verificado paso a paso en la misma corrida.
 
 ### Pendiente en v2
 
