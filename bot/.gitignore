@@ -4,6 +4,8 @@ orden.json               # idem, nombre del contrato
 resultado.json           # salida (Nº viaje/albarán que genera Gesruta)
 resultado_actual.json    # idem, copia local que escribe el bot al lado del script
 *_log.txt                # robot_log.txt, gastos_log.txt
+nro_viaje_v*.png         # recortes del Nº de viaje que captura el bot (los lee la extraccion)
+nro_viaje_crop*.png      # recortes de los tests de captura
 gesruta_tree.txt         # volcado del inspector
 gesruta_identidad.txt    # identidad del ejecutable (ruta de red interna)
 gesruta_run_log.txt

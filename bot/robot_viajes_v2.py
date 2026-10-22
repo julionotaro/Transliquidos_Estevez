@@ -10,7 +10,7 @@
 #   Regla km:  Km carga = fin - inicio (cargado) ;  Km vacio = inicio_real - Tacografo.
 #   inicio_real se reconstruye del tacografo (el chofer escribe los ultimos N digitos).
 
-import json, ctypes, time, sys, os, datetime, re
+import json, ctypes, time, sys, os, datetime, re, zlib, struct
 
 VERSION = "viajes-2"
 # viajes-2: agrega soporte de choferes AUTONOMOS (cabecera.tipo=="autonomo"):
@@ -341,19 +341,62 @@ def capturar_nro_albaran(ai):
     y Gesruta los numera asi (campo 'Viaje/Nº Alb.' = viaje + Nº local). No hay que leer nada."""
     return "%02d"%(ai+1)
 
-def capturar_nro_viaje():
-    """El Nº de viaje (ej '00050961') es un campo de SOLO LECTURA: el portapapeles NO lo lee
-    (verificado en vivo 2026-10-21). Se lee por Win32 GetWindowText buscando el control cuyo
-    texto tenga ese patron (8 digitos, 0xxxxxxx). Fail-loud: si hay 0 o >1 candidatos distintos,
-    devuelve "" (no inventa)."""
+# ---- Captura del Nº de viaje por IMAGEN (owner-drawn: no lo leen portapapeles ni Win32) ----
+# Rect en pixeles REALES (layout maximizado 1920x1080): zona "Viaje <nro> Exp." arriba-izquierda.
+# Validado 2026-10-22: el recorte sale nitido y la vista de la extraccion lee el Nº sin OCR.
+NRO_VIAJE_CROP_RECT = (8, 82, 250, 32)   # (left, top, width, height)
+
+def _capturar_png(left, top, w, h, path):
+    """Captura una region de pantalla por GDI (ctypes) y la guarda PNG (zlib stdlib, sin Pillow)."""
+    u = ctypes.windll.user32; g = ctypes.windll.gdi32
+    sdc = u.GetDC(0); mdc = g.CreateCompatibleDC(sdc)
+    bmp = g.CreateCompatibleBitmap(sdc, w, h); g.SelectObject(mdc, bmp)
+    g.BitBlt(mdc, 0, 0, w, h, sdc, left, top, 0x00CC0020)   # SRCCOPY
+    class BMIH(ctypes.Structure):
+        _fields_=[("biSize",ctypes.c_uint32),("biWidth",ctypes.c_int32),("biHeight",ctypes.c_int32),
+                  ("biPlanes",ctypes.c_uint16),("biBitCount",ctypes.c_uint16),("biCompression",ctypes.c_uint32),
+                  ("biSizeImage",ctypes.c_uint32),("biX",ctypes.c_int32),("biY",ctypes.c_int32),
+                  ("biClrUsed",ctypes.c_uint32),("biClrImp",ctypes.c_uint32)]
+    bmi=BMIH(); bmi.biSize=40; bmi.biWidth=w; bmi.biHeight=-h  # top-down
+    bmi.biPlanes=1; bmi.biBitCount=24; bmi.biCompression=0
+    stride=((w*3+3)//4)*4
+    buf=ctypes.create_string_buffer(stride*h)
+    g.GetDIBits(mdc, bmp, 0, h, buf, ctypes.byref(bmi), 0)
+    d=buf.raw; raw=bytearray()
+    for y in range(h):
+        off=y*stride; raw.append(0)                 # filtro 'none' por scanline
+        for x in range(w):
+            raw += bytes((d[off+x*3+2], d[off+x*3+1], d[off+x*3]))   # DIB es BGR -> RGB
+    g.DeleteObject(bmp); g.DeleteDC(mdc); u.ReleaseDC(0, sdc)
+    comp=zlib.compress(bytes(raw), 9)
+    def _ck(t, dd): return struct.pack(">I",len(dd))+t+dd+struct.pack(">I", zlib.crc32(t+dd)&0xffffffff)
+    ihdr=struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0)   # 8 bits, color-type 2 (RGB)
+    with open(path,"wb") as f:
+        f.write(b'\x89PNG\r\n\x1a\n'+_ck(b'IHDR',ihdr)+_ck(b'IDAT',comp)+_ck(b'IEND',b''))
+
+def capturar_nro_viaje(vpos):
+    """Nº de viaje (ej '00050962'): es OWNER-DRAWN (lo pinta Gesruta); no lo leen ni el portapapeles
+    ni Win32 (verificado en vivo y por diagnostico en las DOS pantallas, 2026-10-22). Estrategia:
+      1) intento Win32 por si algun viaje lo expusiera (fast path, no cuesta);
+      2) si no, CAPTURO la zona del Nº a un PNG y la EXTRACCION (vista) lo lee -> cero paso manual.
+    Devuelve (nro_texto, crop_filename). nro_texto="" si no se resolvio por software;
+    crop_filename="" si tampoco se pudo capturar (fail-loud, no inventa)."""
     cands=[]
     for h in all_hwnds():
         t=(_text(h) or "").strip()
         if re.fullmatch(r"0\d{7}", t): cands.append(t)
     uniq=list(dict.fromkeys(cands))
     if len(uniq)==1:
-        log("  [resultado] nro_viaje leido (Win32) -> %s"%uniq[0]); return uniq[0]
-    log("  [resultado] nro_viaje NO resuelto (candidatos=%r) -> vacio"%uniq); return ""
+        log("  [resultado] nro_viaje leido (Win32) -> %s"%uniq[0]); return uniq[0], ""
+    fn="nro_viaje_v%d.png"%(vpos+1)
+    try:
+        ensure_ges(); time.sleep(0.3)
+        l,t,w,h=NRO_VIAJE_CROP_RECT
+        _capturar_png(l, t, w, h, os.path.join(HERE, fn))
+        log("  [resultado] nro_viaje owner-drawn -> capturado a %s (lo lee la extraccion)"%fn)
+        return "", fn
+    except Exception as e:
+        log("  [resultado] AVISO: no pude capturar el Nº de viaje (%r)"%e); return "", ""
 
 def escribir_resultado(resultados, empresa, orden_hint):
     """Escribe resultado_actual.json segun ordenes-carga/CONTRATO-resultado-json.md.
@@ -570,7 +613,7 @@ try:
         autonomo=(str(cab.get("tipo","propio")).strip().lower()=="autonomo")
         log("########## VIAJE %d/%d  cabeza=%r  tipo=%s  (%d albaranes) ##########"%(vpos+1,len(viajes),cab.get("cabeza"),("AUTONOMO" if autonomo else "propio"),len(albs)))
         vres={"cabeza":cab.get("cabeza"), "chofer":(cab.get("verificar",{}) or {}).get("chofer",""),
-              "nro_viaje_gesruta":"", "estado":"abortado", "motivo":"", "albaranes":[]}
+              "nro_viaje_gesruta":"", "nro_viaje_crop":"", "estado":"abortado", "motivo":"", "albaranes":[]}
         resultados.append(vres)
         if vpos>0:
             if not has_window("ENTRADA DE VIAJES"): log("ABORTO: no estoy en Entrada de Viajes para nuevo viaje."); break
@@ -620,7 +663,8 @@ try:
                 pyautogui.moveTo(*VIAJE_FOCUS,duration=0.12); time.sleep(0.1); pyautogui.click(*VIAJE_FOCUS); time.sleep(0.5)
                 pyautogui.keyDown('f2'); time.sleep(0.12); pyautogui.keyUp('f2')
                 time.sleep(1.8); handle_si(3.0,"grabar viaje? intento %d"%(intento+1)); time.sleep(0.6)
-        vres["estado"]="grabado"; vres["nro_viaje_gesruta"]=capturar_nro_viaje()
+        _nro, _crop = capturar_nro_viaje(vpos)
+        vres["estado"]="grabado"; vres["nro_viaje_gesruta"]=_nro; vres["nro_viaje_crop"]=_crop
         log("  grabado viaje %d. activa=%r"%(vpos+1,active_title()))
         viajes_ok+=1
     log("Viajes grabados: %d/%d"%(viajes_ok,len(viajes)))

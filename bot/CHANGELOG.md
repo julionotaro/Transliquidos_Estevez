@@ -100,14 +100,28 @@ Tras la primera corrida integrada, Julio reportó 4 problemas. Diagnóstico y ar
   `resultado_actual.json` los numeró `01/02/03`. En producción el viaje debe arrancar **vacío** para
   que la numeración índice (01/02/03) coincida con la de Gesruta.
 
+### 2026-10-22 — Nº de viaje por CAPTURA (Punto 4 resuelto sin paso manual)
+
+El Nº de viaje es owner-drawn y Win32 quedó descartado en las dos pantallas. En vez de OCR (que
+pediría instalar algo) o paso manual, el bot **captura la zona del Nº a un PNG** y la **extracción
+(vista) lee los dígitos**. Validado en vivo 2026-10-22: el recorte GDI sale nítido y legible.
+
+- `capturar_nro_viaje(vpos)` ahora: 1) intenta Win32 (fast path, por si acaso); 2) si no, captura
+  `NRO_VIAJE_CROP_RECT=(8,82,250,32)` (reales) con `_capturar_png` — **GDI por ctypes + encoder PNG
+  con `zlib` de la stdlib, sin Pillow** — y guarda `nro_viaje_v<N>.png` junto al `resultado.json`.
+  Devuelve `(nro_texto, crop_filename)`. Fail-loud: si captura falla, ambos `""` (no inventa).
+- `resultado.json`: cada viaje lleva ahora `nro_viaje_crop` (nombre del PNG) además de
+  `nro_viaje_gesruta`. Cuando `nro_viaje_gesruta=""` y hay `nro_viaje_crop`, **la extracción lee ese
+  PNG** y completa el número. (Requiere añadir el campo al `CONTRATO-resultado-json.md` del lado de
+  la extracción — propuesto a Julio, no lo toco yo.)
+- Herramienta de validación: `inspector/test_captura_nro.py` (+ `.bat`).
+
 ### Pendiente en v2
 
-- **Nº de viaje (Punto 4) — decisión de Julio.** Win32 descartado en ambas pantallas. Opciones:
-  (a) **captura de pantalla + OCR** de la región del Nº justo tras grabar (habría que capturar por
-  GDI, ya que Pillow no tiene wheel en el equipo); (b) **manual** — la extracción lo completa al
-  cerrar el bucle. Mientras tanto el bot entrega `""` (fail-loud).
+- Añadir `nro_viaje_crop` al `CONTRATO-resultado-json.md` (lado extracción) y que la extracción lea
+  el PNG cuando el número venga vacío. **Decisión/aplicación de Julio.**
 - Confirmar en una corrida limpia (viaje vacío) que la numeración 01/02/03 del `resultado.json`
-  coincide con Gesruta.
+  coincide con Gesruta, y que el recorte del Nº sale bien dentro del flujo completo del bot.
 
 ---
 
