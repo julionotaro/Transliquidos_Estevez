@@ -108,6 +108,7 @@ extracción concretas.
 
 | Documento | Qué contiene | Cuándo leerlo |
 |---|---|---|
+| `nomenclatura-archivos.md` | **CRITERIO ÚNICO de nombres** de carpetas/archivos para `ordenes-carga/ordenes/` y `procesados/` (ficha, orden.json, albaranes por referencia, carpetas especiales). Consolida lo disperso en `correcciones-julio.json` y el INDICE de órdenes | Al procesar un juego o archivar documentos |
 | `grafo-ingesta-dedup.md` | Tramo nuevo de la ingesta: deduplicación, peso de origen, los 3 nodos nuevos | Al tocar la ingesta |
 | `catalogo-puntos.md` | Catálogo canónico de puntos + resolvedor (`catalogo/`): cascada, precedencia doc/ficha, aprendizaje de alias, bootstrap | Al tocar puntos, tarifas o correlación de ruta |
 | `contrato-viaje-v1.md` | Estructura de datos de un viaje, versión actual | Al cambiar campos de un viaje |

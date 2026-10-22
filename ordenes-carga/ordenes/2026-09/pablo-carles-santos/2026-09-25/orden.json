@@ -2,7 +2,7 @@
   "empresa": "TLE",
   "_meta": {
     "fecha_inicio": "2026-09-25",
-    "chofer": "PABLO CARLES",
+    "chofer": "PABLO CARLES SANTOS",
     "cabeza": "7963",
     "remolques": [
       "PO0628R"
@@ -20,7 +20,7 @@
         "verificar": {
           "matricula": "7963MDF",
           "remolque": "PO0628R",
-          "chofer": "PABLO CARLES"
+          "chofer": "PABLO CARLES SANTOS"
         },
         "tipo": "propio"
       },

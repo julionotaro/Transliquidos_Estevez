@@ -2,7 +2,7 @@
   "empresa": "TLE",
   "_meta": {
     "fecha_inicio": "2026-09-30",
-    "chofer": "NUNO PAIVA",
+    "chofer": "NUNO FELIPE SILVA PAIVA",
     "cabeza": "8504",
     "remolques": [
       "R4905BDF"
@@ -20,7 +20,7 @@
         "verificar": {
           "matricula": "8504KDR",
           "remolque": "R4905BDF",
-          "chofer": "NUNO PAIVA"
+          "chofer": "NUNO FELIPE SILVA PAIVA"
         },
         "tipo": "propio"
       },

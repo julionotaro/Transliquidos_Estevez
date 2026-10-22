@@ -1,0 +1,10 @@
+Documentos que NO estan en el registro: revisar si son juegos a procesar o descartar.
+Conservan su nombre de escaneo hasta resolverse (ver docs/nomenclatura-archivos.md).
+
+20261009185512.pdf:
+  Notificacion de carga de MOEVE Chemicals (Huelva, Palos de la Frontera) -> FORESA
+  Caldas de Reyes. Producto FENOL (UN 2312 fenol fundido), 25.000 kg, carga 07/10/2026.
+  Nº transporte 8310606622, entrega 21036175, pedido 200854506/20. Remolque R-4905-BDF
+  (anotacion a mano). Es un FENOL de ENTRADA a FORESA, NO un albaran de salida de los
+  habituales; estaba mal archivado en procesados/FORESA/2026-10/ con nombre de escaneo y
+  sin fila en el registro. Pendiente: Julio define si se factura/carga y a quien.
