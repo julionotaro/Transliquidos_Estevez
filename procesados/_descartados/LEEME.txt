@@ -12,3 +12,8 @@ OCTUBRE (20261007140356.pdf, 20261007140421.pdf, 20261007140436.pdf):
   Escaneo partido (07/10) de un juego YA PROCESADO el 09/10 (ficha 20261009185306.pdf,
   Pablo Carles) = registro filas 12-13, refs 2027535 (FORESA) y 710250 (QUIMIDROGA).
   Duplicado.
+
+22-OCT batch (20261022114005.pdf):
+  Escaneo DUPLICADO de la ficha B de Manuel Sabaris (= 20261022113621.pdf, mismos 5
+  documentos: BRESFOR 5050141326 + DIVERSEY 870220749). Se proceso 20261022113621.pdf
+  (orden manuel-sabaris/2026-10-13). Este es copia exacta -> descartado.

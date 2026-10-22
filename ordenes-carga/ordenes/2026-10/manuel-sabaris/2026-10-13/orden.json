@@ -1,0 +1,105 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-13",
+    "chofer": "MANUEL SABARIS",
+    "cabeza": "2256",
+    "remolques": [
+      "PO02194R"
+    ],
+    "viajes": 1,
+    "albaranes": 2,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261022113621.pdf",
+    "choferes_tipo": "propio"
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2256",
+        "verificar": {
+          "matricula": "2256JYX",
+          "remolque": "PO02194R",
+          "chofer": "MANUEL SABARIS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "5050141326",
+          "salida": "13/10/2026",
+          "llegada": "14/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,480",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.314,88",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "1168219",
+            "fin": "1169049",
+            "carga": "830"
+          },
+          "tarifa_pendiente": false,
+          "_destino_nota": "Finsa Cella (Teruel): destino TERUEL (TE). RES1350->COLA. Internacional PI IVA 0. Peso guia de remessa 23.480 (bascula descarga FINSA 23.420 - corroboracion)."
+        },
+        {
+          "cliente": {
+            "codigo": null,
+            "esperado": "DIVERSEY ESPANA, S.L."
+          },
+          "origen": {
+            "codigo": "M",
+            "esperado": "MADRID"
+          },
+          "destino": {
+            "codigo": "PONT",
+            "esperado": "PONTEDEUME"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "870220749",
+          "salida": "15/10/2026",
+          "llegada": "16/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "1169364",
+            "fin": "1169993",
+            "carga": "629"
+          },
+          "tarifa_pendiente": true,
+          "_bloqueo": "DIVERSEY ESPANA NO esta en el padron de clientes Gesruta (clientes-gesruta.js): confirmar a quien se factura (Diversey? agencia?) y darlo de alta. Madrid (Valdemoro)->Leche Celta Pontedeume (PONT). Sosa liquida UN 1824 (hidroxido sodico)->SOSA cod 51. Nacional P IVA 21. TARIFA PENDIENTE. Peso de carga ~19.020 kg (<23 TN -> minimo facturable 23 TN, R-02). Ref = albaran Leche Celta 870220749."
+        }
+      ]
+    }
+  ]
+}

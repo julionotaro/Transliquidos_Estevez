@@ -1,0 +1,148 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-02",
+    "chofer": "MANUEL SABARIS",
+    "cabeza": "2256",
+    "remolques": [
+      "PO02194R"
+    ],
+    "viajes": 1,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261022113522.pdf",
+    "choferes_tipo": "propio",
+    "_nota_remolque": "El padron (flota.json) da 2256JYX con remolque habitual R3546BBG; esta ficha trae PO02194R en los 5 documentos. Cambio de remolque (no bloquea); se carga PO02194R."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2256",
+        "verificar": {
+          "matricula": "2256JYX",
+          "remolque": "PO02194R",
+          "chofer": "MANUEL SABARIS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "ORE",
+            "esperado": "ORENSE"
+          },
+          "carga": {
+            "codigo": "VINKA",
+            "esperado": "VINKA-PLAST"
+          },
+          "referencia": "710297",
+          "salida": "02/10/2026",
+          "llegada": "05/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,820",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.898,69",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "1164410",
+            "fin": "1165494",
+            "carga": "1084"
+          },
+          "tarifa_pendiente": false,
+          "_destino_nota": "Entrega en CONDUCTORES ELECTRICOS REVI (Quintela de Leirado, Ourense). Se carga destino ORENSE (ORE), que es donde vive la tarifa QUIMIDROGA (Barcelona->Orense 79,71 EUR/TN). Carga fisica en TEPSA Barcelona."
+        },
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "5050141131",
+          "salida": "06/10/2026",
+          "llegada": "07/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,440",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.312,64",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "1165804",
+            "fin": "1166647",
+            "carga": "843"
+          },
+          "tarifa_pendiente": false,
+          "_destino_nota": "Finsa Cella (Teruel): destino TERUEL (TE), donde vive la tarifa 56 EUR/TN. RES1350->COLA. Internacional PI IVA 0."
+        },
+        {
+          "cliente": {
+            "codigo": "329",
+            "esperado": "ARACHEM, S.A."
+          },
+          "origen": {
+            "codigo": "BI",
+            "esperado": "BILBAO"
+          },
+          "destino": {
+            "codigo": "ALENQ",
+            "esperado": "ALENQUER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "261012",
+          "salida": "08/10/2026",
+          "llegada": "09/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "1167142",
+            "fin": "1167989",
+            "carga": "847"
+          },
+          "tarifa_pendiente": true,
+          "_bloqueo": "TARIFA PENDIENTE: no hay tarifa ARACHEM (cod 329) Bilbao->SACOPOR Alenquer (PT). Internacional PI IVA 0. Material 'cola sintetica' (ARAMUL CS, cod art ARACHEM 1000157) mapeado a COLA cod 1 - verificar con Julio. Ref = albaran ARACHEM 261012. Confirmar tarifa."
+        }
+      ]
+    }
+  ]
+}
