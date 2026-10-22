@@ -71,33 +71,43 @@ Tras la primera corrida integrada, Julio reportó 4 problemas. Diagnóstico y ar
    Gastos es **por albarán** (cada albarán abre su Gastos vacío), no acumulativa a nivel viaje; el
    robot clicaba la celda Cantidad en la fila índice `ai`, que en el 2º/3er albarán era una fila
    vacía. **Fix:** la fila nueva de cada concepto está **siempre en la fila 0** (`_add_gasto_row(…, 0, …)`).
-2. **No grababa el viaje al cerrar el 3er albarán.** Causa: `pyautogui.press('f2')` (pulsación
-   única) **se perdía** — el mismo síntoma que tuvo F2 en Gastos. Verificado en vivo: con la ventana
-   del viaje enfocada, **F2 sí graba** (los campos Cabeza/Chófer quedan en gris). **Fix:** se
-   mantiene F2 (es el cierre que Julio definió) pero con **`keyDown`/`keyUp` sostenido + reintento
-   con re-foco**, para que no se pierda la pulsación. **Fallback preparado:** flag
-   `GRABAR_VIAJE_CON_DISQUETE` (por defecto `False`) + constante `VIAJE_SAVE` — si F2 no responde en
-   la prueba, se confirma **en vivo** el disquete de grabar y se activa el flag (coordenada marcada
-   SIN VERIFICAR hasta confirmarla; no se inventa).
+2. **No grababa el viaje al cerrar el 3er albarán.** Primer intento: F2 con `keyDown`/`keyUp`
+   sostenido + reintento. **En la prueba del 2026-10-22 F2 SIGUIÓ SIN GRABAR** (corrió 2 veces, 16 s,
+   y el viaje quedó sin grabar). Conclusión: F2 por `pyautogui` no es fiable acá, por más vueltas que
+   se le den. **Fix definitivo (como pidió Julio): DISQUETE.** Se activó
+   `GRABAR_VIAJE_CON_DISQUETE=True` y `VIAJE_SAVE=(351,1002)` = disquete **plano** de grabar de
+   Entrada de Viajes (**VERIFICADO EN VIVO**: al clicarlo el viaje quedó grabado, campos en gris). El
+   otro disquete contiguo (con una hoja) es grabar-e-imprimir, no se usa.
 3. **Nº de albarán:** confirmado = **índice dentro del viaje** (`01`,`02`,`03`). Ya implementado.
-4. **Nº de viaje NO es legible por software.** El campo bajo "Entrada de Viajes" (p. ej. `00050961`)
-   es **owner-drawn** (lo pinta Gesruta): no lo lee el portapapeles (Ctrl+C siempre copia la fila de
-   la grilla) **ni** Win32 `GetWindowText` (`test_nro_viaje.py` → **0 candidatos**). Queda pendiente
-   decidir la vía de captura (ver abajo). El robot **falla ruidoso**: deja `nro_viaje_gesruta=""`,
-   no inventa.
+4. **Nº de viaje NO es legible por software (confirmado en las DOS pantallas).** El campo (p. ej.
+   `00050962`) es **owner-drawn** (lo pinta Gesruta): no lo lee el portapapeles (Ctrl+C siempre copia
+   la fila de la grilla) **ni** Win32 `GetWindowText`. El diagnóstico `test_nro_viaje.py` se corrió
+   el 2026-10-22 en **Entrada de Viajes Y Entrada de Albaranes** (idea de Julio): **0 candidatos en
+   ambas**; el Nº no aparece como texto en ningún control de ninguna de las dos. Win32 queda
+   descartado. El robot **falla ruidoso**: deja `nro_viaje_gesruta=""`, no inventa. Próximo paso:
+   OCR de captura o completarlo manual en la extracción (decisión de Julio).
+
+### Resultado de la prueba — 2026-10-22
+
+- **Punto 1 (Gastos): RESUELTO y confirmado.** Corrida de Alfonsín: los 3 albaranes cargaron sus
+  KILOMETROS / KM EN VACIO correctos (1200/127, 1170/68, 292/42), cada uno en su fila 0. Julio lo
+  verificó en pantalla.
+- **Punto 2 (grabar viaje): RESUELTO vía disquete.** F2 volvió a fallar; se pasó al disquete plano
+  (`VIAJE_SAVE=(351,1002)`, `GRABAR_VIAJE_CON_DISQUETE=True`), verificado en vivo.
+- **Punto 4: Win32 descartado en ambas pantallas** (ver arriba). Pendiente de decisión OCR vs manual.
+- **OJO nº de albarán:** en la prueba el viaje **no estaba vacío** (tenía un albarán `01` previo,
+  ref 2029398), así que los 3 del bot quedaron como `02/03/04` en Gesruta mientras el
+  `resultado_actual.json` los numeró `01/02/03`. En producción el viaje debe arrancar **vacío** para
+  que la numeración índice (01/02/03) coincida con la de Gesruta.
 
 ### Pendiente en v2
 
-- **Nº de viaje (Punto 4) — decisión de Julio.** Al no ser legible por portapapeles ni Win32, las
-  opciones son: (a) **captura de pantalla + OCR** de la región del Nº justo tras grabar (el bot ya
-  sabe grabar; añadiría recorte + OCR local); (b) **UIA / MSAA** (automatización de accesibilidad de
-  Windows) por si el control expone el texto por esa API aunque sea owner-drawn; (c) **manual** — la
-  extracción lo completa a mano al cerrar el bucle. Mientras tanto el bot entrega `""` (fail-loud).
-- Validar en vivo la próxima corrida integrada que los dos fixes (fila 0 en Gastos y F2 robusto)
-  resuelven los Puntos 1 y 2. **Plan de prueba:** `PRUEBA-viajes2-2026-10-22.md`.
-- Diagnóstico del Nº de viaje (Punto 4): `inspector/test_nro_viaje.py` (+ `.bat`) — barrido Win32 de
-  solo lectura que vuelca todos los controles con texto; correr en **Entrada de Viajes** y en
-  **Entrada de Albaranes** (idea de Julio: el Nº de viaje también se ve en la pantalla de albaranes).
+- **Nº de viaje (Punto 4) — decisión de Julio.** Win32 descartado en ambas pantallas. Opciones:
+  (a) **captura de pantalla + OCR** de la región del Nº justo tras grabar (habría que capturar por
+  GDI, ya que Pillow no tiene wheel en el equipo); (b) **manual** — la extracción lo completa al
+  cerrar el bucle. Mientras tanto el bot entrega `""` (fail-loud).
+- Confirmar en una corrida limpia (viaje vacío) que la numeración 01/02/03 del `resultado.json`
+  coincide con Gesruta.
 
 ---
 

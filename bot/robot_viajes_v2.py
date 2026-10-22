@@ -54,13 +54,13 @@ K_BONIF_CARGA=(1229,487); K_SAVE=(632,638)
 ALB_SAVE=(49,1005)
 NUEVO_ALB_BTN=(1878,332)   # hoja blanca 'Anadir nuevo' en Entrada de Viajes
 # --- Grabado del VIAJE (Entrada de Viajes) ---
-# Por defecto se graba con F2 (cierre definido por Julio), ahora con pulsacion sostenida (ver mas abajo).
-# Si manana F2 no responde, poner GRABAR_VIAJE_CON_DISQUETE=True y usar VIAJE_SAVE.
-# OJO: VIAJE_SAVE es una OBSERVACION sin verificar (hay DOS disquetes juntos en la barra inferior,
-#      ~x369 y ~x396 reales; hay que CONFIRMAR EN VIVO cual graba antes de fiarse). No invento: por eso
-#      el flag arranca en False y la coordenada queda marcada para verificar.
-GRABAR_VIAJE_CON_DISQUETE = False
-VIAJE_SAVE = (369,1004)    # <-- SIN VERIFICAR: confirmar en vivo (disquete de grabar de Entrada de Viajes)
+# F2 NO graba de forma fiable por pyautogui (ni con pulsacion sostenida ni reintento): la prueba del
+# 2026-10-22 lo confirmo (corrio 2 veces y no grabo). Se pasa al DISQUETE, como pidio Julio.
+# VIAJE_SAVE = disquete PLANO (grabar) de la barra inferior de Entrada de Viajes. Hay dos disquetes
+# juntos: el plano graba (VERIFICADO EN VIVO 2026-10-22: al clicarlo el viaje quedo grabado, campos en
+# gris); el otro (con una hoja) es grabar-e-imprimir, NO usar. Coordenada real 1920x1080.
+GRABAR_VIAJE_CON_DISQUETE = True
+VIAJE_SAVE = (351,1002)    # disquete PLANO de grabar (VERIFICADO EN VIVO 2026-10-22)
 
 # ---- Coordenadas GASTOS (autonomos) 1920x1080, ventana Gastos MAXIMIZADA. Validadas 2026-10-20. ----
 GASTOS_BTN   = (1827,108)   # boton "Gastos" en la barra de Entrada de Albaranes
