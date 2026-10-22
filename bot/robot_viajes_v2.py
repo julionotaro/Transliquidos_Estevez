@@ -312,16 +312,18 @@ def do_gastos_autonomo(km, ai):
         log("  ABORTO autonomo: falta km.vacio en la orden (lo informa la ficha; no invento)."); return False
     log("  --- GASTOS (autonomo) ---  carga=%s vacio=%s (albaran idx %d)"%(carga,vacio,ai))
     ensure_ges()
-    # 1) PRIMER clic en Gastos: dispara 2 avisos ("grabar el albaran para continuar?" y
-    #    "convertir el pedido en albaran?") -> Si a AMBOS. El albaran se graba pero Gastos NO abre.
+    # 1) CLIC en Gastos: dispara 2 avisos ("grabar el albaran para continuar?" y
+    #    "convertir el pedido en albaran?") -> Si a AMBOS. Tras responder, la ventana Gastos ABRE SOLA.
     pyautogui.moveTo(*GASTOS_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*GASTOS_BTN); time.sleep(0.8)
     nd=despejar_avisos_si(16.0, "gastos-avisos")
     log("  [gastos] avisos despejados (grabar albaran + convertir pedido): %d"%nd)
-    time.sleep(0.6); ensure_ges()
-    # 2) SEGUNDO clic en Gastos: AHORA SI abre la pantalla (el albaran ya quedo grabado, sin avisos).
-    pyautogui.moveTo(*GASTOS_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*GASTOS_BTN); time.sleep(1.2)
-    despejar_avisos_si(2.0, "gastos-avisos-2")   # por si quedara algun aviso suelto
-    ensure_ges(); time.sleep(0.3)
+    # 2) NO re-clicar Gastos. La ventana Gastos abre SOLA tras los 2 "Si" (con demora). Si se vuelve a
+    #    clicar el boton cuando la ventana YA abrio, se descoordina: carga el concepto equivocado
+    #    (empieza por km vacio), guarda y sale. (Hallazgo de Julio 2026-10-22: antes el 2do clic era
+    #    un parche por timing; a la manana caia antes de que abriera, ahora cae despues y rompe.)
+    #    Solo ESPERAR a que la ventana termine de abrir, limpiando cualquier aviso suelto.
+    despejar_avisos_si(2.0, "gastos-avisos-2")
+    time.sleep(2.6); ensure_ges(); time.sleep(0.4)   # la ventana Gastos termina de abrir sola
     # 3) Cargar los dos conceptos (concepto -> hoja blanca -> clic Cantidad -> teclear -> Enter).
     #    OJO: la grilla de Gastos es POR ALBARAN (no acumula a nivel viaje), asi que la fila nueva
     #    de cada concepto esta SIEMPRE en la fila 0 (y=184). (Antes se usaba 'ai' y en el 2do/3er

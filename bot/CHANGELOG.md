@@ -116,6 +116,22 @@ pediría instalar algo) o paso manual, el bot **captura la zona del Nº a un PNG
   la extracción — propuesto a Julio, no lo toco yo.)
 - Herramienta de validación: `inspector/test_captura_nro.py` (+ `.bat`).
 
+### Fix 2026-10-22 (tarde) — Gastos: QUITAR el 2º clic (lo descoordinaba)
+
+Síntoma (Julio, en vivo): en Gastos el bot empezaba cargando la fila de **km vacío**, guardaba y
+salía, en vez de km carga → km vacío. Mismo código de Gastos que la corrida buena (verificado por
+git), así que no era regresión: era **timing**.
+
+Causa raíz (la encontró Julio mirando la pantalla): tras clicar Gastos y responder **Sí** a los 2
+avisos, la ventana Gastos **abre sola** (con demora). El bot hacía un **2º clic en Gastos** — parche
+de la sesión original, cuando creímos que no abría. A la mañana ese 2º clic caía *antes* de que
+abriera (y la terminaba de abrir); ahora Gesruta abre más rápido, el 2º clic cae con la ventana **ya
+abierta** y la descoordina (selecciona el concepto equivocado → carga km vacío, guarda, sale).
+
+Fix: se **elimina el 2º clic**. Tras despejar los avisos, el bot solo **espera** a que la ventana
+abra (sin re-clicar) y recién ahí carga los conceptos. Es lo que pidió Julio: "solo hay que esperar
+que abra la ventana de gastos".
+
 ### Pendiente en v2
 
 - Añadir `nro_viaje_crop` al `CONTRATO-resultado-json.md` (lado extracción) y que la extracción lea
