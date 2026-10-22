@@ -1,0 +1,14 @@
+Juegos YA RESUELTOS — NO procesar (doble facturacion). Archivados 2026-10-22.
+
+AGOSTO (20260824172254.pdf, 20260824172302.pdf):
+  Viaje Pablo Carles 20/08/2026, YA FACTURADO en Gesruta = FACTURA 50754
+  (lineas 2940-2943 de linea-facturacion-2026-08-26.csv):
+   - FORESA Villagarcia->Asturias/Gijon METANOL
+   - RNM Aviles->Vilanova Famalicao ACIDO SULFURICO
+  Es el "juego de control / PRUEBA Claude" del n8n; genero las reglas RNM de
+  correcciones-julio.json (destino FAMAL, ref carta de porte, tarifa 39,13). Material fuente.
+
+OCTUBRE (20261007140356.pdf, 20261007140421.pdf, 20261007140436.pdf):
+  Escaneo partido (07/10) de un juego YA PROCESADO el 09/10 (ficha 20261009185306.pdf,
+  Pablo Carles) = registro filas 12-13, refs 2027535 (FORESA) y 710250 (QUIMIDROGA).
+  Duplicado.
