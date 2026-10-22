@@ -132,13 +132,33 @@ Fix: se **elimina el 2º clic**. Tras despejar los avisos, el bot solo **espera*
 abra (sin re-clicar) y recién ahí carga los conceptos. Es lo que pidió Julio: "solo hay que esperar
 que abra la ventana de gastos".
 
-**Segunda capa (mismo día, observado en vivo):** ya sin el 2º clic, igual fallaba el **primer**
-concepto (KILOMETROS=carga no entraba; el 2do, KM EN VACIO, sí). Causa: la ventana Gastos recién
-abierta se "come" el **primer clic** (solo la enfoca) y recién el 2do registra — por eso el 1er
-concepto no quedaba seleccionado y el 2do sí. Verificado tomando control: con la ventana ya enfocada,
-un clic selecciona bien; el mecanismo (concepto → hoja blanca → cantidad → Enter) es correcto.
-Fix: en `_add_gasto_row` el concepto se clica **dos veces** (dos clics simples separados ~0.35s, no
-doble-click): el 1º enfoca, el 2º selecciona. Robusto para ambos conceptos.
+**Segunda capa — la real (observada en vivo):** ya sin el 2º clic, igual fallaba el **primer**
+concepto (KILOMETROS=carga no entraba; el 2do, KM EN VACIO, sí). Primer intento fallido: clic doble
+en el concepto (pensando que la ventana "se comía" el 1er clic). NO era eso. Reproduciendo el flujo
+**con los avisos** (el intento anterior lo había probado sobre un albarán ya grabado, que abre Gastos
+sin avisos → condición equivocada) se ve la causa real: **tras responder los avisos, la ventana
+Gastos abre con demora variable** (Gesruta graba+convierte el albarán y recién la muestra). El bot
+cargaba el 1er concepto **antes** de que la ventana abriera → ese clic caía en la ventana vieja y se
+perdía; para el 2do concepto la ventana ya estaba abierta, por eso entraba.
+
+Fix definitivo: `_esperar_gastos_abierta()` espera a que la ventana Gastos esté **realmente abierta**
+(ventana visible, ancha >700px, con 'GASTOS' en el título) antes de cargar conceptos, con timeout de
+14 s como piso. Se revirtió el clic doble (no hacía falta). `IsWindowVisible` agregado a los helpers.
+
+### Esperas EVENT-BASED en todas las transiciones (2026-10-22, enfoque pedido por Julio)
+
+Causa raíz común de los problemas de la tarde: **Gesruta en red responde lento y variable**, y los
+`sleep` fijos del robot se desfasan. Principio (idea de Julio): **no programar por tiempo; esperar a
+que la próxima pantalla cargue/cierre antes de seguir.** Se generalizó con `_ventana_visible(substr)`
+(ventana visible + grande, ignora botones y MDI ocultas de fondo) y `_esperar_ventana(substr,
+aparezca, timeout)`, aplicado en:
+- abrir Gastos → esperar que la ventana Gastos aparezca;
+- guardar Gastos → esperar que la ventana Gastos **cierre** (volver al albarán) antes de grabarlo;
+- grabar albarán → esperar que "Entrada de Albaranes" **cierre** (volver a Entrada de Viajes);
+- abrir albarán → esperar que "Entrada de Albaranes" aparezca (timeout 12 s, antes 6 s).
+El timeout es un **piso** de espera, no un abort silencioso: si vence, se loguea y se sigue (salvo
+abrir albarán, que aborta ruidoso). Degrada con seguridad: si un detector fallara, equivale al
+comportamiento viejo de esperar un tiempo, nunca peor.
 
 ### Pendiente en v2
 

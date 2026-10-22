@@ -88,6 +88,7 @@ u32.GetAncestor.argtypes=[ctypes.c_void_p,ctypes.c_uint]; u32.GetAncestor.restyp
 class RECT(ctypes.Structure):
     _fields_=[("left",ctypes.c_long),("top",ctypes.c_long),("right",ctypes.c_long),("bottom",ctypes.c_long)]
 u32.GetWindowRect.argtypes=[ctypes.c_void_p, ctypes.POINTER(RECT)]
+u32.IsWindowVisible.argtypes=[ctypes.c_void_p]; u32.IsWindowVisible.restype=ctypes.c_bool
 def _text(h):
     n=u32.GetWindowTextLengthW(h); b=ctypes.create_unicode_buffer(n+2); u32.GetWindowTextW(h,b,n+2); return b.value or ""
 def _cls(h):
@@ -278,16 +279,43 @@ def reconstruct(ficha,T):
     if cand<T: cand+=mod
     return cand
 
+# ---- Esperas EVENT-BASED (no por tiempo fijo): Gesruta en red es lento y variable, sobre todo a la
+#      tarde. En vez de sleeps fijos que se desfasan, se espera a que la VENTANA esperada aparezca o
+#      cierre antes de seguir. (Enfoque pedido por Julio 2026-10-22: "esperar que cargue la proxima
+#      pantalla para continuar, no programar por tiempo".)
+def _ventana_visible(substr, min_w=700, min_h=350):
+    """True si existe una ventana VISIBLE, grande (>min_w x min_h) y con substr en el titulo. El
+    filtro de tamano descarta botones/controles chicos con el mismo texto; IsWindowVisible descarta
+    las ventanas MDI que persisten OCULTAS de fondo (por eso has_window no servia para esto)."""
+    su=substr.upper()
+    for h in all_hwnds():
+        try:
+            if not u32.IsWindowVisible(h): continue
+            if su not in (_text(h) or "").upper(): continue
+            r=_rect(h)
+            if (r.right-r.left)>min_w and (r.bottom-r.top)>min_h: return True
+        except Exception: continue
+    return False
+
+def _esperar_ventana(substr, aparezca=True, timeout=14.0, tag=""):
+    """Espera hasta que una ventana grande con substr en el titulo APAREZCA (aparezca=True) o CIERRE
+    (aparezca=False). Devuelve True si se cumplio; si vence el timeout devuelve False pero igual se
+    siguio (el timeout es un piso de espera, no un abort)."""
+    t0=time.time()
+    while time.time()-t0<timeout:
+        if _ventana_visible(substr) == aparezca:
+            log("  [espera%s] '%s' %s"%(" "+tag if tag else "", substr, "abierta" if aparezca else "cerrada")); return True
+        time.sleep(0.4)
+    log("  [espera%s] '%s' NO %s tras %.0fs (sigo)"%(" "+tag if tag else "", substr, "abrio" if aparezca else "cerro", timeout)); return False
+
+def _gastos_abierta(): return _ventana_visible("GASTOS")
+def _esperar_gastos_abierta(timeout=14.0): return _esperar_ventana("GASTOS", True, timeout, "gastos")
+
 def _add_gasto_row(concept_xy, concept_name, row_idx, cantidad):
-    """GASTOS: selecciona concepto, abre fila con la HOJA BLANCA, clic en Cantidad, teclea y Enter."""
+    """GASTOS: selecciona concepto, abre fila con la HOJA BLANCA, clic en Cantidad, teclea y Enter.
+    (La ventana ya tiene que estar ABIERTA: ver _esperar_gastos_abierta en do_gastos_autonomo.)"""
     ensure_ges()
-    # DOBLE clic-simple en el concepto (NO doble-click: dos clics separados ~0.35s). La ventana Gastos
-    # recien abierta se "come" el PRIMER clic (solo la enfoca) y recien el 2do selecciona de verdad.
-    # Sin esto, el 1er concepto (KILOMETROS) no quedaba seleccionado y su fila/cantidad caia mal,
-    # mientras el 2do (KM EN VACIO) si entraba. Verificado en vivo 2026-10-22: con la ventana ya
-    # enfocada un clic basta; el 2do es inofensivo (solo re-selecciona). Hacerlo siempre = robusto.
-    pyautogui.moveTo(*concept_xy,duration=0.12); time.sleep(0.1); pyautogui.click(*concept_xy); time.sleep(0.35)
-    pyautogui.click(*concept_xy); time.sleep(0.5)
+    pyautogui.moveTo(*concept_xy,duration=0.12); time.sleep(0.1); pyautogui.click(*concept_xy); time.sleep(0.5)
     pyautogui.moveTo(*G_ADD_BTN,duration=0.12); time.sleep(0.1); pyautogui.click(*G_ADD_BTN); time.sleep(0.9)
     cx,cy=_gcant_xy(row_idx)
     pyautogui.moveTo(cx,cy,duration=0.12); time.sleep(0.1); pyautogui.click(cx,cy); time.sleep(0.3)
@@ -327,9 +355,13 @@ def do_gastos_autonomo(km, ai):
     #    clicar el boton cuando la ventana YA abrio, se descoordina: carga el concepto equivocado
     #    (empieza por km vacio), guarda y sale. (Hallazgo de Julio 2026-10-22: antes el 2do clic era
     #    un parche por timing; a la manana caia antes de que abriera, ahora cae despues y rompe.)
-    #    Solo ESPERAR a que la ventana termine de abrir, limpiando cualquier aviso suelto.
+    #    ESPERAR a que la ventana Gastos abra DE VERDAD antes de cargar conceptos. Clave: abre con
+    #    demora variable tras los avisos (Gesruta graba+convierte y recien la muestra); si se carga
+    #    antes, el 1er concepto cae en la ventana vieja y se pierde (el 2do entraba porque ya abrio).
     despejar_avisos_si(2.0, "gastos-avisos-2")
-    time.sleep(2.6); ensure_ges(); time.sleep(0.4)   # la ventana Gastos termina de abrir sola
+    abierta=_esperar_gastos_abierta(14.0)
+    log("  [gastos] ventana Gastos %s"%("abierta (detectada)" if abierta else "NO detectada tras timeout (sigo igual)"))
+    time.sleep(1.0); ensure_ges(); time.sleep(0.4)   # settle tras abrir
     # 3) Cargar los dos conceptos (concepto -> hoja blanca -> clic Cantidad -> teclear -> Enter).
     #    OJO: la grilla de Gastos es POR ALBARAN (no acumula a nivel viaje), asi que la fila nueva
     #    de cada concepto esta SIEMPRE en la fila 0 (y=184). (Antes se usaba 'ai' y en el 2do/3er
@@ -339,8 +371,12 @@ def do_gastos_autonomo(km, ai):
     # 4) Guardar con el DISQUETE (clic), NO con F2 (la tecla se pierde si el foco no esta exacto).
     #    El disquete graba Gastos, cierra la ventana y vuelve al albaran (que queda numerado).
     ensure_ges(); time.sleep(0.3)
-    pyautogui.moveTo(*GASTOS_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*GASTOS_SAVE); time.sleep(1.4)
+    pyautogui.moveTo(*GASTOS_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*GASTOS_SAVE); time.sleep(0.8)
     despejar_avisos_si(2.0, "post-gastos")
+    # esperar a que la ventana Gastos CIERRE (volvemos al albaran) antes de seguir. Si no cierra,
+    # el click de grabar albaran caeria sobre Gastos todavia abierto -> desfase.
+    _esperar_ventana("GASTOS", aparezca=False, timeout=12.0, tag="post-gastos")
+    ensure_ges(); time.sleep(0.4)
     log("  [gastos] grabado con DISQUETE (vuelve al albaran)")
     return True
 
@@ -483,8 +519,13 @@ def do_albaran(alb, n, autonomo=False):
         # Chofer AUTONOMO: los km van en GASTOS, no en el formulario Kilometros.
         if not do_gastos_autonomo(km, n): return False
         ensure_ges(); time.sleep(0.3)
-        pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(1.2)
+        pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(0.8)
         handle_si(2.5,"post-albaran")
+        # esperar a que la ventana del albaran CIERRE (volvemos a Entrada de Viajes) antes de abrir el
+        # siguiente o grabar el viaje. Clave con el sistema lento: evita encadenar sobre una pantalla
+        # que todavia no termino de grabar.
+        _esperar_ventana("ENTRADA DE ALBARANES", aparezca=False, timeout=12.0, tag="post-albaran")
+        ensure_ges(); time.sleep(0.4)
         log("  >>> ALBARAN idx %d GRABADO (autonomo/gastos). activa=%r"%(n, active_title()))
         return True
     # ---- KM (chofer PROPIO) ----
@@ -639,11 +680,10 @@ try:
             vres["albaranes"].append(ar)
             log("--- Abrir albaran %d/%d (Anadir nuevo) ---"%(ai+1,len(albs)))
             ensure_ges(); pyautogui.moveTo(*NUEVO_ALB_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*NUEVO_ALB_BTN)
-            at0=time.time(); abierto=False
-            while time.time()-at0<6:
-                if has_window("ENTRADA DE ALBARANES"): abierto=True; break
-                time.sleep(0.3)
-            if not abierto: log("  ABORTO: no abrio Entrada de Albaranes."); break
+            # esperar a que ABRA la ventana de albaran (visible y grande). Timeout amplio por la
+            # lentitud del sistema en red; si no abre, abortamos ruidoso (no seguimos a ciegas).
+            if not _esperar_ventana("ENTRADA DE ALBARANES", aparezca=True, timeout=12.0, tag="abrir-alb"):
+                log("  ABORTO: no abrio Entrada de Albaranes (timeout)."); break
             time.sleep(0.9); ensure_ges(); time.sleep(0.3)
             if not do_albaran(alb, ai, autonomo):
                 ar["motivo"]="cadena detenida en este albaran"
