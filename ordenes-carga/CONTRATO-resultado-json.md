@@ -24,7 +24,8 @@ lee y actualiza `datos/registro-procesamiento.csv`.
     {
       "cabeza": "5358",
       "chofer": "PEDRO FRAGA ESTEVEZ",
-      "nro_viaje_gesruta": "123456",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
       "estado": "grabado",
       "motivo": "",
       "albaranes": [
@@ -44,10 +45,20 @@ lee y actualiza `datos/registro-procesamiento.csv`.
 - **`estado`** por albarán y por viaje: `grabado` | `abortado` | `error`. Si no es `grabado`,
   `motivo` explica por qué (texto corto). Fallar ruidoso: mejor `error` + motivo que un número inventado.
 - Un albarán no cargable (tarifa_pendiente, punto faltante) → `estado: "omitido"`, `motivo`.
-- El bot **no inventa** números: si Gesruta no mostró el Nº, lo deja vacío + `estado: "error"`.
+- **Nº de viaje por IMAGEN (la PC no tiene OCR):** al grabar el viaje, el bot captura un recorte
+  del Nº y lo guarda como **PNG** (`nro_viaje_v<N>.png`) junto al `resultado.json`, y pone su
+  nombre en **`nro_viaje_crop`**. Si Win32 pudo leer el texto, llena `nro_viaje_gesruta`; si no
+  (lo normal), lo deja **vacío** y la EXTRACCIÓN abre ese PNG, lee el número de la imagen y lo
+  completa. Esto NO es error: `estado` sigue `grabado`. El mismo patrón (`<campo>_crop`) aplica a
+  cualquier número que el bot solo pueda capturar como imagen (ej. a futuro `nro_albaran_crop`).
+- El bot **no inventa** números: si no hay ni texto ni PNG, deja el Nº vacío + `estado: "error"`.
 
 ## Qué hace la extracción al leerlo
 
 Por cada albarán del `resultado.json`: busca en el registro la fila con esa `referencia`,
 escribe `nro_viaje_gesruta` / `nro_albaran_gesruta`, pasa `estado_carga` a CARGADO (o lo que
 corresponda), y commitea. Así el libro maestro queda completo sin que nadie tipee los números.
+
+**Si `nro_viaje_gesruta` viene vacío y hay `nro_viaje_crop`:** la extracción abre ese PNG (está
+junto al `resultado.json`), lee el número de la imagen y lo usa como `nro_viaje_gesruta`. (Claude
+lee imágenes; hace de "OCR" sin software instalado en la PC.)
