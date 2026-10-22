@@ -69,8 +69,8 @@
         },
         {
           "cliente": {
-            "codigo": null,
-            "esperado": "DIVERSEY ESPANA, S.L."
+            "codigo": "10",
+            "esperado": "BALTRANSA, S.A."
           },
           "origen": {
             "codigo": "M",
@@ -84,20 +84,30 @@
             "codigo": "51",
             "esperado": "SOSA"
           },
-          "referencia": "870220749",
+          "referencia": "338681",
           "salida": "15/10/2026",
           "llegada": "16/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "1.150,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1",
+              "factor": "0"
+            }
           },
           "km": {
             "inicio": "1169364",
             "fin": "1169993",
             "carga": "629"
           },
-          "tarifa_pendiente": true,
-          "_bloqueo": "DIVERSEY ESPANA NO esta en el padron de clientes Gesruta (clientes-gesruta.js): confirmar a quien se factura (Diversey? agencia?) y darlo de alta. Madrid (Valdemoro)->Leche Celta Pontedeume (PONT). Sosa liquida UN 1824 (hidroxido sodico)->SOSA cod 51. Nacional P IVA 21. TARIFA PENDIENTE. Peso de carga ~19.020 kg (<23 TN -> minimo facturable 23 TN, R-02). Ref = albaran Leche Celta 870220749."
+          "tarifa_pendiente": false,
+          "_nota": "BALTRANSA (cod 10): el viaje se factura a BALTRANSA (Orden de Transporte Baltransa 338681); DIVERSEY (Valdemoro) es solo el punto de carga, no el cliente. Precio FIJO 1.150,00 EUR/viaje (um UN, cantidad 1) de la OC Baltransa. Nacional P IVA 21 (destino Pontedeume/Coruña). Linea de indexacion con cantidad 1 e importe 0 (regla Baltransa). Sosa liquida UN1824->SOSA cod 51. Peso de carga ~19.020 kg (no afecta: precio fijo por viaje)."
         }
       ]
     }

@@ -9,10 +9,10 @@
     ],
     "viajes": 1,
     "albaranes": 2,
-    "estado": "revisar_metanol",
+    "estado": "pendiente_carga",
     "source_ficha": "20261022114103.pdf",
     "choferes_tipo": "propio",
-    "_nota_flujo": "METANOL - flujo NO implementado en el bot (ver docs/flujos-carga.md 2: carga Excel + Gesruta). Ambos albaranes van con tarifa_pendiente=true para que el bot haga SOLO cabecera+km (Estado Pedido) y NO cargue lineas por su cuenta. Julio define la carga del metanol (Excel + Gesruta, sin referencia) y confirma las tarifas candidatas (del historico de facturacion). Peso < 23 TN en ambos -> minimo facturable 23 TN (R-02).",
+    "_nota_flujo": "METANOL normal (confirmado Julio 2026-10-22): el unico flujo metanol NO implementado es Villagarcia->Caldas; el resto (aqui Villagarcia->Valladolid/Curia y Villagarcia->Gijon/Cogersa) se carga NORMALMENTE como convencional. Tarifas confirmadas por Julio (38,66 y 33,10, del historico de facturacion). Peso < 23 TN en ambos -> minimo facturable 23 TN (R-02).",
     "_nota_remolque": "El padron (flota.json) da 8420KKT con remolque habitual R3697BDK; esta ficha trae PO01956R. Cambio de remolque (no bloquea)."
   },
   "viajes": [
@@ -48,16 +48,26 @@
           "salida": "14/10/2026",
           "llegada": "15/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "38,66",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "889,18",
+              "factor": "0,1664"
+            }
           },
           "km": {
             "inicio": "959817",
             "fin": "960351",
             "carga": "534"
           },
-          "tarifa_pendiente": true,
-          "_bloqueo": "METANOL Villagarcia->CURIA SPAIN (Boecillo, Valladolid). Destino VALLADOLID (VA), donde vive la tarifa historica 38,66 EUR/TN (factura 50106, misma ruta). Nacional P IVA 21. Peso albaran 20.020 kg (<23 -> facturar 23 TN min, R-02). Idx G grupo FORESA-BRESFOR Oct 0,1664 POR LINEA (Valladolid NO esta en la lista de idx acumulada). FLUJO METANOL no implementado: Julio confirma carga (Excel) y tarifa."
+          "tarifa_pendiente": false,
+          "_nota": "METANOL Villagarcia->CURIA SPAIN (Boecillo, Valladolid). Destino VALLADOLID (VA), donde vive la tarifa 38,66 EUR/TN (confirmada Julio, factura 50106). Nacional P IVA 21. Peso albaran 20.020 kg (<23 -> facturar 23 TN min, R-02). Idx G grupo FORESA-BRESFOR Oct 0,1664 POR LINEA. Metanol normal (el unico no implementado es Villagarcia->Caldas)."
         },
         {
           "cliente": {
@@ -80,16 +90,26 @@
           "salida": "15/10/2026",
           "llegada": "16/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "33,10",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "761,30",
+              "factor": "0,1664"
+            }
           },
           "km": {
             "inicio": "960860",
             "fin": "961216",
             "carga": "356"
           },
-          "tarifa_pendiente": true,
-          "_bloqueo": "METANOL Villagarcia->COGERSA (Serin/Gijon). Destino COGERSA (COGER). Tarifa historica candidata 33,10 EUR/TN (factura 50754, misma ruta en agosto). Nacional P IVA 21. Peso albaran 22.700 kg (<23 -> facturar 23 TN min, R-02). Idx G grupo FORESA-BRESFOR Oct 0,1664 POR LINEA. FLUJO METANOL no implementado: Julio confirma carga (Excel) y tarifa."
+          "tarifa_pendiente": false,
+          "_nota": "METANOL Villagarcia->COGERSA (Serin/Gijon). Destino COGERSA (COGER). Tarifa 33,10 EUR/TN (confirmada Julio, factura 50754). Nacional P IVA 21. Peso albaran 22.700 kg (<23 -> facturar 23 TN min, R-02). Idx G grupo FORESA-BRESFOR Oct 0,1664 POR LINEA. Metanol normal (el unico no implementado es Villagarcia->Caldas)."
         }
       ]
     }

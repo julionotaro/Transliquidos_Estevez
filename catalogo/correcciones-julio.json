@@ -135,6 +135,16 @@
       "fecha": "2026-10-16", "por": "Julio", "cliente": "TODOS", "campo": "chofer_tipo/kilometros",
       "regla": "Choferes AUTONOMOS (hoy solo 3: FRAGA, ALFONSIN, ABAL) vs PROPIOS. En Gesruta (empresa TLE): PROPIO -> km en el formulario Kilometros + viaticos en Gastos. AUTONOMO -> SIN viaticos y los KM van en GASTOS (no en el formulario Kilometros). Los autonomos anotan en su ficha km CARGADOS y km VACIOS (cada uno con su formato); hay que extraer AMBOS y pasarlos en cada linea de albaran (km.carga y km.vacio). En la orden: cabecera.tipo = 'propio' | 'autonomo'.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-22", "por": "Julio", "cliente": "FORESA (metanol)", "campo": "tarifa/flujo",
+      "regla": "METANOL: el UNICO flujo metanol no implementado es Villagarcia->Caldas (shuttle agregado). El resto de metanol se carga NORMALMENTE como convencional (linea de porte EUR/TN + idx concepto G grupo FORESA-BRESFOR POR LINEA; nacional P IVA 21). Tarifas confirmadas (del historico de facturacion): Villagarcia->VALLADOLID (destino de CURIA SPAIN, Boecillo; cod VA) = 38,66 EUR/TN (factura 50106); Villagarcia->GIJON (COGERSA, Serin; cod COGER) = 33,10 EUR/TN (factura 50754). El minimo facturable de 23 TN (R-02) aplica igual.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-10-22", "por": "Julio", "cliente": "DIVERSEY/BALTRANSA", "campo": "cliente/referencia",
+      "regla": "DIVERSEY (Valdemoro, Madrid) es PUNTO DE CARGA, no cliente de facturacion. El viaje de sosa Diversey->Leche Celta (Pontedeume) se factura a BALTRANSA (cod 10): referencia = Nº de Orden de Transporte de Baltransa (ej 338681), precio FIJO por viaje que trae la OC (ej 1.150,00 EUR; um UN, cantidad 1), concepto P IVA 21 (destino nacional), mas la linea de indexacion Baltransa con cantidad 1 e importe 0.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {
