@@ -281,7 +281,13 @@ def reconstruct(ficha,T):
 def _add_gasto_row(concept_xy, concept_name, row_idx, cantidad):
     """GASTOS: selecciona concepto, abre fila con la HOJA BLANCA, clic en Cantidad, teclea y Enter."""
     ensure_ges()
-    pyautogui.moveTo(*concept_xy,duration=0.12); time.sleep(0.1); pyautogui.click(*concept_xy); time.sleep(0.5)
+    # DOBLE clic-simple en el concepto (NO doble-click: dos clics separados ~0.35s). La ventana Gastos
+    # recien abierta se "come" el PRIMER clic (solo la enfoca) y recien el 2do selecciona de verdad.
+    # Sin esto, el 1er concepto (KILOMETROS) no quedaba seleccionado y su fila/cantidad caia mal,
+    # mientras el 2do (KM EN VACIO) si entraba. Verificado en vivo 2026-10-22: con la ventana ya
+    # enfocada un clic basta; el 2do es inofensivo (solo re-selecciona). Hacerlo siempre = robusto.
+    pyautogui.moveTo(*concept_xy,duration=0.12); time.sleep(0.1); pyautogui.click(*concept_xy); time.sleep(0.35)
+    pyautogui.click(*concept_xy); time.sleep(0.5)
     pyautogui.moveTo(*G_ADD_BTN,duration=0.12); time.sleep(0.1); pyautogui.click(*G_ADD_BTN); time.sleep(0.9)
     cx,cy=_gcant_xy(row_idx)
     pyautogui.moveTo(cx,cy,duration=0.12); time.sleep(0.1); pyautogui.click(cx,cy); time.sleep(0.3)

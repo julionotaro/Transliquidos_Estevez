@@ -132,6 +132,14 @@ Fix: se **elimina el 2º clic**. Tras despejar los avisos, el bot solo **espera*
 abra (sin re-clicar) y recién ahí carga los conceptos. Es lo que pidió Julio: "solo hay que esperar
 que abra la ventana de gastos".
 
+**Segunda capa (mismo día, observado en vivo):** ya sin el 2º clic, igual fallaba el **primer**
+concepto (KILOMETROS=carga no entraba; el 2do, KM EN VACIO, sí). Causa: la ventana Gastos recién
+abierta se "come" el **primer clic** (solo la enfoca) y recién el 2do registra — por eso el 1er
+concepto no quedaba seleccionado y el 2do sí. Verificado tomando control: con la ventana ya enfocada,
+un clic selecciona bien; el mecanismo (concepto → hoja blanca → cantidad → Enter) es correcto.
+Fix: en `_add_gasto_row` el concepto se clica **dos veces** (dos clics simples separados ~0.35s, no
+doble-click): el 1º enfoca, el 2º selecciona. Robusto para ambos conceptos.
+
 ### Pendiente en v2
 
 - Añadir `nro_viaje_crop` al `CONTRATO-resultado-json.md` (lado extracción) y que la extracción lea
