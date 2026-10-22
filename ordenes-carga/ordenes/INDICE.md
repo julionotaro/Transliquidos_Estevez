@@ -3,6 +3,7 @@
 Estructura: `ordenes-carga/ordenes/<AAAA-MM>/<chofer>/<AAAA-MM-DD>/` con la **ficha del chofer** y la **orden.json** juntas.
 La ficha vive SOLO aqui (en `procesados/` quedan unicamente los albaranes renombrados por referencia).
 AAAA-MM y fecha = primera fecha de carga del viaje. Seguimiento por albaran: `datos/registro-procesamiento.csv`.
+Criterio de nombres (carpetas y archivos) de este arbol y de `procesados/`: **`docs/nomenclatura-archivos.md`**.
 
 | Mes | Fecha | Chofer | Cabeza | Viajes | Albaranes | Ficha | Carpeta | Estado |
 |---|---|---|---|---|---|---|---|---|
