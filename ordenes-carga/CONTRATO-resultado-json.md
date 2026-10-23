@@ -5,12 +5,17 @@
 > Es el contrato de SALIDA, espejo del de entrada (`CONTRATO-orden-json.md`).
 > Dueño del formato de salida: el bot (escritorio). La extracción lo LEE.
 
-## Dónde va
+## Dónde va (transporte por git — Julio NO es mensajero)
 
-El bot lo escribe junto a la orden que cargó:
-`ordenes-carga/ordenes/<AAAA-MM>/<chofer>/<AAAA-MM-DD>/resultado.json`
-(o lo deja al lado del script y Julio lo copia ahí). Julio lo pushea a git; la extracción lo
-lee y actualiza `datos/registro-procesamiento.csv`.
+El bot corre **desde el clon del repo** y escribe `resultado.json` (+ el crop `nro_viaje_v<N>.png`)
+en la carpeta de la orden que cargó:
+`ordenes-carga/ordenes/<AAAA-MM>/<chofer>/<AAAA-MM-DD>/`, y **hace `git add + commit + push` él mismo**
+(reusa el git ya configurado en la PC — con credenciales cacheadas para no pedir clave en cada corrida).
+La extracción (Claude nube) lo lee de git y actualiza `datos/registro-procesamiento.csv`.
+
+> Decisión 2026-10-23: el **transporte** del resultado va por **git, lo empuja el bot** (no Julio).
+> El **número** lo lee Claude del PNG (fiable, falla ruidoso; sin OCR instalado). Un OCR local en el
+> bot (template-matching) queda como mejora futura opcional para que el número salga ya como texto.
 
 ## Formato
 
