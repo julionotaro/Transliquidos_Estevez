@@ -1,0 +1,185 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-16",
+    "chofer": "JOSE MANUEL PAZ",
+    "cabeza": "2050",
+    "remolques": [
+      "R2006BDT",
+      "R7993BDG"
+    ],
+    "viajes": 3,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261023165354.pdf",
+    "choferes_tipo": "propio",
+    "_nota_duotrailer": "Los viajes 1 y 2 son UN DUOTRAILER: una sola tractora (2050MZY) arrastrando 2 cisternas (R2006BDT + R7993BDG) en el MISMO viaje fisico Aveiro->Cella (mismo odometro 177155/177157 -> 178043, mismas fechas 16->20/10). En Gesruta van como 2 viajes porque cada cisterna necesita su matricula, pero el KM, las dietas y los gastos del tramo se cuentan UNA sola vez (no duplicar). Descuento DUO (-5%): NO aplicado por defecto (Dto=0); si Julio confirma que este duotrailer lleva DUO, agregar -5% a ambos portes."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2050",
+        "verificar": {
+          "matricula": "2050MZY",
+          "remolque": "R2006BDT",
+          "chofer": "JOSE MANUEL PAZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "5050141472",
+          "salida": "16/10/2026",
+          "llegada": "20/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,700",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.327,20",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "177155",
+            "fin": "178043",
+            "carga": "888"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "DUOTRAILER cisterna 1 (R2006BDT). BRESFOR Aveiro->Finsa Cella (TERUEL TE) 56,00. RES1350->COLA. PI IVA 0. Idx GPT FORESA-BRESFOR Oct 0,1664. Ref 5050141472 (Doc int). Peso guia 23.700 (bascula descarga 23.580). KM del tramo compartido con el viaje 2 (duotrailer): contar una sola vez."
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "2050",
+        "verificar": {
+          "matricula": "2050MZY",
+          "remolque": "R7993BDG",
+          "chofer": "JOSE MANUEL PAZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "5050141473",
+          "salida": "16/10/2026",
+          "llegada": "20/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,860",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.336,16",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "177157",
+            "fin": "178043",
+            "carga": "886"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "DUOTRAILER cisterna 2 (R7993BDG). BRESFOR Aveiro->Finsa Cella (TERUEL TE) 56,00. RES1350->COLA. PI IVA 0. Idx GPT FORESA-BRESFOR Oct 0,1664. Ref 5050141473 (Doc int). Peso guia 23.860 (bascula descarga 23.800). KM del tramo compartido con el viaje 1 (duotrailer): contar una sola vez."
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "2050",
+        "verificar": {
+          "matricula": "2050MZY",
+          "remolque": "R2006BDT",
+          "chofer": "JOSE MANUEL PAZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "MIR",
+            "esperado": "MIRANDA DE EBRO"
+          },
+          "destino": {
+            "codigo": "BRAGA",
+            "esperado": "BRAGA (PT)"
+          },
+          "carga": {
+            "codigo": "MEXIFL",
+            "esperado": "MEXIFLEX"
+          },
+          "referencia": "712493",
+          "salida": "21/10/2026",
+          "llegada": "22/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "61,65",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.417,95",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "178456",
+            "fin": "179198",
+            "carga": "742"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "QUIMIDROGA Miranda de Ebro->TMG Tecidos (Ponte GMR, Braga, Portugal). Destino BRAGA (PT). MEXIFLEX 911P (cod MEXIFL). Quimidroga factura Portugal como NACIONAL: P IVA 21. Tarifa 61,65 EUR/TN del historico de facturacion (Miranda->Braga MEXIFLEX, estable; no esta en el tarifario Quimidroga que carece de origen Miranda). Idx G QUIMIDROGA Oct 0,1450. Peso albaran 19.920 (<23 -> facturar 23 TN min, R-02). Remolque R2006BDT."
+        }
+      ]
+    }
+  ]
+}

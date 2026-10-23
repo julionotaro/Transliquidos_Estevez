@@ -18,6 +18,7 @@ Criterio de nombres (carpetas y archivos) de este arbol y de `procesados/`: **`d
 | 2026-10 | 2026-10-02 | manuel-sabaris | 2256 | 1 | 3 | `ficha_20261022113522.pdf` | `2026-10/manuel-sabaris/2026-10-02/` | pendiente_carga (A3 ARACHEM tarifa_pendiente) |
 | 2026-10 | 2026-10-13 | manuel-sabaris | 2256 | 1 | 2 | `ficha_20261022113621.pdf` | `2026-10/manuel-sabaris/2026-10-13/` | pendiente_carga (B2 = BALTRANSA 338681, precio fijo) |
 | 2026-10 | 2026-10-14 | jose-ramon-pineiro | 8420 | 1 | 2 | `ficha_20261022114103.pdf` | `2026-10/jose-ramon-pineiro/2026-10-14/` | pendiente_carga (metanol normal) |
+| 2026-10 | 2026-10-16 | jose-manuel-paz | 2050 | 3 | 3 | `ficha_20261023165354.pdf` | `2026-10/jose-manuel-paz/2026-10-16/` | pendiente_carga (duotrailer BRESFOR x2 + Quimidroga) |
 
 ## Referencias
 - Contrato del formato: `ordenes-carga/CONTRATO-orden-json.md`
