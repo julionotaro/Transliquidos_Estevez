@@ -160,6 +160,28 @@ El timeout es un **piso** de espera, no un abort silencioso: si vence, se loguea
 abrir albarán, que aborta ruidoso). Degrada con seguridad: si un detector fallara, equivale al
 comportamiento viejo de esperar un tiempo, nunca peor.
 
+### 2026-10-23 — el bot PUSHEA el resultado a git (Opción 2) + corrida de punta a punta OK
+
+- **Corrida completa verificada (09:42–09:46):** los 3 albaranes con sus Gastos correctos
+  (1200/127, 1170/68, 292/42), viaje grabado por disquete, Nº capturado a `nro_viaje_v1.png`
+  (leído: `00050973`), `resultado_actual.json` completo (01/02/03, `nro_viaje_crop` seteado). Las
+  esperas event-based engancharon todas en el log. **Etapa de carga cerrada de punta a punta.**
+- **Opción 2 (decisión de Julio): el bot escribe y pushea el resultado, nadie es el mensajero.**
+  - El bot acepta como argumento la **carpeta de la orden** (o el `orden.json`): lee la orden de ahí
+    y escribe `resultado.json` + `nro_viaje_v<N>.png` **en esa misma carpeta** del repo.
+    `robot_viajes_v2.bat "<repo>\ordenes-carga\ordenes\<AAAA-MM>\<chofer>\<AAAA-MM-DD>"` (o arrastrar
+    la carpeta sobre el `.bat`).
+  - Detecta el repo (`_find_repo_root`) y pushea solo: `fetch` → `add` → `commit` →
+    `pull --rebase origin main` → `push origin main`. **Fail-loud:** si el push falla (credenciales,
+    conflicto), el resultado queda escrito/commiteado local y se avisa; no se fuerza.
+  - **Sin argumento:** modo local de prueba (lee `orden_actual.json`, escribe `resultado_actual.json`
+    local, NO pushea). El `.gitignore` de `bot/` excluye las copias locales; lo versionado es el
+    `resultado.json`/crop dentro de la carpeta de la orden.
+  - **Setup único en la PC:** repo clonado, git instalado y credenciales cacheadas (credential
+    helper / PAT) para push desatendido.
+  - Docs actualizados: `ordenes-carga/CONTRATO-resultado-json.md` (Dónde va) y
+    `docs/flujo-carga-y-registro.md` (pasos 2–4).
+
 ### Pendiente en v2
 
 - Añadir `nro_viaje_crop` al `CONTRATO-resultado-json.md` (lado extracción) y que la extracción lea

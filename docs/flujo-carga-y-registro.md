@@ -25,8 +25,9 @@
 El **Nº de viaje** y el **Nº de albarán** los **genera Gesruta al grabar**. Regla:
 
 1. **Procesamiento (Claude nube):** al leer el juego se crea la fila en `registro-procesamiento.csv` con el Nº **vacío** y `estado_carga=PENDIENTE_CARGA`, y se genera la orden de carga con todos los códigos.
-2. **Carga (control de pantalla):** al grabar cada albarán, se **lee de la pantalla** el Nº de viaje y Nº de albarán recién generados. Como se lee en el instante, **es siempre el número real de ese registro**, aunque haya cargas manuales por fuera del flujo → no se desincroniza. Esto va en el skill, así que no hay que pedirlo en cada carga.
-3. **Registro en git:** esos números llegan a `registro-procesamiento.csv` y se marca `estado_carga=CARGADO`. Vía: el Claude de escritorio los reporta al cerrar (y Claude nube los escribe), o si esa conversación tiene conector de GitHub, los escribe directo. **Único almacén: git.**
+2. **Carga (bot `bot/robot_viajes_v2.py`, control de pantalla):** al grabar cada albarán/viaje se capturan los Nº recién generados por Gesruta. El **Nº de albarán** dentro del viaje es su índice (`01`,`02`,…). El **Nº de viaje** es *owner-drawn* (no lo leen portapapeles ni Win32): el bot **captura un recorte PNG** de la pantalla (sin OCR en la PC). Como se captura en el instante, **es siempre el número real de ese registro** → no se desincroniza.
+3. **Salida del bot → git (Opción 2, decisión Julio 23/10/2026):** el bot se corre desde el clon del repo apuntando a la carpeta de la orden; escribe ahí el `resultado.json` + el crop `nro_viaje_v<N>.png` y **pushea él mismo** a `main` (`fetch`→`add`→`commit`→`pull --rebase`→`push`; fail-loud si falla). **Julio ya no es el mensajero.** Detalle y contrato: `ordenes-carga/CONTRATO-resultado-json.md`.
+4. **Registro en git:** Claude nube lee el `resultado.json` de git (y el crop, para leer el Nº de la imagen), escribe `nro_viaje_gesruta`/`nro_albaran_gesruta` en `registro-procesamiento.csv` y marca `estado_carga=CARGADO`. **Único almacén: git.**
 
 Nunca pre-asignar ni teclear a mano esos números: solo capturarlos de Gesruta.
 

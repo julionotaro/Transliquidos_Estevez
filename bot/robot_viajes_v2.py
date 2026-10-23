@@ -29,9 +29,32 @@ pyautogui.FAILSAFE = True
 pyautogui.PAUSE = 0.30
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ORDEN_PATH = os.path.join(HERE, "orden_actual.json")
-LOG_PATH = os.path.join(HERE, "robot_log.txt")
-RESULTADO_PATH = os.path.join(HERE, "resultado_actual.json")  # salida: ver CONTRATO-resultado-json.md
+LOG_PATH = os.path.join(HERE, "robot_log.txt")   # el log queda LOCAL (no se commitea)
+
+def _find_repo_root(start):
+    d = os.path.abspath(start)
+    while True:
+        if os.path.isdir(os.path.join(d, ".git")): return d
+        p = os.path.dirname(d)
+        if p == d: return None
+        d = p
+
+# --- Rutas (Opcion 2, decidida por Julio 2026-10-23): el bot LEE la orden y ESCRIBE el resultado en
+#     la CARPETA DE LA ORDEN dentro del repo, y pushea a git. Asi Julio no es el mensajero.
+#     Uso:  robot_viajes_v2.bat "<repo>\ordenes-carga\ordenes\<AAAA-MM>\<chofer>\<AAAA-MM-DD>"
+#           (o la ruta del orden.json; se puede arrastrar la carpeta de la orden sobre el .bat).
+#     Sin argumento -> modo LOCAL de prueba: orden_actual.json y NO pushea. ---
+_arg = (sys.argv[1] if len(sys.argv) > 1 else "").strip().strip('"')
+if _arg:
+    _arg = os.path.abspath(_arg)
+    if os.path.isdir(_arg): ORDEN_DIR = _arg; ORDEN_PATH = os.path.join(_arg, "orden.json")
+    else: ORDEN_PATH = _arg; ORDEN_DIR = os.path.dirname(_arg)
+    RESULTADO_PATH = os.path.join(ORDEN_DIR, "resultado.json")   # salida: ver CONTRATO-resultado-json.md
+    OUT_DIR = ORDEN_DIR; REPO_ROOT = _find_repo_root(ORDEN_DIR); PUSH = (REPO_ROOT is not None)
+else:
+    ORDEN_DIR = HERE; ORDEN_PATH = os.path.join(HERE, "orden_actual.json")
+    RESULTADO_PATH = os.path.join(HERE, "resultado_actual.json")
+    OUT_DIR = HERE; REPO_ROOT = None; PUSH = False
 _logf = open(LOG_PATH, "w", encoding="utf-8")
 def log(s):
     line = "[%s] %s" % (datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3], s)
@@ -436,7 +459,7 @@ def capturar_nro_viaje(vpos):
     try:
         ensure_ges(); time.sleep(0.3)
         l,t,w,h=NRO_VIAJE_CROP_RECT
-        _capturar_png(l, t, w, h, os.path.join(HERE, fn))
+        _capturar_png(l, t, w, h, os.path.join(OUT_DIR, fn))
         log("  [resultado] nro_viaje owner-drawn -> capturado a %s (lo lee la extraccion)"%fn)
         return "", fn
     except Exception as e:
@@ -454,6 +477,41 @@ def escribir_resultado(resultados, empresa, orden_hint):
         log("[resultado] escrito: %s"%RESULTADO_PATH)
     except Exception as e:
         log("[resultado] AVISO: no pude escribir resultado.json (%r)"%e)
+
+def _git(args, cwd, timeout=120):
+    import subprocess
+    try:
+        r = subprocess.run(["git"]+args, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+        return r.returncode, ((r.stdout or "")+(r.stderr or "")).strip()
+    except Exception as e:
+        return 1, "EXCEPCION git: %r"%e
+
+def pushear_resultado():
+    """Opcion 2: commitea y pushea resultado.json + crop (que ya estan en la carpeta de la orden,
+    dentro del repo) a origin/main, para que la extraccion los lea de git. Asi Julio NO es el
+    mensajero. Fail-loud: si algo falla, el resultado QUEDA escrito en disco y se avisa fuerte para
+    pushear a mano; nunca se fuerza el push ni se pierde el resultado."""
+    if not PUSH or not REPO_ROOT:
+        log("[git] modo LOCAL: no se pushea. (Para pushear: correr el bot desde el repo apuntando a la carpeta de la orden.)")
+        return
+    rel = os.path.relpath(ORDEN_DIR, REPO_ROOT).replace("\\", "/")
+    log("[git] pusheando resultado de '%s'"%rel)
+    rc,o = _git(["fetch","origin","main"], REPO_ROOT)                 # traer lo ultimo (no choca con pushes concurrentes)
+    if rc: log("[git] AVISO fetch rc=%d: %s"%(rc,o))
+    rc,o = _git(["add", ORDEN_DIR], REPO_ROOT)
+    if rc: log("[git] add FALLO: %s  >>> resultado escrito pero NO pusheado."%o); return
+    rc,o = _git(["commit","-m","carga: resultado %s"%rel], REPO_ROOT)
+    if rc:
+        if "nothing to commit" in o.lower(): log("[git] nada para commitear (resultado sin cambios)."); return
+        log("[git] commit FALLO: %s  >>> resultado escrito pero NO pusheado."%o); return
+    rc,o = _git(["pull","--rebase","origin","main"], REPO_ROOT)       # rebase sobre lo ultimo antes de pushear
+    if rc:
+        log("[git] pull --rebase FALLO (conflicto?): %s"%o)
+        _git(["rebase","--abort"], REPO_ROOT)
+        log("[git] >>> resultado COMMITEADO local pero NO pusheado (NO se fuerza). Pushear a mano."); return
+    rc,o = _git(["push","origin","main"], REPO_ROOT)
+    if rc: log("[git] push FALLO (credenciales no cacheadas?): %s  >>> commiteado local, pushear a mano."%o); return
+    log("[git] OK: resultado pusheado a origin/main.")
 
 def do_albaran(alb, n, autonomo=False):
     """Llena cabecera+lineas+(km propio | gastos autonomo) y graba UN albaran. True=grabado, False=aborto."""
@@ -638,6 +696,8 @@ def load_cabecera(cab, already_editing=False):
 
 try:
     log("==== ROBOT VIAJES %s ===="%VERSION)
+    log("[rutas] orden=%s"%ORDEN_PATH)
+    log("[rutas] resultado=%s | push a git=%s%s"%(RESULTADO_PATH, PUSH, (" (repo=%s)"%REPO_ROOT if PUSH else " (modo local de prueba)")))
     orden=json.load(open(ORDEN_PATH,encoding="utf-8"))
     viajes=orden.get("viajes")
     if not viajes:
@@ -716,7 +776,9 @@ try:
         log("  grabado viaje %d. activa=%r"%(vpos+1,active_title()))
         viajes_ok+=1
     log("Viajes grabados: %d/%d"%(viajes_ok,len(viajes)))
-    escribir_resultado(resultados, orden.get("empresa"), orden.get("orden") or "")
+    _orden_hint = os.path.relpath(ORDEN_PATH, REPO_ROOT).replace("\\","/") if (PUSH and REPO_ROOT) else (orden.get("orden") or "")
+    escribir_resultado(resultados, orden.get("empresa"), _orden_hint)
+    pushear_resultado()
     log("==== FIN robot viajes. ====")
 finally:
     _logf.close()

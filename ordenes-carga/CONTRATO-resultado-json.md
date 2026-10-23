@@ -7,10 +7,25 @@
 
 ## Dónde va
 
-El bot lo escribe junto a la orden que cargó:
-`ordenes-carga/ordenes/<AAAA-MM>/<chofer>/<AAAA-MM-DD>/resultado.json`
-(o lo deja al lado del script y Julio lo copia ahí). Julio lo pushea a git; la extracción lo
-lee y actualiza `datos/registro-procesamiento.csv`.
+Decisión de Julio (23/10/2026) — **Opción 2: el bot pushea el resultado a git, nadie es el mensajero.**
+
+- El bot se corre **desde el clon del repo**, apuntando a la carpeta de la orden:
+  `robot_viajes_v2.bat "<repo>\ordenes-carga\ordenes\<AAAA-MM>\<chofer>\<AAAA-MM-DD>"`
+  (o se arrastra esa carpeta sobre el `.bat`).
+- Lee `orden.json` de esa carpeta y escribe ahí mismo, **en la carpeta de la orden**, el
+  `resultado.json` + el crop `nro_viaje_v<N>.png` (no en una copia local suelta).
+- Luego hace, solo: `git fetch origin main` → `git add` de esa carpeta → `commit` →
+  `git pull --rebase origin main` (para no chocar con pushes concurrentes) → `git push origin main`.
+  Fail-loud: si el push falla (p. ej. credenciales no cacheadas o conflicto), el `resultado.json`
+  **queda escrito y commiteado local**, se avisa fuerte en el log y **no se fuerza**; se pushea a mano.
+- **Setup único (una vez):** credenciales de git cacheadas en la PC (credential helper / PAT) para
+  que el push sea desatendido. Git instalado y la orden dentro del clon del repo.
+- Sin argumento, el bot corre en **modo local de prueba**: lee `orden_actual.json` al lado del
+  script, escribe `resultado_actual.json` local y **NO** pushea. El `.gitignore` de `bot/` excluye
+  esas copias locales; lo que se versiona es el `resultado.json`/crop **dentro de la carpeta de la orden**.
+
+La extracción (Claude nube) lo lee **de git** y actualiza `datos/registro-procesamiento.csv`
+(libro maestro). El Nº de viaje/albarán nunca se tipea.
 
 ## Formato
 
