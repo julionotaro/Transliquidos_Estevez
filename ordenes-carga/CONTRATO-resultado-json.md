@@ -14,12 +14,14 @@ Decisión de Julio (23/10/2026) — **Opción 2: el bot pushea el resultado a gi
   (o se arrastra esa carpeta sobre el `.bat`).
 - Lee `orden.json` de esa carpeta y escribe ahí mismo, **en la carpeta de la orden**, el
   `resultado.json` + el crop `nro_viaje_v<N>.png` (no en una copia local suelta).
-- Luego hace, solo: `git fetch origin main` → `git add` de esa carpeta → `commit` →
-  `git pull --rebase origin main` (para no chocar con pushes concurrentes) → `git push origin main`.
-  Fail-loud: si el push falla (p. ej. credenciales no cacheadas o conflicto), el `resultado.json`
-  **queda escrito y commiteado local**, se avisa fuerte en el log y **no se fuerza**; se pushea a mano.
-- **Setup único (una vez):** credenciales de git cacheadas en la PC (credential helper / PAT) para
-  que el push sea desatendido. Git instalado y la orden dentro del clon del repo.
+- **Subida a git (interruptor `GIT_PUSH_AUTO` en el bot):**
+  - **Hoy (`GIT_PUSH_AUTO=False`, decisión Julio 23/10):** el bot **solo escribe** en la carpeta de
+    la orden; **Julio sube con GitHub Desktop** (Commit + Push, 2 clics). El clon vive en
+    `\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez` (rama `main`).
+  - **A futuro (`GIT_PUSH_AUTO=True`):** el bot pushea solo: `git fetch origin main` → `git add` →
+    `commit` → `git pull --rebase origin main` → `git push origin main`. Fail-loud: si falla
+    (credenciales no cacheadas o conflicto), queda escrito/commiteado local, avisa y **no fuerza**.
+    Requiere credenciales de git cacheadas en la PC.
 - Sin argumento, el bot corre en **modo local de prueba**: lee `orden_actual.json` al lado del
   script, escribe `resultado_actual.json` local y **NO** pushea. El `.gitignore` de `bot/` excluye
   esas copias locales; lo que se versiona es el `resultado.json`/crop **dentro de la carpeta de la orden**.

@@ -55,6 +55,11 @@ else:
     ORDEN_DIR = HERE; ORDEN_PATH = os.path.join(HERE, "orden_actual.json")
     RESULTADO_PATH = os.path.join(HERE, "resultado_actual.json")
     OUT_DIR = HERE; REPO_ROOT = None; PUSH = False
+
+# Auto-push a git: por AHORA DESACTIVADO (decisión Julio 23/10): el bot escribe resultado.json + crop
+# en la carpeta de la orden del clon, y Julio sube con GitHub Desktop (Commit + Push, 2 clics).
+# Poner True cuando queramos que el bot pushee solo (requiere credenciales de git cacheadas en la PC).
+GIT_PUSH_AUTO = False
 _logf = open(LOG_PATH, "w", encoding="utf-8")
 def log(s):
     line = "[%s] %s" % (datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3], s)
@@ -492,9 +497,13 @@ def pushear_resultado():
     mensajero. Fail-loud: si algo falla, el resultado QUEDA escrito en disco y se avisa fuerte para
     pushear a mano; nunca se fuerza el push ni se pierde el resultado."""
     if not PUSH or not REPO_ROOT:
-        log("[git] modo LOCAL: no se pushea. (Para pushear: correr el bot desde el repo apuntando a la carpeta de la orden.)")
+        log("[git] modo LOCAL (fuera del repo): resultado solo en disco, no versionado. (Correr apuntando a la carpeta de la orden dentro del clon.)")
         return
     rel = os.path.relpath(ORDEN_DIR, REPO_ROOT).replace("\\", "/")
+    if not GIT_PUSH_AUTO:
+        log("[git] resultado.json + crop ESCRITOS en la carpeta de la orden del clon: %s"%rel)
+        log("[git] >>> auto-push DESACTIVADO: subir con GitHub Desktop (Commit + Push). (Poner GIT_PUSH_AUTO=True para automatico.)")
+        return
     log("[git] pusheando resultado de '%s'"%rel)
     rc,o = _git(["fetch","origin","main"], REPO_ROOT)                 # traer lo ultimo (no choca con pushes concurrentes)
     if rc: log("[git] AVISO fetch rc=%d: %s"%(rc,o))

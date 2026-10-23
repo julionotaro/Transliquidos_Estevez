@@ -171,9 +171,11 @@ comportamiento viejo de esperar un tiempo, nunca peor.
     y escribe `resultado.json` + `nro_viaje_v<N>.png` **en esa misma carpeta** del repo.
     `robot_viajes_v2.bat "<repo>\ordenes-carga\ordenes\<AAAA-MM>\<chofer>\<AAAA-MM-DD>"` (o arrastrar
     la carpeta sobre el `.bat`).
-  - Detecta el repo (`_find_repo_root`) y pushea solo: `fetch` → `add` → `commit` →
-    `pull --rebase origin main` → `push origin main`. **Fail-loud:** si el push falla (credenciales,
-    conflicto), el resultado queda escrito/commiteado local y se avisa; no se fuerza.
+  - Detecta el repo (`_find_repo_root`). **Interruptor `GIT_PUSH_AUTO`** (default `False`): hoy el
+    bot **solo escribe** en la carpeta de la orden del clon y **Julio sube con GitHub Desktop**
+    (clon en `\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez`). Con
+    `GIT_PUSH_AUTO=True` el bot pushea solo: `fetch`→`add`→`commit`→`pull --rebase`→`push`,
+    **fail-loud** (si falla queda commiteado local y avisa; no fuerza).
   - **Sin argumento:** modo local de prueba (lee `orden_actual.json`, escribe `resultado_actual.json`
     local, NO pushea). El `.gitignore` de `bot/` excluye las copias locales; lo versionado es el
     `resultado.json`/crop dentro de la carpeta de la orden.
