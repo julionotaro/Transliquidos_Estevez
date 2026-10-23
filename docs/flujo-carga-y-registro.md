@@ -31,6 +31,13 @@ El **Nº de viaje** y el **Nº de albarán** los **genera Gesruta al grabar**. R
 
 Nunca pre-asignar ni teclear a mano esos números: solo capturarlos de Gesruta.
 
+## Búsqueda de matrícula de remolque/cisterna
+
+Si el remolque autocompletado no coincide, el bot usa el buscador de Gesruta. **Regla (Julio
+23/10/2026): buscar siempre por los ÚLTIMOS 3 DÍGITOS NUMÉRICOS de la matrícula.** Las cisternas se
+guardan con formato tipo `PO 2194 R`; teclear todos los dígitos (`02194`) no matchea por el 0 a la
+izquierda / formato, pero los últimos 3 (`194`) sí.
+
 ## Km (ver también `catalogo/correcciones-julio.json`)
 
 Odómetro continuo por viaje. Km carga por albarán = final − inicio. Entre albaranes del mismo

@@ -661,9 +661,13 @@ def vread(xy,label):
 def buscar_remolque(expected):
     # Si el remolque autocompletado no coincide: doble clic en Remolque -> buscador "Busquedas"
     # -> escribir los digitos de la matricula esperada -> Enter selecciona la fila resaltada.
-    digits=''.join(c for c in str(expected) if c.isdigit())
+    # REGLA (Julio 2026-10-23): buscar SIEMPRE por los ULTIMOS 3 digitos numericos de la matricula.
+    # Las cisternas se guardan con formato tipo "PO 2194 R"; teclear todos los digitos (p.ej. "02194")
+    # NO matchea por el 0 a la izquierda / formato. Los ultimos 3 ("194") sí.
+    _alld=''.join(c for c in str(expected) if c.isdigit())
+    digits=_alld[-3:]
     if len(digits)<3:
-        log("  BUSCAR remolque: no pude derivar digitos de %r"%expected); return False
+        log("  BUSCAR remolque: no pude derivar 3 digitos de %r"%expected); return False
     log("  BUSCAR remolque: doble clic codigo + '%s' + lupa + doble clic fila"%digits)
     ensure_ges()
     pyautogui.moveTo(*V_REMOLQUE,duration=0.12); time.sleep(0.1)

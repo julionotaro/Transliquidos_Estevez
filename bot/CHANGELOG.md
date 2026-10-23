@@ -184,6 +184,13 @@ comportamiento viejo de esperar un tiempo, nunca peor.
   - Docs actualizados: `ordenes-carga/CONTRATO-resultado-json.md` (Dónde va) y
     `docs/flujo-carga-y-registro.md` (pasos 2–4).
 
+### Fix 2026-10-23 — BUSCAR remolque: últimos 3 dígitos (regla de Julio)
+
+La búsqueda del remolque (cuando el autocompletado no coincide) tecleaba **todos** los dígitos de
+la matrícula esperada (p. ej. `02194`) y **no matcheaba** porque la cisterna está guardada como
+`PO 2194 R`. **Regla de Julio:** buscar siempre por los **últimos 3 dígitos numéricos** (`194`).
+`buscar_remolque` ahora usa `digitos[-3:]`. (Documentado también en `docs/flujo-carga-y-registro.md`.)
+
 ### Pendiente en v2
 
 - Añadir `nro_viaje_crop` al `CONTRATO-resultado-json.md` (lado extracción) y que la extracción lea
