@@ -1,0 +1,19 @@
+[16:27:25.153] ==== ROBOT VIAJES viajes-2 ====
+[16:27:25.154] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\manuel-sabaris\2026-10-13\orden.json
+[16:27:25.154] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\manuel-sabaris\2026-10-13\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
+[16:27:25.159] Empresa='TLE' | 1 viaje(s)
+[16:27:26.864] ########## VIAJE 1/1  cabeza='2256'  tipo=propio  (2 albaranes) ##########
+[16:27:26.870] --- CABECERA: cabeza 2256 (necesita editar=True) ---
+[16:27:34.566]   leer Matricula tractora -> '2256JYX'
+[16:27:36.667]   leer Matricula remolque -> 'R3546BBG'
+[16:27:38.783]   leer Chofer codigo      -> '40'
+[16:27:38.783]   remolque 'R3546BBG' != esperado 'PO02194R' -> BUSCAR
+[16:27:38.784]   BUSCAR remolque: doble clic codigo + '02194' + lupa + doble clic fila
+[16:27:49.814]   leer Matricula remolque (post-BUSCAR) -> '<<vacio>>'
+[16:27:49.815]   ABORTO: tras BUSCAR el remolque sigue sin coincidir ('<<vacio>>' != 'PO02194R'). NO grabo.
+[16:27:49.815] ### CADENA DETENIDA en cabecera (viaje 1). NO grabo. ###
+[16:27:49.816] Viajes grabados: 0/1
+[16:27:49.829] [resultado] escrito: \\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\manuel-sabaris\2026-10-13\resultado.json
+[16:27:49.830] [git] resultado.json + crop ESCRITOS en la carpeta de la orden del clon: ordenes-carga/ordenes/2026-10/manuel-sabaris/2026-10-13
+[16:27:49.830] [git] >>> auto-push DESACTIVADO: subir con GitHub Desktop (Commit + Push). (Poner GIT_PUSH_AUTO=True para automatico.)
+[16:27:49.831] ==== FIN robot viajes. ====

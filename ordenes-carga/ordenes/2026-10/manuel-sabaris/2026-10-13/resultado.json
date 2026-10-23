@@ -1,0 +1,17 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/manuel-sabaris/2026-10-13/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-10-23T16:27:49",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "2256",
+      "chofer": "MANUEL SABARIS",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "",
+      "estado": "abortado",
+      "motivo": "cabecera no verificada (matricula/remolque/chofer)",
+      "albaranes": []
+    }
+  ]
+}
