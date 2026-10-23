@@ -1,6 +1,0 @@
-[15:52:47.279] ==== ROBOT VIAJES viajes-2 ====
-[15:52:47.280] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-carlos-alfonsin\2026-10-02\orden.json
-[15:52:47.280] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-carlos-alfonsin\2026-10-02\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
-[15:52:47.295] Empresa='TLE' | 1 viaje(s)
-[15:52:49.501] ########## VIAJE 1/1  cabeza='4916'  tipo=AUTONOMO  (3 albaranes) ##########
-[15:52:49.512] --- CABECERA: cabeza 4916 (necesita editar=True) ---

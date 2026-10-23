@@ -1,18 +1,26 @@
-# ---- Datos reales y salidas de ejecución (NO se versionan) ----
-orden_actual.json        # orden real que el bot carga (se copia a mano al correr)
-orden.json               # idem, nombre del contrato
-resultado.json           # salida (Nº viaje/albarán que genera Gesruta)
-resultado_actual.json    # idem, copia local que escribe el bot al lado del script
-*_log.txt                # robot_log.txt, gastos_log.txt
-nro_viaje_v*.png         # recortes del Nº de viaje que captura el bot (los lee la extraccion)
-nro_viaje_crop*.png      # recortes de los tests de captura
-gesruta_tree.txt         # volcado del inspector
-gesruta_identidad.txt    # identidad del ejecutable (ruta de red interna)
-gesruta_run_log.txt
+# OJO: git NO soporta comentarios en la misma linea del patron. Los comentarios van SIEMPRE en su
+# propia linea (empezando con #). Si se ponen al lado del patron, el patron deja de funcionar.
 
-# ---- Credenciales / configuración con secretos ----
-# El bot NO almacena la clave de Gesruta (la teclea el usuario). Si algún día
-# se agrega un config con datos sensibles, debe ignorarse aquí y subir solo el .ejemplo.
+# ---- Datos reales y salidas de ejecucion DENTRO de bot/ (NO se versionan) ----
+# La salida REAL (resultado.json + crop) va a la carpeta de la orden en ordenes-carga/, y ESA si se
+# versiona. Esto solo evita que queden copias sueltas dentro de bot/ (p. ej. en modo local de prueba).
+orden_actual.json
+orden.json
+resultado.json
+resultado_actual.json
+# logs del bot/inspector (robot_log.txt, gastos_log.txt, gesruta_run_log.txt, *_log.txt)
+*_log.txt
+gesruta_run_log.txt
+# recortes del Nº que captura el bot o los tests
+nro_viaje_v*.png
+nro_viaje_crop*.png
+# volcados del inspector
+gesruta_tree.txt
+gesruta_identidad.txt
+
+# ---- Credenciales / configuracion con secretos ----
+# El bot NO almacena la clave de Gesruta (la teclea el usuario). Si algun dia se agrega un config con
+# datos sensibles, ignorarlo aqui y subir solo el .ejemplo.
 config.json
 config.local.*
 *.secret
