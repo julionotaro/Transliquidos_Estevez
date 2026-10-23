@@ -5,7 +5,7 @@
 > Es el contrato de SALIDA, espejo del de entrada (`CONTRATO-orden-json.md`).
 > Dueño del formato de salida: el bot (escritorio). La extracción lo LEE.
 
-## Dónde va
+## Dónde va (transporte por git — Julio NO es mensajero)
 
 Decisión de Julio (23/10/2026) — **Opción 2: el bot pushea el resultado a git, nadie es el mensajero.**
 
@@ -26,6 +26,10 @@ Decisión de Julio (23/10/2026) — **Opción 2: el bot pushea el resultado a gi
 
 La extracción (Claude nube) lo lee **de git** y actualiza `datos/registro-procesamiento.csv`
 (libro maestro). El Nº de viaje/albarán nunca se tipea.
+
+> Decisión 2026-10-23: el **transporte** del resultado va por **git, lo empuja el bot** (no Julio).
+> El **número** lo lee Claude del PNG (fiable, falla ruidoso; sin OCR instalado). Un OCR local en el
+> bot (template-matching) queda como mejora futura opcional para que el número salga ya como texto.
 
 ## Formato
 
