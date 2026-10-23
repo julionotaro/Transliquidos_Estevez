@@ -30,14 +30,18 @@ nosotros**: es **a través de git, vía los CONTRATOS**.
 1. **Nadie toca el dominio del otro.** La nube no toca `bot/`; el escritorio no toca
    `ordenes-carga/`, `catalogo/`, `datos/`, `docs/`, `.claude/`.
 2. **Un cambio de interfaz se hace EN EL CONTRATO (git), no de palabra.** Si la extracción
-   agrega un campo (ej. el flag `cargar`), lo documenta en `CONTRATO-orden-json.md`. Si el bot
-   necesita un dato nuevo, lo pide en el contrato. Julio relaya el aviso entre chats.
-3. **El estado siempre está en git**, nunca en la memoria de un chat. Si un chat se comprime, el
+   agrega un campo (ej. el flag `cargar`), lo documenta en `CONTRATO-orden-json.md`.
+3. **UN SOLO EDITOR por archivo de contrato** (lección 2026-10-23: dos chats editaron
+   `CONTRATO-resultado-json.md` y chocaron). Cada lado edita el archivo de **su propio contrato de
+   salida**; el otro **solo lo lee**:
+   - `CONTRATO-orden-json.md` (salida de la extracción) → lo edita la **nube**; el escritorio lee.
+   - `CONTRATO-resultado-json.md` (salida del bot) → lo edita el **escritorio**; la nube lee.
+4. **El estado siempre está en git**, nunca en la memoria de un chat. Si un chat se comprime, el
    otro lado no se entera: lee el contrato y sigue.
-4. **Julio orquesta:** decide prioridades, relaya los cambios de contrato, aprueba.
+5. **Julio orquesta:** decide prioridades, relaya los avisos, aprueba.
 
-Ejemplo real (ya ocurrido): la extracción agregó `indexacion.cargar` → lo documentó en el
-contrato → Julio lo pasó al escritorio → el bot lo implementa. Nunca hablamos directamente.
+Ejemplo real: la extracción agregó `indexacion.cargar` → lo documentó en `CONTRATO-orden-json.md`
+→ el escritorio lo leyó y lo implementa. Nunca hablamos directamente.
 
 ## Gestión del plan de evolución
 
