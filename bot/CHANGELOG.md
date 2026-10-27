@@ -191,6 +191,24 @@ la matrícula esperada (p. ej. `02194`) y **no matcheaba** porque la cisterna es
 `PO 2194 R`. **Regla de Julio:** buscar siempre por los **últimos 3 dígitos numéricos** (`194`).
 `buscar_remolque` ahora usa `digitos[-3:]`. (Documentado también en `docs/flujo-carga-y-registro.md`.)
 
+### 2026-10-27 — DUOTRAILER (2º viaje del dúo): saltear km y dietas
+
+Caso nuevo (regla de Julio, definida en `ordenes-carga/CONTRATO-orden-json.md`): una tractora
+arrastra 2 remolques en el **mismo recorrido** → genera 2 viajes. El **2º** viaje tiene el odómetro
+casi igual que el 1º (va "para atrás"), así que no se puede tratar como secuencial y rompía la carga
+de km (el guardia de plausibilidad lo frenaba, bien).
+
+Marcadores en el `orden.json`: `cabecera.duo_secundario: true` y `km.cargar: false` en el 2º viaje.
+Comportamiento del bot cuando aparecen:
+- Carga **normal** cabecera + albarán + líneas (porte + indexación).
+- **Saltea el formulario de Kilómetros** (`km.cargar=false`) — no duplica km.
+- **Saltea viáticos/gastos/dietas** (`duo_secundario`, en la rama autónomo) — van una sola vez en el
+  viaje líder. No duplica dietas.
+- Graba el albarán igual; en `resultado.json` el albarán queda `grabado` con
+  `motivo: "DUOTRAILER secundario: km/dietas en el viaje lider"`.
+
+El flag `km.cargar` se chequea con `is False` (solo dispara si viene explícito; ausente = km normal).
+
 ### Pendiente en v2
 
 - Añadir `nro_viaje_crop` al `CONTRATO-resultado-json.md` (lado extracción) y que la extracción lea

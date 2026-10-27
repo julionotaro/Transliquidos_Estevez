@@ -522,8 +522,10 @@ def pushear_resultado():
     if rc: log("[git] push FALLO (credenciales no cacheadas?): %s  >>> commiteado local, pushear a mano."%o); return
     log("[git] OK: resultado pusheado a origin/main.")
 
-def do_albaran(alb, n, autonomo=False):
-    """Llena cabecera+lineas+(km propio | gastos autonomo) y graba UN albaran. True=grabado, False=aborto."""
+def do_albaran(alb, n, autonomo=False, duo_secundario=False):
+    """Llena cabecera+lineas+(km propio | gastos autonomo) y graba UN albaran. True=grabado, False=aborto.
+    DUOTRAILER: si duo_secundario (o km.cargar=False), se carga cabecera+albaran+lineas pero se SALTEA
+    el formulario de Kilometros y los viaticos/gastos (van una sola vez en el viaje lider; no duplicar)."""
     cli=alb.get("cliente",{}) or {}
     log("##### ALBARAN idx %d : %s #####"%(n, cli.get("esperado","")))
     if "_bloqueo" in alb: log("  ABORTO: albaran BLOQUEADO: %s"%alb["_bloqueo"]); return False
@@ -584,7 +586,12 @@ def do_albaran(alb, n, autonomo=False):
     # ---- KM / GASTOS + GRABADO ----
     if autonomo:
         # Chofer AUTONOMO: los km van en GASTOS, no en el formulario Kilometros.
-        if not do_gastos_autonomo(km, n): return False
+        if duo_secundario:
+            # DUOTRAILER secundario: las dietas/gastos del tramo compartido van en el viaje lider;
+            # aca NO se cargan (no duplicar). Se graba el albaran igual.
+            log("  --- GASTOS ---  DUOTRAILER secundario: SALTEO viaticos/gastos (van en el viaje lider).")
+        elif not do_gastos_autonomo(km, n):
+            return False
         ensure_ges(); time.sleep(0.3)
         pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(0.8)
         handle_si(2.5,"post-albaran")
@@ -596,6 +603,19 @@ def do_albaran(alb, n, autonomo=False):
         log("  >>> ALBARAN idx %d GRABADO (autonomo/gastos). activa=%r"%(n, active_title()))
         return True
     # ---- KM (chofer PROPIO) ----
+    if (km.get("cargar") is False) or duo_secundario:
+        # DUOTRAILER 2º viaje: el odometro del 2º arranca casi igual que el del 1º ("va para atras"),
+        # asi que NO se carga el formulario de Kilometros aca; los km se cuentan una sola vez, en el
+        # viaje lider. Regla: km.cargar=false / cabecera.duo_secundario (ver CONTRATO-orden-json.md).
+        # Se graba el albaran igual.
+        log("  --- KM ---  DUOTRAILER secundario: SALTEO el formulario de Kilometros (no duplico km).")
+        ensure_ges(); time.sleep(0.3)
+        pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(0.8)
+        handle_si(2.5,"post-albaran")
+        _esperar_ventana("ENTRADA DE ALBARANES", aparezca=False, timeout=12.0, tag="post-albaran-duo")
+        ensure_ges(); time.sleep(0.4)
+        log("  >>> ALBARAN idx %d GRABADO (DUOTRAILER secundario, sin km). activa=%r"%(n, active_title()))
+        return True
     f_inicio=km.get("inicio"); f_fin=km.get("fin")
     if f_inicio is None or f_fin is None:
         log("  sin km.inicio/fin -> paro cadena."); return False
@@ -733,7 +753,8 @@ try:
     for vpos,vj in enumerate(viajes):
         cab=vj.get("cabecera",{}) or {}; albs=vj.get("albaranes",[]) or []
         autonomo=(str(cab.get("tipo","propio")).strip().lower()=="autonomo")
-        log("########## VIAJE %d/%d  cabeza=%r  tipo=%s  (%d albaranes) ##########"%(vpos+1,len(viajes),cab.get("cabeza"),("AUTONOMO" if autonomo else "propio"),len(albs)))
+        duo_sec=bool(cab.get("duo_secundario"))
+        log("########## VIAJE %d/%d  cabeza=%r  tipo=%s%s  (%d albaranes) ##########"%(vpos+1,len(viajes),cab.get("cabeza"),("AUTONOMO" if autonomo else "propio"),(" DUOTRAILER-2º" if duo_sec else ""),len(albs)))
         vres={"cabeza":cab.get("cabeza"), "chofer":(cab.get("verificar",{}) or {}).get("chofer",""),
               "nro_viaje_gesruta":"", "nro_viaje_crop":"", "estado":"abortado", "motivo":"", "albaranes":[]}
         resultados.append(vres)
@@ -758,10 +779,11 @@ try:
             if not _esperar_ventana("ENTRADA DE ALBARANES", aparezca=True, timeout=12.0, tag="abrir-alb"):
                 log("  ABORTO: no abrio Entrada de Albaranes (timeout)."); break
             time.sleep(0.9); ensure_ges(); time.sleep(0.3)
-            if not do_albaran(alb, ai, autonomo):
+            if not do_albaran(alb, ai, autonomo, duo_sec):
                 ar["motivo"]="cadena detenida en este albaran"
                 log("### CADENA DETENIDA en albaran %d ###"%(ai+1)); break
             ar["estado"]="grabado"; ar["nro_albaran_gesruta"]=capturar_nro_albaran(ai)
+            if duo_sec: ar["motivo"]="DUOTRAILER secundario: km/dietas en el viaje lider"
             grabados+=1
         if grabados!=len(albs):
             log("### NO grabo viaje %d: %d/%d albaranes ###"%(vpos+1,grabados,len(albs))); break
