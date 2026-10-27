@@ -48,16 +48,22 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
   G (nacional) o GPT (internacional)**. `cargar` (opcional, default `true`): si es `false`, el
   importe se conoce (queda para control de totales) pero el bot **NO** carga la línea por albarán;
   esa indexación se acumula en facturación (p.ej. FORESA Caldas→Orember, metanol).
-- `km`: `{ inicio, fin, carga, vacio? }` como enteros string, sin separador de miles. `carga` =
-  fin − inicio. Para chofer **propio** el vacío lo calcula el bot en pantalla; para **autónomo**
-  va explícito en `vacio` (sale de la ficha) porque sus km se cargan en *Gastos*, no en el
-  formulario Kilómetros.
+- `km`: `{ inicio, fin, carga, vacio?, cargar? }` como enteros string, sin separador de miles.
+  `carga` = fin − inicio. Para chofer **propio** el vacío lo calcula el bot en pantalla; para
+  **autónomo** va explícito en `vacio` (sale de la ficha) porque sus km se cargan en *Gastos*.
+  `cargar` (opcional, default `true`): si es `false`, **el bot NO carga el formulario de km de ese
+  viaje** (los km ya se cuentan en el viaje emparejado; ver `duo_secundario`).
 - `tarifa_pendiente`: `true` → solo cabecera + km, Estado "Pedido" (sin líneas). `false` normal.
 
 ## Cabecera — campos extra
 
 - `cabecera.tipo`: `"propio"` | `"autonomo"`. Autónomo (hoy Fraga, Alfonsín, Abal) → km en
   *Gastos*, sin viáticos; la orden trae `km.vacio` por albarán.
+- `cabecera.duo_secundario`: `true` en el **2º viaje de un DUOTRAILER** (una tractora arrastra 2
+  cisternas en el mismo viaje físico → 2 viajes en Gesruta, uno por matrícula). El 2º viaje lleva
+  su **cabecera + albarán + líneas (porte/idx propios de su cisterna)**, pero el bot **SALTEA lo del
+  tramo compartido**: formulario de km (viene con `km.cargar:false`) y **viáticos/gastos/dietas**
+  (van una sola vez, en el viaje líder). Así el km y las dietas NO se duplican.
 - **A futuro** (ver `docs/flujos-carga.md`): `empresa` (TLE/THEC/PROVE + `proveedor`),
   `viaje_tipo` (convencional/metanol/frigo) y `gastos`. Todavía NO implementados; hoy solo
   flujo convencional TLE.

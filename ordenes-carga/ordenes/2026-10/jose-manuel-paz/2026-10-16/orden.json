@@ -79,7 +79,8 @@
           "remolque": "R7993BDG",
           "chofer": "JOSE MANUEL PAZ"
         },
-        "tipo": "propio"
+        "tipo": "propio",
+        "duo_secundario": true
       },
       "albaranes": [
         {
@@ -119,7 +120,8 @@
           "km": {
             "inicio": "177157",
             "fin": "178043",
-            "carga": "886"
+            "carga": "886",
+            "cargar": false
           },
           "tarifa_pendiente": false,
           "_nota": "DUOTRAILER cisterna 2 (R7993BDG). BRESFOR Aveiro->Finsa Cella (TERUEL TE) 56,00. RES1350->COLA. PI IVA 0. Idx GPT FORESA-BRESFOR Oct 0,1664. Ref 5050141473 (Doc int). Peso guia 23.860 (bascula descarga 23.800). KM del tramo compartido con el viaje 1 (duotrailer): contar una sola vez."

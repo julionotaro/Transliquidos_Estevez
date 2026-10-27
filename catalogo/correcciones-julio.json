@@ -102,6 +102,11 @@
       "estado": "confirmada"
     },
     {
+      "fecha": "2026-10-27", "por": "Julio", "cliente": "TODOS", "campo": "duotrailer",
+      "regla": "DUOTRAILER = una tractora arrastra 2 cisternas en UN MISMO viaje fisico (mismo odometro, mismas fechas), cada cisterna con su matricula y su albaran. En Gesruta van como 2 viajes (uno por matricula). SEPARADO por cisterna: cabecera, albaran, porte e indexacion (cada cisterna tiene su tonelaje). COMPARTIDO = una sola vez (en el viaje lider, NO duplicar en el 2do): KM del tramo, dietas/viaticos y gastos. En la orden: el 2do viaje lleva cabecera.duo_secundario=true y km.cargar=false -> el bot saltea el formulario de km y los gastos/dietas de ese viaje. OJO km: el odometro del 2do arranca casi igual que el del 1ro (va para atras), por eso NO se puede cargar el form de km del 2do como si fuera secuencial. Descuento DUO (-5%): solo si Julio confirma que ESE duotrailer lleva DUO (por defecto no).",
+      "estado": "confirmada"
+    },
+    {
       "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "fuente_de_precios",
       "regla": "Las TARIFAS no se copian aqui (se desactualizan). Viven en sus stores y correcciones-julio solo las referencia. Ver _fuente_tarifas.",
       "estado": "confirmada"
