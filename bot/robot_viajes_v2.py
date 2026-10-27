@@ -566,19 +566,27 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     elif car.get("buscar"): log("  Carga BUSCADOR (%r) no calibrado -> salto"%car.get("buscar"))
 
     # ---- LINEAS ----
-    if tarifa_pend:
-        log("  TARIFA PENDIENTE -> flujo aparte, no construido. Paro cadena."); return False
+    if tarifa_pend or des.get("codigo") is None:
+        # Contrato: tarifa_pendiente / destino sin codigo -> el albaran va como PEDIDO (solo
+        # cabecera + km, SIN lineas, Estado "Pedido"). Ese flujo (dropdown Estado=Pedido + grabar
+        # sin lineas) NO esta calibrado en pantalla todavia -> fail-loud, no invento un estado de
+        # facturacion. Pendiente: una sesion corta de calibracion en vivo.
+        log("  PEDIDO (tarifa_pendiente/destino sin codigo): flujo 'Pedido' no calibrado aun -> paro cadena (no invento)."); return False
     elif porte:
         grid_click(LINEAS_TAB,"solapa Lineas"); time.sleep(0.4)
         grid_click(ADD_LINE,"add porte"); time.sleep(0.6)
         if str(porte.get("um","TN")).upper()=="UN": log("  OJO: UM=UN no calibrado -> queda TN")
         grid_type(L_CANT1, num(porte.get("cantidad","")), "Cantidad porte")
         grid_type(L_PRECIO1, num(porte.get("precio","")), "Precio porte", confirm=True)
-        if index:
+        if index and index.get("cargar") is not False:
             grid_click(ADD_LINE,"add indexacion"); time.sleep(0.6)
             grid_type(L_CDGO2, str(index.get("concepto","")).upper(), "Cdgo index", confirm=True)
             grid_type(L_CANT2, num(index.get("cantidad","")), "Cantidad index")
             grid_type(L_PRECIO2, num(index.get("factor","")), "Precio index", confirm=True)
+        elif index:   # index.cargar == False
+            # El importe se conoce (control de totales) pero NO se carga la linea por albaran: esa
+            # indexacion se acumula en facturacion (p.ej. FORESA Caldas->Orember, metanol). Ver contrato.
+            log("  indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).")
         else: log("  sin indexacion")
     else:
         log("  sin porte en la orden -> paro cadena."); return False

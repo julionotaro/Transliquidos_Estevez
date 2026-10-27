@@ -209,6 +209,18 @@ Comportamiento del bot cuando aparecen:
 
 El flag `km.cargar` se chequea con `is False` (solo dispara si viene explícito; ausente = km normal).
 
+### 2026-10-27 — Cerrar brechas con el CONTRATO-orden-json
+
+- **`lineas.indexacion.cargar: false` → NO se carga la línea de indexación** (el importe se conoce,
+  se acumula en facturación; p. ej. FORESA Caldas→Orember, metanol). Se evalúa con `is not False`
+  (ausente = se carga, como siempre). Usado hoy en nuno-paiva y pedro-fraga.
+- **`tarifa_pendiente` / `destino.codigo: null` → debería ir como PEDIDO** (solo cabecera + km, sin
+  líneas, Estado "Pedido"). Ese flujo (dropdown Estado=Pedido + grabar sin líneas) **no está
+  calibrado en pantalla todavía** → el bot **falla ruidoso** (para la cadena, no inventa un estado de
+  facturación). Pendiente: una sesión corta de calibración en vivo. `_bloqueo` sigue abortando.
+- **NO implementado (marcado "a futuro" en el contrato):** `empresa` THEC/PROVE + `proveedor`,
+  `viaje_tipo` (convencional/metanol/frigo) y `gastos`. Hoy solo flujo convencional TLE.
+
 ### Pendiente en v2
 
 - Añadir `nro_viaje_crop` al `CONTRATO-resultado-json.md` (lado extracción) y que la extracción lea
