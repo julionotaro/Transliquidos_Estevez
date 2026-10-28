@@ -1,0 +1,118 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-23",
+    "chofer": "JOSE CARLOS ALFONSIN",
+    "cabeza": "4916",
+    "remolques": [
+      "R1783BBJ"
+    ],
+    "viajes": 1,
+    "albaranes": 2,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261028190834.pdf",
+    "choferes_tipo": "autonomo",
+    "_nota_tractora": "La ficha escribe la tractora como 4716NJG, pero el padron (flota.json) y los documentos (CMR FORESA y TEPSA) la dan como 4916NJG con remolque R1783BBJ y chofer Alfonsin. Se usa 4916NJG (mala lectura del 9 en la ficha)."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "4916",
+        "verificar": {
+          "matricula": "4916NJG",
+          "remolque": "R1783BBJ",
+          "chofer": "JOSE CARLOS ALFONSIN"
+        },
+        "tipo": "autonomo"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2033820",
+          "salida": "23/10/2026",
+          "llegada": "26/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,580",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.778,61",
+              "factor": "0,1664"
+            }
+          },
+          "km": {
+            "inicio": "94535",
+            "fin": "95744",
+            "carga": "1209",
+            "vacio": "125"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "FORESA Caldas->IP Decor Tordera (destino TORDERA 9731, donde vive la tarifa 72,36). RES0011->COLA. Nacional P IVA 21. Idx G FORESA-BRESFOR Oct 0,1664. Ref FORESA 2033820 (corto que empieza en 20, NO el largo 5030298404). Peso albaran 24.580."
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "VILAR",
+            "esperado": "VILARINHO(PT)"
+          },
+          "carga": {
+            "codigo": "VINKA",
+            "esperado": "VINKA-PLAST"
+          },
+          "referencia": "713025",
+          "salida": "27/10/2026",
+          "llegada": "28/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,440",
+              "precio": "84,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.984,90",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "95869",
+            "fin": "96994",
+            "carga": "1125",
+            "vacio": "186"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "QUIMIDROGA Barcelona (carga en TEPSA)->ENDUTEX Vilarinho/Santo Tirso (Porto, Portugal). Destino VILARINHO(PT) VILAR 84,68 EUR/TN (tarifario Quimidroga). VINKA-PLAST QD 390. Quimidroga factura Portugal como NACIONAL: P IVA 21. Idx G QUIMIDROGA Oct 0,1450. Ref 713025 (referencia en factura). Peso albaran TEPSA 23.440 (OC nominal 24.000)."
+        }
+      ]
+    }
+  ]
+}
