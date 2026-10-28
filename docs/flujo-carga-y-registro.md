@@ -38,6 +38,19 @@ Si el remolque autocompletado no coincide, el bot usa el buscador de Gesruta. **
 guardan con formato tipo `PO 2194 R`; teclear todos los dígitos (`02194`) no matchea por el 0 a la
 izquierda / formato, pero los últimos 3 (`194`) sí.
 
+## Albarán en estado "Pedido" (`tarifa_pendiente` / `destino.codigo:null`)
+
+Confirmado en vivo (28/10/2026, viaje de prueba 00051015). Un albarán **nace en Estado
+"Pedido"** (se ve **verde** en la lista de albaranes del viaje; el albarán normal es
+granate). Solo pasa a "Albarán" cuando se va a la pestaña **Líneas** y se confirma el aviso
+"¿convertir el pedido en albarán?".
+
+Para dejarlo en Pedido, el bot **no toca Líneas**: carga cabecera + km y graba. Verificado que
+cargar km (carga/vacío), grabar el formulario de km y grabar el albarán **NO disparan** el
+aviso de conversión cuando no hay líneas → el albarán **queda Pedido** sin intervención.
+`handle_pedido_dialogs` queda como defensa: si en algún caso el aviso de convertir sí aparece,
+responde **No** (deja Pedido); si no aparece, no hace nada.
+
 ## Km (ver también `catalogo/correcciones-julio.json`)
 
 Odómetro continuo por viaje. Km carga por albarán = final − inicio. Entre albaranes del mismo

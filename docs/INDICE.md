@@ -69,6 +69,9 @@ y dónde queda registrado. Decisión de Julio 08/10/2026:
 - **1 viaje puede tener varios albaranes** (cada origen→destino = 1 albarán).
 - El **Nº de viaje y Nº de albarán los genera Gesruta**: se **capturan de la pantalla** al
   grabar, nunca se pasan a mano ni se pre-asignan (no se desincroniza).
+- **Estado "Pedido"** (`tarifa_pendiente`/`destino.codigo:null`): el albarán queda Pedido
+  (verde) si **no se tocan Líneas**; el aviso "¿convertir en albarán?" solo salta al ir a
+  Líneas. Confirmado en vivo 28/10/2026.
 
 **Precedencia:** este documento manda sobre lo que digan los archivos históricos
 en materia de extracción. Si contradice a `modelo-dominio-lectura.md`, gana
