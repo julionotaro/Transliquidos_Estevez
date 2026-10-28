@@ -214,10 +214,14 @@ El flag `km.cargar` se chequea con `is False` (solo dispara si viene explícito;
 - **`lineas.indexacion.cargar: false` → NO se carga la línea de indexación** (el importe se conoce,
   se acumula en facturación; p. ej. FORESA Caldas→Orember, metanol). Se evalúa con `is not False`
   (ausente = se carga, como siempre). Usado hoy en nuno-paiva y pedro-fraga.
-- **`tarifa_pendiente` / `destino.codigo: null` → debería ir como PEDIDO** (solo cabecera + km, sin
-  líneas, Estado "Pedido"). Ese flujo (dropdown Estado=Pedido + grabar sin líneas) **no está
-  calibrado en pantalla todavía** → el bot **falla ruidoso** (para la cadena, no inventa un estado de
-  facturación). Pendiente: una sesión corta de calibración en vivo. `_bloqueo` sigue abortando.
+- **`tarifa_pendiente` / `destino.codigo: null` → PEDIDO** — IMPLEMENTADO (2026-10-28). Calibrado en
+  vivo: el albarán nace en Estado "Pedido"; si no se tocan Líneas queda Pedido (el aviso "¿convertir?"
+  solo salta al ir a Líneas). Flujo del bot: cabecera + **saltear líneas** + cargar km normal y, al
+  salir del form de km, responder **No** a "¿convertir en albarán?" (`handle_pedido_dialogs`: No a
+  "convertir", Sí al resto) + grabar. Queda Pedido con km y sin líneas; en `resultado.json` el albarán
+  va `grabado` con `motivo: "PEDIDO ..."`. **OJO (toca facturación): validar en vivo en la 1ª orden
+  con tarifa_pendiente real** — el manejo del diálogo No-convertir se codeó desde la descripción de
+  Julio, falta verlo correr. `_bloqueo` sigue abortando.
 - **NO implementado (marcado "a futuro" en el contrato):** `empresa` THEC/PROVE + `proveedor`,
   `viaje_tipo` (convencional/metanol/frigo) y `gastos`. Hoy solo flujo convencional TLE.
 

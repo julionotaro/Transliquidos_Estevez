@@ -161,6 +161,43 @@ def handle_si(timeout,tag):
             if click_si(h): time.sleep(0.8); return True
         time.sleep(0.3)
     return False
+def click_no(dh):
+    btns=[]
+    def cb(ch,l):
+        if "BUTTON" in _cls(ch).upper(): btns.append((ch,_text(ch)))
+        return True
+    u32.EnumChildWindows(dh,WNDENUMPROC(cb),0)
+    for ch,t in btns:
+        if t.upper().replace('&','').strip().startswith('N'):
+            r=_rect(ch); pyautogui.click((r.left+r.right)//2,(r.top+r.bottom)//2); log("     click No %r"%t); return True
+    return False
+def _dialog_body(dh):
+    parts=[]
+    def cb(ch,l):
+        t=_text(ch)
+        if t: parts.append(t)
+        return True
+    u32.EnumChildWindows(dh,WNDENUMPROC(cb),0)
+    return (" ".join(parts)).upper()
+def handle_pedido_dialogs(timeout,tag):
+    """Flujo PEDIDO: a '¿convertir el pedido en albaran?' responde NO (deja Estado Pedido); a cualquier
+    otro aviso (grabar para continuar, riesgo, etc.) responde Si. Hasta que no quede ninguno ~1.5s.
+    OJO: toca facturacion; validar en vivo en la 1ra orden con tarifa_pendiente real."""
+    t0=time.time(); last=time.time(); n=0
+    while time.time()-t0<timeout:
+        h,t=find_kw(ALL_KW+("GRABAR","CONVERTIR","PEDIDO"))
+        if h:
+            es_convertir = ("CONVERT" in _dialog_body(h)) or ("CONVERT" in (t or "").upper())
+            if es_convertir:
+                ok=click_no(h); log("  [%s] %r (convertir) -> No (deja Pedido)"%(tag,t))
+            else:
+                ok=click_si(h); log("  [%s] %r -> Si"%(tag,t))
+            if ok: n+=1
+            else: pyautogui.press('esc')
+            last=time.time(); time.sleep(0.8); continue
+        if time.time()-last>1.5: break
+        time.sleep(0.3)
+    return n
 
 def open_km_form(timeout):
     """Despeja dialogos (Si en grabar/convertir, Esc en avisos) hasta que abra el form de km."""
@@ -565,13 +602,15 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
         field(C_CARGA, car["codigo"], "Carga", tab=True); wait_and_close(1.2,"post-carga")
     elif car.get("buscar"): log("  Carga BUSCADOR (%r) no calibrado -> salto"%car.get("buscar"))
 
+    es_pedido = bool(tarifa_pend or (des.get("codigo") is None))
     # ---- LINEAS ----
-    if tarifa_pend or des.get("codigo") is None:
-        # Contrato: tarifa_pendiente / destino sin codigo -> el albaran va como PEDIDO (solo
-        # cabecera + km, SIN lineas, Estado "Pedido"). Ese flujo (dropdown Estado=Pedido + grabar
-        # sin lineas) NO esta calibrado en pantalla todavia -> fail-loud, no invento un estado de
-        # facturacion. Pendiente: una sesion corta de calibracion en vivo.
-        log("  PEDIDO (tarifa_pendiente/destino sin codigo): flujo 'Pedido' no calibrado aun -> paro cadena (no invento)."); return False
+    if es_pedido:
+        # Contrato: tarifa_pendiente / destino sin codigo -> albaran como PEDIDO: cabecera + km, SIN
+        # lineas, Estado "Pedido". Calibrado en vivo 2026-10-28: el albaran NACE en Estado "Pedido";
+        # si NO se tocan Lineas queda Pedido (el aviso "¿convertir?" solo salta al ir a Lineas). Los
+        # km se cargan igual y, al salir del form de km, se responde NO a "¿convertir en albaran?"
+        # (ver handle_pedido_dialogs). Asi queda Pedido con km y sin lineas.
+        log("  PEDIDO (tarifa_pendiente/destino sin codigo): NO se cargan lineas; queda Estado 'Pedido'.")
     elif porte:
         grid_click(LINEAS_TAB,"solapa Lineas"); time.sleep(0.4)
         grid_click(ADD_LINE,"add porte"); time.sleep(0.6)
@@ -598,11 +637,15 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
             # DUOTRAILER secundario: las dietas/gastos del tramo compartido van en el viaje lider;
             # aca NO se cargan (no duplicar). Se graba el albaran igual.
             log("  --- GASTOS ---  DUOTRAILER secundario: SALTEO viaticos/gastos (van en el viaje lider).")
+        elif es_pedido:
+            # PEDIDO autonomo (raro): no se cargan gastos; queda Estado Pedido (sin lineas).
+            log("  --- GASTOS ---  PEDIDO: no se cargan gastos; queda Estado Pedido.")
         elif not do_gastos_autonomo(km, n):
             return False
         ensure_ges(); time.sleep(0.3)
         pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(0.8)
-        handle_si(2.5,"post-albaran")
+        if es_pedido: handle_pedido_dialogs(3.0,"post-albaran-pedido")
+        else: handle_si(2.5,"post-albaran")
         # esperar a que la ventana del albaran CIERRE (volvemos a Entrada de Viajes) antes de abrir el
         # siguiente o grabar el viaje. Clave con el sistema lento: evita encadenar sobre una pantalla
         # que todavia no termino de grabar.
@@ -661,11 +704,15 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     pyautogui.press('enter'); time.sleep(0.4); log("  Enter Bonificable (autocompleta vacio)")
     log("  (no toco Nueva lectura; esperado Nueva lectura=%d)"%real_fin)
     km_front(); pyautogui.moveTo(*K_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*K_SAVE); time.sleep(1.2)
-    handle_si(2.5,"post-km")
+    # Al grabar/salir del form de km, si es PEDIDO salta "¿convertir en albaran?" -> NO (deja Pedido).
+    # Si no es pedido, flujo normal (Si a cualquier aviso de grabar).
+    if es_pedido: handle_pedido_dialogs(3.5,"post-km-pedido")
+    else: handle_si(2.5,"post-km")
     if find_kw(("KILOMETRO",))[0]: log("  AVISO: el form de km sigue abierto")
     ensure_ges(); time.sleep(0.3)
     pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(1.2)
-    handle_si(2.5,"post-albaran")
+    if es_pedido: handle_pedido_dialogs(3.0,"post-albaran-pedido")
+    else: handle_si(2.5,"post-albaran")
     log("  >>> ALBARAN idx %d GRABADO. activa=%r"%(n, active_title()))
     return True
 
@@ -792,6 +839,8 @@ try:
                 log("### CADENA DETENIDA en albaran %d ###"%(ai+1)); break
             ar["estado"]="grabado"; ar["nro_albaran_gesruta"]=capturar_nro_albaran(ai)
             if duo_sec: ar["motivo"]="DUOTRAILER secundario: km/dietas en el viaje lider"
+            elif alb.get("tarifa_pendiente") or (alb.get("destino",{}) or {}).get("codigo") is None:
+                ar["motivo"]="PEDIDO (tarifa pendiente / destino sin codigo): cabecera+km, sin lineas"
             grabados+=1
         if grabados!=len(albs):
             log("### NO grabo viaje %d: %d/%d albaranes ###"%(vpos+1,grabados,len(albs))); break
