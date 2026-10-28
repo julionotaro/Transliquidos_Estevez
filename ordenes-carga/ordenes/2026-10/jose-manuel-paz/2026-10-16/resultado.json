@@ -1,25 +1,9 @@
 {
   "orden": "ordenes-carga/ordenes/2026-10/jose-manuel-paz/2026-10-16/orden.json",
   "empresa": "TLE",
-  "corrida": "2026-10-23T17:44:26",
+  "corrida": "2026-10-28T17:50:38",
   "bot_version": "viajes-2",
   "viajes": [
-    {
-      "cabeza": "2050",
-      "chofer": "JOSE MANUEL PAZ",
-      "nro_viaje_gesruta": "",
-      "nro_viaje_crop": "nro_viaje_v1.png",
-      "estado": "grabado",
-      "motivo": "",
-      "albaranes": [
-        {
-          "referencia": "5050141472",
-          "nro_albaran_gesruta": "01",
-          "estado": "grabado",
-          "motivo": ""
-        }
-      ]
-    },
     {
       "cabeza": "2050",
       "chofer": "JOSE MANUEL PAZ",
@@ -29,7 +13,7 @@
       "motivo": "",
       "albaranes": [
         {
-          "referencia": "5050141473",
+          "referencia": "5050141472",
           "nro_albaran_gesruta": "",
           "estado": "abortado",
           "motivo": "cadena detenida en este albaran"

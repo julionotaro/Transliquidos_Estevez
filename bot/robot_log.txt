@@ -1,89 +1,50 @@
-[17:41:32.729] ==== ROBOT VIAJES viajes-2 ====
-[17:41:32.730] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-manuel-paz\2026-10-16\orden.json
-[17:41:32.730] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-manuel-paz\2026-10-16\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
-[17:41:32.735] Empresa='TLE' | 3 viaje(s)
-[17:41:34.439] ########## VIAJE 1/3  cabeza='2050'  tipo=propio  (1 albaranes) ##########
-[17:41:34.444] --- CABECERA: cabeza 2050 (necesita editar=True) ---
-[17:41:42.129]   leer Matricula tractora -> '2050MZY'
-[17:41:44.229]   leer Matricula remolque -> 'R2006BDT'
-[17:41:46.329]   leer Chofer codigo      -> '34'
-[17:41:46.330]   CABECERA OK (tractora=2050MZY remolque=R2006BDT chofer_cod=34)
-[17:41:46.330] --- Abrir albaran 1/1 (Anadir nuevo) ---
-[17:41:50.976]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[17:41:52.177] ##### ALBARAN idx 0 : BRESFOR IND. DO FORMOL, S.A. #####
-[17:41:54.452]   -> Refe: '5050141472'
-[17:41:56.695]   -> FechaSalida: '16/10/2026'
-[17:41:58.939]   -> FechaLlegada: '20/10/2026'
-[17:42:01.278]   -> Cliente: '42'
-[17:42:10.093]   -> Origen (sobre seleccion): 'AVEIR'
-[17:42:13.730]   -> Destino: 'TE'
-[17:42:17.308]   -> Carga: '1'
-[17:42:19.776]   clic solapa Lineas
-[17:42:21.361]   clic add porte
-[17:42:24.016]   -> Cantidad porte: '23,700'
-[17:42:26.506]   -> Precio porte: '56,00'  [Tab]
-[17:42:27.692]   clic add indexacion
-[17:42:30.682]   -> Cdgo index: 'GPT'  [Tab]
-[17:42:32.784]   -> Cantidad index: '1327,20'
-[17:42:35.325]   -> Precio index: '0,1664'  [Tab]
-[17:42:35.326]   --- KM ---  Ficha inicio='177155' fin='178043'
-[17:42:37.136]      click Si '&Sí'
-[17:42:37.137]     dialogo 'Aviso...  ' -> Si
-[17:42:38.377]      click Si '&Sí'
-[17:42:38.378]     dialogo 'Aviso...  ' -> Si
-[17:42:39.288]   [km-win] L=573 T=332 -> ANCLADO: NL=(922, 407) CARGA=(975, 485) VACIO=(1035, 485) BONIF=(1229, 487) SAVE=(632, 638)
-[17:42:42.210]   leer Tacografo[NuevaLectura] intento 1 -> raw='  177.087' -> OK 177087
-[17:42:42.210]   Tacografo=177087 real_inicio=177155 real_fin=178043 => carga=888 vacio=68
-[17:42:45.167]   -> Km carga = 888 [tab]
-[17:42:48.066]   -> Km vacio = 68 [enter]
-[17:42:50.063]   Enter Bonificable (autocompleta vacio)
-[17:42:50.064]   (no toco Nueva lectura; esperado Nueva lectura=178043)
-[17:42:59.855]   >>> ALBARAN idx 0 GRABADO. activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[17:42:59.859] --- GRABAR VIAJE (disquete) ---
-[17:43:07.065]   [resultado] nro_viaje owner-drawn -> capturado a nro_viaje_v1.png (lo lee la extraccion)
-[17:43:07.066]   grabado viaje 1. activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[17:43:07.067] ########## VIAJE 2/3  cabeza='2050'  tipo=propio  (1 albaranes) ##########
-[17:43:07.072] --- NUEVO VIAJE (hoja blanca; el viaje anterior YA se grabo con F2) ---
-[17:43:09.606] --- CABECERA: cabeza 2050 (necesita editar=False) ---
-[17:43:15.365]   leer Matricula tractora -> '2050MZY'
-[17:43:17.481]   leer Matricula remolque -> 'R2006BDT'
-[17:43:19.581]   leer Chofer codigo      -> '34'
-[17:43:19.582]   remolque 'R2006BDT' != esperado 'R7993BDG' -> BUSCAR
-[17:43:19.583]   BUSCAR remolque: doble clic codigo + '993' + lupa + doble clic fila
-[17:43:30.432]   leer Matricula remolque (post-BUSCAR) -> 'R7993BDG'
-[17:43:30.433]   remolque corregido por BUSCAR -> R7993BDG
-[17:43:30.434]   CABECERA OK (tractora=2050MZY remolque=R7993BDG chofer_cod=34)
-[17:43:30.434] --- Abrir albaran 1/1 (Anadir nuevo) ---
-[17:43:35.031]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[17:43:36.232] ##### ALBARAN idx 0 : BRESFOR IND. DO FORMOL, S.A. #####
-[17:43:38.504]   -> Refe: '5050141473'
-[17:43:40.749]   -> FechaSalida: '16/10/2026'
-[17:43:42.994]   -> FechaLlegada: '20/10/2026'
-[17:43:45.333]   -> Cliente: '42'
-[17:43:54.157]   -> Origen (sobre seleccion): 'AVEIR'
-[17:43:57.782]   -> Destino: 'TE'
-[17:44:01.354]   -> Carga: '1'
-[17:44:03.824]   clic solapa Lineas
-[17:44:05.410]   clic add porte
-[17:44:08.053]   -> Cantidad porte: '23,860'
-[17:44:10.545]   -> Precio porte: '56,00'  [Tab]
-[17:44:11.731]   clic add indexacion
-[17:44:14.736]   -> Cdgo index: 'GPT'  [Tab]
-[17:44:16.836]   -> Cantidad index: '1336,16'
-[17:44:19.378]   -> Precio index: '0,1664'  [Tab]
-[17:44:19.379]   --- KM ---  Ficha inicio='177157' fin='178043'
-[17:44:21.186]      click Si '&Sí'
-[17:44:21.187]     dialogo 'Aviso...  ' -> Si
-[17:44:22.414]      click Si '&Sí'
-[17:44:22.415]     dialogo 'Aviso...  ' -> Si
-[17:44:23.324]   [km-win] L=573 T=332 -> ANCLADO: NL=(922, 407) CARGA=(975, 485) VACIO=(1035, 485) BONIF=(1229, 487) SAVE=(632, 638)
-[17:44:26.247]   leer Tacografo[NuevaLectura] intento 1 -> raw='  178.043' -> OK 178043
-[17:44:26.248]   Tacografo=178043 real_inicio=1177157 real_fin=1178043 => carga=886 vacio=999114
-[17:44:26.249]   ABORTO: km vacio implausible (999114). Ficha/odometro no coinciden. NO grabo.
-[17:44:26.250] ### CADENA DETENIDA en albaran 1 ###
-[17:44:26.250] ### NO grabo viaje 2: 0/1 albaranes ###
-[17:44:26.251] Viajes grabados: 1/3
-[17:44:26.264] [resultado] escrito: \\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-manuel-paz\2026-10-16\resultado.json
-[17:44:26.265] [git] resultado.json + crop ESCRITOS en la carpeta de la orden del clon: ordenes-carga/ordenes/2026-10/jose-manuel-paz/2026-10-16
-[17:44:26.265] [git] >>> auto-push DESACTIVADO: subir con GitHub Desktop (Commit + Push). (Poner GIT_PUSH_AUTO=True para automatico.)
-[17:44:26.266] ==== FIN robot viajes. ====
+[17:49:09.903] ==== ROBOT VIAJES viajes-2 ====
+[17:49:09.903] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-manuel-paz\2026-10-16\orden.json
+[17:49:09.903] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-manuel-paz\2026-10-16\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
+[17:49:09.908] Empresa='TLE' | 3 viaje(s)
+[17:49:11.612] ########## VIAJE 1/3  cabeza='2050'  tipo=propio  (1 albaranes) ##########
+[17:49:11.615] --- CABECERA: cabeza 2050 (necesita editar=True) ---
+[17:49:19.318]   leer Matricula tractora -> '2050MZY'
+[17:49:21.428]   leer Matricula remolque -> 'R2006BDT'
+[17:49:23.528]   leer Chofer codigo      -> '34'
+[17:49:23.529]   CABECERA OK (tractora=2050MZY remolque=R2006BDT chofer_cod=34)
+[17:49:23.529] --- Abrir albaran 1/1 (Anadir nuevo) ---
+[17:49:26.908]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
+[17:49:28.110] ##### ALBARAN idx 0 : BRESFOR IND. DO FORMOL, S.A. #####
+[17:49:30.363]   -> Refe: '5050141472'
+[17:49:32.608]   -> FechaSalida: '16/10/2026'
+[17:49:34.853]   -> FechaLlegada: '20/10/2026'
+[17:49:37.192]   -> Cliente: '42'
+[17:49:46.177]   -> Origen (sobre seleccion): 'AVEIR'
+[17:49:49.767]   -> Destino: 'TE'
+[17:49:53.307]   -> Carga: '1'
+[17:49:55.743]   clic solapa Lineas
+[17:49:57.328]   clic add porte
+[17:49:59.982]   -> Cantidad porte: '23,700'
+[17:50:02.474]   -> Precio porte: '56,00'  [Tab]
+[17:50:03.660]   clic add indexacion
+[17:50:06.666]   -> Cdgo index: 'GPT'  [Tab]
+[17:50:08.765]   -> Cantidad index: '1327,20'
+[17:50:11.308]   -> Precio index: '0,1664'  [Tab]
+[17:50:11.309]   --- KM ---  Ficha inicio='177155' fin='178043'
+[17:50:13.109]      click Si '&Sí'
+[17:50:13.110]     dialogo 'Aviso...  ' -> Si
+[17:50:14.343]      click Si '&Sí'
+[17:50:14.344]     dialogo 'Aviso...  ' -> Si
+[17:50:16.221]   [km-win] L=573 T=332 -> ANCLADO: NL=(922, 407) CARGA=(975, 485) VACIO=(1035, 485) BONIF=(1229, 487) SAVE=(632, 638)
+[17:50:19.135]   leer Tacografo[NuevaLectura] intento 1 -> raw='20/10/2026' -> DESCARTADO
+[17:50:21.463]   leer Tacografo[Tacografo] intento 1 -> raw='20/10/2026' -> DESCARTADO
+[17:50:24.579]   leer Tacografo[NuevaLectura] intento 2 -> raw='20/10/2026' -> DESCARTADO
+[17:50:26.963]   leer Tacografo[Tacografo] intento 2 -> raw='20/10/2026' -> DESCARTADO
+[17:50:30.079]   leer Tacografo[NuevaLectura] intento 3 -> raw='20/10/2026' -> DESCARTADO
+[17:50:32.463]   leer Tacografo[Tacografo] intento 3 -> raw='20/10/2026' -> DESCARTADO
+[17:50:35.579]   leer Tacografo[NuevaLectura] intento 4 -> raw='20/10/2026' -> DESCARTADO
+[17:50:38.030]   leer Tacografo[Tacografo] intento 4 -> raw='20/10/2026' -> DESCARTADO
+[17:50:38.831]   ABORTO: no pude leer un Tacografo valido (lei fecha/vacio). NO grabo.
+[17:50:38.832] ### CADENA DETENIDA en albaran 1 ###
+[17:50:38.833] ### NO grabo viaje 1: 0/1 albaranes ###
+[17:50:38.834] Viajes grabados: 0/3
+[17:50:38.846] [resultado] escrito: \\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-manuel-paz\2026-10-16\resultado.json
+[17:50:38.846] [git] resultado.json + crop ESCRITOS en la carpeta de la orden del clon: ordenes-carga/ordenes/2026-10/jose-manuel-paz/2026-10-16
+[17:50:38.847] [git] >>> auto-push DESACTIVADO: subir con GitHub Desktop (Commit + Push). (Poner GIT_PUSH_AUTO=True para automatico.)
+[17:50:38.847] ==== FIN robot viajes. ====
