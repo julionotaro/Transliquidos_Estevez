@@ -1,7 +1,7 @@
 # ÍNDICE — Documentación TLE
 
 > **Leer esto primero, siempre.** No hace falta leer todo lo demás: hace falta saber qué existe y dónde está cada cosa.
-> Última actualización: 31/08/2026.
+> Última actualización: 29/10/2026.
 
 ---
 
@@ -98,6 +98,7 @@ extracción concretas.
 | `ordenes-carga/CONTRATO-resultado-json.md` | **CONTRATO DE SALIDA** del bot: qué escribe al terminar una carga (Nº viaje/albarán + estado por albarán) para cerrar el loop al libro maestro. Espejo del contrato de entrada | Al tocar el cierre del loop o el bot | **VIGENTE** |
 | `arquitectura-y-evolucion.md` | **ARQUITECTURA Y EVOLUCIÓN.** Roles/herramientas, el flujo (extracción→orden.json→bot→resultado.json→registro), estado del bot v1, y el plan prueba→pro. Clave: el juego es DATO, el bot es fijo; todo vive en git (resiliente a compresión) | Al planear el bot o el flujo, o si se pierde contexto | **VIGENTE** |
 | `referencia-dominio-n8n.md` | **MAPA DE LA ETAPA n8n.** Qué hay en las carpetas heredadas y qué sirve: lo ya cosechado (flota, autónomos, idx acumulada, rutas-sin-tarifa), lo útil sin cosechar, y la plomería muerta a archivar | Al decidir qué archivar o buscar dato de dominio | **VIGENTE** |
+| `resolvedor-orden-cobertura.md` | **MAPA DE COBERTURA DEL ARMADOR (Corrida 1).** Qué parte del armado de `orden.json` ya existe en los módulos (`ficha/*.js`, `catalogo/*.js`), qué datos están al día (tarifas/indexación) y qué reglas faltan encodear. Insumo para decidir si construir el resolvedor de etapa 1 y en qué orden. Incluye los 3 gaps de datos concretos | Al evaluar/construir el armador de `orden.json` | **VIGENTE (análisis)** |
 | `catalogo/flota.json` | Padrón de flota (31 tractoras → remolque → chofer + tipo propio/autónomo). Para verificar cabecera | Al procesar un juego o dudar de una matrícula | **VIGENTE** |
 | `dominio-facturacion.md` | Dominio del negocio (ingesta→cruce→validación→facturación), de catálogos reales de Gesruta + facturas (2026-08) | Base de negocio; consultar al tocar facturación | **VIGENTE (denso)** |
 | `entornos.md` | Infraestructura y entornos del proyecto (2026-08) | Al tocar infra/despliegue | Parcial (etapa anterior) |
