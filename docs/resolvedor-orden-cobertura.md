@@ -108,6 +108,27 @@ Es facturación real.
 
 ---
 
+## Corrida 2 — resultado (29/10/2026) ✅
+
+Construido el armador en `herramientas/armar_orden/` (Node), reusando los módulos sin
+reescribirlos. **Golden-test VERDE** contra `jose-ramon-pineiro/2026-10-14`: desde los
+hechos crudos reprodujo el `orden.json` hecho a mano **idéntico** en los 2 albaranes —
+incluyendo la **cascada por analogía confirmada** (COGERSA→ASTURIAS 33,10), el **mínimo
+23 TN**, el factor de indexación 0,1664 y el formato ES. Correr: `node
+herramientas/armar_orden/golden_test.js`.
+
+Verificó además que la reutilización es real: `resolverCliente`, `codigoCliente`,
+`resolverPunto`, `buscarTarifa`, `grupoIndexacion`/`buscarPct` y `tipoConductor` entran
+como piezas y componen. El armador **no inventa**: sin fila ni analogía confirmada marca
+`tarifa_pendiente` con motivo.
+
+**Sigue (corrida 3):** golden-test contra 3-5 juegos variados y encodear las reglas
+capa-3 de lookup (concepto/IVA por cliente ya parcial, referencia por cliente,
+varios-productos=1-viaje, punto-con-tarifa). Lo procedural (duotrailer, autónomo en
+Gastos, FORESTAL fijo, BALTRANSA idx-0, DIVERSEY→BALTRANSA) va en corrida 4.
+
+---
+
 ## Acción inmediata (no depende del armador)
 
 Los gaps 1 y 2 de Capa 2 hay que cerrarlos **igual, con o sin armador**:

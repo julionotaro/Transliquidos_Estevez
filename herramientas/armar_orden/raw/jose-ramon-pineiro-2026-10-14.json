@@ -1,0 +1,39 @@
+{
+  "_nota": "HECHOS CRUDOS del juego (lo que un humano lee de la ficha+docs). El armador hace el resto. destino_lit = el NOMBRE del punto que porta la tarifa, ya elegido por el humano (CURIA SPAIN -> VALLADOLID; COGERSA queda COGERSA y la tarifa sale por analogia confirmada a ASTURIAS). Blanco del golden-test vs ordenes-carga/ordenes/2026-10/jose-ramon-pineiro/2026-10-14/orden.json",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-14",
+  "chofer": "JOSE RAMON PINEIRO",
+  "cabeza": "8420",
+  "viajes": [
+    {
+      "matricula": "8420KKT",
+      "remolque": "PO01956R",
+      "albaranes": [
+        {
+          "cliente_lit": "FORESA",
+          "origen_lit": "VILLAGARCIA",
+          "destino_lit": "VALLADOLID",
+          "carga_lit": "METANOL",
+          "referencia": "2600003286",
+          "salida": "14/10/2026",
+          "llegada": "15/10/2026",
+          "peso_kg": 20020,
+          "km_inicio": 959817,
+          "km_fin": 960351
+        },
+        {
+          "cliente_lit": "FORESA",
+          "origen_lit": "VILLAGARCIA",
+          "destino_lit": "COGERSA",
+          "carga_lit": "METANOL",
+          "referencia": "2600003318",
+          "salida": "15/10/2026",
+          "llegada": "16/10/2026",
+          "peso_kg": 22700,
+          "km_inicio": 960860,
+          "km_fin": 961216
+        }
+      ]
+    }
+  ]
+}
