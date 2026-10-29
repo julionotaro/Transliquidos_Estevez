@@ -1,0 +1,40 @@
+{
+  "_nota": "HECHOS CRUDOS (corrida 4, procedural) reconstruidos del orden.json a mano. Para autonomo el km trae vacio (leido de la ficha); para precio fijo de la OC va um=UN + precio_fijo; el 2o viaje del duotrailer trae duo_secundario. Fuente: ordenes-carga/ordenes/2026-10/manuel-sabaris/2026-10-13/orden.json",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-13",
+  "chofer": "MANUEL SABARIS",
+  "cabeza": "2256",
+  "viajes": [
+    {
+      "matricula": "2256JYX",
+      "remolque": "PO02194R",
+      "albaranes": [
+        {
+          "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "5050141326",
+          "salida": "13/10/2026",
+          "llegada": "14/10/2026",
+          "km_inicio": 1168219,
+          "km_fin": 1169049,
+          "peso_kg": 23480
+        },
+        {
+          "cliente_lit": "BALTRANSA, S.A.",
+          "origen_lit": "MADRID",
+          "destino_lit": "PONTEDEUME",
+          "carga_lit": "SOSA",
+          "referencia": "338681",
+          "salida": "15/10/2026",
+          "llegada": "16/10/2026",
+          "km_inicio": 1169364,
+          "km_fin": 1169993,
+          "um": "UN",
+          "precio_fijo": 1150.0
+        }
+      ]
+    }
+  ]
+}

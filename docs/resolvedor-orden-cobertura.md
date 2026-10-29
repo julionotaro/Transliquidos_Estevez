@@ -154,6 +154,32 @@ nombre del punto ya elegido por el humano).
 
 ---
 
+## Corrida 4 — resultado (29/10/2026) ✅
+
+**Golden-test verde contra 7 juegos.** Reglas procedurales encodeadas y verificadas:
+
+- **Duotrailer** (`jose-manuel-paz`): el 2º viaje lleva `cabecera.duo_secundario:true` y
+  `km.cargar:false` (el bot saltea el form de km; no se duplica km ni dietas). La estructura
+  empata; difieren **solo** las líneas de **gaps de datos** que Julio confirma (idx
+  FORESA-BRESFOR 2ª quincena oct + QUIMIDROGA Miranda→Braga), declaradas como `gaps`.
+- **Autónomo** (`pedro-fraga`): `km.vacio` explícito por albarán (sus km van a Gastos) +
+  idx acumulada Orember `cargar:false`.
+- **Precio fijo del documento** (`manuel-sabaris/13`, BALTRANSA): `um=UN`, cantidad 1,
+  precio de la OC (1.150,00); sin búsqueda de tarifario.
+- **BALTRANSA idx-0** (R-04): línea de indexación `cantidad:"1", factor:"0"`.
+- **DIVERSEY→BALTRANSA:** punto de carga (Madrid) facturado a BALTRANSA; el criterio de a
+  quién se factura lo pone el humano en el `raw`, el armador procesa.
+
+**Límite acordado con Julio (29/10):** la **lectura por visión** y el **criterio complejo**
+(qué punto porta la tarifa, cuál número es la referencia, identificar un duotrailer, a quién
+se factura) **siguen siendo humanos** hasta tener herramientas probadas; no nos desligamos de
+eso todavía. El armador hace la parte determinística posterior.
+
+**Pendiente:** FORESTAL precio fijo con idx INCLUIDA (sin línea G) — falta un juego FORESTAL
+de prueba. Y, cuando convenga, probar lectura por texto (`get_text`) de documentos impresos.
+
+---
+
 ## Acción inmediata (no depende del armador)
 
 Los gaps 1 y 2 de Capa 2 hay que cerrarlos **igual, con o sin armador**:

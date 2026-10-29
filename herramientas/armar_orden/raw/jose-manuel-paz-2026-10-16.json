@@ -1,0 +1,64 @@
+{
+  "_nota": "HECHOS CRUDOS (corrida 4, procedural) reconstruidos del orden.json a mano. Para autonomo el km trae vacio (leido de la ficha); para precio fijo de la OC va um=UN + precio_fijo; el 2o viaje del duotrailer trae duo_secundario. Fuente: ordenes-carga/ordenes/2026-10/jose-manuel-paz/2026-10-16/orden.json",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-16",
+  "chofer": "JOSE MANUEL PAZ",
+  "cabeza": "2050",
+  "viajes": [
+    {
+      "matricula": "2050MZY",
+      "remolque": "R2006BDT",
+      "albaranes": [
+        {
+          "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "5050141472",
+          "salida": "16/10/2026",
+          "llegada": "20/10/2026",
+          "km_inicio": 177155,
+          "km_fin": 178043,
+          "peso_kg": 23700
+        }
+      ]
+    },
+    {
+      "matricula": "2050MZY",
+      "remolque": "R7993BDG",
+      "albaranes": [
+        {
+          "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "5050141473",
+          "salida": "16/10/2026",
+          "llegada": "20/10/2026",
+          "km_inicio": 177157,
+          "km_fin": 178043,
+          "peso_kg": 23860
+        }
+      ],
+      "duo_secundario": true
+    },
+    {
+      "matricula": "2050MZY",
+      "remolque": "R2006BDT",
+      "albaranes": [
+        {
+          "cliente_lit": "QUIMIDROGA, S.A.",
+          "origen_lit": "MIRANDA DE EBRO",
+          "destino_lit": "BRAGA (PT)",
+          "carga_lit": "MEXIFLEX",
+          "referencia": "712493",
+          "salida": "21/10/2026",
+          "llegada": "22/10/2026",
+          "km_inicio": 178456,
+          "km_fin": 179198,
+          "peso_kg": 23000
+        }
+      ]
+    }
+  ]
+}

@@ -39,6 +39,27 @@ var CASOS = [
     raw: raw('nuno-felipe-silva-paiva-2026-09-30.json'),
     blanco: blanco('2026-09/nuno-felipe-silva-paiva/2026-09-30'),
   },
+  {
+    nombre: 'pedro-fraga 2026-10-05 (AUTONOMO: km.vacio + idx acumulada Orember cargar:false)',
+    raw: raw('pedro-fraga-2026-10-05.json'),
+    blanco: blanco('2026-10/pedro-fraga/2026-10-05'),
+  },
+  {
+    nombre: 'manuel-sabaris 2026-10-13 (BRESFOR + BALTRANSA precio fijo UN + idx-0 + DIVERSEY)',
+    raw: raw('manuel-sabaris-2026-10-13.json'),
+    blanco: blanco('2026-10/manuel-sabaris/2026-10-13'),
+  },
+  {
+    nombre: 'jose-manuel-paz 2026-10-16 (DUOTRAILER: duo_secundario + km.cargar:false)',
+    raw: raw('jose-manuel-paz-2026-10-16.json'),
+    blanco: blanco('2026-10/jose-manuel-paz/2026-10-16'),
+    // Gaps de DATOS que Julio esta confirmando (no fallos del armador):
+    //  - idx FORESA-BRESFOR 2a quincena de octubre (carga 16/10) sin tramo cargado
+    //  - QUIMIDROGA Miranda->Braga 61,65 (viaje 3) no esta en tabla/analogia
+    gaps: ['viajes[0].albaranes[0].lineas.indexacion',
+           'viajes[1].albaranes[0].lineas.indexacion',
+           'viajes[2]'],
+  },
 ];
 
 // Quita recursivamente las claves que empiezan con "_" (anotaciones).
@@ -84,15 +105,24 @@ CASOS.forEach(function (caso) {
 
   var generado = limpiar({ empresa: res.orden.empresa, viajes: res.orden.viajes });
   var esperado = limpiar({ empresa: blanco.empresa, viajes: blanco.viajes });
-  var difs = diff(generado, esperado, '', []);
+  var todas = diff(generado, esperado, '', []);
+  // Separa gaps de DATOS conocidos (declarados en el caso) de fallos reales del armador.
+  var gaps = caso.gaps || [];
+  function esGap(ruta) { return gaps.some(function (g) { return ruta === g || ruta.indexOf(g + '.') === 0 || ruta.indexOf(g + '[') === 0; }); }
+  var difs = todas.filter(function (d) { return !esGap(d.split(':')[0]); });
+  var difsGap = todas.filter(function (d) { return esGap(d.split(':')[0]); });
 
   console.log('\n=== ' + caso.nombre + ' ===');
   if (res.avisos.length) { console.log('  avisos del armador: ' + res.avisos.length); res.avisos.forEach(function (a) { console.log('    · ' + a); }); }
+  if (difsGap.length) {
+    console.log('  ⏳ ' + difsGap.length + ' diferencia(s) por GAP DE DATOS conocido (no es fallo del armador):');
+    difsGap.forEach(function (d) { console.log('    · ' + d); });
+  }
   if (difs.length === 0) {
-    console.log('  ✅ EMPATA — el armador reprodujo el orden.json a mano (campos del contrato).');
+    console.log('  ✅ EMPATA' + (difsGap.length ? ' (salvo gaps de datos declarados)' : '') + ' — el armador reprodujo el orden.json a mano.');
   } else {
     fallos++;
-    console.log('  ❌ ' + difs.length + ' diferencia(s):');
+    console.log('  ❌ ' + difs.length + ' diferencia(s) REAL(es):');
     difs.forEach(function (d) { console.log('    · ' + d); });
   }
 });

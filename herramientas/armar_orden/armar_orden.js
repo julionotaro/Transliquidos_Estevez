@@ -139,7 +139,7 @@ function esIdxAcumulada(razonSocial, origenCanon, destinoCanon) {
 }
 
 // ---------- armado de un albaran ----------
-function armarAlbaran(raw, choferNacionalidad, deps, avisos) {
+function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
   var ctx = (raw.referencia || '?');
 
   // cliente: razon social para tarifa (clientes.js) + codigo/nombre Gesruta (clientes-gesruta.js)
@@ -156,12 +156,18 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos) {
   var cargaNom = String(raw.carga_lit || '').trim().toUpperCase();
   var codCarga = deps.materiales[cargaNom] || null;
 
-  // tarifa (usa el nombre resuelto; para la busqueda, el canonico si resolvio, si no el literal)
+  // PRECIO FIJO del documento (HELM/BALTRANSA/FORESTAL): um=UN, cantidad 1. Lo leo yo
+  // de la OC y lo paso en el raw; no sale de tarifario.
+  var precioFijo = (typeof raw.precio_fijo === 'number') ? raw.precio_fijo : null;
+  var esBaltransa = (codCli.codigo === '10') || (cruce.norm(esperadoCli).indexOf('BALTRANSA') >= 0);
+
   var reg = reglaConcepto(razon);
   var fIso = fechaISO(raw.salida);
-  var tar = resolverTarifa(razon, po.esperado, pd.esperado, cargaNom, fIso, deps);
+  var tar = (precioFijo === null)
+    ? resolverTarifa(razon, po.esperado, pd.esperado, cargaNom, fIso, deps)
+    : { precio: precioFijo, tipo: 'fijo', via: 'precio_fijo_OC', motivo: null };
 
-  // cantidad: minimo 23 TN (R-02)
+  // cantidad: minimo 23 TN (R-02); no aplica a precio fijo (um=UN, cantidad 1)
   var tonsReal = (typeof raw.peso_kg === 'number') ? raw.peso_kg / 1000 : null;
   var tons = (tonsReal !== null) ? Math.max(tonsReal, MINIMO_TN) : null;
 
@@ -172,6 +178,16 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos) {
   if (!codCarga) { avisos.push('[' + ctx + '] carga sin codigo: "' + raw.carga_lit + '"'); }
   if (tarifaPendiente) { avisos.push('[' + ctx + '] TARIFA PENDIENTE: ' + tar.motivo); }
 
+  var km = {
+    inicio: String(raw.km_inicio),
+    fin: String(raw.km_fin),
+    carga: String(raw.km_fin - raw.km_inicio),
+  };
+  // Autonomo: el vacio va explicito (sus km se cargan en Gastos). Lo leo de la ficha.
+  if (typeof raw.km_vacio === 'number') { km.vacio = String(raw.km_vacio); }
+  // Duotrailer 2a cisterna: el bot saltea el formulario de km (ya se cuenta en el lider).
+  if (duoSec) { km.cargar = false; }
+
   var alb = {
     cliente: { codigo: codCli.codigo, esperado: esperadoCli },
     origen: { codigo: po.codigo, esperado: po.esperado },
@@ -181,35 +197,32 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos) {
     salida: raw.salida,
     llegada: raw.llegada,
     lineas: { porte: null, indexacion: null },
-    km: {
-      inicio: String(raw.km_inicio),
-      fin: String(raw.km_fin),
-      carga: String(raw.km_fin - raw.km_inicio),
-    },
+    km: km,
     tarifa_pendiente: tarifaPendiente,
   };
 
   if (!tarifaPendiente) {
-    var porteImporte = tons * tar.precio;
-    alb.lineas.porte = {
-      um: 'TN',
-      cantidad: fmt(tons, 3),
-      precio: fmt(tar.precio, 2),
-      concepto_esperado: reg.concepto,
-      iva_esperado: reg.iva,
-    };
-    // indexacion por linea (acumulada -> cargar:false, para control de totales)
-    var grupo = idxMod.grupoIndexacion(razon).grupo;
-    var hit = idxMod.buscarPct(grupo, fIso, deps.indexacion);
-    if (hit && !hit.ambiguo && hit.pct != null) {
-      alb.lineas.indexacion = {
-        concepto: reg.idx,
-        cantidad: fmt(porteImporte, 2),
-        factor: fmt(hit.pct, 4),
-      };
-      if (esIdxAcumulada(razon, po.esperado, pd.esperado)) { alb.lineas.indexacion.cargar = false; }
+    var porteImporte;
+    if (precioFijo !== null) {
+      porteImporte = precioFijo;
+      alb.lineas.porte = { um: 'UN', cantidad: '1', precio: fmt(precioFijo, 2), concepto_esperado: reg.concepto, iva_esperado: reg.iva };
     } else {
-      avisos.push('[' + ctx + '] indexacion sin tramo vigente: ' + grupo + ' @ ' + fIso + (hit && hit.ambiguo ? ' (ambiguo)' : ''));
+      porteImporte = tons * tar.precio;
+      alb.lineas.porte = { um: 'TN', cantidad: fmt(tons, 3), precio: fmt(tar.precio, 2), concepto_esperado: reg.concepto, iva_esperado: reg.iva };
+    }
+    // BALTRANSA: linea de indexacion fija en cero (cantidad 1, factor 0) — regla R-04.
+    if (esBaltransa) {
+      alb.lineas.indexacion = { concepto: reg.idx, cantidad: '1', factor: '0' };
+    } else {
+      // indexacion por linea (acumulada -> cargar:false, para control de totales)
+      var grupo = idxMod.grupoIndexacion(razon).grupo;
+      var hit = idxMod.buscarPct(grupo, fIso, deps.indexacion);
+      if (hit && !hit.ambiguo && hit.pct != null) {
+        alb.lineas.indexacion = { concepto: reg.idx, cantidad: fmt(porteImporte, 2), factor: fmt(hit.pct, 4) };
+        if (esIdxAcumulada(razon, po.esperado, pd.esperado)) { alb.lineas.indexacion.cargar = false; }
+      } else {
+        avisos.push('[' + ctx + '] indexacion sin tramo vigente: ' + grupo + ' @ ' + fIso + (hit && hit.ambiguo ? ' (ambiguo)' : ''));
+      }
     }
   }
   return alb;
@@ -229,7 +242,7 @@ function armarOrden(raw, deps) {
     if (v.duo_secundario) { cabecera.duo_secundario = true; }
     return {
       cabecera: cabecera,
-      albaranes: (v.albaranes || []).map(function (a) { return armarAlbaran(a, nacionalidad, deps, avisos); }),
+      albaranes: (v.albaranes || []).map(function (a) { return armarAlbaran(a, nacionalidad, deps, avisos, !!v.duo_secundario); }),
     };
   });
   return { orden: { empresa: raw.empresa, viajes: viajes }, avisos: avisos };

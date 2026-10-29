@@ -48,12 +48,19 @@ confirmada**; concepto/IVA e indexación nacional (P/G) / internacional (PI/GPT)
 mínimo 23 TN; porte y formato ES. **Puntos solo con confianza alta** (si no, `null` +
 literal, revisar). Albaranes sin tarifa → `tarifa_pendiente` con `porte/indexacion: null`.
 
-**Golden-test verde (`node golden_test.js`)** contra 4 juegos:
-`jose-ramon-pineiro/2026-10-14`, `francisco-asensi/2026-10-05`,
-`manuel-sabaris/2026-10-02`, `nuno-felipe-silva-paiva/2026-09-30`.
+**Procedural (corrida 4):** duotrailer (`cabecera.duo_secundario` → `km.cargar:false`),
+autónomo (`km.vacio` explícito, los km van a Gastos), precio fijo del documento
+(`um=UN`, cantidad 1), BALTRANSA línea de indexación en cero (`cantidad:"1", factor:"0"`),
+DIVERSEY = punto de carga facturado a BALTRANSA (criterio humano en el raw).
 
-**No hace todavía** (corridas siguientes): leer la ficha (visión), elegir qué nombre de
-punto usar ante una dirección cruda o un destino sin tarifa (criterio humano por ahora),
-emitir las filas del libro maestro, y las reglas capa-3 **procedurales** (duotrailer,
-autónomo en Gastos, FORESTAL precio fijo con idx incluida, BALTRANSA idx-0,
-DIVERSEY→BALTRANSA). Cada una entra con su propio golden-test.
+**Golden-test verde (`node golden_test.js`)** contra 7 juegos:
+`jose-ramon-pineiro/2026-10-14`, `francisco-asensi/2026-10-05`,
+`manuel-sabaris/2026-10-02`, `nuno-felipe-silva-paiva/2026-09-30`,
+`pedro-fraga/2026-10-05`, `manuel-sabaris/2026-10-13`, y `jose-manuel-paz/2026-10-16`
+(duotrailer: estructura verde; difieren solo las líneas con **gaps de datos** aún sin
+confirmar — idx FORESA-BRESFOR 2ª quincena oct y QUIMIDROGA Miranda→Braga — declarados
+como `gaps` en el caso, no son fallos del armador).
+
+**No hace todavía:** leer la ficha (visión) y el criterio de qué punto/referencia usar
+(humano por ahora, por decisión de Julio); emitir las filas del libro maestro; y FORESTAL
+precio fijo con indexación INCLUIDA (sin línea G) — pendiente de un juego FORESTAL de prueba.

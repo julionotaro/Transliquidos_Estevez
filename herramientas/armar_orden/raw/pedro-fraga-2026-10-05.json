@@ -1,0 +1,99 @@
+{
+  "_nota": "HECHOS CRUDOS (corrida 4, procedural) reconstruidos del orden.json a mano. Para autonomo el km trae vacio (leido de la ficha); para precio fijo de la OC va um=UN + precio_fijo; el 2o viaje del duotrailer trae duo_secundario. Fuente: ordenes-carga/ordenes/2026-10/pedro-fraga/2026-10-05/orden.json",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-05",
+  "chofer": "PEDRO FRAGA",
+  "cabeza": "5358",
+  "viajes": [
+    {
+      "matricula": "5358KTF",
+      "remolque": "R8574BBC",
+      "albaranes": [
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "OREMBER",
+          "carga_lit": "COLA",
+          "referencia": "2029398",
+          "salida": "05/10/2026",
+          "llegada": "05/10/2026",
+          "km_inicio": 415513,
+          "km_fin": 415637,
+          "km_vacio": 123,
+          "peso_kg": 24320
+        },
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "OREMBER",
+          "carga_lit": "COLA",
+          "referencia": "2029388",
+          "salida": "05/10/2026",
+          "llegada": "05/10/2026",
+          "km_inicio": 415759,
+          "km_fin": 415882,
+          "km_vacio": 124,
+          "peso_kg": 24740
+        }
+      ]
+    },
+    {
+      "matricula": "5358KTF",
+      "remolque": "R3487BCD",
+      "albaranes": [
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "OREMBER",
+          "carga_lit": "COLA",
+          "referencia": "2029393",
+          "salida": "06/10/2026",
+          "llegada": "06/10/2026",
+          "km_inicio": 416002,
+          "km_fin": 416126,
+          "km_vacio": 123,
+          "peso_kg": 25780
+        },
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "OREMBER",
+          "carga_lit": "COLA",
+          "referencia": "2029384",
+          "salida": "06/10/2026",
+          "llegada": "06/10/2026",
+          "km_inicio": 416254,
+          "km_fin": 416377,
+          "km_vacio": 124,
+          "peso_kg": 25640
+        },
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "OREMBER",
+          "carga_lit": "COLA",
+          "referencia": "2029397",
+          "salida": "08/10/2026",
+          "llegada": "09/10/2026",
+          "km_inicio": 416454,
+          "km_fin": 416578,
+          "km_vacio": 123,
+          "peso_kg": 26240
+        },
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "OREMBER",
+          "carga_lit": "COLA",
+          "referencia": "2031077",
+          "salida": "09/10/2026",
+          "llegada": "09/10/2026",
+          "km_inicio": 416711,
+          "km_fin": 416834,
+          "km_vacio": 124,
+          "peso_kg": 25780
+        }
+      ]
+    }
+  ]
+}
