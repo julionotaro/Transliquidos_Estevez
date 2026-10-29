@@ -1,0 +1,51 @@
+{
+  "_nota": "HECHOS CRUDOS reconstruidos del orden.json a mano (blanco del golden-test corrida 3). destino_lit = nombre del punto que porta la tarifa ya elegido por el humano; peso_kg = cantidad*1000 (viajes >23 TN, sin minimo). Fuente: ordenes-carga/ordenes/2026-10/francisco-asensi/2026-10-05/orden.json",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-05",
+  "chofer": "FRANCISCO ASENSI",
+  "cabeza": "2498",
+  "viajes": [
+    {
+      "matricula": "2498KZL",
+      "remolque": "R1007BCV",
+      "albaranes": [
+        {
+          "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "5050141127",
+          "salida": "05/10/2026",
+          "llegada": "06/10/2026",
+          "km_inicio": 876455,
+          "km_fin": 877332,
+          "peso_kg": 23840
+        },
+        {
+          "cliente_lit": "QUIMIDROGA, S.A.",
+          "origen_lit": "BARCELONA",
+          "destino_lit": "BEGONTE",
+          "carga_lit": "SALMO-GAL",
+          "referencia": "710690",
+          "salida": "07/10/2026",
+          "llegada": "09/10/2026",
+          "km_inicio": 877797,
+          "km_fin": 878840,
+          "peso_kg": 23840
+        },
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "2029451",
+          "salida": "09/10/2026",
+          "llegada": "10/10/2026",
+          "km_inicio": 878975,
+          "km_fin": 879900,
+          "peso_kg": 23740
+        }
+      ]
+    }
+  ]
+}

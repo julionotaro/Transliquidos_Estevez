@@ -1,0 +1,50 @@
+{
+  "_nota": "HECHOS CRUDOS reconstruidos del orden.json a mano (blanco del golden-test corrida 3). destino_lit = nombre del punto que porta la tarifa ya elegido por el humano; peso_kg = cantidad*1000 (viajes >23 TN, sin minimo). Fuente: ordenes-carga/ordenes/2026-10/manuel-sabaris/2026-10-02/orden.json",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-02",
+  "chofer": "MANUEL SABARIS",
+  "cabeza": "2256",
+  "viajes": [
+    {
+      "matricula": "2256JYX",
+      "remolque": "PO02194R",
+      "albaranes": [
+        {
+          "cliente_lit": "QUIMIDROGA, S.A.",
+          "origen_lit": "BARCELONA",
+          "destino_lit": "ORENSE",
+          "carga_lit": "VINKA-PLAST",
+          "referencia": "710297",
+          "salida": "02/10/2026",
+          "llegada": "05/10/2026",
+          "km_inicio": 1164410,
+          "km_fin": 1165494,
+          "peso_kg": 23820
+        },
+        {
+          "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "5050141131",
+          "salida": "06/10/2026",
+          "llegada": "07/10/2026",
+          "km_inicio": 1165804,
+          "km_fin": 1166647,
+          "peso_kg": 23440
+        },
+        {
+          "cliente_lit": "ARACHEM, S.A.",
+          "origen_lit": "BILBAO",
+          "destino_lit": "ALENQUER",
+          "carga_lit": "COLA",
+          "referencia": "261012",
+          "salida": "08/10/2026",
+          "llegada": "09/10/2026",
+          "km_inicio": 1167142,
+          "km_fin": 1167989
+        }
+      ]
+    }
+  ]
+}

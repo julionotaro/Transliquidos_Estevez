@@ -39,14 +39,21 @@ Por viaje: `matricula`, `remolque` (+ `duo_secundario` si aplica). Por albarán:
 > humano (p.ej. CURIA SPAIN → `VALLADOLID`). La tarifa de un destino sin fila propia
 > (p.ej. `COGERSA`) la resuelve el armador por analogía confirmada (→ ASTURIAS).
 
-## Alcance de esta corrida (deliberado)
+## Alcance (deliberado)
 
-**Hace** (determinístico): códigos cliente/punto/material, tarifa (tabla + analogía
-confirmada), concepto/IVA e indexación nacional/internacional, mínimo 23 TN, porte y
-formato ES. **Golden-test verde** contra `jose-ramon-pineiro/2026-10-14`.
+**Hace** (determinístico): códigos cliente/punto/material; tarifa por **tabla
+(desambiguada por material)**, **tarifario propio de RNM (€/TN)** y **analogía
+confirmada**; concepto/IVA e indexación nacional (P/G) / internacional (PI/GPT);
+**indexación acumulada** (`cargar:false`) para FORESA Orember / Villagarcía→Caldas metanol;
+mínimo 23 TN; porte y formato ES. **Puntos solo con confianza alta** (si no, `null` +
+literal, revisar). Albaranes sin tarifa → `tarifa_pendiente` con `porte/indexacion: null`.
+
+**Golden-test verde (`node golden_test.js`)** contra 4 juegos:
+`jose-ramon-pineiro/2026-10-14`, `francisco-asensi/2026-10-05`,
+`manuel-sabaris/2026-10-02`, `nuno-felipe-silva-paiva/2026-09-30`.
 
 **No hace todavía** (corridas siguientes): leer la ficha (visión), elegir qué nombre de
 punto usar ante una dirección cruda o un destino sin tarifa (criterio humano por ahora),
-emitir las filas del libro maestro, y las reglas capa-3 procedurales (duotrailer,
+emitir las filas del libro maestro, y las reglas capa-3 **procedurales** (duotrailer,
 autónomo en Gastos, FORESTAL precio fijo con idx incluida, BALTRANSA idx-0,
 DIVERSEY→BALTRANSA). Cada una entra con su propio golden-test.

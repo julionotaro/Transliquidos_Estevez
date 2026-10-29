@@ -129,6 +129,31 @@ Gastos, FORESTAL fijo, BALTRANSA idx-0, DIVERSEY→BALTRANSA) va en corrida 4.
 
 ---
 
+## Corrida 3 — resultado (29/10/2026) ✅
+
+**Golden-test verde contra 4 juegos** (`node herramientas/armar_orden/golden_test.js`):
+pineiro + **asensi**, **manuel-sabaris/02** y **nuno** — todos reproducen el `orden.json`
+a mano idéntico. Reglas nuevas encodeadas y verificadas:
+
+- **Tarifa desambiguada por material:** FORESA Caldas→Orember COLA 13,85 (no FINCAT 20,16).
+- **Tarifario propio de RNM (€/TN):** RNM Aveiro→Pontevedra 19,26 €/TN (no el €/viaje de la tabla).
+- **Indexación acumulada (`cargar:false`):** FORESA Orember / Villagarcía→Caldas metanol.
+- **Analogía confirmada:** QUIMIDROGA Barcelona→Begonte → LUGO 74,73.
+- **Concepto/IVA internacional:** BRESFOR y RNM → PI/0/GPT; nacional → P/21/G.
+- **Puntos solo con confianza alta:** Montehermoso (dirección que menciona Cáceres) NO se
+  resuelve a ciegas → `codigo:null` + literal, `tarifa_pendiente`. Igual que a mano.
+- **Albarán sin tarifa** (ARACHEM, Montehermoso) → `tarifa_pendiente` con `porte/indexacion:null`.
+
+**Dato agregado al catálogo:** `TERUEL`→`TE` faltaba en `catalogo/puntos-alta.json` (estaba
+en el CSV de puntos pero no en el curado); agregado (confirmado Julio: Teruel porta la tarifa).
+
+**Hallazgos para corrida 4 (procedural):** duotrailer, autónomo en Gastos (km.vacío),
+FORESTAL precio fijo con idx incluida, BALTRANSA idx-0, DIVERSEY→BALTRANSA. Y pendiente de
+visión real de ficha: la resolución de puntos desde direcciones crudas (hoy el `raw` trae el
+nombre del punto ya elegido por el humano).
+
+---
+
 ## Acción inmediata (no depende del armador)
 
 Los gaps 1 y 2 de Capa 2 hay que cerrarlos **igual, con o sin armador**:

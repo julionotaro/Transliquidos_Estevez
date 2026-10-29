@@ -73,6 +73,15 @@ function cargarAnalogiasConfirmadas() {
   return (j.candidatos || []).filter(function (c) { return c.confirmado === true; });
 }
 
+/** Tarifario propio de RNM: {origen, destino, eur_viaje, eur_tn}. RNM factura por EUR/TN. */
+function cargarTarifarioRNM() {
+  var txt = fs.readFileSync(p('datos/gesruta/tarifarios/tarifario-RNM-2026.csv'), 'utf8');
+  var filas = parseCsv(txt); // cabecera: origen;destino;eur_viaje;eur_tn
+  return filas.map(function (r) {
+    return { origen: r.origen, destino: r.destino, eur_viaje: r.eur_viaje, eur_tn: r.eur_tn };
+  });
+}
+
 module.exports = {
   ROOT: ROOT,
   cargarTarifas: cargarTarifas,
@@ -80,4 +89,5 @@ module.exports = {
   cargarPuntos: cargarPuntos,
   cargarMateriales: cargarMateriales,
   cargarAnalogiasConfirmadas: cargarAnalogiasConfirmadas,
+  cargarTarifarioRNM: cargarTarifarioRNM,
 };

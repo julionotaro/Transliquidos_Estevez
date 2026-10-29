@@ -12,13 +12,32 @@
 var fs = require('fs');
 var path = require('path');
 var armador = require('./armar_orden.js');
+var ROOT = require('./lib/datos.js').ROOT;
+
+function raw(f) { return path.join(__dirname, 'raw', f); }
+function blanco(rel) { return path.join(ROOT, 'ordenes-carga/ordenes', rel, 'orden.json'); }
 
 // Casos: raw de entrada -> orden.json hecho a mano (blanco).
 var CASOS = [
   {
-    nombre: 'jose-ramon-pineiro 2026-10-14 (2 albaranes FORESA nacional)',
-    raw: path.join(__dirname, 'raw', 'jose-ramon-pineiro-2026-10-14.json'),
-    blanco: path.join(armador.cargarDeps ? require('./lib/datos.js').ROOT : '.', 'ordenes-carga/ordenes/2026-10/jose-ramon-pineiro/2026-10-14/orden.json'),
+    nombre: 'jose-ramon-pineiro 2026-10-14 (FORESA nacional; cascada analogia + minimo 23)',
+    raw: raw('jose-ramon-pineiro-2026-10-14.json'),
+    blanco: blanco('2026-10/jose-ramon-pineiro/2026-10-14'),
+  },
+  {
+    nombre: 'francisco-asensi 2026-10-05 (BRESFOR PI/Teruel + QUIMIDROGA analogia Begonte + FORESA Teruel)',
+    raw: raw('francisco-asensi-2026-10-05.json'),
+    blanco: blanco('2026-10/francisco-asensi/2026-10-05'),
+  },
+  {
+    nombre: 'manuel-sabaris 2026-10-02 (QUIMIDROGA + BRESFOR + ARACHEM tarifa_pendiente)',
+    raw: raw('manuel-sabaris-2026-10-02.json'),
+    blanco: blanco('2026-10/manuel-sabaris/2026-10-02'),
+  },
+  {
+    nombre: 'nuno-felipe-silva-paiva 2026-09-30 (RNM EUR/TN + FORESA idx acumulada + ruta pendiente)',
+    raw: raw('nuno-felipe-silva-paiva-2026-09-30.json'),
+    blanco: blanco('2026-09/nuno-felipe-silva-paiva/2026-09-30'),
   },
 ];
 

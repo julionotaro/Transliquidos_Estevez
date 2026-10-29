@@ -1,0 +1,50 @@
+{
+  "_nota": "HECHOS CRUDOS reconstruidos del orden.json a mano (blanco del golden-test corrida 3). destino_lit = nombre del punto que porta la tarifa ya elegido por el humano; peso_kg = cantidad*1000 (viajes >23 TN, sin minimo). Fuente: ordenes-carga/ordenes/2026-09/nuno-felipe-silva-paiva/2026-09-30/orden.json",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-09-30",
+  "chofer": "NUNO FELIPE SILVA PAIVA",
+  "cabeza": "8504",
+  "viajes": [
+    {
+      "matricula": "8504KDR",
+      "remolque": "R4905BDF",
+      "albaranes": [
+        {
+          "cliente_lit": "RNM TRANSPORTES QUIMICOS, LDA",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "PONTEVEDRA",
+          "carga_lit": "SOSA",
+          "referencia": "0141169643",
+          "salida": "30/09/2026",
+          "llegada": "02/10/2026",
+          "km_inicio": 4252,
+          "km_fin": 4548,
+          "peso_kg": 24240
+        },
+        {
+          "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "OREMBER",
+          "carga_lit": "COLA",
+          "referencia": "2027312",
+          "salida": "01/10/2026",
+          "llegada": "01/10/2026",
+          "km_inicio": 4569,
+          "km_fin": 4693,
+          "peso_kg": 24640
+        },
+        {
+          "cliente_lit": "RNM TRANSPORTES QUIMICOS, LDA",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "MONTEHERMOSO / CACERES (Acenorca)",
+          "carga_lit": "SOSA",
+          "referencia": "0941027205",
+          "salida": "05/10/2026",
+          "llegada": "06/10/2026",
+          "km_inicio": 5136,
+          "km_fin": 5604
+        }
+      ]
+    }
+  ]
+}
