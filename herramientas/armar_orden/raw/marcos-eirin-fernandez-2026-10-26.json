@@ -9,12 +9,12 @@
       "matricula": "3729JLH",
       "remolque": "R7749BDB",
       "albaranes": [
-        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2034362", "salida": "26/10/2026", "llegada": "26/10/2026", "peso_kg": 25040, "km_inicio": 1076101, "km_fin": 1076225 },
+        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2034362", "salida": "26/10/2026", "llegada": "26/10/2026", "peso_kg": 25040, "km_inicio": 1076101, "km_fin": 1076225 },
         { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2034376", "salida": "26/10/2026", "llegada": "26/10/2026", "peso_kg": 25120, "km_inicio": 1076349, "km_fin": 1076473 },
-        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2034363", "salida": "27/10/2026", "llegada": "27/10/2026", "peso_kg": 25060, "km_inicio": 1076597, "km_fin": 1076721 },
+        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2034363", "salida": "27/10/2026", "llegada": "27/10/2026", "peso_kg": 25060, "km_inicio": 1076597, "km_fin": 1076721 },
         { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2034369", "salida": "28/10/2026", "llegada": "28/10/2026", "peso_kg": 25200, "km_inicio": 1076845, "km_fin": 1076969 },
         { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2034370", "salida": "29/10/2026", "llegada": "29/10/2026", "peso_kg": 25120, "km_inicio": 1077118, "km_fin": 1077242 },
-        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2034361", "salida": "30/10/2026", "llegada": "30/10/2026", "peso_kg": 25260, "km_inicio": 1077366, "km_fin": 1077490 }
+        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2034361", "salida": "30/10/2026", "llegada": "30/10/2026", "peso_kg": 25260, "km_inicio": 1077366, "km_fin": 1077490 }
       ]
     }
   ]
