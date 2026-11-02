@@ -1,7 +1,7 @@
 # ÍNDICE — Documentación TLE
 
 > **Leer esto primero, siempre.** No hace falta leer todo lo demás: hace falta saber qué existe y dónde está cada cosa.
-> Última actualización: 29/10/2026.
+> Última actualización: 02/11/2026.
 
 ---
 
@@ -98,6 +98,7 @@ extracción concretas.
 | `ordenes-carga/CONTRATO-resultado-json.md` | **CONTRATO DE SALIDA** del bot: qué escribe al terminar una carga (Nº viaje/albarán + estado por albarán) para cerrar el loop al libro maestro. Espejo del contrato de entrada | Al tocar el cierre del loop o el bot | **VIGENTE** |
 | `arquitectura-y-evolucion.md` | **ARQUITECTURA Y EVOLUCIÓN.** Roles/herramientas, el flujo (extracción→orden.json→bot→resultado.json→registro), estado del bot v1, y el plan prueba→pro. Clave: el juego es DATO, el bot es fijo; todo vive en git (resiliente a compresión) | Al planear el bot o el flujo, o si se pierde contexto | **VIGENTE** |
 | `referencia-dominio-n8n.md` | **MAPA DE LA ETAPA n8n.** Qué hay en las carpetas heredadas y qué sirve: lo ya cosechado (flota, autónomos, idx acumulada, rutas-sin-tarifa), lo útil sin cosechar, y la plomería muerta a archivar | Al decidir qué archivar o buscar dato de dominio | **VIGENTE** |
+| `reglas-extraccion-revision.md` | **REVISIÓN EXHAUSTIVA DE REGLAS (02/11).** Checklist que previene los errores de las últimas jornadas: (A) reglas que debían estar claras y fallaron —IVA por nacionalidad, matrícula manda sobre la letra (cruce flota), leer TODO/OC manda, material define tarifa (FINCAT≠COLA), referencia por cliente, destino=punto con tarifa, idx por fecha de carga—; (B) nuevas/reforzadas —mínimo 23 por modo de facturación, "tarifa por km" (pendiente), modalidades de precio, idx línea/acumulada/cero—; (C) checklist operativo paso a paso. Repaso humano; la fuente operativa sigue siendo `correcciones-julio.json` | Antes de procesar un juego, como repaso rápido de los errores a no repetir | **VIGENTE** |
 | `resolvedor-orden-cobertura.md` | **MAPA DE COBERTURA DEL ARMADOR (Corrida 1).** Qué parte del armado de `orden.json` ya existe en los módulos (`ficha/*.js`, `catalogo/*.js`), qué datos están al día (tarifas/indexación) y qué reglas faltan encodear. Insumo para decidir si construir el resolvedor de etapa 1 y en qué orden. Incluye los 3 gaps de datos concretos | Al evaluar/construir el armador de `orden.json` | **VIGENTE (análisis)** |
 | `catalogo/flota.json` | Padrón de flota (31 tractoras → remolque → chofer + tipo propio/autónomo). Para verificar cabecera | Al procesar un juego o dudar de una matrícula | **VIGENTE** |
 | `dominio-facturacion.md` | Dominio del negocio (ingesta→cruce→validación→facturación), de catálogos reales de Gesruta + facturas (2026-08) | Base de negocio; consultar al tocar facturación | **VIGENTE (denso)** |
@@ -142,9 +143,9 @@ Estas decisiones **mandan sobre cualquier documento** que diga lo contrario.
 **R-01 — Fecha de carga: manda la FICHA DEL CHÓFER.**
 Es la **excepción** al principio general de §4 del modelo de dominio (donde el documento impreso manda sobre la ficha). Para la fecha de carga, y solo para ella, prevalece lo que escribió el chófer. El resto (cliente, peso, material, matrícula) sigue mandando el documento.
 
-**R-02 — Mínimo facturable: 23 toneladas SIEMPRE.**
+**R-02 — Mínimo facturable: 23 toneladas en líneas facturadas POR PESO.**
 Si el peso real es menor a 23 t, se factura 23 t. Sin excepciones por cliente.
-*Precisión a confirmar con Julio si alguna vez aplica:* el mínimo se evalúa sobre la **línea facturada**, no sobre cada rotación individual. En Foresa metanol las líneas diarias agregan 26-159 t, con lo cual el mínimo nunca llega a activarse en la práctica.
+*Precisión confirmada por Julio (02/11/2026):* el mínimo vive en la **línea facturada por peso** (modo €/TN, um=TN). **No aplica** a viajes de **precio fijo por viaje** (um=UN, cantidad 1: Baltransa, Forestal, Helm con precio cerrado), que facturan 1 unidad y no tienen tonelaje que redondear. El "sin excepciones por cliente" significa que ningún cliente queda exento en sus líneas por peso, no que se fuerce tonelaje en líneas um=UN. *(Ya conocida la nota previa:)* se evalúa sobre la línea facturada, no sobre cada rotación individual (Foresa metanol agrega 26-159 t/día). **Pendiente aparte:** si el mínimo corre también en viajes facturados **por km** (ver Pendientes de dominio) — sin confirmar. Detalle: `reglas-extraccion-revision.md` §B1-B2.
 
 **R-03 — El documento de Baltransa se titula "ORDEN DE CARGA", igual que Quimidroga y otros.**
 El clasificador de documentos debe reconocer "ORDEN DE CARGA" como orden. No asumir que "Orden de Transporte" es el único título posible.
@@ -223,6 +224,10 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 
 ## Pendientes de dominio (preguntas abiertas para Julio)
 
+- **"Tarifa por km" (02/11):** Julio nombró un modo de facturación por km junto al mínimo de 23. Falta confirmar: (a) si el mínimo de 23 TN corre también en km; (b) el €/km; (c) qué viajes se facturan por km (¿solo autónomos? ¿algún cliente?). Hasta confirmarlo, esos casos se marcan, no se inventan. Detalle: `reglas-extraccion-revision.md` §B2.
+- **Tarifa COMATRA El Copero (Sevilla)→Sanchidrián (Ávila) SOSA (02/11):** sin tarifa; cierra alb2 de Manuel Aboy (juego 155910), hoy `tarifa_pendiente`.
+- **Referencias definitivas (02/11):** Carlos Abalo (provisoria 260032) y Manuel Aboy alb1 Bio-Oils (provisoria = pedido 4500002523) — pendientes del Nº definitivo.
+- **Ficha de Miguel Pires (154647):** no escaneada; Julio la agrega. El juego se procesó con lo disponible (ficha + CMR + OC).
 - Baltransa: ¿de qué documento sale el peso?
 - Tarifa Quimidroga Barcelona→Leiria (no figura en el tarifario 2026)
 - Tarifa Foresa 2026 oficial (la cargada es de 2025)

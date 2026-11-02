@@ -165,6 +165,16 @@
       "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "lectura/cruce (metodo, NO negociable)",
       "regla": "La LECTURA es la parte vital: si el dato entra mal, todo sale mal. (1) Leer TODOS los documentos del juego -ficha + OC + albaranes-, nunca un subconjunto: la OC MANDA en cliente y destino, la ficha confirma km/fechas, el albaran da referencia/peso. (2) CRUZAR cada campo contra las tablas antes de armar: matricula de la tractora -> chofer + remolque + tipo propio/autonomo en flota.json (la matricula es la verdad, NO la letra manuscrita); cliente/destino -> clientes/puntos; material -> materiales. (3) El armador (herramientas/armar_orden) hace solo el CALCULO determinista; NO reemplaza la lectura ni justifica leer menos para ahorrar tokens. Errores reales que esto evita (lote 02/11): ABAL vs ABALO (autonomo vs propio), Alcoy vs Aboy, 3 vs 8 y 4716 vs 4916 en matriculas, Mindelo vs Leiria (destino real de la OC), Servitrade vs Comatra (cliente real de la OC). El armador ya deriva la cabecera por matricula via flota y avisa si la lectura no coincide.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "concepto/iva (nacionalidad)",
+      "regla": "El CONCEPTO de porte y el IVA responden a la NACIONALIDAD DEL CLIENTE al que se factura, NO al origen ni al destino del viaje. Cliente PORTUGUES (RNM, BRESFOR, cualquier 'Lda'/'Lda.') => PI (PORTES INTERNACIONALES), IVA 0, indexacion GPT, aunque el viaje sea dentro de Espana. Cliente ESPANOL (Quimidroga, Helm, Baltransa, Comatra, Foresa, Forestal) => P (PORTES NACIONALES), IVA 21, indexacion G, aunque descargue en Portugal (ej Quimidroga->Leiria, Baltransa->Mindelo/Oporto, Helm->PT = P/21). Excepcion ya conocida que confirma la regla: HELM es espanola -> nacional 21 incluso a Portugal. NO volver a preguntar el IVA de un cliente ya clasificado por nacionalidad (error visto: se pregunto el IVA de Baltransa->Portugal). El armador lo resuelve en reglaConcepto() por razon social.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "cantidad/minimo (modo)",
+      "regla": "Precision de R-02 (minimo 23 TN). El minimo facturable de 23,000 TN aplica a la LINEA FACTURADA POR PESO (modo EUR/TN, um=TN): si el peso real < 23 TN se factura 23,000. NO aplica a viajes de PRECIO FIJO POR VIAJE (um=UN, cantidad 1: Baltransa, Forestal, Helm con precio cerrado, etc.), porque ahi se factura 1 unidad y no hay tonelaje que redondear. El 'SIEMPRE / sin excepciones por cliente' de R-02 se refiere a que ningun cliente queda exento del minimo en sus lineas por peso, no a forzar tonelaje en lineas um=UN. El armador ya aplica el minimo solo en el modo EUR/TN. PENDIENTE separado (ver docs/reglas-extraccion-revision.md B2 y pendientes del indice): si el minimo corre tambien en viajes facturados POR KM -lo que Julio nombro como 'tarifa por km'- esta SIN confirmar; esos casos se marcan, no se inventan.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {
