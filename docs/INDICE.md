@@ -145,7 +145,7 @@ Es la **excepción** al principio general de §4 del modelo de dominio (donde el
 
 **R-02 — Mínimo facturable: 23 toneladas en líneas facturadas POR PESO.**
 Si el peso real es menor a 23 t, se factura 23 t. Sin excepciones por cliente.
-*Precisión confirmada por Julio (02/11/2026):* el mínimo vive en la **línea facturada por peso** (modo €/TN, um=TN). **No aplica** a viajes de **precio fijo por viaje** (um=UN, cantidad 1: Baltransa, Forestal, Helm con precio cerrado), que facturan 1 unidad y no tienen tonelaje que redondear. El "sin excepciones por cliente" significa que ningún cliente queda exento en sus líneas por peso, no que se fuerce tonelaje en líneas um=UN. *(Ya conocida la nota previa:)* se evalúa sobre la línea facturada, no sobre cada rotación individual (Foresa metanol agrega 26-159 t/día). **Pendiente aparte:** si el mínimo corre también en viajes facturados **por km** (ver Pendientes de dominio) — sin confirmar. Detalle: `reglas-extraccion-revision.md` §B1-B2.
+*Precisión confirmada por Julio (02/11/2026):* el mínimo vive en la **línea facturada por peso** (modo €/TN, um=TN). **No aplica** a viajes de **precio fijo por viaje** (um=UN, cantidad 1: Baltransa, Forestal, Helm con precio cerrado), que facturan 1 unidad y no tienen tonelaje que redondear. El "sin excepciones por cliente" significa que ningún cliente queda exento en sus líneas por peso, no que se fuerce tonelaje en líneas um=UN. *(Ya conocida la nota previa:)* se evalúa sobre la línea facturada, no sobre cada rotación individual (Foresa metanol agrega 26-159 t/día). *(Julio lo enunció como "por peso y tarifa €/TN"; no existe facturación por km.)* Detalle: `reglas-extraccion-revision.md` §B1-B2.
 
 **R-03 — El documento de Baltransa se titula "ORDEN DE CARGA", igual que Quimidroga y otros.**
 El clasificador de documentos debe reconocer "ORDEN DE CARGA" como orden. No asumir que "Orden de Transporte" es el único título posible.
@@ -224,7 +224,6 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 
 ## Pendientes de dominio (preguntas abiertas para Julio)
 
-- **"Tarifa por km" (02/11):** Julio nombró un modo de facturación por km junto al mínimo de 23. Falta confirmar: (a) si el mínimo de 23 TN corre también en km; (b) el €/km; (c) qué viajes se facturan por km (¿solo autónomos? ¿algún cliente?). Hasta confirmarlo, esos casos se marcan, no se inventan. Detalle: `reglas-extraccion-revision.md` §B2.
 - **Tarifa COMATRA El Copero (Sevilla)→Sanchidrián (Ávila) SOSA (02/11):** sin tarifa; cierra alb2 de Manuel Aboy (juego 155910), hoy `tarifa_pendiente`.
 - **Referencias definitivas (02/11):** Carlos Abalo (provisoria 260032) y Manuel Aboy alb1 Bio-Oils (provisoria = pedido 4500002523) — pendientes del Nº definitivo.
 - **Ficha de Miguel Pires (154647):** no escaneada; Julio la agrega. El juego se procesó con lo disponible (ficha + CMR + OC).

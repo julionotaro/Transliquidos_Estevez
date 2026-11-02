@@ -87,31 +87,26 @@ El factor sale de la quincena de la **fecha de carga** del albarán, no de "el m
   mínimo vive en la **línea facturada por peso**; una línea um=UN no tiene tonelaje que redondear.
 - El armador ya lo hace: aplica el mínimo solo en el modo €/TN. → **explícito** en correcciones.
 
-### B2. **"Tarifa por km"** — [PENDIENTE de precisar con Julio]
-Julio nombró esto junto al mínimo de 23 ("viajes facturables por peso **y tarifa por km**"). Su frase
-admite dos lecturas y **no la resuelvo por mi cuenta** (regla del repo: parar y reportar):
-1. que el mínimo de 23 TN aplique **también** a los viajes de tarifa por km, o
-2. que "tarifa por km" sea un **modo de facturación aparte** (ni €/TN ni precio fijo).
+### B2. **Modalidades de precio del porte** (elegir la correcta según la OC)
+Solo hay **dos** formas de facturar el porte al cliente:
+1. **€/TN** (um=TN, cantidad = toneladas): con **mínimo 23** (B1). La mayoría de los viajes.
+2. **€/viaje fijo** (um=UN, cantidad 1): Baltransa, Forestal, Helm cuando la OC trae precio
+   cerrado. **Sin mínimo** (no hay línea de tonelaje que redondear).
 
-Lo único cercano hoy implementado es el **autónomo**: sus km van en **Gastos** (conceptos
-**KILOMETROS** / **KILOMETROS EN VACIO**), no como línea de porte. **FALTA CONFIRMAR con Julio:**
-(a) si el mínimo 23 corre o no en km; (b) el **€/km** a aplicar; (c) qué viajes se facturan por km
-(¿solo autónomos? ¿algún cliente?). Hasta tenerlo, estos casos **se marcan y no se inventan**.
-→ queda en **Pendientes de dominio** del índice, NO como regla confirmada.
+> **Aclaración de Julio (02/11):** cuando dijo "mínimo 23.000 en viajes facturables **por peso y
+> tarifa por €/TN**" se refería a **esta** modalidad €/TN — escribir "km" fue un lapsus. **No existe
+> una "tarifa por km"** de facturación al cliente. Los **km del autónomo** son otra cosa: van como
+> **GASTO** (conceptos KILOMETROS / KILOMETROS EN VACIO, la forma en que TLE le paga al autónomo),
+> no como porte ni como tarifa al cliente — ver regla `chofer_tipo/kilometros` (16/10) en
+> `correcciones-julio.json`.
 
-### B3. **Modalidades de precio** (elegir la correcta según la OC)
-1. **€/TN** (um=TN): con **mínimo 23**. La mayoría.
-2. **€/viaje fijo** (um=UN, cantidad 1): Baltransa, Forestal, Helm cuando la OC trae precio cerrado.
-   **Sin mínimo.**
-3. **€/km** (Gastos): autónomos / [pendiente B2].
-
-### B4. **Indexación: línea vs acumulada vs cero**
+### B3. **Indexación: línea vs acumulada vs cero**
 - **Línea normal:** concepto **G** (nacional) / **GPT** (internacional), factor de la quincena sobre el porte.
 - **ACUMULADA (`cargar:false`):** FORESA destino **Orember** y **Villagarcía→Caldas metanol** — el
   importe se calcula y guarda para control de totales, pero **no** se carga línea por albarán.
 - **BALTRANSA:** línea de indexación en **cero** (cantidad 1, factor 0).
 
-### B5. Recordatorios de flujo
+### B4. Recordatorios de flujo
 - **Duotrailer:** una tractora, 2 cisternas, mismo viaje físico → 2 viajes en Gesruta; el 2º lleva
   `cabecera.duo_secundario` + `km.cargar:false` (km, dietas y gastos una sola vez).
 - **Autónomo:** sin viáticos; km en Gastos (`km.vacio` explícito en la orden). Hoy: Fraga, Alfonsín, Abal.
@@ -126,9 +121,9 @@ Lo único cercano hoy implementado es el **autónomo**: sus km van en **Gastos**
 3. **Cliente** por la OC (TEPSA/Diversey/Sevitrade ≠ cliente). **IVA por nacionalidad** (A1).
 4. **Destino** = el punto con tarifa (A6). **Referencia** según el cliente (A5).
 5. **Material** → código correcto; ojo FINCAT vs COLA (A4).
-6. **Tarifa**: tabla (desambiguada por material) → confirmada-Julio → analogía. Modalidad de precio (B3).
+6. **Tarifa**: tabla (desambiguada por material) → confirmada-Julio → analogía. Modalidad de precio (B2).
 7. **Cantidad**: si €/TN y peso < 23 → **23,000** (B1).
-8. **Indexación**: factor por **fecha de carga** (A7); acumulada/cero según corresponda (B4).
+8. **Indexación**: factor por **fecha de carga** (A7); acumulada/cero según corresponda (B3).
 9. **Agrupar viajes por viáticos** por hoja (A8).
 10. **Registro**: sin `;` en observaciones. Correr `validar_carga.py` antes de commitear.
 
