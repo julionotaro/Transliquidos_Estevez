@@ -572,7 +572,13 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     km=alb.get("km",{}) or {}; tarifa_pend=bool(alb.get("tarifa_pendiente"))
 
     ensure_ges()
-    if find_dialog()[0]: log("  ABORTO: dialogo abierto antes de cabecera: %r"%(find_dialog()[1],)); return False
+    # Avisos de Gesruta (certificado caducado, "N aviso(s)", "Atencion...") NUNCA frenan la carga:
+    # si quedo alguno abierto al entrar al albaran, se DESPEJA y se sigue. (Julio 2026-11-02: "ante
+    # todos los avisos que aparezcan, cerrar y seguir; no hay aviso que deba frenar".) wait_and_close
+    # cierra varios encolados hasta que no queda ninguno (Esc/WM_CLOSE/Enter).
+    if find_dialog()[0]:
+        log("  aviso(s) al entrar al albaran: %r -> despejo y sigo"%(find_dialog()[1],))
+        wait_and_close(4.0, "pre-cabecera")
 
     # ---- CABECERA ----
     if ref:     field(C_REFE, ref, "Refe")

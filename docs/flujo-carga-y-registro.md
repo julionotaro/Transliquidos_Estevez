@@ -51,6 +51,14 @@ aviso de conversión cuando no hay líneas → el albarán **queda Pedido** sin 
 `handle_pedido_dialogs` queda como defensa: si en algún caso el aviso de convertir sí aparece,
 responde **No** (deja Pedido); si no aparece, no hace nada.
 
+## Avisos del cliente durante la carga
+
+**Regla (Julio 02/11/2026): ningún aviso frena la carga.** Gesruta muestra avisos del cliente al
+cargarlo (p. ej. *"a este cliente le ha caducado el certificado…"*; si hay 2+ los agrupa en una
+ventana *"N aviso(s)"*). Son informativos: **se cierran (Aceptar/Esc) y se sigue cargando**, aparezcan
+antes o después del cliente. No existe un aviso que deba parar la carga. El bot los despeja solo (ver
+`bot/CHANGELOG.md`, entrada 02/11/2026).
+
 ## Km (ver también `catalogo/correcciones-julio.json`)
 
 Odómetro continuo por viaje. Km carga por albarán = final − inicio. Entre albaranes del mismo

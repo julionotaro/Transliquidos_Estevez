@@ -4,6 +4,22 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-02) — Los avisos del cliente NO frenan la carga
+
+- **Síntoma:** cargando la orden de MARCOS EIRIN (FORESA Caldas→Orember), el bot abortó antes del
+  cliente con `ABORTO: dialogo abierto antes de cabecera: '2 aviso(s)'` (0/6 albaranes).
+- **Causa:** al abrir el albarán había una ventana de aviso de FORESA abierta (p. ej. *"a este
+  cliente le ha caducado el certificado el día 01/09/2026"*; cuando hay 2+ avisos Gesruta los junta
+  en una ventana titulada *"N aviso(s)"*). La guardia dura de `do_albaran` trataba **cualquier**
+  ventana de aviso como motivo de PARAR y cortaba la cadena.
+- **Regla (Julio 2026-11-02):** **ningún aviso frena la carga.** Todos los avisos que aparezcan se
+  **cierran y se sigue** (certificado caducado, atención, "N aviso(s)"…). No hay aviso que deba parar.
+- **Fix:** en `do_albaran`, si hay un aviso abierto al entrar al albarán, se **despeja con
+  `wait_and_close`** (cierra varios encolados hasta que no queda ninguno) y se continúa, en vez de
+  abortar. El aviso que sale **después** del cliente ya se despejaba igual.
+
+---
+
 ## v2 — `viajes-2` (2026-10-20) — GASTOS para choferes autónomos
 
 `robot_viajes_v2.py` (copia de v1 + integración de Gastos). **v1 (`robot_viajes.py`) queda
