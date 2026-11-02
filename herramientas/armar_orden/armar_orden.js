@@ -51,9 +51,17 @@ var MINIMO_TN = 23; // R-02
 // Capa 2 cubre FORESA/QUIMIDROGA nacional (P/21/G). BRESFOR y RNM internacional.
 // HELM y QUIMIDROGA-Portugal (nacional pese a destino PT) quedan para corrida 3.
 function reglaConcepto(razonSocial) {
+  // REGLA (Julio): el concepto/IVA depende de la NACIONALIDAD DEL CLIENTE, NO del
+  // origen/destino del viaje. Cliente PORTUGUES -> PI / IVA 0 / GPT; ESPANOL -> P / 21 / G.
+  // Ej: RNM y BRESFOR (portuguesas) siempre PI/0 aunque el viaje sea dentro de Espana;
+  // Baltransa, Quimidroga, Helm (espanolas) siempre P/21 aunque descarguen en Portugal.
   var c = cruce.norm(razonSocial);
-  if (c.indexOf('BRESFOR') >= 0) { return { concepto: 'PI', iva: '0', idx: 'GPT' }; }
-  if (c.indexOf('RNM') >= 0) { return { concepto: 'PI', iva: '0', idx: 'GPT' }; }
+  var esPortugues = (
+    c.indexOf('BRESFOR') >= 0 || c.indexOf('RNM') >= 0 ||
+    c.indexOf('QUIMIDROGA PORTUGAL') >= 0 || c.indexOf('LIQUIADUBOS') >= 0 ||
+    c.indexOf(' LDA') >= 0 || /\bLDA$/.test(c)   // sufijo societario portugues "Lda"
+  );
+  if (esPortugues) { return { concepto: 'PI', iva: '0', idx: 'GPT' }; }
   return { concepto: 'P', iva: '21', idx: 'G' };
 }
 

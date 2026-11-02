@@ -1,0 +1,16 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261102155747.pdf (ficha + guia BRESFOR + OC Baltransa). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 7347LBB (flota: Rodrigo Perez Bahamonde, PROPIO). Alb2 es BALTRANSA (no Quimidroga): carga en TEPSA Barcelona, destino H.B. Fuller Mindelo (Oporto PT), precio fijo 2.300,00 de la OC, ref = OT Baltransa 339488. OJO concepto/IVA de Baltransa a PORTUGAL sin confirmar (default P/21).",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-23",
+  "chofer": "RODRIGO PEREZ BAHAMONDE",
+  "cabeza": "7347",
+  "viajes": [
+    {
+      "matricula": "7347LBB",
+      "albaranes": [
+        { "cliente_lit": "BRESFOR", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141631", "salida": "23/10/2026", "llegada": "27/10/2026", "peso_kg": 23720, "km_inicio": 835551, "km_fin": 836386 },
+        { "cliente_lit": "BALTRANSA", "origen_lit": "BARCELONA", "destino_lit": "MINDELO", "carga_lit": "METIL ETIL CETONA", "referencia": "339488", "salida": "28/10/2026", "llegada": "30/10/2026", "um": "UN", "precio_fijo": 2300, "km_inicio": 836846, "km_fin": 838015 }
+      ]
+    }
+  ]
+}
