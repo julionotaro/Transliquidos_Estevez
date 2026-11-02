@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261102154647.pdf (ficha + CMR BRESFOR x2 + OC QUIMIDROGA). La nota 'Duplicado' de la ficha es observacion interna, NO que este hecho (Julio 2026-11-02). 1 hoja con viaticos -> 1 viaje, 3 albaranes. Matricula 0557JMS (flota: Miguel Pires, PROPIO). Ref QUIMIDROGA = referencia en factura 712200 (OC). Ref BRESFOR = Doc int 5050.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-16",
+  "chofer": "MIGUEL PIRES",
+  "cabeza": "0557",
+  "viajes": [
+    {
+      "matricula": "0557JMS",
+      "remolque": "R0110BBG",
+      "albaranes": [
+        { "cliente_lit": "BRESFOR", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141467", "salida": "16/10/2026", "llegada": "20/10/2026", "peso_kg": 22720, "km_inicio": 1146854, "km_fin": 1147696 },
+        { "cliente_lit": "QUIMIDROGA", "origen_lit": "BARCELONA", "destino_lit": "ORENSE", "carga_lit": "VINKA-PLAST", "referencia": "712200", "salida": "21/10/2026", "llegada": "22/10/2026", "peso_kg": 24080, "km_inicio": 1148173, "km_fin": 1149215 },
+        { "cliente_lit": "BRESFOR", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141626", "salida": "23/10/2026", "llegada": "26/10/2026", "peso_kg": 23480, "km_inicio": 1149679, "km_fin": 1150523 }
+      ]
+    }
+  ]
+}
