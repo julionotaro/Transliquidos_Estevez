@@ -267,6 +267,50 @@ def wait_and_close(appear_timeout, tag):
         if time.time()-t0>appear_timeout: return True
         time.sleep(0.3)
 
+def _dialog_buttons(dh):
+    """Lista (hwnd, texto) de los BUTTON hijos de un dialogo."""
+    btns=[]
+    def cb(ch,l):
+        if "BUTTON" in _cls(ch).upper():
+            tt=_text(ch)
+            if tt: btns.append((ch,tt))
+        return True
+    u32.EnumChildWindows(dh,WNDENUMPROC(cb),0)
+    return btns
+def _click_boton(dh, prefijos):
+    """Clica, por su posicion REAL, el primer boton del dialogo cuyo texto (sin &, mayus) empiece por
+    alguno de `prefijos`. Clic por coordenada (no depende del foco) y SIN teclado. True si clico."""
+    for pref in prefijos:
+        for ch,t in _dialog_buttons(dh):
+            if t.upper().replace('&','').strip().startswith(pref):
+                r=_rect(ch); pyautogui.click((r.left+r.right)//2,(r.top+r.bottom)//2)
+                log("     click boton %r"%t); return True
+    return False
+def cerrar_avisos(appear_timeout, tag, intentos=8):
+    """Cierra los avisos de Gesruta (certificado caducado, 'N aviso(s)', atencion...) clicando su boton
+    Aceptar/OK/Cerrar/Si por su POSICION REAL. NUNCA usa Enter: en la ventana de avisos Enter dispara
+    una accion (abre Outlook para notificar) -> por eso antes se descontrolaba. CAPADO a `intentos`:
+    si no cierra, DEJA de intentar (no cuelga) y sigue, sin tocar Enter. Loguea los botones de la
+    ventana la 1ra vez (auto-diagnostico). Regla Julio 2026-11-02: ningun aviso frena la carga.
+    Devuelve True si no quedo ninguno (o nunca aparecio); False si no pudo cerrarlo."""
+    t0=time.time(); n=0; aparecio=False; dumped=False
+    while time.time()-t0 < appear_timeout+10 and n < intentos:
+        h,t=find_dialog()
+        if h:
+            aparecio=True
+            if not dumped:
+                log("  [%s] aviso %r botones=%r"%(tag, t, [b[1] for b in _dialog_buttons(h)])); dumped=True
+            if not _click_boton(h, ("ACEPTAR","ACCEPT","OK","CERRAR","SALIR","SÍ","SI")):
+                pyautogui.press('esc')   # sin boton reconocible: Esc (NUNCA Enter)
+            n+=1; time.sleep(0.9); continue
+        if aparecio: ensure_ges(); return True   # aparecio y ya no queda
+        if time.time()-t0>appear_timeout: return True   # nunca aparecio: nada que cerrar
+        time.sleep(0.3)
+    ok = not find_dialog()[0]
+    if not ok: log("  [%s] NO pude cerrar el aviso tras %d intentos -> sigo (sin Enter)"%(tag,n))
+    elif aparecio: ensure_ges()
+    return ok
+
 def field(xy,val,label,click="single",tab=False,clear=False):
     x,y=xy; ok=False
     for i in range(4):
@@ -578,7 +622,7 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     # cierra varios encolados hasta que no queda ninguno (Esc/WM_CLOSE/Enter).
     if find_dialog()[0]:
         log("  aviso(s) al entrar al albaran: %r -> despejo y sigo"%(find_dialog()[1],))
-        wait_and_close(4.0, "pre-cabecera")
+        cerrar_avisos(4.0, "pre-cabecera")
 
     # ---- CABECERA ----
     if ref:     field(C_REFE, ref, "Refe")
@@ -587,7 +631,7 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     # Cliente: campo vacio en albaran nuevo -> clic + escribir. Tras Tab aparece aviso/riesgo.
     if cli.get("codigo"):
         field(C_CLIENTE, cli["codigo"], "Cliente", tab=True)
-        wait_and_close(6.0,"cliente")
+        cerrar_avisos(6.0,"cliente")
         # IMPORTANTE: esperar a que el aviso/ventana de riesgo cierre del TODO antes de seguir
         _t0=time.time()
         while time.time()-_t0<5:

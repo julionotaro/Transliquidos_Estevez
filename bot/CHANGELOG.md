@@ -4,6 +4,19 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-02b) — Cerrar avisos por BOTÓN (nunca Enter) + tope
+
+- **Síntoma:** con el fix de la mañana, al cargar MARCOS EIRIN el bot detectó la ventana
+  `'2 aviso(s)'` y entró en **loop** intentando cerrarla; además **abrió Outlook**.
+- **Causa:** `wait_and_close` cierra con Esc/WM_CLOSE/**Enter**. La ventana `'2 aviso(s)'` de Gesruta
+  no cerraba con eso, y el **Enter** sobre ella **dispara una acción** (abrir Outlook para notificar).
+  Resultado: loop + Outlook.
+- **Fix:** nuevo `cerrar_avisos()` que cierra el aviso **clicando su botón** (Aceptar/OK/Cerrar/Sí) por
+  su **posición real** (no depende del foco), **NUNCA con Enter**, y **capado a 8 intentos** (si no
+  cierra, deja de intentar y sigue; no cuelga ni descontrola). La 1ª vez **loguea los botones** de la
+  ventana (auto-diagnóstico, por si hay que afinar el texto del botón). Se usa en pre-cabecera y
+  post-cliente, en lugar de `wait_and_close`.
+
 ## `viajes-2` (2026-11-02) — Los avisos del cliente NO frenan la carga
 
 - **Síntoma:** cargando la orden de MARCOS EIRIN (FORESA Caldas→Orember), el bot abortó antes del
