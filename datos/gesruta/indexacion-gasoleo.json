@@ -1,5 +1,5 @@
 {
- "_nota": "Indexacion gasoleo por grupo de cliente y quincena. factor decimal (0.137=13,70%). Aplica sobre el porte neto (porte - descuentos). Gesruta la agrega como linea concepto G por fecha del porte. Fuente: Julio SUPLEMENTO_GASOLEO 2026-10-07.",
+ "_nota": "Indexacion gasoleo por grupo de cliente y quincena. factor decimal (0.137=13,70%). Aplica sobre el porte neto. Gesruta la agrega como linea concepto G por fecha del porte. Fuente: Julio SUPLEMENTO_GASOLEO (actualizado 2026-11-02). Regenerado desde el xlsx.",
  "grupos": {
   "FORESA-BRESFOR": [
    {
@@ -91,6 +91,11 @@
     "desde": "2026-10-01",
     "hasta": "2026-10-15",
     "factor": 0.1664
+   },
+   {
+    "desde": "2026-10-16",
+    "hasta": "2026-10-31",
+    "factor": 0.1597
    }
   ],
   "HELM": [
@@ -250,6 +255,11 @@
     "desde": "2026-10-01",
     "hasta": "2026-10-31",
     "factor": 0.145
+   },
+   {
+    "desde": "2026-11-01",
+    "hasta": "2026-11-30",
+    "factor": 0.16
    }
   ],
   "OTROS": [
@@ -320,8 +330,13 @@
    },
    {
     "desde": "2026-10-01",
-    "hasta": "2026-10-30",
+    "hasta": "2026-10-15",
     "factor": 0.145
+   },
+   {
+    "desde": "2026-10-16",
+    "hasta": "2026-10-31",
+    "factor": 0.1597
    }
   ],
   "AGENCIA": [

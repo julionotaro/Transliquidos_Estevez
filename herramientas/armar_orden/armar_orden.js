@@ -117,6 +117,14 @@ function resolverTarifa(razonSocial, origenCanon, destinoCanon, materialNombre, 
   if (r.estado !== 'SIN_TARIFA' && r.tarifa) {
     return { precio: r.tarifa.valor, tipo: r.tarifa.tipo, via: r.estado, motivo: null };
   }
+  // 2b) TARIFA CONFIRMADA por Julio (overlay fuera del export). Match cliente+origen+destino (+material).
+  var cf = deps.confirmadas.find(function (t) {
+    return cruce.norm(t.cliente) === cruce.norm(razonSocial)
+      && cruce.coincideTexto(origenCanon, t.origen)
+      && cruce.coincideTexto(destinoCanon, t.destino)
+      && (!t.material || cruce.norm(t.material) === cruce.norm(materialNombre));
+  });
+  if (cf) { return { precio: cf.precio, tipo: 'tn', via: 'confirmada-julio', motivo: null }; }
   // 3) Cascada por ANALOGIA CONFIRMADA (destino real sin fila -> precio de otra ruta).
   var a = deps.analogias.find(function (c) {
     return cruce.norm(c.cliente) === cruce.norm(razonSocial)
@@ -255,6 +263,7 @@ function cargarDeps() {
     puntos: datos.cargarPuntos(),
     materiales: datos.cargarMateriales(),
     analogias: datos.cargarAnalogiasConfirmadas(),
+    confirmadas: datos.cargarTarifasConfirmadas(),
     rnm: datos.cargarTarifarioRNM(),
   };
 }

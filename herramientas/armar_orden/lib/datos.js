@@ -73,6 +73,12 @@ function cargarAnalogiasConfirmadas() {
   return (j.candidatos || []).filter(function (c) { return c.confirmado === true; });
 }
 
+/** Tarifas confirmadas por Julio (overlay fuera del export n8n). Solo confirmado:true. */
+function cargarTarifasConfirmadas() {
+  var j = JSON.parse(fs.readFileSync(p('catalogo/tarifas-confirmadas-julio.json'), 'utf8'));
+  return (j.tarifas || []).filter(function (t) { return t.confirmado === true; });
+}
+
 /** Tarifario propio de RNM: {origen, destino, eur_viaje, eur_tn}. RNM factura por EUR/TN. */
 function cargarTarifarioRNM() {
   var txt = fs.readFileSync(p('datos/gesruta/tarifarios/tarifario-RNM-2026.csv'), 'utf8');
@@ -89,5 +95,6 @@ module.exports = {
   cargarPuntos: cargarPuntos,
   cargarMateriales: cargarMateriales,
   cargarAnalogiasConfirmadas: cargarAnalogiasConfirmadas,
+  cargarTarifasConfirmadas: cargarTarifasConfirmadas,
   cargarTarifarioRNM: cargarTarifarioRNM,
 };

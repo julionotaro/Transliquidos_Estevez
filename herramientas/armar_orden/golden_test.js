@@ -50,15 +50,12 @@ var CASOS = [
     blanco: blanco('2026-10/manuel-sabaris/2026-10-13'),
   },
   {
-    nombre: 'jose-manuel-paz 2026-10-16 (DUOTRAILER: duo_secundario + km.cargar:false)',
+    nombre: 'jose-manuel-paz 2026-10-16 (DUOTRAILER completo; gaps de datos ya cerrados)',
     raw: raw('jose-manuel-paz-2026-10-16.json'),
     blanco: blanco('2026-10/jose-manuel-paz/2026-10-16'),
-    // Gaps de DATOS que Julio esta confirmando (no fallos del armador):
-    //  - idx FORESA-BRESFOR 2a quincena de octubre (carga 16/10) sin tramo cargado
-    //  - QUIMIDROGA Miranda->Braga 61,65 (viaje 3) no esta en tabla/analogia
-    gaps: ['viajes[0].albaranes[0].lineas.indexacion',
-           'viajes[1].albaranes[0].lineas.indexacion',
-           'viajes[2]'],
+    // Gaps CERRADOS el 2026-11-02: idx FORESA-BRESFOR 16-31/10 = 0,1597 (suplemento
+    // actualizado; la orden a mano se corrigio de 0,1664) y QUIMIDROGA Miranda->Braga
+    // 61,65 (tarifas-confirmadas-julio.json). Ya no hay gaps: debe empatar entero.
   },
 ];
 

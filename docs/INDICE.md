@@ -211,6 +211,7 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 | `datos/` | Otras exportaciones y resúmenes derivados |
 | `catalogo/rutas-por-cliente.json` | **Conjunto CERRADO de rutas por cliente** con la tarifa observada, frecuencia y última fecha. Lo genera `herramientas/construir-matriz-rutas.py` desde el export anual. Sirve para preguntar "¿cuál de las rutas de ESTE cliente es?" en vez de "¿cuál de los 790 puntos es?" |
 | `catalogo/tarifa-por-analogia.json` | Candidatos donde la oficina cobra la tarifa de **otra** ruta del mismo cliente+origen (detectados por coincidencia exacta de importe). `confirmado: false` ⇒ **no se factura con ellos** hasta que Julio los valide |
+| `catalogo/tarifas-confirmadas-julio.json` | **Overlay de tarifas confirmadas por Julio** que no están (o están mal) en el export n8n. El armador las consulta tras la tabla y antes de la analogía. Match cliente+origen+destino (+material). Hoy: QUIMIDROGA Miranda→Braga 61,65 |
 | `informes/rutas-sin-tarifa.md` | Qué rutas reales no cubre el tarifario y **por qué**. Regenerable, no escrito a mano |
 | `catalogo/plantillas-cliente.json` | **QUÉ y DÓNDE buscar cada campo, por emisor**: la etiqueta ancla, el formato, y los números que PARECEN el dato y no lo son. FORESA, BRESFOR, RNM y QUIMIDROGA **confirmados por Julio**. Lo pone a trabajar `ficha/plantillas.js` (prompt + guarda de referencia) |
 | Tabla `tarifas` (n8n) | Tarifas por cliente y ruta. No van a Git |

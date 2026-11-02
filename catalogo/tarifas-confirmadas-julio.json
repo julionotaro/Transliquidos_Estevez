@@ -1,0 +1,17 @@
+{
+  "_nota": "Tarifas CONFIRMADAS por Julio que no estan en el export n8n (o estan mal ahi). El armador las consulta DESPUES de la tabla y ANTES de la analogia. Match por cliente + origen + destino (+ material opcional). Son decisiones humanas con autor y fecha; nunca se inventan.",
+  "tarifas": [
+    {
+      "cliente": "QUIMIDROGA, S.A.",
+      "origen": "MIRANDA DE EBRO",
+      "destino": "BRAGA",
+      "material": "MEXIFLEX",
+      "precio": 61.65,
+      "vigente_desde": "2026-01-01",
+      "confirmado": true,
+      "fecha": "2026-11-02",
+      "por": "Julio",
+      "nota": "Miranda de Ebro -> TMG Tecidos (Ponte GMR, Braga, PT). Historico de facturacion estable; no esta en el tarifario Quimidroga (carece de origen Miranda). Quimidroga factura PT como NACIONAL (P, IVA 21)."
+    }
+  ]
+}
