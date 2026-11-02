@@ -45,8 +45,15 @@ Por viaje: `matricula`, `remolque` (+ `duo_secundario` si aplica). Por albarán:
 (desambiguada por material)**, **tarifario propio de RNM (€/TN)** y **analogía
 confirmada**; concepto/IVA e indexación nacional (P/G) / internacional (PI/GPT);
 **indexación acumulada** (`cargar:false`) para FORESA Orember / Villagarcía→Caldas metanol;
-mínimo 23 TN; porte y formato ES. **Puntos solo con confianza alta** (si no, `null` +
-literal, revisar). Albaranes sin tarifa → `tarifa_pendiente` con `porte/indexacion: null`.
+mínimo 23 TN; porte y formato ES. **Cabecera (chofer / remolque / tipo propio-autónomo)
+resuelta por la MATRÍCULA vía `flota.json`** — la matrícula manda sobre la letra manuscrita;
+avisa si la lectura no coincide o si la matrícula no está en el padrón (caza 3/8, 4716/4916,
+Abal/Abalo, Alcoy/Aboy y el tipo propio/autónomo). **Puntos solo con confianza alta** (si no,
+`null` + literal, revisar). Albaranes sin tarifa → `tarifa_pendiente` con `porte/indexacion: null`.
+
+> **La lectura NO se minimiza nunca.** El armador hace el cálculo determinístico; la lectura
+> completa (ficha + OC + albaranes) y el cruce contra las tablas son obligatorios y son de quien
+> lee (hoy Claude por visión). Ver la regla "lectura/cruce" en `catalogo/correcciones-julio.json`.
 
 **Procedural (corrida 4):** duotrailer (`cabecera.duo_secundario` → `km.cargar:false`),
 autónomo (`km.vacio` explícito, los km van a Gastos), precio fijo del documento

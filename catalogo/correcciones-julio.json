@@ -160,6 +160,11 @@
       "fecha": "2026-11-02", "por": "Julio", "cliente": "FORESA", "campo": "carga/tarifa",
       "regla": "El producto 'AVEIRO 3009' (o 'ABEIRO 3009') que aparece en el albaran/ficha de FORESA NO es COLA: es carga FINCAT (cod Gesruta FINCAT). En la ruta Caldas->Orember eso cambia la tarifa: COLA = 13,85 EUR/TN, pero FINCAT = 20,16 EUR/TN (son dos filas distintas en el tarifario, por material). Las resinas 'RES xxxx' si son COLA (13,85). OJO: cargas FORESA Caldas->Orember anteriores que hayan clasificado 'Aveiro 3009' como COLA (p.ej. fila 2027312) estan mal tarifadas y hay que revisarlas.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "lectura/cruce (metodo, NO negociable)",
+      "regla": "La LECTURA es la parte vital: si el dato entra mal, todo sale mal. (1) Leer TODOS los documentos del juego -ficha + OC + albaranes-, nunca un subconjunto: la OC MANDA en cliente y destino, la ficha confirma km/fechas, el albaran da referencia/peso. (2) CRUZAR cada campo contra las tablas antes de armar: matricula de la tractora -> chofer + remolque + tipo propio/autonomo en flota.json (la matricula es la verdad, NO la letra manuscrita); cliente/destino -> clientes/puntos; material -> materiales. (3) El armador (herramientas/armar_orden) hace solo el CALCULO determinista; NO reemplaza la lectura ni justifica leer menos para ahorrar tokens. Errores reales que esto evita (lote 02/11): ABAL vs ABALO (autonomo vs propio), Alcoy vs Aboy, 3 vs 8 y 4716 vs 4916 en matriculas, Mindelo vs Leiria (destino real de la OC), Servitrade vs Comatra (cliente real de la OC). El armador ya deriva la cabecera por matricula via flota y avisa si la lectura no coincide.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {

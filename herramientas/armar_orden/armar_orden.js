@@ -236,21 +236,53 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
   return alb;
 }
 
+// ¿comparten algun token significativo (>=3) los dos nombres? (para no marcar falso
+// positivo entre "MARCOS" y "MARCOS EIRIN FERNANDEZ").
+function nombresCompatibles(a, b) {
+  var ta = cruce.norm(a).split(' ').filter(function (t) { return t.length >= 3; });
+  var tb = cruce.norm(b).split(' ').filter(function (t) { return t.length >= 3; });
+  for (var i = 0; i < ta.length; i++) { if (tb.indexOf(ta[i]) >= 0) { return true; } }
+  return false;
+}
+
+// La CABECERA se resuelve por la MATRICULA contra el padron de flota (la verdad:
+// chofer + tipo propio/autonomo + remolque habitual). La lectura de la ficha solo
+// VERIFICA; si no coincide, se avisa ruidoso. Asi un error de lectura del nombre o
+// una matricula mal leida (3/8, 4716/4916) no corrompe la orden: o manda flota, o
+// se marca para revisar.
+function resolverCabecera(raw, v, avisos) {
+  var ctx = 'cabecera ' + (v.matricula || '?');
+  var fl = raw._deps_flota[v.matricula];
+  if (!fl) {
+    avisos.push('[' + ctx + '] matricula NO esta en el padron de flota -> uso la lectura, VERIFICAR (posible mala lectura de la matricula)');
+    return { chofer: raw.chofer || null, remolque: v.remolque || null, tipo: tipoChofer(raw.chofer) };
+  }
+  if (raw.chofer && !nombresCompatibles(raw.chofer, fl.chofer)) {
+    avisos.push('[' + ctx + '] chofer leido "' + raw.chofer + '" != flota "' + fl.chofer + '" -> manda flota');
+  }
+  var remolque = v.remolque || fl.remolque;
+  if (v.remolque && cruce.norm(v.remolque) !== cruce.norm(fl.remolque)) {
+    avisos.push('[' + ctx + '] remolque leido "' + v.remolque + '" != habitual flota "' + fl.remolque + '" -> uso el leido (cambio de remolque)');
+  }
+  return { chofer: fl.chofer, remolque: remolque, tipo: fl.tipo };
+}
+
 // ---------- armado de la orden completa ----------
 function armarOrden(raw, deps) {
   deps = deps || cargarDeps();
   var avisos = [];
-  var nacionalidad = tipoChofer(raw.chofer);
+  raw._deps_flota = deps.flota;
   var viajes = (raw.viajes || []).map(function (v) {
+    var cab = resolverCabecera(raw, v, avisos);
     var cabecera = {
       cabeza: raw.cabeza,
-      verificar: { matricula: v.matricula, remolque: v.remolque, chofer: raw.chofer },
-      tipo: nacionalidad,
+      verificar: { matricula: v.matricula, remolque: cab.remolque, chofer: cab.chofer },
+      tipo: cab.tipo,
     };
     if (v.duo_secundario) { cabecera.duo_secundario = true; }
     return {
       cabecera: cabecera,
-      albaranes: (v.albaranes || []).map(function (a) { return armarAlbaran(a, nacionalidad, deps, avisos, !!v.duo_secundario); }),
+      albaranes: (v.albaranes || []).map(function (a) { return armarAlbaran(a, cab.tipo, deps, avisos, !!v.duo_secundario); }),
     };
   });
   return { orden: { empresa: raw.empresa, viajes: viajes }, avisos: avisos };
@@ -265,6 +297,7 @@ function cargarDeps() {
     analogias: datos.cargarAnalogiasConfirmadas(),
     confirmadas: datos.cargarTarifasConfirmadas(),
     rnm: datos.cargarTarifarioRNM(),
+    flota: datos.cargarFlota(),
   };
 }
 

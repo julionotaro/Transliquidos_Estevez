@@ -73,6 +73,12 @@ function cargarAnalogiasConfirmadas() {
   return (j.candidatos || []).filter(function (c) { return c.confirmado === true; });
 }
 
+/** Padron de flota: matricula tractora -> {remolque, chofer, tipo}. Fuente de verdad de la cabecera. */
+function cargarFlota() {
+  var j = JSON.parse(fs.readFileSync(p('catalogo/flota.json'), 'utf8'));
+  return j.tractoras || {};
+}
+
 /** Tarifas confirmadas por Julio (overlay fuera del export n8n). Solo confirmado:true. */
 function cargarTarifasConfirmadas() {
   var j = JSON.parse(fs.readFileSync(p('catalogo/tarifas-confirmadas-julio.json'), 'utf8'));
@@ -97,4 +103,5 @@ module.exports = {
   cargarAnalogiasConfirmadas: cargarAnalogiasConfirmadas,
   cargarTarifasConfirmadas: cargarTarifasConfirmadas,
   cargarTarifarioRNM: cargarTarifarioRNM,
+  cargarFlota: cargarFlota,
 };
