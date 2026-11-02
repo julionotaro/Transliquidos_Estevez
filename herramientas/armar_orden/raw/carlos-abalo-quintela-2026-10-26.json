@@ -1,0 +1,16 @@
+{
+  "_nota": "CARGA OFICIAL - hechos crudos leidos de entrada/20261102155537.pdf (ficha + albaran FORESA manual + OC Quimidroga). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 3729JWP (flota: Carlos Abalo Quintela, PROPIO - ojo ABALO != ABAL). Alb1 FORESA albaran MANUAL 260032 (ref provisoria, definitivo pendiente - Julio OK usar provisoria). KM pendientes: la ficha no trae el km inicio del viaje 1 (Julio OK dejar km pendiente).",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-26",
+  "chofer": "CARLOS ABALO QUINTELA",
+  "cabeza": "3729",
+  "viajes": [
+    {
+      "matricula": "3729JWP",
+      "albaranes": [
+        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "260032", "salida": "26/10/2026", "llegada": "27/10/2026", "peso_kg": 22100, "km_pendiente": true },
+        { "cliente_lit": "QUIMIDROGA", "origen_lit": "BARCELONA", "destino_lit": "LEIRIA", "carga_lit": "VINKA-PLAST", "referencia": "713124", "salida": "28/10/2026", "llegada": "30/10/2026", "peso_kg": 24000, "km_pendiente": true }
+      ]
+    }
+  ]
+}

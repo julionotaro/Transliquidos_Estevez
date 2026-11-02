@@ -186,15 +186,23 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
   if (!codCarga) { avisos.push('[' + ctx + '] carga sin codigo: "' + raw.carga_lit + '"'); }
   if (tarifaPendiente) { avisos.push('[' + ctx + '] TARIFA PENDIENTE: ' + tar.motivo); }
 
-  var km = {
-    inicio: String(raw.km_inicio),
-    fin: String(raw.km_fin),
-    carga: String(raw.km_fin - raw.km_inicio),
-  };
-  // Autonomo: el vacio va explicito (sus km se cargan en Gastos). Lo leo de la ficha.
-  if (typeof raw.km_vacio === 'number') { km.vacio = String(raw.km_vacio); }
-  // Duotrailer 2a cisterna: el bot saltea el formulario de km (ya se cuenta en el lider).
-  if (duoSec) { km.cargar = false; }
+  // KM: si faltan (no leidos en la ficha) o se marcan pendientes, se deja el bloque
+  // en pendiente en vez de inventar un km. El bot/humano lo completa luego.
+  var km;
+  if (raw.km_pendiente || typeof raw.km_inicio !== 'number' || typeof raw.km_fin !== 'number') {
+    km = { pendiente: true };
+    avisos.push('[' + ctx + '] km PENDIENTE (no leido en la ficha)');
+  } else {
+    km = {
+      inicio: String(raw.km_inicio),
+      fin: String(raw.km_fin),
+      carga: String(raw.km_fin - raw.km_inicio),
+    };
+    // Autonomo: el vacio va explicito (sus km se cargan en Gastos). Lo leo de la ficha.
+    if (typeof raw.km_vacio === 'number') { km.vacio = String(raw.km_vacio); }
+    // Duotrailer 2a cisterna: el bot saltea el formulario de km (ya se cuenta en el lider).
+    if (duoSec) { km.cargar = false; }
+  }
 
   var alb = {
     cliente: { codigo: codCli.codigo, esperado: esperadoCli },
