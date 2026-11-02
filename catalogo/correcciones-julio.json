@@ -150,6 +150,11 @@
       "fecha": "2026-10-22", "por": "Julio", "cliente": "DIVERSEY/BALTRANSA", "campo": "cliente/referencia",
       "regla": "DIVERSEY (Valdemoro, Madrid) es PUNTO DE CARGA, no cliente de facturacion. El viaje de sosa Diversey->Leche Celta (Pontedeume) se factura a BALTRANSA (cod 10): referencia = Nº de Orden de Transporte de Baltransa (ej 338681), precio FIJO por viaje que trae la OC (ej 1.150,00 EUR; um UN, cantidad 1), concepto P IVA 21 (destino nacional), mas la linea de indexacion Baltransa con cantidad 1 e importe 0.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "estructura viaje (viaticos)",
+      "regla": "Un VIAJE (Gesruta) se define por los VIATICOS/dietas que el chofer anota en cada HOJA de la ficha: una hoja CON viaticos = un viaje. Una hoja SIN viaticos se UNE a otra (la que lleva los viaticos del periodo) para formar UN SOLO viaje, aunque tenga sus propios albaranes. Se combina con la regla de matriculas (2026-10-14): si cambia tractora o remolque igual se parte en viajes distintos. Ej: shuttle Marcos Eirin Caldas->Orember, hoja1 trae las dietas de toda la semana (26-30/10) y hoja2 sin viaticos -> UN viaje con 6 albaranes.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {
