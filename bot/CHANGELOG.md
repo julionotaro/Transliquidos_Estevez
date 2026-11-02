@@ -4,6 +4,20 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-02c) — El bot IGNORA ventanas de otros procesos (recordatorio de Outlook)
+
+- **Causa raíz (la de verdad):** la ventana `'2 aviso(s)'` que trababa la carga **NO era de Gesruta**:
+  era el **popup de RECORDATORIOS de Outlook** (en Office en español se titula "N aviso(s)"; botones
+  *Posponer / Descartar / Descartar todo / Conectarse / Servicios online para reuniones*). El bot la
+  confundía con un aviso de Gesruta porque busca la palabra "aviso". Al apretarle Enter, pegaba en
+  "Conectarse" → **abría Outlook**. Por eso fallaba hoy y no en las pruebas: hoy Outlook tiraba
+  recordatorios, antes no.
+- **Fix:** el bot ahora guarda el **PID del proceso de Gesruta** al arrancar y `find_dialog`/`find_kw`
+  **ignoran toda ventana de otro proceso**. Así los recordatorios de Outlook (o cualquier popup ajeno)
+  dejan de interferir **aunque Outlook esté abierto**. El aviso REAL de Gesruta (certificado del
+  cliente) se sigue cerrando por botón ("Aceptar").
+- **Operativo:** ya no hace falta cerrar Outlook antes de correr (igual no molesta hacerlo).
+
 ## `viajes-2` (2026-11-02b) — Cerrar avisos por BOTÓN (nunca Enter) + tope
 
 - **Síntoma:** con el fix de la mañana, al cargar MARCOS EIRIN el bot detectó la ventana

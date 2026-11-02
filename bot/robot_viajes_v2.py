@@ -117,6 +117,7 @@ class RECT(ctypes.Structure):
     _fields_=[("left",ctypes.c_long),("top",ctypes.c_long),("right",ctypes.c_long),("bottom",ctypes.c_long)]
 u32.GetWindowRect.argtypes=[ctypes.c_void_p, ctypes.POINTER(RECT)]
 u32.IsWindowVisible.argtypes=[ctypes.c_void_p]; u32.IsWindowVisible.restype=ctypes.c_bool
+u32.GetWindowThreadProcessId.argtypes=[ctypes.c_void_p, ctypes.POINTER(ctypes.c_ulong)]; u32.GetWindowThreadProcessId.restype=ctypes.c_ulong
 def _text(h):
     n=u32.GetWindowTextLengthW(h); b=ctypes.create_unicode_buffer(n+2); u32.GetWindowTextW(h,b,n+2); return b.value or ""
 def _cls(h):
@@ -130,6 +131,26 @@ def all_hwnds():
         def ch(c,l2): acc.append(c); return True
         u32.EnumChildWindows(h,WNDENUMPROC(ch),0); return True
     u32.EnumWindows(WNDENUMPROC(top),0); return acc
+# ---- Filtro por PROCESO: el bot solo reacciona a ventanas de GESRUTA. Asi ignora popups de otros
+#      programas que casualmente tengan "aviso" en el titulo -- en particular el RECORDATORIO de
+#      Outlook, que en Office en espanol se titula "N aviso(s)" y hacia que el bot se trabara / abriera
+#      Outlook. (Hallazgo Julio 2026-11-02: no era un aviso de Gesruta sino un recordatorio de Outlook.)
+def _pid(h):
+    p=ctypes.c_ulong(0); u32.GetWindowThreadProcessId(h, ctypes.byref(p)); return p.value
+GES_PID=None
+def _set_ges_pid():
+    """Guarda el PID del proceso de Gesruta (ventana principal 'GESRUTA VR...')."""
+    global GES_PID
+    for h in all_hwnds():
+        if (_text(h) or "").upper().startswith("GESRUTA VR"):
+            try: GES_PID=_pid(h); return GES_PID
+            except Exception: pass
+    return None
+def _es_ges(h):
+    """True si la ventana es del proceso de Gesruta (o si todavia no sabemos el PID -> no filtramos)."""
+    if GES_PID is None: return True
+    try: return _pid(h)==GES_PID
+    except Exception: return True
 def has_window(substr):
     su=substr.upper()
     for h in all_hwnds():
@@ -138,6 +159,7 @@ def has_window(substr):
 def find_kw(kws):
     for h in all_hwnds():
         if "TOOLTIP" in _cls(h).upper(): continue   # ignorar globos de ayuda (p.ej. 'Guardar los datos actuales [F2]')
+        if not _es_ges(h): continue                  # ignorar ventanas de otros procesos (p.ej. recordatorio de Outlook)
         t=_text(h); tu=t.upper()
         if tu.startswith("GESRUTA VR"): continue
         if any(k in tu for k in kws): return h,t
@@ -236,6 +258,7 @@ def ensure_ges():
 def find_dialog():
     for h in all_hwnds():
         if "TOOLTIP" in _cls(h).upper(): continue
+        if not _es_ges(h): continue                  # ignorar ventanas de otros procesos (p.ej. recordatorio de Outlook)
         t=_text(h)
         if not t: continue
         tu=t.upper()
@@ -853,6 +876,8 @@ try:
     time.sleep(0.8)
     for _ in range(3): ensure_ges(); time.sleep(0.3)
     caps_off()
+    _pid_g=_set_ges_pid()
+    log("[pid] Gesruta PID=%s -> se IGNORAN ventanas de otros procesos (p.ej. recordatorios de Outlook, titulados 'N aviso(s)')"%_pid_g)
 
     viajes_ok=0; resultados=[]
     for vpos,vj in enumerate(viajes):
