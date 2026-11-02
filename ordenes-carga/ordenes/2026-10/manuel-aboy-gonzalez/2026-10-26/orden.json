@@ -1,0 +1,90 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "5713",
+        "verificar": {
+          "matricula": "5713LMN",
+          "remolque": "R1639BDD",
+          "chofer": "MANUEL ABOY GONZALEZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "H",
+            "esperado": "HUELVA"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "4500002523",
+          "salida": "26/10/2026",
+          "llegada": "28/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,020",
+              "precio": "41,31",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "992,27",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "518623",
+            "fin": "519275",
+            "carga": "652"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "33",
+            "esperado": "COMATRA, S.C.L."
+          },
+          "origen": {
+            "codigo": "SE",
+            "esperado": "SEVILLA"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "SANCHIDRIAN"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "201786",
+          "salida": "29/10/2026",
+          "llegada": "30/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "519428",
+            "fin": "520078",
+            "carga": "650"
+          },
+          "tarifa_pendiente": true
+        }
+      ]
+    }
+  ]
+}
