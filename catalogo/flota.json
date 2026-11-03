@@ -1,5 +1,5 @@
 {
- "_nota": "Padron de flota (tractora -> remolque habitual -> chofer). Cosechado de ficha/flota.js (export Gesruta real). Sirve para VERIFICAR la cabecera: si la ficha trae una matricula/chofer que no coincide, parar. tipo: autonomo si el apellido (token exacto) es ABAL/FRAGA/ALFONSIN; OJO ABAL != ABALO/ABELO.",
+ "_nota": "Padron de flota (tractora -> remolque habitual -> chofer). Cosechado de ficha/flota.js (export Gesruta real). Sirve para VERIFICAR la cabecera: si la ficha trae una matricula/chofer que no coincide, parar. tipo: autonomo si el apellido (token exacto) es ABAL/FRAGA/ALFONSIN; OJO ABAL != ABALO/ABELO. Campo 'cabeza' (donde existe): numero de tractora que puede llevar un CERO A LA IZQUIERDA y desambigua matriculas con el mismo tramo numerico (cabeza '3729'=3729JLH Marcos Eirin vs '03729'=3729JWP Carlos Abalo, tractoras distintas). No quitar el cero al leer la ficha.",
  "tractoras": {
   "0275JLC": {
    "remolque": "R1943BBL",
@@ -42,11 +42,13 @@
    "tipo": "propio"
   },
   "3729JLH": {
+   "cabeza": "3729",
    "remolque": "R7749BDB",
    "chofer": "MARCOS EIRIN FERNANDEZ",
    "tipo": "propio"
   },
   "3729JWP": {
+   "cabeza": "03729",
    "remolque": "PO2662R",
    "chofer": "CARLOS ABALO QUINTELA",
    "tipo": "propio"

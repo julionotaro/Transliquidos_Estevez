@@ -74,7 +74,13 @@
           "salida": "29/10/2026",
           "llegada": "30/10/2026",
           "lineas": {
-            "porte": null,
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "940,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
             "indexacion": null
           },
           "km": {
@@ -82,7 +88,7 @@
             "fin": "520078",
             "carga": "650"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         }
       ]
     }

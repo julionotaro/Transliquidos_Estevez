@@ -1,9 +1,9 @@
 {
-  "_nota": "CARGA OFICIAL - hechos crudos leidos de entrada/20261102155537.pdf (ficha + albaran FORESA manual + OC Quimidroga). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 3729JWP (flota: Carlos Abalo Quintela, PROPIO - ojo ABALO != ABAL). Alb1 FORESA albaran MANUAL 260032 (ref DEFINITIVA; OC con formato provisorio por problema de sistema pero el numero es definitivo - Julio 03/11). KM pendientes: la ficha no trae el km inicio del viaje 1 (Julio OK dejar km pendiente).",
+  "_nota": "CARGA OFICIAL - hechos crudos leidos de entrada/20261102155537.pdf (ficha + albaran FORESA manual + OC Quimidroga). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 3729JWP (flota: Carlos Abalo Quintela, PROPIO - ojo ABALO != ABAL). Cabeza '03729' con CERO a la izquierda -> 3729JWP (Abalo); '3729' sin cero -> 3729JLH (Marcos Eirin), tractora DISTINTA. Respetar el cero - Julio 03/11. Alb1 FORESA albaran MANUAL 260032 (ref DEFINITIVA; OC con formato provisorio por problema de sistema pero el numero es definitivo - Julio 03/11). KM pendientes: la ficha no trae el km inicio del viaje 1 (Julio OK dejar km pendiente).",
   "empresa": "TLE",
   "fecha_inicio": "2026-10-26",
   "chofer": "CARLOS ABALO QUINTELA",
-  "cabeza": "3729",
+  "cabeza": "03729",
   "viajes": [
     {
       "matricula": "3729JWP",

@@ -237,6 +237,10 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
     // BALTRANSA: linea de indexacion fija en cero (cantidad 1, factor 0) — regla R-04.
     if (esBaltransa) {
       alb.lineas.indexacion = { concepto: reg.idx, cantidad: '1', factor: '0' };
+    } else if (raw.idx_incluida === true) {
+      // Precio fijo con INDEXACION INCLUIDA en el precio (FORESTAL, COMATRA): no se
+      // agrega linea de indexacion aparte. Se declara en el raw con "idx_incluida": true.
+      alb.lineas.indexacion = null;
     } else {
       // indexacion por linea (acumulada -> cargar:false, para control de totales)
       var grupo = idxMod.grupoIndexacion(razon).grupo;

@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - leido de entrada/20261102155910.pdf (ficha + bascula/CMR BRESFOR + OC COMATRA). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 5713LMN (flota: Manuel Aboy Gonzalez, PROPIO). Alb1 BRESFOR Aveiro->Bio-Oils Huelva METANOL (CMR manuscrita sin 5050; ref 4500002523 DEFINITIVA, formato provisorio por problema de sistema pero numero definitivo - Julio 03/11). Alb2 COMATRA (cliente, no Sevitrade/Servitrade): El Copero Sevilla->Tradecorp Sanchidrian Avila SOSA; SIN tarifa -> tarifa_pendiente (Julio OK dejar pendiente). Ref COMATRA = ref proveedor 201786.",
+  "_nota": "CARGA OFICIAL - leido de entrada/20261102155910.pdf (ficha + bascula/CMR BRESFOR + OC COMATRA). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 5713LMN (flota: Manuel Aboy Gonzalez, PROPIO). Alb1 BRESFOR Aveiro->Bio-Oils Huelva METANOL (CMR manuscrita sin 5050; ref 4500002523 DEFINITIVA, formato provisorio por problema de sistema pero numero definitivo - Julio 03/11). Alb2 COMATRA (cliente, no Sevitrade/Servitrade): El Copero Sevilla->Tradecorp Sanchidrian Avila SOSA; tarifa 940,00 EUR/viaje FIJO (um UN) con indexacion INCLUIDA (sin linea idx) - Julio 03/11; P IVA 21 (Comatra espanola). Ref COMATRA = ref proveedor 201786. Destino Sanchidrian sin codigo Gesruta todavia (dar de alta).",
   "empresa": "TLE",
   "fecha_inicio": "2026-10-26",
   "chofer": "MANUEL ABOY GONZALEZ",
@@ -9,7 +9,7 @@
       "matricula": "5713LMN",
       "albaranes": [
         { "cliente_lit": "BRESFOR", "origen_lit": "AVEIRO", "destino_lit": "HUELVA", "carga_lit": "METANOL", "referencia": "4500002523", "salida": "26/10/2026", "llegada": "28/10/2026", "peso_kg": 24020, "km_inicio": 518623, "km_fin": 519275 },
-        { "cliente_lit": "COMATRA", "origen_lit": "SEVILLA", "destino_lit": "SANCHIDRIAN", "carga_lit": "SOSA", "referencia": "201786", "salida": "29/10/2026", "llegada": "30/10/2026", "peso_kg": 24600, "km_inicio": 519428, "km_fin": 520078 }
+        { "cliente_lit": "COMATRA", "origen_lit": "SEVILLA", "destino_lit": "SANCHIDRIAN", "carga_lit": "SOSA", "referencia": "201786", "salida": "29/10/2026", "llegada": "30/10/2026", "peso_kg": 24600, "km_inicio": 519428, "km_fin": 520078, "um": "UN", "precio_fijo": 940, "idx_incluida": true }
       ]
     }
   ]

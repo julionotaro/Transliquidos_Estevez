@@ -180,6 +180,16 @@
       "fecha": "2026-11-03", "por": "Julio", "cliente": "TODOS", "campo": "referencia (formato provisorio de sistema)",
       "regla": "Cuando por un PROBLEMA DE SISTEMA se emiten OC/albaranes con un FORMATO distinto y de apariencia 'provisoria', esos numeros de referencia SON DEFINITIVOS igual: no son placeholder, el numero queda como esta y NO se re-pide el 'definitivo'. Confirmado lote 26/10: Carlos Abalo FORESA 260032 y Manuel Aboy BRESFOR 4500002523 son definitivos. NO cambia la regla general de ref por cliente (FORESA 20xxxxx, BRESFOR 5050xxxxxx, Quimidroga ref en factura, etc.); aplica solo cuando el propio sistema emitio el documento con formato anomalo.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-03", "por": "Julio", "cliente": "TODOS", "campo": "cabecera/matricula (cero a la izquierda)",
+      "regla": "El numero de CABEZA (tractora) puede llevar un CERO A LA IZQUIERDA que DESAMBIGUA matriculas con el mismo tramo numerico. Caso confirmado: cabeza '3729' -> tractora 3729JLH (MARCOS EIRIN FERNANDEZ, propio); cabeza '03729' -> tractora 3729JWP (CARLOS ABALO QUINTELA, propio). Son tractoras DISTINTAS. Al leer la ficha RESPETAR el cero a la izquierda y cruzar con flota.json (campo 'cabeza'): si el numero cae en una colision de tramo, el cero manda. NO normalizar quitando ceros. En la orden, cabecera.cabeza conserva el formato leido (ej '03729'). Error visto 03/11: se puso cabeza '3729' (lleva a 3729JLH, Marcos Eirin) cuando la correcta era '03729' (3729JWP, Abalo); matricula ya estaba bien.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-03", "por": "Julio", "cliente": "COMATRA", "campo": "cliente/tarifa",
+      "regla": "COMATRA, S.C.L. (cod Gesruta 33) es cliente ESPANOL -> concepto P, IVA 21. SEVITRADE / El Copero (Sevilla) es PUNTO DE CARGA, no el cliente (error visto: Servitrade vs Comatra). Referencia = ref proveedor de la OC (ej 201786). Tarifa confirmada: El Copero (Sevilla) -> Tradecorp Sanchidrian (Avila) SOSA = 940,00 EUR/VIAJE FIJO (um UN, cantidad 1) con INDEXACION INCLUIDA -> NO agregar linea de indexacion (como Forestal). Pendiente Gesruta: el punto Sanchidrian (Avila) no tiene codigo cargado, dar de alta.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {

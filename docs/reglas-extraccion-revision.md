@@ -110,6 +110,9 @@ Solo hay **dos** formas de facturar el porte al cliente:
 - **ACUMULADA (`cargar:false`):** FORESA destino **Orember** y **Villagarcía→Caldas metanol** — el
   importe se calcula y guarda para control de totales, pero **no** se carga línea por albarán.
 - **BALTRANSA:** línea de indexación en **cero** (cantidad 1, factor 0).
+- **INCLUIDA en precio fijo (sin línea):** FORESTAL y COMATRA facturan **€/viaje** con la
+  indexación ya incluida → **no** se agrega línea de idx (en la orden `indexacion: null`; en el raw
+  del armador se declara `idx_incluida: true`).
 
 ### B4. Recordatorios de flujo
 - **Duotrailer:** una tractora, 2 cisternas, mismo viaje físico → 2 viajes en Gesruta; el 2º lleva

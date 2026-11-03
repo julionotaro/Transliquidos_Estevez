@@ -224,7 +224,7 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 
 ## Pendientes de dominio (preguntas abiertas para Julio)
 
-- **Tarifa COMATRA El Copero (Sevilla)→Sanchidrián (Ávila) SOSA (02/11):** sin tarifa; cierra alb2 de Manuel Aboy (juego 155910), hoy `tarifa_pendiente`.
+- **Alta punto Sanchidrián (Ávila) en Gesruta:** destino de COMATRA SOSA. La **tarifa ya está** (03/11: 940,00 €/viaje fijo, indexación incluida; cerrado el alb2 de Manuel Aboy 155910), pero el punto no tiene código Gesruta cargado → darlo de alta para que autocomplete.
 - Baltransa: ¿de qué documento sale el peso?
 - Tarifa Quimidroga Barcelona→Leiria (no figura en el tarifario 2026)
 - Tarifa Foresa 2026 oficial (la cargada es de 2025)
