@@ -1,0 +1,121 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2256",
+        "verificar": {
+          "matricula": "2256JYX",
+          "remolque": "PO02194R",
+          "chofer": "MANUEL SABARIS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "PORRI",
+            "esperado": "PORRIÑO"
+          },
+          "carga": {
+            "codigo": "SURFAC",
+            "esperado": "SURFACTAN"
+          },
+          "referencia": "712094",
+          "salida": "23/10/2026",
+          "llegada": "26/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "1172235",
+            "fin": "1173445",
+            "carga": "1210"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "001346",
+          "salida": "26/10/2026",
+          "llegada": "27/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,460",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.313,76",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "1173675",
+            "fin": "1174506",
+            "carga": "831"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "destino": {
+            "codigo": "AZAMB",
+            "esperado": "AZAMBUJA(PT)"
+          },
+          "carga": {
+            "codigo": "IQOXIN",
+            "esperado": "IQOXINOL"
+          },
+          "referencia": "229896",
+          "salida": "29/10/2026",
+          "llegada": "30/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "1174895",
+            "fin": "1176071",
+            "carga": "1176"
+          },
+          "tarifa_pendiente": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261103134548.pdf (8 pags: ficha + OC+albaran QUIMIDROGA 712094/83336811 + OC+albaran+CMR IQOXE/RNM 229896 + CMR BRESFOR manuscrita). Manuel Sabaris, 2256JYX (flota PROPIO, remolque habitual R3546BBG), remolque en docs PO02194R. 1 hoja con viaticos (250) -> 1 viaje, 3 albaranes. Alb1 QUIMIDROGA Barcelona (Q11 Graneles)->Porrino (Celtclinic) SURFACTANT A 2725 P -> SURFACTAN cod SURFAC, peso NETO 12.020 (albaran Quimidroga; OC 12.000) -> <23 TN, aplica minimo 23. Ref 712094 (ref en factura). TARIFA PENDIENTE: no hay Barcelona->Porrino en la tabla (si Barcelona->Pontevedra 79,71; probable cascada a Pontevedra, confirmar Julio). Alb2 BRESFOR Aveiro->Teruel (Finsa Cella) RES 1350->COLA, peso NETO 23.460 (CMR manuscrita). PI IVA 0 (BRESFOR portuguesa) idx GPT, tarifa 56,00. Ref PROVISORIA 001346 (CMR manuscrita sin numero 5050; pedir 5050 definitivo). Alb3 RNM TRANSPORTES QUIMICOS S.A. (freight agent, portuguesa -> PI IVA 0 GPT) Tarragona (IQOXE La Canonja)->Azambuja (Persan, Portugal), IQOXINOL 23-2 -> IQOXIN, peso NETO 23.820 (albaran IQOXE/CMR; portaria descarga 23.700, manda carga R-08). Ref 229896 (Doc transporte/CMR). TARIFA PENDIENTE: no hay RNM Tarragona->Azambuja (confirmar Julio).",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-23",
+  "chofer": "MANUEL SABARIS",
+  "cabeza": "2256",
+  "viajes": [
+    {
+      "matricula": "2256JYX",
+      "remolque": "PO02194R",
+      "albaranes": [
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "PORRIÑO", "carga_lit": "SURFACTAN", "referencia": "712094", "salida": "23/10/2026", "llegada": "26/10/2026", "peso_kg": 12020, "km_inicio": 1172235, "km_fin": 1173445 },
+        { "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "001346", "salida": "26/10/2026", "llegada": "27/10/2026", "peso_kg": 23460, "km_inicio": 1173675, "km_fin": 1174506 },
+        { "cliente_lit": "RNM TRANSPORTES QUIMICOS, S.A.", "origen_lit": "TARRAGONA", "destino_lit": "AZAMBUJA(PT)", "carga_lit": "IQOXINOL", "referencia": "229896", "salida": "29/10/2026", "llegada": "30/10/2026", "peso_kg": 23820, "km_inicio": 1174895, "km_fin": 1176071 }
+      ]
+    }
+  ]
+}
