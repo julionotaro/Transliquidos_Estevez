@@ -12,7 +12,7 @@
     "estado": "pendiente_carga",
     "source_ficha": "20261103120721.pdf",
     "choferes_tipo": "propio",
-    "_nota_armador": "Resuelto con herramientas/armar_orden (raw jose-ramon-pineiro-2026-10-19.json). 1 hoja con viaticos (214) = 1 viaje (regla 02/11); misma tractora+remolque -> no se parte. 3 albaranes."
+    "_nota_armador": "Resuelto con herramientas/armar_orden. 1 hoja con viaticos (214) = 1 viaje, 3 albaranes (regla 02/11). FORESA Igualada resuelto por cascada a Barcelona (analogia confirmada); RNM Barcelona->Cordoba queda tarifa_pendiente (criterio Julio: RNM solo con destino especifico)."
   },
   "viajes": [
     {
@@ -47,16 +47,26 @@
           "salida": "19/10/2026",
           "llegada": "21/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.664,28",
+              "factor": "0,1597"
+            }
           },
           "km": {
             "inicio": "961598",
             "fin": "962739",
             "carga": "1141"
           },
-          "tarifa_pendiente": true,
-          "_nota": "FORESA formol Caldas->Comercial Godo Igualada (IGUAL). FORMOL cod 3. Nacional P IVA 21. TARIFA PENDIENTE: no hay tarifa FORESA Caldas->Igualada formol (tabla/historico/analogia). Confirmar tarifa con Julio. Peso albaran 22.760 (al tarifar <23 -> min 23)."
+          "tarifa_pendiente": false,
+          "_nota": "FORESA formol Caldas->Comercial Godo Igualada (IGUAL). FORMOL cod 3. Nacional P IVA 21. Tarifa 72,36 EUR/TN por CASCADA a BARCELONA (Igualada esta en provincia de Barcelona, sin tarifa propia; analogia confirmada por Julio 03/11). Idx G FORESA-BRESFOR 2a quincena oct 0,1597. Peso albaran 22.760 (<23 -> facturar 23 TN min)."
         },
         {
           "cliente": {
@@ -88,7 +98,7 @@
             "carga": "900"
           },
           "tarifa_pendiente": true,
-          "_nota": "RNM acetato de etilo. Carga Cellmark/TEPSA Barcelona, entrega real NOVALK Lucena (Cordoba). Destino cascada a CORDOBA (CO): Lucena no tiene punto propio (regla: destino siempre con codigo). Cliente RNM PORTUGUES -> PI IVA 0 GPT aunque el viaje sea en Espana (regla 02/11). TARIFA PENDIENTE: no hay tarifa RNM Barcelona->Cordoba. Ref = guia remessa 0141171435. Peso 24.000."
+          "_nota": "RNM acetato de etilo. Carga Cellmark/TEPSA Barcelona, entrega real NOVALK Lucena (Cordoba). Destino cascada a CORDOBA (CO) para que tenga codigo valido. Cliente RNM PORTUGUES -> PI IVA 0 GPT aunque el viaje sea en Espana (regla 02/11). TARIFA PENDIENTE: no hay tarifa RNM Barcelona->Cordoba (criterio Julio 03/11: RNM se arma pendiente si no hay destino especifico). Ref guia remessa 0141171435. Peso 24.000."
         },
         {
           "cliente": {
