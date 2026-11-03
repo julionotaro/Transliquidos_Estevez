@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - leido de entrada/20261102155910.pdf (ficha + bascula/CMR BRESFOR + OC COMATRA). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 5713LMN (flota: Manuel Aboy Gonzalez, PROPIO). Alb1 BRESFOR Aveiro->Bio-Oils Huelva METANOL (CMR manuscrita sin 5050; Julio OK usar ref provisoria = pedido Bio-Oils 4500002523). Alb2 COMATRA (cliente, no Sevitrade/Servitrade): El Copero Sevilla->Tradecorp Sanchidrian Avila SOSA; SIN tarifa -> tarifa_pendiente (Julio OK dejar pendiente). Ref COMATRA = ref proveedor 201786.",
+  "_nota": "CARGA OFICIAL - leido de entrada/20261102155910.pdf (ficha + bascula/CMR BRESFOR + OC COMATRA). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 5713LMN (flota: Manuel Aboy Gonzalez, PROPIO). Alb1 BRESFOR Aveiro->Bio-Oils Huelva METANOL (CMR manuscrita sin 5050; ref 4500002523 DEFINITIVA, formato provisorio por problema de sistema pero numero definitivo - Julio 03/11). Alb2 COMATRA (cliente, no Sevitrade/Servitrade): El Copero Sevilla->Tradecorp Sanchidrian Avila SOSA; SIN tarifa -> tarifa_pendiente (Julio OK dejar pendiente). Ref COMATRA = ref proveedor 201786.",
   "empresa": "TLE",
   "fecha_inicio": "2026-10-26",
   "chofer": "MANUEL ABOY GONZALEZ",

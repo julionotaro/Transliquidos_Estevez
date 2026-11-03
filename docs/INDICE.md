@@ -1,7 +1,7 @@
 # ÍNDICE — Documentación TLE
 
 > **Leer esto primero, siempre.** No hace falta leer todo lo demás: hace falta saber qué existe y dónde está cada cosa.
-> Última actualización: 02/11/2026.
+> Última actualización: 03/11/2026.
 
 ---
 
@@ -225,8 +225,6 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 ## Pendientes de dominio (preguntas abiertas para Julio)
 
 - **Tarifa COMATRA El Copero (Sevilla)→Sanchidrián (Ávila) SOSA (02/11):** sin tarifa; cierra alb2 de Manuel Aboy (juego 155910), hoy `tarifa_pendiente`.
-- **Referencias definitivas (02/11):** Carlos Abalo (provisoria 260032) y Manuel Aboy alb1 Bio-Oils (provisoria = pedido 4500002523) — pendientes del Nº definitivo.
-- **Ficha de Miguel Pires (154647):** no escaneada; Julio la agrega. El juego se procesó con lo disponible (ficha + CMR + OC).
 - Baltransa: ¿de qué documento sale el peso?
 - Tarifa Quimidroga Barcelona→Leiria (no figura en el tarifario 2026)
 - Tarifa Foresa 2026 oficial (la cargada es de 2025)
