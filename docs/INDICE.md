@@ -225,6 +225,7 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 
 ## Pendientes de dominio (preguntas abiertas para Julio)
 
+- **STOCKMEIER QUÍMICA, S.L.U. (cliente NUEVO, 03/11):** apareció en el juego de Pablo Carles (Tarragona/Terquimsa → Caldas de Reis, Acetato de Vinilo). Falta: (a) **tarifa** Tarragona→Caldas de Reis; (b) **código de cliente** Gesruta (alta); (c) **regla de referencia** (usé provisoria `200858072` = "Su pedido" de la OC; alt. manuscrita 200858953). Hoy la pata queda `tarifa_pendiente`.
 - Baltransa: ¿de qué documento sale el peso?
 - Tarifa Quimidroga Barcelona→Leiria (no figura en el tarifario 2026)
 - Tarifa Foresa 2026 oficial (la cargada es de 2025)

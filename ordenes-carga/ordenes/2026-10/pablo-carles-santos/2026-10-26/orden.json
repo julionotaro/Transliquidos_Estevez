@@ -1,0 +1,95 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "7963",
+        "verificar": {
+          "matricula": "7963MDF",
+          "remolque": "PO02628R",
+          "chofer": "PABLO CARLES SANTOS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "V",
+            "esperado": "VALENCIA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2034455",
+          "salida": "26/10/2026",
+          "llegada": "28/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,580",
+              "precio": "64,04",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.510,06",
+              "factor": "0,1597"
+            },
+            "reparto": {
+              "concepto": "REPARTOS",
+              "cantidad": "1",
+              "importe": "90,00"
+            }
+          },
+          "km": {
+            "inicio": "403200",
+            "fin": "404354",
+            "carga": "1154"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": null,
+            "esperado": "STOCKMEIER QUIMICA"
+          },
+          "origen": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "VINILO",
+            "esperado": "ACETATO DE VINILO"
+          },
+          "referencia": "200858072",
+          "salida": "29/10/2026",
+          "llegada": "02/11/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "404630",
+            "fin": "405798",
+            "carga": "1168"
+          },
+          "tarifa_pendiente": true
+        }
+      ]
+    }
+  ]
+}

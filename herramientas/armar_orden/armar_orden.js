@@ -268,6 +268,11 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
         avisos.push('[' + ctx + '] indexacion sin tramo vigente: ' + grupo + ' @ ' + fIso + (hit && hit.ambiguo ? ' (ambiguo)' : ''));
       }
     }
+    // REPARTO (D-08): una MISMA carga entregada en DOS destinos -> linea REPARTOS, importe fijo
+    // (por defecto 90,00), FUERA de la base de indexacion. Se declara en el raw con "reparto": <importe>.
+    if (typeof raw.reparto === 'number') {
+      alb.lineas.reparto = { concepto: 'REPARTOS', cantidad: '1', importe: fmt(raw.reparto, 2) };
+    }
   }
   return alb;
 }

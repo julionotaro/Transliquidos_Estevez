@@ -1,0 +1,17 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261103134233.pdf (9 pags: ficha + 2 CMR FORESA + OC Stockmeier + albaran Terquimsa 2600013868 + bascula Terquimsa + SGS inhibidor + albaran/carta de porte Stockmeier + mov. mercancia Foresa). Pablo Carles Santos, 7963MDF (flota PROPIO); remolque en docs PO02628R (flota habitual PO2628R, mismo remolque con/sin cero). 1 hoja con viaticos (dietas 263,04) -> 1 viaje. DOBLE DESTINO FORESA: misma carga a Enguera (Harinas Almela, RES 1440 11.860) + Alacuas (Contrachapados Lubadi, RES 2130 11.720) = 23.580 kg -> 1 albaran combinado Caldas->Valencia 64,04 EUR/TN + linea REPARTOS 90 (D-08, Julio 03/11). Ref FORESA 2034455 (corto 20, igual en ambos CMR). Resinas RES -> COLA cod 1. Pata 2: STOCKMEIER QUIMICA S.L.U. (cliente NUEVO, no en catalogo) Tarragona (Terquimsa/Celanese)->Caldas de Reis (Foresa, DAP) ACETATO DE VINILO (cod VINILO) peso NETO 23.840 kg (carga Terquimsa + bascula; descarga Foresa 23.640, manda carga R-08). Ref provisoria 200858072 (Su pedido Stockmeier). SIN tarifa -> tarifa_pendiente; pendiente Julio: tarifa Tarragona->Caldas + alta cliente Stockmeier + regla de referencia.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-26",
+  "chofer": "PABLO CARLES SANTOS",
+  "cabeza": "7963",
+  "viajes": [
+    {
+      "matricula": "7963MDF",
+      "remolque": "PO02628R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "VALENCIA", "carga_lit": "COLA", "referencia": "2034455", "salida": "26/10/2026", "llegada": "28/10/2026", "peso_kg": 23580, "reparto": 90, "km_inicio": 403200, "km_fin": 404354 },
+        { "cliente_lit": "STOCKMEIER QUIMICA", "origen_lit": "TARRAGONA", "destino_lit": "CALDAS DE REIS", "carga_lit": "ACETATO DE VINILO", "referencia": "200858072", "salida": "29/10/2026", "llegada": "02/11/2026", "peso_kg": 23840, "km_inicio": 404630, "km_fin": 405798 }
+      ]
+    }
+  ]
+}
