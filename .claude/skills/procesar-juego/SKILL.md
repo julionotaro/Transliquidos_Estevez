@@ -20,12 +20,16 @@ leyendo la orden.json. Vos NO cargás en Gesruta.
 2. Rama **`main`**. `git fetch origin main && git reset --hard origin/main`.
 
 ## 1. Leer los PDFs
+- **Contar las páginas del escaneo y leerlas TODAS** (`doc.page_count`). Un juego trae varias páginas
+  (ficha + OC + **CMR/albarán** + báscula); el CMR/albarán con el **peso real** suele ir en página
+  aparte de la OC. Saltear páginas = facturar el previsto de la OC (error 03/11 Abalo; ver D-01/R-08).
 - Rasterizar con **pymupdf** (`fitz`) a PNG `Matrix(2.1–2.2)` y leer las imágenes (no hay poppler).
   Para dígitos dudosos (km, odómetros) recortar y ampliar (`Matrix(5–7)`). Cuidado 5↔9.
 - **Ficha del chofer:** chofer, tractora (cabeza = matrícula sin letras), remolque, y por viaje:
   fecha carga/descarga, lugar carga/descarga, mercancía, cantidad, km inicio/fin, km recorridos,
   vacíos. Verificar matrícula/remolque/chofer contra `ficha/flota.js` (padrón real).
-- **Documentos:** por albarán → cliente, origen, destino, referencia, peso, fechas.
+- **Documentos:** por albarán → cliente, origen, destino, referencia, **peso** (del CMR/albarán/báscula
+  de carga — **NUNCA de la OC**, que trae el previsto redondo; D-01/R-08), fechas.
 
 ## 2. Reglas clave (resumen; la verdad está en correcciones-julio.json)
 - **Tipo de chofer:** AUTÓNOMO si el **apellido** (token exacto, NO substring) es

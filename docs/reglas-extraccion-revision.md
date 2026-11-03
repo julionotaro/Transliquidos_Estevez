@@ -33,6 +33,9 @@ en `catalogo/flota.json`, nunca por la letra manuscrita de la ficha.
 ### A3. Leer **TODOS** los documentos; **la OC manda** en cliente y destino
 `ficha + OC + albaranes`, nunca un subconjunto. La **OC es la verdad** de cliente y destino; la
 ficha confirma km/fechas; el albarán da referencia/peso.
+- **Leer TODAS las páginas del escaneo** (contar páginas primero). El **CMR/albarán con el peso
+  real** suele ser una **página separada** de la OC; saltearla lleva a facturar el previsto de la OC
+  (ver A9). Caso 03/11: el escaneo de Abalo tenía 5 páginas y el CMR de Quimidroga estaba en la 3-4.
 - **TEPSA, SEVITRADE, DIVERSEY, CELLMARK = PUNTOS DE CARGA, no el cliente.** El cliente de
   facturación lo dice la OC: Quimidroga (carga en TEPSA), Comatra (carga en Sevitrade/El Copero),
   Baltransa (carga en Diversey).
@@ -89,8 +92,9 @@ El peso facturable sale del documento de peso de **carga** (albarán / CMR / bá
 trae el **previsto redondo** (24.000) que casi nunca es el real (24.040 / 23.980). Precedencia:
 **CMR/albarán de carga > doc de descarga > (nunca) OC**. Si solo está la OC o falta el documento →
 **`peso_pendiente` / REVISAR**, no facturar.
-- **Error visto (03/11):** Abalo QUIMIDROGA 713124 se facturó con **24.000** (previsto de la OC)
-  sin CMR en el juego → corregido a `peso_pendiente`.
+- **Error visto (03/11):** Abalo QUIMIDROGA 713124 se facturó con **24.000** (previsto de la OC).
+  El **CMR** (202610001368CMR) y el **albarán TEPSA** traían el **NETO 22.740** → **22,74 TN < 23 →
+  23 TN** (R-02). El CMR estaba en **páginas aparte de la OC** que no había leído (ver A3).
 - **Quién debía alertar (defensa en capas, no un solo control):** (1) la **lectura** aplica D-01 y no
   toma el peso de la OC; (2) el **armador** avisa si el peso en modo TN es múltiplo exacto de 1000 y
   soporta `peso_pendiente`; (3) el **validador** se puede sumar.
