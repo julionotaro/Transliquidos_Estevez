@@ -1,0 +1,36 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/miguel-pires/2026-10-16/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-03T11:11:20",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "0557",
+      "chofer": "MIGUEL PIRES",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "5050141467",
+          "nro_albaran_gesruta": "01",
+          "estado": "grabado",
+          "motivo": "km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
+        },
+        {
+          "referencia": "712200",
+          "nro_albaran_gesruta": "02",
+          "estado": "grabado",
+          "motivo": "km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
+        },
+        {
+          "referencia": "5050141626",
+          "nro_albaran_gesruta": "03",
+          "estado": "grabado",
+          "motivo": "km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
+        }
+      ]
+    }
+  ]
+}
