@@ -50,8 +50,8 @@ La extracción (Claude nube) lo lee **de git** y actualiza `datos/registro-proce
       "estado": "grabado",
       "motivo": "",
       "albaranes": [
-        { "referencia": "2029398", "nro_albaran_gesruta": "00050948", "estado": "grabado", "motivo": "" },
-        { "referencia": "2029388", "nro_albaran_gesruta": "00050949", "estado": "grabado", "motivo": "" }
+        { "referencia": "2029398", "nro_albaran_gesruta": "01", "estado": "CARGADO", "pendiente_de": [], "motivo": "" },
+        { "referencia": "2029388", "nro_albaran_gesruta": "02", "estado": "PEDIDO", "pendiente_de": ["destino"], "motivo": "destino" }
       ]
     }
   ]
@@ -63,9 +63,13 @@ La extracción (Claude nube) lo lee **de git** y actualiza `datos/registro-proce
 - **Llave de cruce:** `referencia` (por albarán) + `cabeza`/`chofer` (por viaje). Con eso la
   extracción encuentra cada fila del registro y le escribe `nro_viaje_gesruta` y
   `nro_albaran_gesruta`.
-- **`estado`** por albarán y por viaje: `grabado` | `abortado` | `error`. Si no es `grabado`,
-  `motivo` explica por qué (texto corto). Fallar ruidoso: mejor `error` + motivo que un número inventado.
-- Un albarán no cargable (tarifa_pendiente, punto faltante) → `estado: "omitido"`, `motivo`.
+- **`estado` por ALBARÁN** (Julio 2026-11-03): `CARGADO` (se cargaron las líneas) | `PEDIDO` (quedó
+  verde, sin líneas: `tarifa_pendiente` / `peso_pendiente` / destino sin código / sin porte). Cada
+  albarán trae además **`pendiente_de`**: lista corta de qué faltó (`tarifa`, `peso`, `destino`,
+  `porte`, `km`, `km_form_propio (temporal)`, `km/dietas (viaje lider)`). `motivo` = esa lista en texto.
+- **`estado` por VIAJE:** `grabado` (se grabó el viaje) | `abortado` (no se pudo; la cabecera
+  matrícula/chofer es el único caso que saltea un viaje — los demás viajes siguen). Fallar ruidoso:
+  mejor `abortado` + motivo que un número inventado.
 - **Nº de viaje por IMAGEN (la PC no tiene OCR):** al grabar el viaje, el bot captura un recorte
   del Nº y lo guarda como **PNG** (`nro_viaje_v<N>.png`) junto al `resultado.json`, y pone su
   nombre en **`nro_viaje_crop`**. Si Win32 pudo leer el texto, llena `nro_viaje_gesruta`; si no

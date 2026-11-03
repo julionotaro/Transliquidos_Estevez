@@ -4,6 +4,27 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-03b) — Botón de nuevo viaje + conducta resiliente
+
+**1) Botón de nuevo viaje:** para comenzar un viaje el bot ahora presiona SIEMPRE la **hoja blanca
+sola** (`NEW_VIAJE_BTN`, "Añadir viaje nuevo [F3]"), nunca la hoja+lápiz de **editar** (`EDIT_BTN`).
+La hoja blanca habilita un viaje en blanco con el cursor en Cabeza; el de editar queda deshabilitado
+y no corresponde. Antes el primer viaje usaba EDIT_BTN y Julio tenía que apretar la hoja blanca a mano.
+
+**2) Conducta resiliente** (un campo faltante NUNCA abandona el viaje):
+- **Cabecera** (matrícula/chofer): único caso que saltea un viaje. Si no se verifica, se **saltea ese
+  viaje y se sigue** con los demás (antes cortaba toda la cadena).
+- **Líneas:** se abren solo si hay `porte` y no hay `tarifa_pendiente` ni `peso_pendiente`. Si falta
+  `porte`, o `tarifa_pendiente`/`peso_pendiente`, o destino sin código → **no se abre Líneas; queda
+  Pedido** (verde). Ya no se aborta por "sin porte".
+- **KM:** `km.pendiente:true` → saltea el formulario (propio) y no carga Gastos (autónomo). Gastos sin
+  datos de km ya no aborta: graba el albarán igual y lo deja pendiente.
+- **`resultado.json`:** por albarán, `estado` = `CARGADO`/`PEDIDO` y `pendiente_de` = lista de lo que
+  faltó. Ver `ordenes-carga/CONTRATO-resultado-json.md` y `CONTRATO-orden-json.md`.
+
+En una línea: carga todo lo que puede, deja Pedido lo que no, nunca inventa, nunca abandona el viaje
+por un campo, y reporta qué quedó pendiente.
+
 ## `viajes-2` (2026-11-03) — TEMPORAL: no cargar el formulario de Km para chofer propio
 
 - **Pedido (Julio 2026-11-03):** hay descuadres de cantidades en el odómetro por desorganización

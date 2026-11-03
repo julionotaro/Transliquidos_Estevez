@@ -642,7 +642,7 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     ref=alb.get("referencia","") or ""; salida=alb.get("salida","") or ""; llegada=alb.get("llegada","") or ""
     ori=alb.get("origen",{}) or {}; des=alb.get("destino",{}) or {}; car=alb.get("carga",{}) or {}
     lineas=alb.get("lineas",{}) or {}; porte=lineas.get("porte") or {}; index=lineas.get("indexacion")
-    km=alb.get("km",{}) or {}; tarifa_pend=bool(alb.get("tarifa_pendiente"))
+    km=alb.get("km",{}) or {}; tarifa_pend=bool(alb.get("tarifa_pendiente")); peso_pend=bool(alb.get("peso_pendiente"))
 
     ensure_ges()
     # Avisos de Gesruta (certificado caducado, "N aviso(s)", "Atencion...") NUNCA frenan la carga:
@@ -681,15 +681,17 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
         field(C_CARGA, car["codigo"], "Carga", tab=True); wait_and_close(1.2,"post-carga")
     elif car.get("buscar"): log("  Carga BUSCADOR (%r) no calibrado -> salto"%car.get("buscar"))
 
-    es_pedido = bool(tarifa_pend or (des.get("codigo") is None))
+    # PEDIDO (queda verde, sin abrir Lineas) si: tarifa_pendiente, peso_pendiente, destino sin codigo,
+    # o NO hay porte. Conducta resiliente (Julio 2026-11-03): un campo faltante NUNCA abandona el
+    # viaje -> se carga la cabecera con lo que haya y el albaran queda Pedido; nunca se inventa un dato.
+    es_pedido = bool(tarifa_pend or peso_pend or (des.get("codigo") is None) or (not porte))
+    _pmot=[m for m,c in (("tarifa_pendiente",tarifa_pend),("peso_pendiente",peso_pend),
+                         ("destino sin codigo",des.get("codigo") is None),("sin porte",not porte)) if c]
     # ---- LINEAS ----
     if es_pedido:
-        # Contrato: tarifa_pendiente / destino sin codigo -> albaran como PEDIDO: cabecera + km, SIN
-        # lineas, Estado "Pedido". Calibrado en vivo 2026-10-28: el albaran NACE en Estado "Pedido";
-        # si NO se tocan Lineas queda Pedido (el aviso "¿convertir?" solo salta al ir a Lineas). Los
-        # km se cargan igual y, al salir del form de km, se responde NO a "¿convertir en albaran?"
-        # (ver handle_pedido_dialogs). Asi queda Pedido con km y sin lineas.
-        log("  PEDIDO (tarifa_pendiente/destino sin codigo): NO se cargan lineas; queda Estado 'Pedido'.")
+        # El albaran NACE en Estado "Pedido" (verde); si NO se tocan Lineas queda Pedido (el aviso
+        # "¿convertir?" solo salta al ir a Lineas). Calibrado en vivo 2026-10-28.
+        log("  PEDIDO (%s): NO abro Lineas; queda Estado 'Pedido' (verde)."%", ".join(_pmot))
     elif porte:
         grid_click(LINEAS_TAB,"solapa Lineas"); time.sleep(0.4)
         grid_click(ADD_LINE,"add porte"); time.sleep(0.6)
@@ -707,7 +709,8 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
             log("  indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).")
         else: log("  sin indexacion")
     else:
-        log("  sin porte en la orden -> paro cadena."); return False
+        # No deberia llegar aca (sin porte ya cae en es_pedido). Por las dudas NO abortar el viaje:
+        log("  sin porte -> no abro Lineas; queda Pedido (no abandono el viaje por un campo).")
 
     # ---- KM / GASTOS + GRABADO ----
     if autonomo:
@@ -719,8 +722,10 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
         elif es_pedido:
             # PEDIDO autonomo (raro): no se cargan gastos; queda Estado Pedido (sin lineas).
             log("  --- GASTOS ---  PEDIDO: no se cargan gastos; queda Estado Pedido.")
+        elif bool(km.get("pendiente")):
+            log("  --- GASTOS ---  km pendiente: NO cargo gastos; grabo el albaran igual (queda pendiente).")
         elif not do_gastos_autonomo(km, n):
-            return False
+            log("  --- GASTOS ---  faltan km para Gastos: NO cargo gastos; grabo el albaran igual (queda pendiente).")
         ensure_ges(); time.sleep(0.3)
         pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(0.8)
         if es_pedido: handle_pedido_dialogs(3.0,"post-albaran-pedido")
@@ -736,9 +741,11 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     # Se SALTEA el formulario de Kilometros si: (a) CARGAR_KM_FORM_PROPIO=False (temporal, ver config
     # arriba: descuadres de odometro por desorganizacion); o (b) km.cargar=False / duo_secundario
     # (DUOTRAILER: los km van una sola vez en el viaje lider). En ambos casos se graba el albaran igual.
-    _skip_km = (not CARGAR_KM_FORM_PROPIO) or (km.get("cargar") is False) or duo_secundario
+    _skip_km = (not CARGAR_KM_FORM_PROPIO) or (km.get("cargar") is False) or bool(km.get("pendiente")) or duo_secundario
     if _skip_km:
-        if duo_secundario or (km.get("cargar") is False):
+        if km.get("pendiente"):
+            log("  --- KM ---  km pendiente: SALTEO el formulario de Kilometros (queda pendiente).")
+        elif duo_secundario or (km.get("cargar") is False):
             log("  --- KM ---  DUOTRAILER secundario: SALTEO el formulario de Kilometros (no duplico km).")
         else:
             log("  --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).")
@@ -897,19 +904,22 @@ try:
         vres={"cabeza":cab.get("cabeza"), "chofer":(cab.get("verificar",{}) or {}).get("chofer",""),
               "nro_viaje_gesruta":"", "nro_viaje_crop":"", "estado":"abortado", "motivo":"", "albaranes":[]}
         resultados.append(vres)
-        if vpos>0:
-            if not has_window("ENTRADA DE VIAJES"): log("ABORTO: no estoy en Entrada de Viajes para nuevo viaje."); break
-            log("--- NUEVO VIAJE (hoja blanca; el viaje anterior YA se grabo con F2) ---")
-            ensure_ges(); pyautogui.moveTo(*NEW_VIAJE_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*NEW_VIAJE_BTN); time.sleep(1.6)
-            ok_cab=load_cabecera(cab, already_editing=True)   # la hoja blanca dejo el cursor en Cabeza
-        else:
-            ok_cab=load_cabecera(cab, already_editing=False)  # primer viaje (del menu): hay que entrar en edicion
+        if vpos>0 and not has_window("ENTRADA DE VIAJES"):
+            log("ABORTO: no estoy en Entrada de Viajes para nuevo viaje."); break
+        # Comenzar un viaje SIEMPRE con la HOJA BLANCA SOLA ("Anadir viaje nuevo [F3]"), NUNCA con la
+        # hoja+lapiz de EDITAR (Julio 2026-11-03): la hoja blanca habilita un viaje en blanco con el
+        # cursor en Cabeza; el boton de editar queda deshabilitado en ese momento y no corresponde.
+        log("--- NUEVO VIAJE (hoja blanca sola 'Anadir viaje nuevo', NO la de editar) ---")
+        ensure_ges(); pyautogui.moveTo(*NEW_VIAJE_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*NEW_VIAJE_BTN); time.sleep(1.6)
+        ok_cab=load_cabecera(cab, already_editing=True)   # la hoja blanca dejo el cursor en Cabeza
         if not ok_cab:
-            vres["motivo"]="cabecera no verificada (matricula/remolque/chofer)"
-            log("### CADENA DETENIDA en cabecera (viaje %d). NO grabo. ###"%(vpos+1)); break
+            # Conducta resiliente (Julio 2026-11-03): la cabecera (matricula/chofer) es el UNICO caso
+            # que justifica saltear un viaje. Se SALTEA este y se SIGUE con los demas.
+            vres["estado"]="abortado"; vres["motivo"]="cabecera no verificada (matricula/remolque/chofer)"
+            log("### VIAJE %d SALTEADO (cabecera no verificada). Sigo con los demas. ###"%(vpos+1)); continue
         grabados=0
         for ai,alb in enumerate(albs):
-            ar={"referencia":(alb.get("referencia") or ""), "nro_albaran_gesruta":"", "estado":"abortado", "motivo":""}
+            ar={"referencia":(alb.get("referencia") or ""), "nro_albaran_gesruta":"", "estado":"abortado", "motivo":"", "pendiente_de":[]}
             vres["albaranes"].append(ar)
             log("--- Abrir albaran %d/%d (Anadir nuevo) ---"%(ai+1,len(albs)))
             ensure_ges(); pyautogui.moveTo(*NUEVO_ALB_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*NUEVO_ALB_BTN)
@@ -921,12 +931,23 @@ try:
             if not do_albaran(alb, ai, autonomo, duo_sec):
                 ar["motivo"]="cadena detenida en este albaran"
                 log("### CADENA DETENIDA en albaran %d ###"%(ai+1)); break
-            ar["estado"]="grabado"; ar["nro_albaran_gesruta"]=capturar_nro_albaran(ai)
-            if duo_sec: ar["motivo"]="DUOTRAILER secundario: km/dietas en el viaje lider"
-            elif alb.get("tarifa_pendiente") or (alb.get("destino",{}) or {}).get("codigo") is None:
-                ar["motivo"]="PEDIDO (tarifa pendiente / destino sin codigo): cabecera+km, sin lineas"
-            elif (not autonomo) and (not CARGAR_KM_FORM_PROPIO):
-                ar["motivo"]="km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
+            # estado por albaran: CARGADO (lineas cargadas) o PEDIDO (quedo verde, sin lineas), mas la
+            # lista pendiente_de de lo que falto. (Julio 2026-11-03: reportar que quedo pendiente.)
+            ar["nro_albaran_gesruta"]=capturar_nro_albaran(ai)
+            _des=(alb.get("destino",{}) or {}); _lin=(alb.get("lineas",{}) or {}); _km2=(alb.get("km",{}) or {})
+            _sin_lineas = bool(alb.get("tarifa_pendiente") or alb.get("peso_pendiente")
+                               or (_des.get("codigo") is None) or (not _lin.get("porte")))
+            _pend=[]
+            if alb.get("tarifa_pendiente"): _pend.append("tarifa")
+            if alb.get("peso_pendiente"): _pend.append("peso")
+            if _des.get("codigo") is None: _pend.append("destino")
+            if not _lin.get("porte"): _pend.append("porte")
+            if duo_sec: _pend.append("km/dietas (viaje lider)")
+            elif _km2.get("pendiente"): _pend.append("km")
+            elif (not autonomo) and (not CARGAR_KM_FORM_PROPIO) and (not _sin_lineas): _pend.append("km_form_propio (temporal)")
+            ar["estado"] = "PEDIDO" if _sin_lineas else "CARGADO"
+            ar["pendiente_de"] = _pend
+            ar["motivo"] = "; ".join(_pend)
             grabados+=1
         if grabados!=len(albs):
             log("### NO grabo viaje %d: %d/%d albaranes ###"%(vpos+1,grabados,len(albs))); break

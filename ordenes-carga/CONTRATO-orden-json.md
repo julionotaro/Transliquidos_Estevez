@@ -53,7 +53,31 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
   **autónomo** va explícito en `vacio` (sale de la ficha) porque sus km se cargan en *Gastos*.
   `cargar` (opcional, default `true`): si es `false`, **el bot NO carga el formulario de km de ese
   viaje** (los km ya se cuentan en el viaje emparejado; ver `duo_secundario`).
-- `tarifa_pendiente`: `true` → solo cabecera + km, Estado "Pedido" (sin líneas). `false` normal.
+  `pendiente` (opcional, default `false`): si es `true`, el dato de km no está listo → **el bot
+  saltea el formulario de km** (propio) y **no carga los km en Gastos** (autónomo); queda pendiente.
+- `tarifa_pendiente`: `true` → solo cabecera, Estado "Pedido" (sin líneas). `false` normal.
+- `peso_pendiente` (opcional, default `false`): `true` → el peso/importe no está confirmado →
+  **no se abre Líneas**, el albarán queda **Pedido** (verde). Igual que `tarifa_pendiente` a efectos
+  de no cargar líneas.
+
+## Conducta resiliente del bot (Julio 2026-11-03)
+
+Un campo faltante en **un** albarán **nunca** abandona el viaje entero. Reglas:
+- **Cabecera (matrícula/chofer):** único caso que justifica saltear un viaje. Si no se puede crear,
+  se saltea ese viaje (queda `estado: abortado` en el resultado) y **los demás viajes siguen**.
+- **Cada albarán:** cargar siempre la cabecera con lo que haya (cliente/origen/destino/carga/ref/
+  fechas). Si un `codigo` viene `null`, no inventar: se carga lo que esté y el albarán queda Pedido.
+- **Líneas:** se abren y cargan **solo** si `porte` es objeto y no hay `tarifa_pendiente` ni
+  `peso_pendiente`. Si `porte` es `null`, o `tarifa_pendiente`, o `peso_pendiente` → **no** se abre
+  Líneas: queda **Pedido** (verde). Indexación `cargar:false` = acumulada (no se carga línea);
+  `null` = sin línea.
+- **KM:** `pendiente:true` o `cargar:false` (2ª cisterna duo) → saltear el formulario / Gastos.
+- Nº de viaje/albarán: capturados de pantalla, nunca pre-asignados.
+- El `resultado.json` reporta por albarán `estado` (`CARGADO`/`PEDIDO`) y `pendiente_de` (ver
+  `CONTRATO-resultado-json.md`).
+
+En una línea: **carga todo lo que puede, deja Pedido lo que no, nunca inventa un dato, nunca abandona
+el viaje por un campo, y reporta qué quedó pendiente.**
 
 ## Cabecera — campos extra
 
