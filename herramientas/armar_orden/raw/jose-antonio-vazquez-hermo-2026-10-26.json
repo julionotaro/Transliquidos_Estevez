@@ -1,0 +1,17 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261103134356.pdf (5 pags: ficha + CMR FORESA 2033842 + OC QUIMIDROGA 712678 + albaran/bascula RELISA 749863 + albaran descarga AVIGAL). Jose Antonio Vazquez Hermo, 7394LZP (flota PROPIO, sin remolque habitual), remolque R1832BBC (de los docs). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Alb1 FORESA Caldas->Tordera (IP Decor Spain, Barcelona) RES 0011->COLA, peso CMR 23.120. Ref FORESA 2033842 (corto 20). Tarifa Caldas->Tordera 72,36 (historico, agregada a confirmadas; Tordera cod 9731 dado de alta). Alb2 QUIMIDROGA Barcelona (Relisa)->Campano/Pontevedra (Avicola de Galicia) LISINA LIQUIDA 50% -> LISINA cod 62, peso NETO 23.640 (bascula RELISA carga; descarga Avigal 23.600, manda carga R-08; OC decia 25.000 previsto). Ref QUIMIDROGA 712678 (ref en factura). Destino Campano cascada a PONTEVEDRA (PO) que porta la tarifa 79,71. Ambos nacionales P IVA 21.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-26",
+  "chofer": "JOSE ANTONIO VAZQUEZ HERMO",
+  "cabeza": "7394",
+  "viajes": [
+    {
+      "matricula": "7394LZP",
+      "remolque": "R1832BBC",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TORDERA", "carga_lit": "COLA", "referencia": "2033842", "salida": "26/10/2026", "llegada": "27/10/2026", "peso_kg": 23120, "km_inicio": 448815, "km_fin": 449995 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "PONTEVEDRA", "carga_lit": "LISINA", "referencia": "712678", "salida": "28/10/2026", "llegada": "30/10/2026", "peso_kg": 23640, "km_inicio": 450136, "km_fin": 451304 }
+      ]
+    }
+  ]
+}

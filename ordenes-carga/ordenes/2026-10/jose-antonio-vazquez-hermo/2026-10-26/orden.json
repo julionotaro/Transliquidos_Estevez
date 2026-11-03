@@ -1,0 +1,100 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "7394",
+        "verificar": {
+          "matricula": "7394LZP",
+          "remolque": "R1832BBC",
+          "chofer": "JOSE ANTONIO VAZQUEZ HERMO"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2033842",
+          "salida": "26/10/2026",
+          "llegada": "27/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,120",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.672,96",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "448815",
+            "fin": "449995",
+            "carga": "1180"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "PO",
+            "esperado": "PONTEVEDRA"
+          },
+          "carga": {
+            "codigo": "62",
+            "esperado": "LISINA"
+          },
+          "referencia": "712678",
+          "salida": "28/10/2026",
+          "llegada": "30/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,640",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.884,34",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "450136",
+            "fin": "451304",
+            "carga": "1168"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

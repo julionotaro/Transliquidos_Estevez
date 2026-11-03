@@ -12,6 +12,18 @@
       "fecha": "2026-11-02",
       "por": "Julio",
       "nota": "Miranda de Ebro -> TMG Tecidos (Ponte GMR, Braga, PT). Historico de facturacion estable; no esta en el tarifario Quimidroga (carece de origen Miranda). Quimidroga factura PT como NACIONAL (P, IVA 21)."
+    },
+    {
+      "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
+      "origen": "CALDAS DE REIS",
+      "destino": "TORDERA",
+      "material": "COLA",
+      "precio": 72.36,
+      "vigente_desde": "2026-01-01",
+      "confirmado": true,
+      "fecha": "2026-11-03",
+      "por": "Julio",
+      "nota": "FORESA Caldas de Reis -> Tordera (IP Decor Spain, Barcelona) COLA/resinas. Precio del historico de facturacion (ver _fuente_tarifas en correcciones-julio.json); no esta en el export n8n. Tordera (cod Gesruta 9731) dado de alta en puntos-alta.json el 03/11."
     }
   ]
 }

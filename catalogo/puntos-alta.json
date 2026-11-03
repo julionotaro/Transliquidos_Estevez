@@ -3576,5 +3576,15 @@
   "pais": "",
   "tipo": "generico",
   "origen_alta": "corrida-3 (confirmado Julio: Teruel=TE porta la tarifa Aveiro/Caldas->Teruel 56)"
+ },
+ {
+  "id_punto": "9731",
+  "nombre_canonico": "TORDERA",
+  "alias": "",
+  "municipio": "",
+  "provincia": "BARCELONA",
+  "pais": "",
+  "tipo": "generico",
+  "origen_alta": "gesruta (cod 9731; FORESA Caldas->Tordera COLA 72,36 - historico). Alta 03/11 juego Jose A. Vazquez (IP Decor Spain)"
  }
 ]
