@@ -1,0 +1,30 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/manuel-aboy-gonzalez/2026-10-26/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-03T11:22:05",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "5713",
+      "chofer": "MANUEL ABOY GONZALEZ",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "4500002523",
+          "nro_albaran_gesruta": "01",
+          "estado": "grabado",
+          "motivo": "km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
+        },
+        {
+          "referencia": "201786",
+          "nro_albaran_gesruta": "02",
+          "estado": "grabado",
+          "motivo": "PEDIDO (tarifa pendiente / destino sin codigo): cabecera+km, sin lineas"
+        }
+      ]
+    }
+  ]
+}
