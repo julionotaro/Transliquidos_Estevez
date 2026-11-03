@@ -54,6 +54,11 @@ ficha confirma km/fechas; el albarán da referencia/peso.
 - **QUIMIDROGA:** la **"Referencia en factura"** de la OC.
 - **COMATRA:** la **"Ref. proveedor"** de la OC.
 - **BALTRANSA:** el Nº de **Orden de Transporte**.
+- **OJO formato de sistema (03/11):** cuando por un **problema de sistema** las OC/albaranes salen
+  con un **formato distinto y de apariencia "provisoria"**, esos números **son definitivos igual** —
+  no son placeholder, no re-pedir el "definitivo". Lote 26/10: **Abalo 260032**, **Aboy 4500002523**
+  quedan como están. No cambia la regla general de ref por cliente; aplica cuando el propio sistema
+  emitió el doc con formato anómalo.
 - Respaldo: reglas RNM/FORESA/BRESFOR + DIVERSEY/BALTRANSA.
 
 ### A6. **Destino = el punto que PORTA la tarifa** (no el literal del doc)
