@@ -66,7 +66,11 @@ El criterio de qué nombre de punto usar es del humano; se elige el que tiene ta
 - **Teruel (TE)**, no UTISA Teruel (ambos existen; la tarifa vive bajo TERUEL).
 - **Igualada = Barcelona** (lo dice la OC; tarifa Caldas→Barcelona).
 - **Cabopol = Leiria**; **Bio-Oils (Palos) = Huelva**; **Orember** (Finsa Orember, San Ciprián, Ourense).
-- Respaldo: regla `destino` (09/10) + `FORESA/BRESFOR destino/tarifa` (15/10).
+- **Si el pueblo NO es punto Gesruta → cascada a la provincia/región** (ej **Sanchidrián → Ávila
+  (AV)**, vía alias en `puntos-alta.json`). El destino **SIEMPRE** lleva un código: el punto exacto
+  si existe, si no su provincia/región. **`codigo:null` solo para un dato ilegible** — si no, el bot
+  aborta la carga entera.
+- Respaldo: regla `destino` (09/10) + `FORESA/BRESFOR destino/tarifa` (15/10) + `COMATRA` (03/11).
 
 ### A7. **Indexación por la FECHA DE CARGA** (quincena correcta)
 El factor sale de la quincena de la **fecha de carga** del albarán, no de "el mes".

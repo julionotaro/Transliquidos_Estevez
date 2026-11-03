@@ -3027,13 +3027,13 @@
  {
   "id_punto": "AV",
   "nombre_canonico": "AVILA",
-  "alias": "",
+  "alias": "SANCHIDRIAN",
   "municipio": "",
   "provincia": "ÁVILA",
   "pais": "",
   "tipo": "generico",
   "empresa_sede": "",
-  "origen_alta": "gesruta"
+  "origen_alta": "gesruta; alias SANCHIDRIAN = cascada a provincia AVILA, confirmado Julio 03/11 (Tradecorp Sanchidrian no tiene punto propio en Gesruta)"
  },
  {
   "id_punto": "AVINT",

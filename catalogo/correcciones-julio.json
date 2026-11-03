@@ -188,7 +188,7 @@
     },
     {
       "fecha": "2026-11-03", "por": "Julio", "cliente": "COMATRA", "campo": "cliente/tarifa",
-      "regla": "COMATRA, S.C.L. (cod Gesruta 33) es cliente ESPANOL -> concepto P, IVA 21. SEVITRADE / El Copero (Sevilla) es PUNTO DE CARGA, no el cliente (error visto: Servitrade vs Comatra). Referencia = ref proveedor de la OC (ej 201786). Tarifa confirmada: El Copero (Sevilla) -> Tradecorp Sanchidrian (Avila) SOSA = 940,00 EUR/VIAJE FIJO (um UN, cantidad 1) con INDEXACION INCLUIDA -> NO agregar linea de indexacion (como Forestal). Pendiente Gesruta: el punto Sanchidrian (Avila) no tiene codigo cargado, dar de alta.",
+      "regla": "COMATRA, S.C.L. (cod Gesruta 33) es cliente ESPANOL -> concepto P, IVA 21. SEVITRADE / El Copero (Sevilla) es PUNTO DE CARGA, no el cliente (error visto: Servitrade vs Comatra). Referencia = ref proveedor de la OC (ej 201786). Tarifa confirmada: El Copero (Sevilla) -> Tradecorp Sanchidrian (Avila) SOSA = 940,00 EUR/VIAJE FIJO (um UN, cantidad 1) con INDEXACION INCLUIDA -> NO agregar linea de indexacion (como Forestal). Destino: Sanchidrian NO tiene punto propio en Gesruta -> se CASCADA a la provincia AVILA (cod AV), via alias en puntos-alta.json. Regla general (Julio 03/11): el destino SIEMPRE debe llevar un codigo valido -el punto exacto si existe, si no su PROVINCIA o region-; NUNCA dejar destino.codigo en null porque el bot aborta la carga. null se reserva solo para un dato realmente ilegible.",
       "estado": "confirmada"
     }
   ],

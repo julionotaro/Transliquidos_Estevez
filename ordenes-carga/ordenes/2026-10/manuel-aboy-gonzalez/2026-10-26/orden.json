@@ -63,8 +63,8 @@
             "esperado": "SEVILLA"
           },
           "destino": {
-            "codigo": null,
-            "esperado": "SANCHIDRIAN"
+            "codigo": "AV",
+            "esperado": "AVILA"
           },
           "carga": {
             "codigo": "51",
