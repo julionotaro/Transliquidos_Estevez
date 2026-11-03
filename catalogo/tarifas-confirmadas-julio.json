@@ -24,6 +24,17 @@
       "fecha": "2026-11-03",
       "por": "Julio",
       "nota": "FORESA Caldas de Reis -> Tordera (IP Decor Spain, Barcelona) COLA/resinas. Precio del historico de facturacion (ver _fuente_tarifas en correcciones-julio.json); no esta en el export n8n. Tordera (cod Gesruta 9731) dado de alta en puntos-alta.json el 03/11."
+    },
+    {
+      "cliente": "RNM TRANSPORTES QUIMICOS, LDA",
+      "origen": "BARCELONA",
+      "destino": "CORDOBA",
+      "precio": 74.5,
+      "vigente_desde": "2026-01-01",
+      "confirmado": true,
+      "fecha": "2026-11-03",
+      "por": "Julio",
+      "nota": "RNM Barcelona (Cellmark/TEPSA) -> Novalk Lucena (Cordoba). RNM es cliente PORTUGUES -> PI/IVA 0/GPT. 74,50 EUR/TN confirmado por Julio; no esta en el tarifario RNM (que no tiene Barcelona->Cordoba)."
     }
   ]
 }

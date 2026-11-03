@@ -66,7 +66,7 @@
             "carga": "1084"
           },
           "tarifa_pendiente": false,
-          "_destino_nota": "Entrega en CONDUCTORES ELECTRICOS REVI (Quintela de Leirado, Ourense). Se carga destino ORENSE (ORE), que es donde vive la tarifa QUIMIDROGA (Barcelona->Orense 79,71 EUR/TN). Carga fisica en TEPSA Barcelona."
+          "_nota": null
         },
         {
           "cliente": {
@@ -108,7 +108,7 @@
             "carga": "843"
           },
           "tarifa_pendiente": false,
-          "_destino_nota": "Finsa Cella (Teruel): destino TERUEL (TE), donde vive la tarifa 56 EUR/TN. RES1350->COLA. Internacional PI IVA 0."
+          "_nota": null
         },
         {
           "cliente": {
@@ -131,16 +131,26 @@
           "salida": "08/10/2026",
           "llegada": "09/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "1.500,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.500,00",
+              "factor": "0,1450"
+            }
           },
           "km": {
             "inicio": "1167142",
             "fin": "1167989",
             "carga": "847"
           },
-          "tarifa_pendiente": true,
-          "_bloqueo": "TARIFA PENDIENTE: no hay tarifa ARACHEM (cod 329) Bilbao->SACOPOR Alenquer (PT). Internacional PI IVA 0. Material 'cola sintetica' (ARAMUL CS, cod art ARACHEM 1000157) mapeado a COLA cod 1 - verificar con Julio. Ref = albaran ARACHEM 261012. Confirmar tarifa."
+          "tarifa_pendiente": false,
+          "_nota": "ARACHEM (cod 329) Bilbao->SACOPOR Alenquer (PT). ARACHEM es cliente ESPANOL (Berango, Vizcaya) -> NACIONAL P IVA 21 e idx G, aunque descargue en Portugal (regla concepto-por-nacionalidad 02/11; corrige el PI/0 de antes del armador). Precio FIJO 1.500,00 EUR/viaje (um UN) + idx G 14,50% (0,1450) sobre el porte. Confirmado por Julio 03/11. Material cola sintetica ARAMUL CS -> COLA cod 1. Peso albaran 23.380 (precio fijo, sin min)."
         }
       ]
     }

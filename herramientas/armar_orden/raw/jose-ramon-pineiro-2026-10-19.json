@@ -31,7 +31,8 @@
           "llegada": "22/10/2026",
           "km_inicio": 962928,
           "km_fin": 963828,
-          "peso_kg": 24000
+          "peso_kg": 24000,
+          "peso_ok_redondo": true
         },
         {
           "cliente_lit": "BALTRANSA, S.A.",

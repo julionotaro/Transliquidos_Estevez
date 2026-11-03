@@ -89,16 +89,26 @@
           "salida": "21/10/2026",
           "llegada": "22/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,000",
+              "precio": "74,50",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.788,00",
+              "factor": "0,1597"
+            }
           },
           "km": {
             "inicio": "962928",
             "fin": "963828",
             "carga": "900"
           },
-          "tarifa_pendiente": true,
-          "_nota": "RNM acetato de etilo. Carga Cellmark/TEPSA Barcelona, entrega real NOVALK Lucena (Cordoba). Destino cascada a CORDOBA (CO) para que tenga codigo valido. Cliente RNM PORTUGUES -> PI IVA 0 GPT aunque el viaje sea en Espana (regla 02/11). TARIFA PENDIENTE: no hay tarifa RNM Barcelona->Cordoba (criterio Julio 03/11: RNM se arma pendiente si no hay destino especifico). Ref guia remessa 0141171435. Peso 24.000."
+          "tarifa_pendiente": false,
+          "_nota": "RNM acetato de etilo. Cellmark/TEPSA Barcelona -> Novalk Lucena (CORDOBA, cascada). Cliente RNM PORTUGUES -> PI IVA 0 GPT. Tarifa 74,50 EUR/TN confirmada por Julio 03/11 (Barcelona->Cordoba, no estaba en el tarifario RNM). Idx GPT 2a quincena oct 0,1597. Ref guia remessa 0141171435. Peso 24.000 confirmado por CMR+albaran TEPSA (no es previsto de la OC)."
         },
         {
           "cliente": {
