@@ -60,8 +60,8 @@
         },
         {
           "cliente": {
-            "codigo": null,
-            "esperado": "STOCKMEIER QUIMICA"
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
           },
           "origen": {
             "codigo": "T",
@@ -79,15 +79,25 @@
           "salida": "29/10/2026",
           "llegada": "02/11/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,840",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.725,06",
+              "factor": "0,1597"
+            }
           },
           "km": {
             "inicio": "404630",
             "fin": "405798",
             "carga": "1168"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         }
       ]
     }

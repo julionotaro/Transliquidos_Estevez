@@ -33,15 +33,25 @@
           "salida": "23/10/2026",
           "llegada": "26/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.833,33",
+              "factor": "0,1450"
+            }
           },
           "km": {
             "inicio": "1172235",
             "fin": "1173445",
             "carga": "1210"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         },
         {
           "cliente": {
