@@ -20,6 +20,7 @@ Criterio de nombres (carpetas y archivos) de este arbol y de `procesados/`: **`d
 | 2026-10 | 2026-10-14 | jose-ramon-pineiro | 8420 | 1 | 2 | `ficha_20261022114103.pdf` | `2026-10/jose-ramon-pineiro/2026-10-14/` | pendiente_carga (metanol normal) |
 | 2026-10 | 2026-10-16 | jose-manuel-paz | 2050 | 3 | 3 | `ficha_20261023165354.pdf` | `2026-10/jose-manuel-paz/2026-10-16/` | pendiente_carga (duotrailer BRESFOR x2 + Quimidroga) |
 | 2026-10 | 2026-10-23 | jose-carlos-alfonsin | 4916 | 1 | 2 | `ficha_20261028190834.pdf` | `2026-10/jose-carlos-alfonsin/2026-10-23/` | pendiente_carga (autonomo; FORESA Tordera + Quimidroga Vilarinho) |
+| 2026-10 | 2026-10-19 | jose-ramon-pineiro | 8420 | 1 | 3 | `ficha_20261103120721.pdf` | `2026-10/jose-ramon-pineiro/2026-10-19/` | pendiente_carga (Baltransa fijo OK; FORESA Igualada y RNM Cordoba tarifa_pendiente) |
 
 ## Referencias
 - Contrato del formato: `ordenes-carga/CONTRATO-orden-json.md`

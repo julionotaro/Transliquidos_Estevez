@@ -1,0 +1,52 @@
+{
+  "_nota": "HECHOS CRUDOS leidos por vision (ficha 20261103120721 + docs 20261102154846). Ramon Pineiro 8420KKT/PO01956R, propio. 1 hoja con viaticos (214) y misma tractora+remolque -> 1 viaje con 3 albaranes. Trip3: la ficha dice SOSA pero los documentos (OC Baltransa + Diversey + DAC) dicen ACIDO NITRICO UN2031 -> manda el documento.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-19",
+  "chofer": "JOSE RAMON PINEIRO",
+  "cabeza": "8420",
+  "viajes": [
+    {
+      "matricula": "8420KKT",
+      "remolque": "PO01956R",
+      "albaranes": [
+        {
+          "cliente_lit": "FORESA IND. QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "IGUALADA",
+          "carga_lit": "FORMOL",
+          "referencia": "2032989",
+          "salida": "19/10/2026",
+          "llegada": "21/10/2026",
+          "km_inicio": 961598,
+          "km_fin": 962739,
+          "peso_kg": 22760
+        },
+        {
+          "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA",
+          "origen_lit": "BARCELONA",
+          "destino_lit": "CORDOBA",
+          "carga_lit": "ACETATO DE ETILO",
+          "referencia": "0141171435",
+          "salida": "21/10/2026",
+          "llegada": "22/10/2026",
+          "km_inicio": 962928,
+          "km_fin": 963828,
+          "peso_kg": 24000
+        },
+        {
+          "cliente_lit": "BALTRANSA, S.A.",
+          "origen_lit": "MADRID",
+          "destino_lit": "TEIXEIRO",
+          "carga_lit": "ACIDO NITRICO",
+          "referencia": "338923",
+          "salida": "23/10/2026",
+          "llegada": "26/10/2026",
+          "km_inicio": 964280,
+          "km_fin": 965152,
+          "um": "UN",
+          "precio_fijo": 1150.0
+        }
+      ]
+    }
+  ]
+}

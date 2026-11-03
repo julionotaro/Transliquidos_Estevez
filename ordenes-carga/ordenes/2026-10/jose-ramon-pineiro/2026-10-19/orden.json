@@ -1,0 +1,138 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-10-19",
+    "chofer": "JOSE RAMON PINEIRO",
+    "cabeza": "8420",
+    "remolques": [
+      "PO01956R"
+    ],
+    "viajes": 1,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261103120721.pdf",
+    "choferes_tipo": "propio",
+    "_nota_armador": "Resuelto con herramientas/armar_orden (raw jose-ramon-pineiro-2026-10-19.json). 1 hoja con viaticos (214) = 1 viaje (regla 02/11); misma tractora+remolque -> no se parte. 3 albaranes."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "8420",
+        "verificar": {
+          "matricula": "8420KKT",
+          "remolque": "PO01956R",
+          "chofer": "JOSE RAMON PINEIRO"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "IGUAL",
+            "esperado": "IGUALADA"
+          },
+          "carga": {
+            "codigo": "3",
+            "esperado": "FORMOL"
+          },
+          "referencia": "2032989",
+          "salida": "19/10/2026",
+          "llegada": "21/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "961598",
+            "fin": "962739",
+            "carga": "1141"
+          },
+          "tarifa_pendiente": true,
+          "_nota": "FORESA formol Caldas->Comercial Godo Igualada (IGUAL). FORMOL cod 3. Nacional P IVA 21. TARIFA PENDIENTE: no hay tarifa FORESA Caldas->Igualada formol (tabla/historico/analogia). Confirmar tarifa con Julio. Peso albaran 22.760 (al tarifar <23 -> min 23)."
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "CO",
+            "esperado": "CORDOBA"
+          },
+          "carga": {
+            "codigo": "31",
+            "esperado": "ACETATO DE ETILO"
+          },
+          "referencia": "0141171435",
+          "salida": "21/10/2026",
+          "llegada": "22/10/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "962928",
+            "fin": "963828",
+            "carga": "900"
+          },
+          "tarifa_pendiente": true,
+          "_nota": "RNM acetato de etilo. Carga Cellmark/TEPSA Barcelona, entrega real NOVALK Lucena (Cordoba). Destino cascada a CORDOBA (CO): Lucena no tiene punto propio (regla: destino siempre con codigo). Cliente RNM PORTUGUES -> PI IVA 0 GPT aunque el viaje sea en Espana (regla 02/11). TARIFA PENDIENTE: no hay tarifa RNM Barcelona->Cordoba. Ref = guia remessa 0141171435. Peso 24.000."
+        },
+        {
+          "cliente": {
+            "codigo": "10",
+            "esperado": "BALTRANSA, S.A."
+          },
+          "origen": {
+            "codigo": "M",
+            "esperado": "MADRID"
+          },
+          "destino": {
+            "codigo": "TEIXE",
+            "esperado": "TEIXEIRO"
+          },
+          "carga": {
+            "codigo": "89",
+            "esperado": "ACIDO NITRICO"
+          },
+          "referencia": "338923",
+          "salida": "23/10/2026",
+          "llegada": "26/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "1.150,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1",
+              "factor": "0"
+            }
+          },
+          "km": {
+            "inicio": "964280",
+            "fin": "965152",
+            "carga": "872"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "BALTRANSA (cod 10): Diversey Valdemoro (Madrid) es punto de carga -> se factura a BALTRANSA (OT 338923). Destino Inleit Teixeiro (Curtis, Coruña) TEIXE. Precio FIJO 1.150,00 EUR/viaje (um UN) + linea idx cantidad 1 importe 0 (regla Baltransa). Nacional P IVA 21. Material ACIDO NITRICO UN2031 (la ficha decia SOSA por error; manda el documento). Peso real 18.010 (precio fijo por viaje, sin min)."
+        }
+      ]
+    }
+  ]
+}
