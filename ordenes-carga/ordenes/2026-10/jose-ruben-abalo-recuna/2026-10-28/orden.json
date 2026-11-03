@@ -1,0 +1,90 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "6516",
+        "verificar": {
+          "matricula": "6516KTH",
+          "remolque": "R1644BDB",
+          "chofer": "JOSE RUBEN ABALO RECUNA"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2034775",
+          "salida": "28/10/2026",
+          "llegada": "30/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,300",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.685,99",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "858945",
+            "fin": "860119",
+            "carga": "1174"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "PADRO",
+            "esperado": "PADRON"
+          },
+          "carga": {
+            "codigo": "62",
+            "esperado": "LISINA"
+          },
+          "referencia": "713108",
+          "salida": "30/10/2026",
+          "llegada": "03/11/2026",
+          "lineas": {
+            "porte": null,
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "860243",
+            "fin": "861456",
+            "carga": "1213"
+          },
+          "tarifa_pendiente": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261103134924.pdf (5 pags: ficha + OC QUIMIDROGA 713108 + bascula RELISA 750236 + OC/email FORESA + CMR FORESA 2034775). Jose Ruben Abalo Recuna, 6516KTH (flota PROPIO; ficha leia 6516KPH, mala lectura, la matricula real es 6516KTH), remolque R1644BDB. 1 hoja con viaticos (238,11) -> 1 viaje, 2 albaranes. Alb1 FORESA Caldas->Tordera (IP Decor Spain, antes Decotec) RES 0540->COLA, peso CMR 23.300 (OC 24.000 previsto). Ref FORESA 2034775 (corto 20). Tarifa Caldas->Tordera 72,36 (confirmadas). Alb2 QUIMIDROGA Barcelona (Relisa)->Padron (Piensos Nanfor, La Esclavitud, A Coruna) LISINA LIQUIDA 50% -> LISINA cod 62, peso NETO 24.120 (bascula RELISA carga; OC 25.000 previsto). Ref QUIMIDROGA 713108 (ref en factura). TARIFA PENDIENTE: no hay Barcelona->Padron en tabla; si Barcelona->Coruna 79,71 (probable cascada a provincia Coruna, mismo caso que Porrino juego Sabaris, confirmar Julio). P IVA 21 (ambos espanoles).",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-28",
+  "chofer": "JOSE RUBEN ABALO RECUNA",
+  "cabeza": "6516",
+  "viajes": [
+    {
+      "matricula": "6516KTH",
+      "remolque": "R1644BDB",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TORDERA", "carga_lit": "COLA", "referencia": "2034775", "salida": "28/10/2026", "llegada": "30/10/2026", "peso_kg": 23300, "km_inicio": 858945, "km_fin": 860119 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "PADRON", "carga_lit": "LISINA", "referencia": "713108", "salida": "30/10/2026", "llegada": "03/11/2026", "peso_kg": 24120, "km_inicio": 860243, "km_fin": 861456 }
+      ]
+    }
+  ]
+}
