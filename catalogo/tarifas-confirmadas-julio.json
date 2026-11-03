@@ -35,6 +35,28 @@
       "fecha": "2026-11-03",
       "por": "Julio",
       "nota": "RNM Barcelona (Cellmark/TEPSA) -> Novalk Lucena (Cordoba). RNM es cliente PORTUGUES -> PI/IVA 0/GPT. 74,50 EUR/TN confirmado por Julio; no esta en el tarifario RNM (que no tiene Barcelona->Cordoba)."
+    },
+    {
+      "cliente": "QUIMIDROGA, S.A.",
+      "origen": "BARCELONA",
+      "destino": "PORRIÑO",
+      "precio": 79.71,
+      "vigente_desde": "2026-01-01",
+      "confirmado": true,
+      "fecha": "2026-11-03",
+      "por": "Julio",
+      "nota": "Cascada por provincia: Barcelona->Porrino (Pontevedra) usa la tarifa de la provincia Pontevedra = 79,71 (no hay tarifa propia de Porrino). Aplica minimo 23 TN. P IVA 21."
+    },
+    {
+      "cliente": "QUIMIDROGA, S.A.",
+      "origen": "BARCELONA",
+      "destino": "PADRON",
+      "precio": 79.71,
+      "vigente_desde": "2026-01-01",
+      "confirmado": true,
+      "fecha": "2026-11-03",
+      "por": "Julio",
+      "nota": "Cascada por provincia: Barcelona->Padron (A Coruna) usa la tarifa de la provincia Coruna = 79,71 (no hay tarifa propia de Padron). Aplica minimo 23 TN. P IVA 21."
     }
   ]
 }

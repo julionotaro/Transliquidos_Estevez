@@ -200,6 +200,26 @@
       "fecha": "2026-11-03", "por": "Julio", "cliente": "FORESA (y general)", "campo": "reparto (doble destino)",
       "regla": "DOBLE DESTINO (D-08): cuando un camion entrega la MISMA carga en DOS destinos, se arma UN SOLO albaran por la carga COMBINADA (suma de pesos) al destino/zona que tiene tarifa, MAS una linea REPARTOS de importe fijo (90,00 por defecto) FUERA de la base de indexacion. NO se factura un minimo 23 por cada destino ni se parte en dos albaranes. Confirmado Julio 03/11 (juego Pablo Carles: FORESA Caldas->Valencia, Enguera 11.860 + Alacuas 11.720 = 23.580 kg -> 1 albaran 23,580 TN x 64,04 + REPARTOS 90). En el armador: raw con 'reparto': <importe> -> lineas.reparto {concepto REPARTOS, cantidad 1, importe}; la indexacion se calcula solo sobre el porte.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-03", "por": "Julio", "cliente": "FORESA / STOCKMEIER / TERQUIMSA", "campo": "cliente (planta cargadora)",
+      "regla": "STOCKMEIER QUIMICA y TERQUIMSA (y en general las plantas que cargan materia prima destinada a FORESA en Caldas) NO son clientes: son PLANTAS CARGADORAS de material para nuestro cliente FORESA. El viaje de entrada a Foresa Caldas (ej Acetato de Vinilo Tarragona->Caldas) se factura a FORESA (cod 1), NO a Stockmeier. Tarifa FORESA TARRAGONA->CALDAS DE REIS = 72,36 EUR/TN (tabla 'Cualquiera'; historico tiene Acetato de Vinilo). P IVA 21, idx G por linea (Caldas no es Orember). Correccion a la 1a lectura del 03/11 que puso Stockmeier como cliente nuevo: era planta cargadora. Regla general = como TEPSA/Sevitrade/Diversey: el punto de carga NO es el cliente.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-03", "por": "Julio", "cliente": "QUIMIDROGA", "campo": "tarifa (cascada por provincia)",
+      "regla": "QUIMIDROGA desde Barcelona a un PUEBLO de Galicia que no tiene tarifa propia -> se usa la tarifa de su PROVINCIA (cascada). Galicia (Pontevedra y Coruna) desde Barcelona = 79,71 EUR/TN. Confirmado 03/11: Barcelona->PORRINO (Pontevedra) = 79,71; Barcelona->PADRON (A Coruna) = 79,71. Se cargan en tarifas-confirmadas-julio.json. Aplica el minimo 23 TN si el peso real es menor. P IVA 21 (Quimidroga espanola).",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-03", "por": "Julio", "cliente": "THEC", "campo": "empresa/cabecera (PROVE)",
+      "regla": "Un viaje realizado por THEC (Transportes Hnos. Estevez Casal) se carga DESDE EL PERFIL DE TRANSLIQUIDOS ESTEVEZ en Gesruta con el modo PROVEEDOR. En la cabecera del viaje nuevo: cabecera = 'PROVE'; matricula = matricula de la TRACTORA; el campo 'remolque' se deja VACIO y la matricula del REMOLQUE va en un segundo campo matricula; y se agrega el campo PROVEEDOR = 5 (este campo es el UNICO extra que aparece al cargar un viaje de THEC). Luego TODOS los datos propios del albaran normalmente. KM y COSTOS (gastos/dietas) van VACIOS. => en orden.json: empresa='PROVE', cabecera.proveedor='5', y los albaranes con km en pendiente/no-cargar. Reemplaza el intento del 03/11 que lo puso como empresa 'THEC' directa.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-03", "por": "Julio", "cliente": "FORESA", "campo": "destino NEFAB (tarifa especial)",
+      "regla": "NEFAB (NEFAB PONTEV. SL, cod Gesruta NEFAB) es un punto de DESCARGA que es CLIENTE de Foresa y tiene TARIFA ESPECIAL (FORESA Caldas->NEFAB 9,60 EUR/TN). PONTECALDELAS es solo la LOCALIDAD donde esta Nefab, NO un sinonimo del punto: puede haber otras descargas en Pontecaldelas con otra tarifa. Por eso el destino de un albaran a Nefab es NEFAB (no 'Pontecaldelas'), y NO se debe aliasar Pontecaldelas -> Nefab. Alias validos del punto: 'NEFAB', 'NEFAB PONTEVEDRA'.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {
