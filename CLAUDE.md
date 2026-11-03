@@ -16,6 +16,10 @@ y las reglas de negocio quedan enterradas en documentos que nadie abre. Ya pasó
 Después del índice, leer solo los documentos que la tarea concreta requiera, según lo que el propio
 índice indique.
 
+**Si hay dudas del reparto de trabajo** entre las sesiones (operador de datos que procesa juegos /
+desarrollo del armador / bot de carga) y Julio, leer **`docs/ROLES-Y-HANDOFF.md`**: define qué hace
+y qué lee cada uno, y quién escribe en cada archivo.
+
 ---
 
 ## PASO 2 — OBLIGATORIO AL TERMINAR

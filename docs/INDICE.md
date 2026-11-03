@@ -20,6 +20,16 @@ Si encontrás una contradicción que no está listada abajo, **no la resuelvas p
 
 ---
 
+## 🧭 REPARTO DE TRABAJO — `ROLES-Y-HANDOFF.md` **VIGENTE**
+
+**Quién hace qué, qué lee cada participante, y quién escribe en cada archivo.** Si hay dudas del
+reparto entre las sesiones de Claude (operador de datos / desarrollo del armador / bot de carga) y
+Julio: leer esto. Incluye la rutina obligatoria del operador antes de cada juego y el acuerdo de
+handoff (datos confirmados → los graba el operador; código del armador → el dev; duda de dominio →
+PARAR y preguntar).
+
+---
+
 ## ⭐ EMPEZAR POR AQUÍ — `EXTRACCION-Y-CARGA-GESRUTA.md` **VIGENTE**
 
 **Documento maestro de la extracción.** Si tu tarea toca leer fichas o documentos,
@@ -225,11 +235,7 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 
 ## Pendientes de dominio (preguntas abiertas para Julio)
 
-- **STOCKMEIER QUÍMICA, S.L.U. (cliente NUEVO, 03/11):** apareció en el juego de Pablo Carles (Tarragona/Terquimsa → Caldas de Reis, Acetato de Vinilo). Falta: (a) **tarifa** Tarragona→Caldas de Reis; (b) **código de cliente** Gesruta (alta); (c) **regla de referencia** (usé provisoria `200858072` = "Su pedido" de la OC; alt. manuscrita 200858953). Hoy la pata queda `tarifa_pendiente`.
-- **Quimidroga Barcelona→Galicia por pueblo (03/11):** no hay tarifa directa para **Porriño** (juego Sabaris) ni **Padrón** (juego Abalo). Existen Barcelona→**Pontevedra** y Barcelona→**Coruña**, ambas **79,71**. ¿Se cascada el pueblo a la tarifa de su provincia (Porriño→Pontevedra, Padrón→Coruña = 79,71) o tienen rate propio? Ambas patas quedan `tarifa_pendiente`.
-- **RNM Tarragona→Azambuja (PT) (03/11):** IQOXINOL de IQOXE a Persan (Azambuja), RNM como freight agent (TLE transportista sucesivo). No hay tarifa RNM Tarragona→Azambuja. Pata `tarifa_pendiente` (juego Sabaris).
-- **BRESFOR ref provisoria `001346` (03/11):** el juego Sabaris trae una **CMR BRESFOR manuscrita sin el número 5050**. Usé el Nº de CMR `001346` como ref provisoria → pedir el **5050 definitivo**.
-- **THEC — empresa a confirmar (03/11):** el juego Juan González (shuttle FORESA Orember) viene en ficha de **Hnos. Estévez Casal (THEC)**, pero los albaranes FORESA listan carrier **TLE** (Cta 42434). Lo armé como **empresa THEC** (regla "membrete de la ficha"). Confirmar: (a) qué empresa factura; (b) **código Gesruta de THEC**; (c) manejo de **km de THEC** (regla HEC: no se calculan km de unidad tractora; los km de esa ficha venían fuera de secuencia).
+- **RNM Tarragona→Azambuja (PT):** IQOXINOL de IQOXE a Persan (Azambuja), RNM freight agent (TLE transportista sucesivo). Sin tarifa — **Julio: tarifa pendiente** (sigue `tarifa_pendiente`, juego Sabarís 03/11).
 - Baltransa: ¿de qué documento sale el peso?
 - Tarifa Quimidroga Barcelona→Leiria (no figura en el tarifario 2026)
 - Tarifa Foresa 2026 oficial (la cargada es de 2025)
