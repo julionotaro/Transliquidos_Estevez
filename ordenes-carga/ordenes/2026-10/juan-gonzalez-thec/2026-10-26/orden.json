@@ -1,5 +1,5 @@
 {
-  "empresa": "THEC",
+  "empresa": "PROVE",
   "viajes": [
     {
       "cabecera": {
@@ -9,7 +9,8 @@
           "remolque": "R9866BCH",
           "chofer": "JUAN L. GONZALEZ"
         },
-        "tipo": "propio"
+        "tipo": "propio",
+        "proveedor": "5"
       },
       "albaranes": [
         {
@@ -48,9 +49,7 @@
             }
           },
           "km": {
-            "inicio": "340914",
-            "fin": "341039",
-            "carga": "125"
+            "cargar": false
           },
           "tarifa_pendiente": false
         },
@@ -90,9 +89,7 @@
             }
           },
           "km": {
-            "inicio": "341160",
-            "fin": "341286",
-            "carga": "126"
+            "cargar": false
           },
           "tarifa_pendiente": false
         },
@@ -132,9 +129,7 @@
             }
           },
           "km": {
-            "inicio": "341416",
-            "fin": "341541",
-            "carga": "125"
+            "cargar": false
           },
           "tarifa_pendiente": false
         },
@@ -174,9 +169,7 @@
             }
           },
           "km": {
-            "inicio": "340652",
-            "fin": "340777",
-            "carga": "125"
+            "cargar": false
           },
           "tarifa_pendiente": false
         },
@@ -216,9 +209,7 @@
             }
           },
           "km": {
-            "inicio": "341899",
-            "fin": "342023",
-            "carga": "124"
+            "cargar": false
           },
           "tarifa_pendiente": false
         },
@@ -258,9 +249,7 @@
             }
           },
           "km": {
-            "inicio": "342144",
-            "fin": "342270",
-            "carga": "126"
+            "cargar": false
           },
           "tarifa_pendiente": false
         },
@@ -300,9 +289,7 @@
             }
           },
           "km": {
-            "inicio": "342390",
-            "fin": "342512",
-            "carga": "122"
+            "cargar": false
           },
           "tarifa_pendiente": false
         }
