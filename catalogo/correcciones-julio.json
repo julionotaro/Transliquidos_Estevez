@@ -190,6 +190,11 @@
       "fecha": "2026-11-03", "por": "Julio", "cliente": "COMATRA", "campo": "cliente/tarifa",
       "regla": "COMATRA, S.C.L. (cod Gesruta 33) es cliente ESPANOL -> concepto P, IVA 21. SEVITRADE / El Copero (Sevilla) es PUNTO DE CARGA, no el cliente (error visto: Servitrade vs Comatra). Referencia = ref proveedor de la OC (ej 201786). Tarifa confirmada: El Copero (Sevilla) -> Tradecorp Sanchidrian (Avila) SOSA = 940,00 EUR/VIAJE FIJO (um UN, cantidad 1) con INDEXACION INCLUIDA -> NO agregar linea de indexacion (como Forestal). Destino: Sanchidrian NO tiene punto propio en Gesruta -> se CASCADA a la provincia AVILA (cod AV), via alias en puntos-alta.json. Regla general (Julio 03/11): el destino SIEMPRE debe llevar un codigo valido -el punto exacto si existe, si no su PROVINCIA o region-; NUNCA dejar destino.codigo en null porque el bot aborta la carga. null se reserva solo para un dato realmente ilegible.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-03", "por": "Julio", "cliente": "TODOS", "campo": "peso facturable (fuente)",
+      "regla": "El PESO que se factura sale SIEMPRE del documento de peso de CARGA (albaran / CMR / bascula de carga del origen), NUNCA de la OC. La OC trae el 'previsto redondo' (ej 24.000) que casi nunca es el real (24.040 / 23.980) -R-08, D-01-. Precedencia: CMR/albaran de origen > documento de descarga > (NUNCA) OC. Si el unico peso disponible es el de la OC o falta el documento de peso -> NO facturar ese peso: marcar peso_pendiente / REVISAR 'falta documento de peso' y completar con el real. En el armador el raw marca 'peso_pendiente': true (como km_pendiente) y la orden sale con porte null + peso_pendiente:true; ademas el armador avisa si el peso en modo TN es exactamente multiplo de 1000 (olor a previsto de OC). Error real 03/11: Carlos Abalo QUIMIDROGA 713124 se facturo con 24.000 (previsto de la OC) cuando el juego no traia CMR/albaran -> corregido a peso_pendiente. QUIEN DEBE ALERTAR: (1) la LECTURA aplica D-01 y no toma el peso de la OC; (2) el ARMADOR avisa peso redondo / peso_pendiente; (3) el VALIDADOR se puede sumar. Defensa en capas, no un solo control.",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {

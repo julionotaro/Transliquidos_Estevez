@@ -188,6 +188,18 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
   var tons = (tonsReal !== null) ? Math.max(tonsReal, MINIMO_TN) : null;
 
   var tarifaPendiente = (tar.precio === null);
+
+  // PESO (D-01 / R-08): para facturar por TN el peso sale del ALBARAN/CMR de carga, NUNCA de la OC
+  // (la OC trae el "previsto redondo"). Si falta el documento de peso (solo OC), el raw marca
+  // "peso_pendiente": true y aqui se deja el porte PENDIENTE (REVISAR) en vez de facturar un peso
+  // que no manda. Solo aplica cuando la TARIFA ya esta resuelta; si la tarifa tambien esta
+  // pendiente el albaran ya queda pendiente y no hace falta marcarlo por peso.
+  var pesoPendiente = (precioFijo === null) && !tarifaPendiente && (raw.peso_pendiente === true || tonsReal === null);
+  // Guarda barata: un peso exactamente redondo (multiplo de 1000) en modo TN huele a previsto de
+  // la OC. Se avisa para verificar contra el albaran/CMR antes de facturar.
+  if (precioFijo === null && !tarifaPendiente && typeof raw.peso_kg === 'number' && raw.peso_kg % 1000 === 0 && raw.peso_ok_redondo !== true) {
+    avisos.push('[' + ctx + '] peso ' + raw.peso_kg + ' exactamente redondo: posible PREVISTO de la OC (D-01: el peso factura del albaran/CMR, nunca de la OC). Verificar; si es real marcar peso_ok_redondo, si falta el documento marcar peso_pendiente.');
+  }
   if (codCli.motivo) { avisos.push('[' + ctx + '] cod cliente: ' + codCli.motivo); }
   if (!po.ok) { avisos.push('[' + ctx + '] origen: ' + po.aviso); }
   if (!pd.ok) { avisos.push('[' + ctx + '] destino: ' + pd.aviso); }
@@ -224,8 +236,12 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
     km: km,
     tarifa_pendiente: tarifaPendiente,
   };
+  if (pesoPendiente) {
+    alb.peso_pendiente = true;
+    avisos.push('[' + ctx + '] PESO PENDIENTE: falta documento de peso (albaran/CMR); no se factura el peso de la OC (D-01) -> REVISAR, completar con el peso real.');
+  }
 
-  if (!tarifaPendiente) {
+  if (!tarifaPendiente && !pesoPendiente) {
     var porteImporte;
     if (precioFijo !== null) {
       porteImporte = precioFijo;

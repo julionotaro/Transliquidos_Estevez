@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - hechos crudos leidos de entrada/20261102155537.pdf (ficha + albaran FORESA manual + OC Quimidroga). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 3729JWP (flota: Carlos Abalo Quintela, PROPIO - ojo ABALO != ABAL). Cabeza '03729' con CERO a la izquierda -> 3729JWP (Abalo); '3729' sin cero -> 3729JLH (Marcos Eirin), tractora DISTINTA. Respetar el cero - Julio 03/11. Alb1 FORESA albaran MANUAL 260032 (ref DEFINITIVA; OC con formato provisorio por problema de sistema pero el numero es definitivo - Julio 03/11). KM pendientes: la ficha no trae el km inicio del viaje 1 (Julio OK dejar km pendiente).",
+  "_nota": "CARGA OFICIAL - hechos crudos leidos de entrada/20261102155537.pdf (ficha + albaran FORESA manual + OC Quimidroga). 1 hoja con viaticos -> 1 viaje, 2 albaranes. Matricula 3729JWP (flota: Carlos Abalo Quintela, PROPIO - ojo ABALO != ABAL). Cabeza '03729' con CERO a la izquierda -> 3729JWP (Abalo); '3729' sin cero -> 3729JLH (Marcos Eirin), tractora DISTINTA. Respetar el cero - Julio 03/11. Alb1 FORESA albaran MANUAL 260032 (ref DEFINITIVA; OC con formato provisorio por problema de sistema pero el numero es definitivo - Julio 03/11). KM pendientes: la ficha no trae el km inicio del viaje 1 (Julio OK dejar km pendiente). Alb2 QUIMIDROGA: PESO PENDIENTE - el juego solo trae la OC (sin CMR/albaran de carga), y el peso NUNCA sale de la OC (D-01/R-08: 24.000 es el previsto redondo). Se deja peso_pendiente hasta tener el albaran/CMR o la bascula de carga - Julio 03/11.",
   "empresa": "TLE",
   "fecha_inicio": "2026-10-26",
   "chofer": "CARLOS ABALO QUINTELA",
@@ -9,7 +9,7 @@
       "matricula": "3729JWP",
       "albaranes": [
         { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "260032", "salida": "26/10/2026", "llegada": "27/10/2026", "peso_kg": 22100, "km_pendiente": true },
-        { "cliente_lit": "QUIMIDROGA", "origen_lit": "BARCELONA", "destino_lit": "LEIRIA", "carga_lit": "VINKA-PLAST", "referencia": "713124", "salida": "28/10/2026", "llegada": "30/10/2026", "peso_kg": 24000, "km_pendiente": true }
+        { "cliente_lit": "QUIMIDROGA", "origen_lit": "BARCELONA", "destino_lit": "LEIRIA", "carga_lit": "VINKA-PLAST", "referencia": "713124", "salida": "28/10/2026", "llegada": "30/10/2026", "peso_pendiente": true, "peso_oc_previsto": 24000, "km_pendiente": true }
       ]
     }
   ]

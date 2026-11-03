@@ -84,6 +84,18 @@ El factor sale de la quincena de la **fecha de carga** del albarán, no de "el m
   viáticos se une a otra para formar un solo viaje. Las **OC de FORESA suelen venir sin ficha**.
 - Respaldo: reglas `estructura viaje (viaticos)` (02/11) + `estructura viaje (matriculas)` (14/10).
 
+### A9. El **PESO** factura del albarán/CMR, **NUNCA de la OC**
+El peso facturable sale del documento de peso de **carga** (albarán / CMR / báscula de origen). La OC
+trae el **previsto redondo** (24.000) que casi nunca es el real (24.040 / 23.980). Precedencia:
+**CMR/albarán de carga > doc de descarga > (nunca) OC**. Si solo está la OC o falta el documento →
+**`peso_pendiente` / REVISAR**, no facturar.
+- **Error visto (03/11):** Abalo QUIMIDROGA 713124 se facturó con **24.000** (previsto de la OC)
+  sin CMR en el juego → corregido a `peso_pendiente`.
+- **Quién debía alertar (defensa en capas, no un solo control):** (1) la **lectura** aplica D-01 y no
+  toma el peso de la OC; (2) el **armador** avisa si el peso en modo TN es múltiplo exacto de 1000 y
+  soporta `peso_pendiente`; (3) el **validador** se puede sumar.
+- Respaldo: **D-01** (`modelo-dominio-lectura.md`) + **R-08** + regla `peso facturable (fuente)` (03/11).
+
 ---
 
 ## B. Reglas nuevas / reforzadas
