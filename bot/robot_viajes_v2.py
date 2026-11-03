@@ -90,6 +90,12 @@ NUEVO_ALB_BTN=(1878,332)   # hoja blanca 'Anadir nuevo' en Entrada de Viajes
 GRABAR_VIAJE_CON_DISQUETE = True
 VIAJE_SAVE = (351,1002)    # disquete PLANO de grabar (VERIFICADO EN VIVO 2026-10-22)
 
+# TEMPORAL (Julio 2026-11-03): NO cargar el formulario de Kilometros para chofer PROPIO. Hay
+# descuadres de cantidades en el odometro por desorganizacion (ajenos a nuestra logica); hasta que se
+# regularice, se saltea SOLO esa carga (cabecera + albaran + lineas se cargan y graban igual). Los
+# choferes AUTONOMOS NO se tocan: sus km se siguen cargando en GASTOS. Volver a True para reactivar.
+CARGAR_KM_FORM_PROPIO = False
+
 # ---- Coordenadas GASTOS (autonomos) 1920x1080, ventana Gastos MAXIMIZADA. Validadas 2026-10-20. ----
 GASTOS_BTN   = (1827,108)   # boton "Gastos" en la barra de Entrada de Albaranes
 G_KILOMETROS = (80,386)     # concepto KILOMETROS en la lista izquierda
@@ -727,18 +733,21 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
         log("  >>> ALBARAN idx %d GRABADO (autonomo/gastos). activa=%r"%(n, active_title()))
         return True
     # ---- KM (chofer PROPIO) ----
-    if (km.get("cargar") is False) or duo_secundario:
-        # DUOTRAILER 2º viaje: el odometro del 2º arranca casi igual que el del 1º ("va para atras"),
-        # asi que NO se carga el formulario de Kilometros aca; los km se cuentan una sola vez, en el
-        # viaje lider. Regla: km.cargar=false / cabecera.duo_secundario (ver CONTRATO-orden-json.md).
-        # Se graba el albaran igual.
-        log("  --- KM ---  DUOTRAILER secundario: SALTEO el formulario de Kilometros (no duplico km).")
+    # Se SALTEA el formulario de Kilometros si: (a) CARGAR_KM_FORM_PROPIO=False (temporal, ver config
+    # arriba: descuadres de odometro por desorganizacion); o (b) km.cargar=False / duo_secundario
+    # (DUOTRAILER: los km van una sola vez en el viaje lider). En ambos casos se graba el albaran igual.
+    _skip_km = (not CARGAR_KM_FORM_PROPIO) or (km.get("cargar") is False) or duo_secundario
+    if _skip_km:
+        if duo_secundario or (km.get("cargar") is False):
+            log("  --- KM ---  DUOTRAILER secundario: SALTEO el formulario de Kilometros (no duplico km).")
+        else:
+            log("  --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).")
         ensure_ges(); time.sleep(0.3)
         pyautogui.moveTo(*ALB_SAVE,duration=0.12); time.sleep(0.1); pyautogui.click(*ALB_SAVE); time.sleep(0.8)
         handle_si(2.5,"post-albaran")
-        _esperar_ventana("ENTRADA DE ALBARANES", aparezca=False, timeout=12.0, tag="post-albaran-duo")
+        _esperar_ventana("ENTRADA DE ALBARANES", aparezca=False, timeout=12.0, tag="post-albaran-sinkm")
         ensure_ges(); time.sleep(0.4)
-        log("  >>> ALBARAN idx %d GRABADO (DUOTRAILER secundario, sin km). activa=%r"%(n, active_title()))
+        log("  >>> ALBARAN idx %d GRABADO (sin formulario de km). activa=%r"%(n, active_title()))
         return True
     f_inicio=km.get("inicio"); f_fin=km.get("fin")
     if f_inicio is None or f_fin is None:
@@ -916,6 +925,8 @@ try:
             if duo_sec: ar["motivo"]="DUOTRAILER secundario: km/dietas en el viaje lider"
             elif alb.get("tarifa_pendiente") or (alb.get("destino",{}) or {}).get("codigo") is None:
                 ar["motivo"]="PEDIDO (tarifa pendiente / destino sin codigo): cabecera+km, sin lineas"
+            elif (not autonomo) and (not CARGAR_KM_FORM_PROPIO):
+                ar["motivo"]="km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
             grabados+=1
         if grabados!=len(albs):
             log("### NO grabo viaje %d: %d/%d albaranes ###"%(vpos+1,grabados,len(albs))); break
