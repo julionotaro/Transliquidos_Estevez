@@ -4,6 +4,18 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-03) — TEMPORAL: no cargar el formulario de Km para chofer propio
+
+- **Pedido (Julio 2026-11-03):** hay descuadres de cantidades en el odómetro por desorganización
+  (ajenos a nuestra lógica). Hasta regularizar, **saltear SOLO la carga del formulario de Kilómetros
+  para chofer PROPIO**; se cargarán los km de vuelta en los próximos días.
+- **Fix:** flag `CARGAR_KM_FORM_PROPIO` (arriba, en config). En `False` (estado actual), el chofer
+  propio carga cabecera + albarán + líneas y **graba sin abrir el formulario de Km**. Los choferes
+  **AUTÓNOMOS no se tocan**: sus km se siguen cargando en **Gastos**. DUOTRAILER sigue igual.
+- **Trazabilidad:** cada albarán propio grabado así queda en el `resultado.json` con
+  `motivo="km propio NO cargado en formulario (temporal...; regularizar y recargar)"`.
+- **Reactivar:** poner `CARGAR_KM_FORM_PROPIO = True` cuando se regularice.
+
 ## `viajes-2` (2026-11-02c) — El bot IGNORA ventanas de otros procesos (recordatorio de Outlook)
 
 - **Causa raíz (la de verdad):** la ventana `'2 aviso(s)'` que trababa la carga **NO era de Gesruta**:
