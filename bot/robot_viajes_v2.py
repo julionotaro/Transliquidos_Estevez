@@ -809,6 +809,7 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
 V_CABEZA=(125,207); V_MAT_TRACT=(300,207)
 V_REMOLQUE=(125,232); V_MAT_REMOL=(300,232)
 V_CHOFER_COD=(122,258); V_CHOFER_NOM=(255,258)
+V_PROVEEDOR=(124,283)     # codigo de proveedor (fichas THEC/PROVE: '5'). ESTIMADO del screenshot 2026-11-04; VERIFICAR EN VIVO.
 EDIT_BTN=(162,1001)       # hoja+lapiz "Editar [F6]"
 BUSC_LUPA=(760,323)       # lupa del buscador 'Busquedas' (ejecuta la busqueda)
 BUSC_ROW1=(600,403)       # primera fila de resultados del buscador
@@ -842,17 +843,47 @@ def buscar_remolque(expected):
     ensure_ges(); time.sleep(0.5)
     return True
 
-def load_cabecera(cab, already_editing=False):
+def _load_cabecera_prove(ver, prov):
+    """Cabecera de ficha THEC/PROVE (servicio de proveedor). En 'Entrada de Viajes' cambia SOLO la
+    cabecera (Julio 2026-11-04):
+      - Cabeza: se escribe la palabra 'PROVE' (NO el codigo de tractora; aca NO autocompleta).
+      - Matricula tractora (al lado): se escribe la matricula COMPLETA.
+      - Remolque: codigo VACIO; Matricula remolque (al lado): matricula COMPLETA.
+      - Proveedor (debajo): codigo del proveedor (THEC = '5').
+      - Sin chofer en la cabecera. De aca en mas, albaranes normales.
+    Resiliente: carga lo que haya, no aborta por un campo."""
+    mat=(ver.get("matricula") or ""); rem=(ver.get("remolque") or ""); prov_cod=str(prov or "5")
+    log("--- CABECERA THEC/PROVE: 'PROVE' + tractora %r + remolque %r + proveedor %s ---"%(mat,rem,prov_cod))
+    # Cabeza = PROVE (el cursor ya esta en Cabeza tras la hoja blanca)
+    ensure_ges(); pyautogui.write("PROVE",interval=0.06); time.sleep(0.2); pyautogui.press('tab'); time.sleep(1.0)
+    # Matricula tractora COMPLETA (no autocompleta)
+    if mat: field(V_MAT_TRACT, mat, "Matricula tractora (THEC)", clear=True)
+    # Remolque: codigo VACIO (no se toca). Matricula remolque COMPLETA
+    if rem: field(V_MAT_REMOL, rem, "Matricula remolque (THEC)", clear=True)
+    # Proveedor (codigo; Tab para que autocomplete la razon social)
+    field(V_PROVEEDOR, prov_cod, "Proveedor", tab=True, clear=True)
+    mt=vread(V_MAT_TRACT,"Matricula tractora (post)")
+    if mat and _alnum(mt)!=_alnum(mat):
+        log("  AVISO THEC: tractora quedo %r (esperaba %r) -> sigo igual (no abandono)."%(mt,mat))
+    log("  CABECERA THEC OK (PROVE, tractora=%s remolque=%s proveedor=%s)"%(mat,rem,prov_cod))
+    return True
+
+def load_cabecera(cab, already_editing=False, empresa=None):
     cz=cab.get("cabeza"); ver=cab.get("verificar",{}) or {}
-    if not cz: log("  ABORTO: cabecera sin cabeza"); return False
+    prov=cab.get("proveedor")
+    # Ficha THEC/PROVE (servicio de proveedor): la cabecera se carga distinto (ver _load_cabecera_prove).
+    es_prove = (str(empresa or "").strip().upper() in ("THEC","PROVE")) or bool(prov) or (str(cz or "").strip().upper()=="PROVE")
+    if not cz and not es_prove: log("  ABORTO: cabecera sin cabeza"); return False
     if not has_window("ENTRADA DE VIAJES"): log("  ABORTO: no estoy en Entrada de Viajes"); return False
-    log("--- CABECERA: cabeza %s (necesita editar=%s) ---"%(cz, not already_editing))
+    log("--- CABECERA: %s (necesita editar=%s) ---"%(("THEC/PROVE" if es_prove else "cabeza %s"%cz), not already_editing))
     if not already_editing:
         # viniendo del menu: el viaje esta cargado pero NO en edicion -> boton hoja+lapiz posiciona en Cabeza
         ensure_ges(); pyautogui.moveTo(*EDIT_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*EDIT_BTN); time.sleep(1.3)
     else:
         # viaje nuevo recien abierto con la hoja blanca: el cursor YA esta en Cabeza
         ensure_ges(); time.sleep(0.3)
+    if es_prove:
+        return _load_cabecera_prove(ver, prov)
     pyautogui.write(str(cz),interval=0.06); time.sleep(0.2); pyautogui.press('tab'); time.sleep(2.3)
     mt=vread(V_MAT_TRACT,"Matricula tractora")
     mr=vread(V_MAT_REMOL,"Matricula remolque")
@@ -911,7 +942,7 @@ try:
         # cursor en Cabeza; el boton de editar queda deshabilitado en ese momento y no corresponde.
         log("--- NUEVO VIAJE (hoja blanca sola 'Anadir viaje nuevo', NO la de editar) ---")
         ensure_ges(); pyautogui.moveTo(*NEW_VIAJE_BTN,duration=0.15); time.sleep(0.1); pyautogui.click(*NEW_VIAJE_BTN); time.sleep(1.6)
-        ok_cab=load_cabecera(cab, already_editing=True)   # la hoja blanca dejo el cursor en Cabeza
+        ok_cab=load_cabecera(cab, already_editing=True, empresa=orden.get("empresa"))   # la hoja blanca dejo el cursor en Cabeza
         if not ok_cab:
             # Conducta resiliente (Julio 2026-11-03): la cabecera (matricula/chofer) es el UNICO caso
             # que justifica saltear un viaje. Se SALTEA este y se SIGUE con los demas.

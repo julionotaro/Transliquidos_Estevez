@@ -4,6 +4,19 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-04) — Cabecera de fichas THEC/PROVE (servicio de proveedor)
+
+Las fichas **THEC** se cargan en el perfil TLE de Gesruta con una **cabecera distinta** (solo en
+"Entrada de Viajes"; los albaranes van normales). Al detectar THEC (`empresa:"THEC"`, o
+`cabecera.proveedor`, o `cabecera.cabeza:"PROVE"`) el bot usa `_load_cabecera_prove`:
+- **Cabeza** = escribe la palabra `PROVE` (no el código; no autocompleta).
+- **Matrícula tractora** = completa (de `verificar.matricula`).
+- **Remolque** código vacío; **Matrícula remolque** = completa.
+- **Proveedor** = código (`cabecera.proveedor`, default `"5"` THEC). Sin chofer.
+
+Nueva coord `V_PROVEEDOR=(124,283)` **estimada del screenshot** — **VERIFICAR EN VIVO** (ajustar si
+el "5" no cae en el campo Proveedor). Contrato `CONTRATO-orden-json.md` actualizado.
+
 ## `viajes-2` (2026-11-03b) — Botón de nuevo viaje + conducta resiliente
 
 **1) Botón de nuevo viaje:** para comenzar un viaje el bot ahora presiona SIEMPRE la **hoja blanca

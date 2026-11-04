@@ -88,9 +88,16 @@ el viaje por un campo, y reporta qué quedó pendiente.**
   su **cabecera + albarán + líneas (porte/idx propios de su cisterna)**, pero el bot **SALTEA lo del
   tramo compartido**: formulario de km (viene con `km.cargar:false`) y **viáticos/gastos/dietas**
   (van una sola vez, en el viaje líder). Así el km y las dietas NO se duplican.
-- **A futuro** (ver `docs/flujos-carga.md`): `empresa` (TLE/THEC/PROVE + `proveedor`),
-  `viaje_tipo` (convencional/metanol/frigo) y `gastos`. Todavía NO implementados; hoy solo
-  flujo convencional TLE.
+- `cabecera.proveedor` (fichas **THEC/PROVE**, Julio 2026-11-04): código del proveedor (THEC = `"5"`).
+  Cuando la ficha es THEC (`empresa: "THEC"`, o `cabecera.proveedor` presente, o `cabecera.cabeza:
+  "PROVE"`), **cambia SOLO la cabecera** de "Entrada de Viajes":
+  - **Cabeza** = se escribe la palabra `PROVE` (no el código de tractora; no autocompleta).
+  - **Matrícula tractora** (al lado) = la matrícula COMPLETA (de `verificar.matricula`).
+  - **Remolque**: código vacío; **Matrícula remolque** (al lado) = la COMPLETA (de `verificar.remolque`).
+  - **Proveedor** = el código (`"5"` THEC). Sin chofer en la cabecera.
+  - De ahí en más, albaranes normales. (Existe también perfil de Estévez Casal — pendiente.)
+- **A futuro** (ver `docs/flujos-carga.md`): `viaje_tipo` (convencional/metanol/frigo) y `gastos`.
+  Todavía NO implementados.
 
 ## Reglas de seguridad para el bot
 
