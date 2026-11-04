@@ -321,12 +321,16 @@ function armarOrden(raw, deps) {
       tipo: cab.tipo,
     };
     if (v.duo_secundario) { cabecera.duo_secundario = true; }
-    // PROVE: viaje realizado por un PROVEEDOR (ej THEC) y cargado desde el perfil de TLE en Gesruta.
-    // Se agrega el campo cabecera.proveedor (THEC = '5') y los KM van VACIOS (no se cargan): el bot
-    // deja el formulario de Km (y los costos) vacio. Ver regla 'empresa/cabecera (PROVE)'.
-    if (raw.empresa === 'PROVE') { cabecera.proveedor = String(raw.proveedor || ''); }
+    // PROVEEDOR (ej THEC): el viaje se carga en el perfil de TLE (empresa SIGUE siendo TLE), pero en
+    // la pantalla de Entrada de Viajes la CABEZA lleva la palabra 'PROVE' (no el codigo de tractora),
+    // la matricula se digita completa, y se agrega el campo proveedor (THEC = '5'). Disparador: que el
+    // raw traiga 'proveedor'. KM: por defecto se dejan VACIOS (km_proveedor_vacio !== false).
+    if (raw.proveedor) {
+      cabecera.cabeza = 'PROVE';
+      cabecera.proveedor = String(raw.proveedor);
+    }
     var albaranes = (v.albaranes || []).map(function (a) { return armarAlbaran(a, cab.tipo, deps, avisos, !!v.duo_secundario); });
-    if (raw.empresa === 'PROVE') { albaranes.forEach(function (al) { al.km = { cargar: false }; }); }
+    if (raw.proveedor && raw.km_proveedor_vacio !== false) { albaranes.forEach(function (al) { al.km = { cargar: false }; }); }
     return {
       cabecera: cabecera,
       albaranes: albaranes,
