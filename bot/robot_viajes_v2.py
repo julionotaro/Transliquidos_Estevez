@@ -851,17 +851,23 @@ def _load_cabecera_prove(ver, prov):
       - Remolque: codigo VACIO; Matricula remolque (al lado): matricula COMPLETA.
       - Proveedor (debajo): codigo del proveedor (THEC = '5').
       - Sin chofer en la cabecera. De aca en mas, albaranes normales.
-    Resiliente: carga lo que haya, no aborta por un campo."""
+    Navegacion por TAB (calibrada en vivo 2026-11-04). Al final VERIFICA que la cabecera quedo
+    cargada; si quedo en blanco, falla ruidoso (no graba un viaje con la cabecera vacia)."""
     mat=(ver.get("matricula") or ""); rem=(ver.get("remolque") or ""); prov_cod=str(prov or "5")
     log("--- CABECERA THEC/PROVE: 'PROVE' + tractora %r + remolque %r + proveedor %s ---"%(mat,rem,prov_cod))
-    # Cabeza = PROVE (el cursor ya esta en Cabeza tras la hoja blanca)
-    ensure_ges(); pyautogui.write("PROVE",interval=0.06); time.sleep(0.2); pyautogui.press('tab'); time.sleep(1.0)
-    # Matricula tractora COMPLETA (no autocompleta)
-    if mat: field(V_MAT_TRACT, mat, "Matricula tractora (THEC)", clear=True)
-    # Remolque: codigo VACIO (no se toca). Matricula remolque COMPLETA
-    if rem: field(V_MAT_REMOL, rem, "Matricula remolque (THEC)", clear=True)
-    # Proveedor (codigo; Tab para que autocomplete la razon social)
-    field(V_PROVEEDOR, prov_cod, "Proveedor", tab=True, clear=True)
+    # CALIBRADO EN VIVO 2026-11-04: navegacion por TAB (deterministica). NO clickear las matriculas
+    # (clickearlas descoordinaba y dejaba la cabecera en blanco). Orden de Tab en 'Entrada de Viajes':
+    # Cabeza -> Matricula tractora -> codigo Remolque -> Matricula remolque -> Chofer. El cursor ya
+    # esta en Cabeza (hoja blanca). El Proveedor NO esta en esa cadena de Tab -> clic directo al final.
+    ensure_ges(); time.sleep(0.3)
+    pyautogui.write("PROVE",interval=0.06); time.sleep(0.25); pyautogui.press('tab'); time.sleep(0.6)  # -> Matricula tractora
+    if mat: pyautogui.write(mat,interval=0.05); time.sleep(0.2)
+    pyautogui.press('tab'); time.sleep(0.5)     # -> codigo Remolque (queda VACIO)
+    pyautogui.press('tab'); time.sleep(0.5)     # -> Matricula remolque
+    if rem: pyautogui.write(rem,interval=0.05); time.sleep(0.2)
+    pyautogui.press('tab'); time.sleep(0.5)     # -> Chofer (queda vacio en THEC)
+    # Proveedor: clic directo (no esta en la cadena de Tab) + codigo + Tab (autocompleta razon social)
+    field(V_PROVEEDOR, prov_cod, "Proveedor", tab=True)
     # VERIFICAR que la cabecera quedo cargada: si la tractora/remolque quedaron en blanco o distintos,
     # la cabecera NO se cargo bien -> FALLAR RUIDOSO y NO grabar un viaje con la cabecera en blanco.
     mt=vread(V_MAT_TRACT,"Matricula tractora (post)")

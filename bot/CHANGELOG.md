@@ -4,6 +4,23 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-04b) — Cabecera THEC: navegación por Tab (calibrada en vivo)
+
+La 1ª versión THEC **clickeaba** cada campo de matrícula y eso descoordinaba la pantalla: tras
+"PROVE" la cabecera terminaba **en blanco** (y el bot grababa igual — ver fix anterior de fallo
+ruidoso). **Calibrado en vivo 2026-11-04:** la navegación de la cabecera THEC es **por Tab**
+(determinística), sin clics en las matrículas:
+```
+PROVE + Tab      -> Matrícula tractora
+matrícula + Tab  -> código Remolque (vacío)
+Tab              -> Matrícula remolque
+remolque + Tab   -> Chofer (vacío)
+clic Proveedor + "5" + Tab  -> autocompleta razón social (HNOS. ESTEVEZ CASAL)
+```
+El Proveedor NO está en la cadena de Tab (Chofer→Acompañante), por eso va por **clic directo**
+(`V_PROVEEDOR=(124,283)`, verificada al pixel). Al final re-lee las matrículas y, si quedaron en
+blanco, aborta (no graba en blanco).
+
 ## `viajes-2` (2026-11-04) — Cabecera de fichas THEC/PROVE (servicio de proveedor)
 
 Las fichas **THEC** se cargan en el perfil TLE de Gesruta con una **cabecera distinta** (solo en
