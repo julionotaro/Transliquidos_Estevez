@@ -862,10 +862,15 @@ def _load_cabecera_prove(ver, prov):
     if rem: field(V_MAT_REMOL, rem, "Matricula remolque (THEC)", clear=True)
     # Proveedor (codigo; Tab para que autocomplete la razon social)
     field(V_PROVEEDOR, prov_cod, "Proveedor", tab=True, clear=True)
+    # VERIFICAR que la cabecera quedo cargada: si la tractora/remolque quedaron en blanco o distintos,
+    # la cabecera NO se cargo bien -> FALLAR RUIDOSO y NO grabar un viaje con la cabecera en blanco.
     mt=vread(V_MAT_TRACT,"Matricula tractora (post)")
+    mr=vread(V_MAT_REMOL,"Matricula remolque (post)")
     if mat and _alnum(mt)!=_alnum(mat):
-        log("  AVISO THEC: tractora quedo %r (esperaba %r) -> sigo igual (no abandono)."%(mt,mat))
-    log("  CABECERA THEC OK (PROVE, tractora=%s remolque=%s proveedor=%s)"%(mat,rem,prov_cod))
+        log("  ABORTO THEC: la matricula tractora quedo %r (esperaba %r). La cabecera NO se cargo -> NO grabo viaje en blanco."%(mt,mat)); return False
+    if rem and _alnum(mr)!=_alnum(rem):
+        log("  ABORTO THEC: la matricula remolque quedo %r (esperaba %r). La cabecera NO se cargo -> NO grabo viaje en blanco."%(mr,rem)); return False
+    log("  CABECERA THEC OK (PROVE, tractora=%s remolque=%s proveedor=%s)"%(mt,mr,prov_cod))
     return True
 
 def load_cabecera(cab, already_editing=False, empresa=None):
