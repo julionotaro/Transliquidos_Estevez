@@ -236,6 +236,7 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 ## Pendientes de dominio (preguntas abiertas para Julio)
 
 - **RNM Tarragona→Azambuja (PT):** IQOXINOL de IQOXE a Persan (Azambuja), RNM freight agent (TLE transportista sucesivo). Sin tarifa — **Julio: tarifa pendiente** (sigue `tarifa_pendiente`, juego Sabarís 03/11).
+- **Perfil propio de Estévez Casal (THEC) en Gesruta (futuro, ~semanas):** hoy los servicios de THEC se cargan en el perfil de TLE en modo proveedor (cabeza `PROVE`, proveedor `5`, km/costos vacíos). Más adelante Julio mostrará cómo se carga desde el **perfil propio de THEC** — pendiente de definir.
 - Baltransa: ¿de qué documento sale el peso?
 - Tarifa Quimidroga Barcelona→Leiria (no figura en el tarifario 2026)
 - Tarifa Foresa 2026 oficial (la cargada es de 2025)
