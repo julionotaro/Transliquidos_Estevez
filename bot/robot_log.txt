@@ -1,57 +1,88 @@
-[11:20:23.114] ==== ROBOT VIAJES viajes-2 ====
-[11:20:23.115] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\manuel-aboy-gonzalez\2026-10-26\orden.json
-[11:20:23.115] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\manuel-aboy-gonzalez\2026-10-26\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
-[11:20:23.120] Empresa='TLE' | 1 viaje(s)
-[11:20:24.827] [pid] Gesruta PID=12320 -> se IGNORAN ventanas de otros procesos (p.ej. recordatorios de Outlook, titulados 'N aviso(s)')
-[11:20:24.828] ########## VIAJE 1/1  cabeza='5713'  tipo=propio  (2 albaranes) ##########
-[11:20:24.831] --- CABECERA: cabeza 5713 (necesita editar=True) ---
-[11:20:32.517]   leer Matricula tractora -> '5713LMN'
-[11:20:34.617]   leer Matricula remolque -> 'R1639BDD'
-[11:20:36.717]   leer Chofer codigo      -> '4'
-[11:20:36.718]   CABECERA OK (tractora=5713LMN remolque=R1639BDD chofer_cod=4)
-[11:20:36.719] --- Abrir albaran 1/2 (Anadir nuevo) ---
-[11:20:41.706]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[11:20:42.907] ##### ALBARAN idx 0 : BRESFOR IND. DO FORMOL, S.A. #####
-[11:20:45.159]   -> Refe: '4500002523'
-[11:20:47.403]   -> FechaSalida: '26/10/2026'
-[11:20:49.646]   -> FechaLlegada: '28/10/2026'
-[11:20:51.984]   -> Cliente: '42'
-[11:21:00.937]   -> Origen (sobre seleccion): 'AVEIR'
-[11:21:04.468]   -> Destino: 'H'
-[11:21:08.000]   -> Carga: '5'
-[11:21:10.428]   clic solapa Lineas
-[11:21:12.013]   clic add porte
-[11:21:14.654]   -> Cantidad porte: '24,020'
-[11:21:17.145]   -> Precio porte: '41,31'  [Tab]
-[11:21:18.329]   clic add indexacion
-[11:21:21.321]   -> Cdgo index: 'GPT'  [Tab]
-[11:21:23.372]   -> Cantidad index: '992,27'
-[11:21:25.915]   -> Precio index: '0,1597'  [Tab]
-[11:21:25.916]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[11:21:27.905]   [post-albaran] dialogo 'Aviso...  '
-[11:21:28.216]      click Si '&Sí'
-[11:21:29.022]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[11:21:29.423]   >>> ALBARAN idx 0 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[11:21:29.424] --- Abrir albaran 2/2 (Anadir nuevo) ---
-[11:21:34.010]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[11:21:35.212] ##### ALBARAN idx 1 : COMATRA, S.C.L. #####
-[11:21:37.261]   -> Refe: '201786'
-[11:21:39.504]   -> FechaSalida: '29/10/2026'
-[11:21:41.748]   -> FechaLlegada: '30/10/2026'
-[11:21:44.087]   -> Cliente: '33'
-[11:21:44.092]   [cliente] aviso 'Aviso...' botones=['Aceptar']
-[11:21:44.400]      click boton 'Aceptar'
-[11:21:47.922]   -> Origen (sobre seleccion): 'SE'
-[11:21:51.505]   -> Carga: '51'
-[11:21:52.750]   PEDIDO (tarifa_pendiente/destino sin codigo): NO se cargan lineas; queda Estado 'Pedido'.
-[11:21:52.750]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[11:21:57.521]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[11:21:57.923]   >>> ALBARAN idx 1 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[11:21:57.927] --- GRABAR VIAJE (disquete) ---
-[11:22:05.818]   [resultado] nro_viaje owner-drawn -> capturado a nro_viaje_v1.png (lo lee la extraccion)
-[11:22:05.818]   grabado viaje 1. activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[11:22:05.820] Viajes grabados: 1/1
-[11:22:05.837] [resultado] escrito: \\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\manuel-aboy-gonzalez\2026-10-26\resultado.json
-[11:22:05.837] [git] resultado.json + crop ESCRITOS en la carpeta de la orden del clon: ordenes-carga/ordenes/2026-10/manuel-aboy-gonzalez/2026-10-26
-[11:22:05.838] [git] >>> auto-push DESACTIVADO: subir con GitHub Desktop (Commit + Push). (Poner GIT_PUSH_AUTO=True para automatico.)
-[11:22:05.838] ==== FIN robot viajes. ====
+[12:43:50.228] ==== ROBOT VIAJES viajes-2 ====
+[12:43:50.228] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-ramon-pineiro\2026-10-19\orden.json
+[12:43:50.229] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-ramon-pineiro\2026-10-19\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
+[12:43:50.234] Empresa='TLE' | 1 viaje(s)
+[12:43:51.941] [pid] Gesruta PID=12320 -> se IGNORAN ventanas de otros procesos (p.ej. recordatorios de Outlook, titulados 'N aviso(s)')
+[12:43:51.942] ########## VIAJE 1/1  cabeza='8420'  tipo=propio  (3 albaranes) ##########
+[12:43:51.945] --- CABECERA: cabeza 8420 (necesita editar=True) ---
+[12:43:59.624]   leer Matricula tractora -> '8420KKT'
+[12:44:01.725]   leer Matricula remolque -> 'R3697BDK'
+[12:44:03.824]   leer Chofer codigo      -> '44'
+[12:44:03.825]   remolque 'R3697BDK' != esperado 'PO01956R' -> BUSCAR
+[12:44:03.825]   BUSCAR remolque: doble clic codigo + '956' + lupa + doble clic fila
+[12:44:14.674]   leer Matricula remolque (post-BUSCAR) -> 'PO01956R'
+[12:44:14.675]   remolque corregido por BUSCAR -> PO01956R
+[12:44:14.676]   CABECERA OK (tractora=8420KKT remolque=PO01956R chofer_cod=44)
+[12:44:14.676] --- Abrir albaran 1/3 (Anadir nuevo) ---
+[12:44:19.675]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
+[12:44:20.876] ##### ALBARAN idx 0 : FORESA IND.QUIMICAS DEL NOROESTE, S.A. #####
+[12:44:22.978]   -> Refe: '2032989'
+[12:44:25.222]   -> FechaSalida: '19/10/2026'
+[12:44:27.465]   -> FechaLlegada: '21/10/2026'
+[12:44:29.753]   -> Cliente: '1'
+[12:44:29.758]   [cliente] aviso 'Aviso...' botones=['Aceptar']
+[12:44:30.073]      click boton 'Aceptar'
+[12:44:33.547]   -> Origen (sobre seleccion): '1'
+[12:44:37.289]   -> Destino: 'IGUAL'
+[12:44:40.828]   -> Carga: '3'
+[12:44:43.264]   clic solapa Lineas
+[12:44:44.850]   clic add porte
+[12:44:47.495]   -> Cantidad porte: '23,000'
+[12:44:49.986]   -> Precio porte: '72,36'  [Tab]
+[12:44:51.171]   clic add indexacion
+[12:44:54.076]   -> Cdgo index: 'G'  [Tab]
+[12:44:56.179]   -> Cantidad index: '1664,28'
+[12:44:58.720]   -> Precio index: '0,1597'  [Tab]
+[12:44:58.721]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
+[12:45:00.710]   [post-albaran] dialogo 'Aviso...  '
+[12:45:01.013]      click Si '&Sí'
+[12:45:01.827]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
+[12:45:02.229]   >>> ALBARAN idx 0 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
+[12:45:02.230] --- Abrir albaran 2/3 (Anadir nuevo) ---
+[12:45:06.415]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
+[12:45:07.617] ##### ALBARAN idx 1 : RNM TRANSPORTES QUIMICOS, LDA #####
+[12:45:09.881]   -> Refe: '0141171435'
+[12:45:12.124]   -> FechaSalida: '21/10/2026'
+[12:45:14.368]   -> FechaLlegada: '22/10/2026'
+[12:45:16.758]   -> Cliente: '661'
+[12:45:17.074]   [cliente] aviso 'Consulta Situación Riesgo Cliente:' botones=[]
+[12:45:20.848]   -> Origen (sobre seleccion): 'B'
+[12:45:24.438]   -> Destino: 'CO'
+[12:45:28.027]   -> Carga: '31'
+[12:45:29.278]   PEDIDO (tarifa_pendiente/destino sin codigo): NO se cargan lineas; queda Estado 'Pedido'.
+[12:45:29.278]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
+[12:45:31.269]   [post-albaran] dialogo 'Consulta Situación Riesgo Cliente: RNM TRANSPORTES QUIMICOS, LDA'
+[12:45:34.060]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
+[12:45:34.461]   >>> ALBARAN idx 1 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
+[12:45:34.463] --- Abrir albaran 3/3 (Anadir nuevo) ---
+[12:45:38.663]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
+[12:45:39.864] ##### ALBARAN idx 2 : BALTRANSA, S.A. #####
+[12:45:41.915]   -> Refe: '338923'
+[12:45:44.159]   -> FechaSalida: '23/10/2026'
+[12:45:46.404]   -> FechaLlegada: '26/10/2026'
+[12:45:48.743]   -> Cliente: '10'
+[12:45:57.521]   -> Origen (sobre seleccion): 'M'
+[12:46:01.264]   -> Destino: 'TEIXE'
+[12:46:04.854]   -> Carga: '89'
+[12:46:07.292]   clic solapa Lineas
+[12:46:08.877]   clic add porte
+[12:46:09.478]   OJO: UM=UN no calibrado -> queda TN
+[12:46:11.277]   -> Cantidad porte: '1'
+[12:46:13.870]   -> Precio porte: '1150,00'  [Tab]
+[12:46:15.055]   clic add indexacion
+[12:46:17.945]   -> Cdgo index: 'G'  [Tab]
+[12:46:19.744]   -> Cantidad index: '1'
+[12:46:22.031]   -> Precio index: '0'  [Tab]
+[12:46:22.032]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
+[12:46:24.021]   [post-albaran] dialogo 'Aviso...  '
+[12:46:24.326]      click Si '&Sí'
+[12:46:25.132]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
+[12:46:25.533]   >>> ALBARAN idx 2 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
+[12:46:25.537] --- GRABAR VIAJE (disquete) ---
+[12:46:32.663]   [resultado] nro_viaje owner-drawn -> capturado a nro_viaje_v1.png (lo lee la extraccion)
+[12:46:32.664]   grabado viaje 1. activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
+[12:46:32.665] Viajes grabados: 1/1
+[12:46:32.676] [resultado] escrito: \\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-10\jose-ramon-pineiro\2026-10-19\resultado.json
+[12:46:32.677] [git] resultado.json + crop ESCRITOS en la carpeta de la orden del clon: ordenes-carga/ordenes/2026-10/jose-ramon-pineiro/2026-10-19
+[12:46:32.677] [git] >>> auto-push DESACTIVADO: subir con GitHub Desktop (Commit + Push). (Poner GIT_PUSH_AUTO=True para automatico.)
+[12:46:32.678] ==== FIN robot viajes. ====

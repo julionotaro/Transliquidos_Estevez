@@ -1,17 +1,30 @@
 {
   "orden": "ordenes-carga/ordenes/2026-10/carlos-abalo-quintela/2026-10-26/orden.json",
   "empresa": "TLE",
-  "corrida": "2026-11-03T10:23:36",
+  "corrida": "2026-11-03T11:48:17",
   "bot_version": "viajes-2",
   "viajes": [
     {
-      "cabeza": "3729",
+      "cabeza": "03729",
       "chofer": "CARLOS ABALO QUINTELA",
       "nro_viaje_gesruta": "",
-      "nro_viaje_crop": "",
-      "estado": "abortado",
-      "motivo": "cabecera no verificada (matricula/remolque/chofer)",
-      "albaranes": []
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "260032",
+          "nro_albaran_gesruta": "01",
+          "estado": "grabado",
+          "motivo": "km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
+        },
+        {
+          "referencia": "713124",
+          "nro_albaran_gesruta": "02",
+          "estado": "grabado",
+          "motivo": "km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
+        }
+      ]
     }
   ]
 }

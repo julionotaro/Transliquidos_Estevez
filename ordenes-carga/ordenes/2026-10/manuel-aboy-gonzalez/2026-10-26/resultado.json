@@ -1,7 +1,7 @@
 {
   "orden": "ordenes-carga/ordenes/2026-10/manuel-aboy-gonzalez/2026-10-26/orden.json",
   "empresa": "TLE",
-  "corrida": "2026-11-03T11:22:05",
+  "corrida": "2026-11-03T11:41:15",
   "bot_version": "viajes-2",
   "viajes": [
     {
@@ -22,7 +22,7 @@
           "referencia": "201786",
           "nro_albaran_gesruta": "02",
           "estado": "grabado",
-          "motivo": "PEDIDO (tarifa pendiente / destino sin codigo): cabecera+km, sin lineas"
+          "motivo": "km propio NO cargado en formulario (temporal CARGAR_KM_FORM_PROPIO=False; regularizar y recargar)"
         }
       ]
     }

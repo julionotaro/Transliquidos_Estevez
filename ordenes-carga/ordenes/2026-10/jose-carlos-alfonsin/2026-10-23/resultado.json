@@ -1,0 +1,30 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/jose-carlos-alfonsin/2026-10-23/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-03T12:18:46",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "4916",
+      "chofer": "JOSE CARLOS ALFONSIN",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2033820",
+          "nro_albaran_gesruta": "01",
+          "estado": "grabado",
+          "motivo": ""
+        },
+        {
+          "referencia": "713025",
+          "nro_albaran_gesruta": "02",
+          "estado": "grabado",
+          "motivo": ""
+        }
+      ]
+    }
+  ]
+}
