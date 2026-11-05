@@ -57,6 +57,17 @@
       "fecha": "2026-11-03",
       "por": "Julio",
       "nota": "Cascada por provincia: Barcelona->Padron (A Coruna) usa la tarifa de la provincia Coruna = 79,71 (no hay tarifa propia de Padron). Aplica minimo 23 TN. P IVA 21."
+    },
+    {
+      "cliente": "RNM TRANSPORTES QUIMICOS, LDA",
+      "origen": "TARRAGONA",
+      "destino": "AZAMBUJA(PT)",
+      "precio": 88.45,
+      "vigente_desde": "2026-01-01",
+      "confirmado": true,
+      "fecha": "2026-11-04",
+      "por": "Julio",
+      "nota": "RNM Tarragona (IQOXE La Canonja) -> Persan Azambuja (Portugal), IQOXINOL. RNM es freight agent (TLE transportista sucesivo). RNM portuguesa -> PI/IVA 0/GPT. 88,45 EUR/TN confirmado por Julio 04/11; no estaba en el tarifario RNM."
     }
   ]
 }
