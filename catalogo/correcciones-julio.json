@@ -198,7 +198,7 @@
     },
     {
       "fecha": "2026-11-03", "por": "Julio", "cliente": "FORESA (y general)", "campo": "reparto (doble destino)",
-      "regla": "DOBLE DESTINO (D-08): cuando un camion entrega la MISMA carga en DOS destinos, se arma UN SOLO albaran por la carga COMBINADA (suma de pesos) al destino/zona que tiene tarifa, MAS una linea REPARTOS de importe fijo (90,00 por defecto) FUERA de la base de indexacion. NO se factura un minimo 23 por cada destino ni se parte en dos albaranes. Confirmado Julio 03/11 (juego Pablo Carles: FORESA Caldas->Valencia, Enguera 11.860 + Alacuas 11.720 = 23.580 kg -> 1 albaran 23,580 TN x 64,04 + REPARTOS 90). En el armador: raw con 'reparto': <importe> -> lineas.reparto {concepto REPARTOS, cantidad 1, importe}; la indexacion se calcula solo sobre el porte.",
+      "regla": "DOBLE DESTINO (D-08): cuando un camion entrega la MISMA carga en DOS destinos, se arma UN SOLO albaran por la carga COMBINADA (suma de pesos) al destino/zona que tiene tarifa, MAS una linea con codigo REP (cantidad 1, precio 90,00 por defecto) FUERA de la base de indexacion. NO se factura un minimo 23 por cada destino ni se parte en dos albaranes. Confirmado Julio 03-04/11 (juego Pablo Carles: FORESA Caldas->Valencia, Enguera 11.860 + Alacuas 11.720 = 23.580 kg -> 1 albaran 23,580 TN x 64,04 + linea REP cantidad 1 precio 90). El codigo Gesruta de la linea de reparto es 'REP'. En el armador: raw con 'reparto': <importe> -> lineas.reparto {concepto REP, cantidad 1, precio}; la indexacion se calcula solo sobre el porte.",
       "estado": "confirmada"
     },
     {
