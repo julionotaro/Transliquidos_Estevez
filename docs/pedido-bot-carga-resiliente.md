@@ -26,29 +26,34 @@ termine — un solo campo en Gesruta, no el viaje de nuevo.
   crear el viaje**: saltear ESE viaje y registrarlo en `resultado.json` con el motivo. Es el único
   caso de "saltear". El resto de viajes de la orden se procesan igual.
 
-### 2. Albarán → siempre crear la cabecera del albarán
-Cargar lo que haya: `cliente.codigo`, `origen.codigo`, `destino.codigo`, `carga.codigo`,
-`referencia`, `salida`, `llegada`. Reglas:
-- Si un **`codigo` viene `null`** (no se pudo resolver): **no inventar**. Cargar los que sí están y
-  dejar el albarán como **Pedido** (ver §4). No abortar.
-- Nunca teclear texto "a criterio" en lugar de un código: si no hay código, es Pedido.
+### 2. Albarán → cargar la cabecera del albarán con lo que haya
+Cargar `cliente.codigo`, `origen.codigo`, `destino.codigo`, `carga.codigo`, `referencia`, `salida`,
+`llegada`. Si un **`codigo` viene `null`** (no se pudo resolver): **no inventar** — cargar los que sí
+están y **dejar vacío solo ese campo** (resiliencia, §3 bis). No abortar el viaje.
 
-### 3. Líneas (porte e indexación) — lo que dispara "Pedido"
-- **`lineas.porte` tiene objeto** y `tarifa_pendiente:false` y **sin** `peso_pendiente` →
-  cargar la línea de porte: `um`, `cantidad`, `precio`, concepto (`P`/`PI`), IVA.
-- **`lineas.porte` es `null`**, o **`tarifa_pendiente:true`**, o **`peso_pendiente:true`** →
-  **NO abrir "Líneas"**. El albarán queda **Pedido (verde)** y listo. (Confirmado: el aviso
-  "¿convertir en albarán?" solo salta al entrar a Líneas; si no se tocan, queda Pedido.)
-- **`lineas.indexacion`**: si es objeto con `cargar:false` → es indexación **acumulada**: calcular
-  para control pero **no** cargar línea. Si es objeto sin ese flag → cargar la línea
-  (`concepto` G/GPT, `cantidad`, `factor`). Si es `null` → **no** hay línea de indexación (precio
-  con idx incluida, o Pedido).
+### 3. Líneas (porte / indexación / reparto) — cargar TODAS las que la orden traiga
+- **`lineas.porte`**: cargar `um`, `cantidad`, `precio`, `concepto_esperado` (P/PI), `iva_esperado`.
+- **`lineas.indexacion`** (objeto): cargar `concepto` (G/GPT), `cantidad`, `factor`. Si trae
+  `cargar:false` → es **acumulada**: se calcula para control pero **no** se carga la línea. Si es
+  `null` → no hay línea de indexación (precio con idx incluida).
+- **`lineas.reparto`** (objeto): doble destino → cargar la línea **código `REP`, cantidad 1,
+  `precio`** (90 por defecto). Fuera de la base de indexación.
 
-### 4. Estado "Pedido" = cargar lo posible y seguir
-Cuando el albarán no está completo (código null / `tarifa_pendiente` / `peso_pendiente`):
-- Crear el albarán con su cabecera (cliente/puntos/carga/ref/fechas que haya), **sin tocar Líneas**.
-- Dejarlo **Pedido (verde)**. No es un error: es un estado válido que el humano completa después.
-- Registrar en `resultado.json` qué faltó (campo + motivo).
+### 3 bis. RESILIENCIA — un dato puntual faltante NO deja el albarán sin líneas
+**Regla (Julio 05/11):** cuando falta un dato **puntual** del albarán (la **tarifa**, el **peso/TN**,
+el **% de indexación**, o un **código** de punto), se **cargan todas las líneas posibles** y se deja
+**vacío SOLO ese campo**. NO se deja el albarán como "Pedido" ni se saltea. En la orden ese dato
+viene en `null` y los flags lo señalan:
+- **`tarifa_pendiente:true`** → el **`precio`** del porte viene `null` (y la `cantidad` de la
+  indexación también): cargar la línea con `um`/`cantidad`/`concepto`/`iva` y **dejar el precio
+  vacío**. El humano completa solo el precio.
+- **`peso_pendiente:true`** → la **`cantidad`** (TN) del porte viene `null`: cargar `precio`/
+  `concepto`/`iva` y **dejar la cantidad vacía**.
+- **`factor`/`cantidad` de la indexación en `null`** → cargar el `concepto` y dejar vacío lo que falte.
+- **`codigo` en `null`** (destino u otro) → cargar el resto y dejar ese campo vacío.
+
+El **aborto se reserva** para cuando faltan los **datos básicos del viaje** (la cabecera:
+matrícula/chófer no cargables, §1). Un dato puntual faltante **nunca** aborta ni deja todo en Pedido.
 
 ### 5. KM
 - `km.pendiente:true` → **saltear** el formulario de Kilómetros (no inventar). 

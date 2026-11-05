@@ -1,18 +1,5 @@
 {
   "empresa": "TLE",
-  "_meta": {
-    "fecha_inicio": "2026-09-30",
-    "chofer": "NUNO FELIPE SILVA PAIVA",
-    "cabeza": "8504",
-    "remolques": [
-      "R4905BDF"
-    ],
-    "viajes": 1,
-    "albaranes": 3,
-    "estado": "pendiente_carga",
-    "source_ficha": "(lote inicial, re-archivado)",
-    "choferes_tipo": "propio"
-  },
   "viajes": [
     {
       "cabecera": {
@@ -106,11 +93,9 @@
             "fin": "4693",
             "carga": "124"
           },
-          "tarifa_pendiente": false,
-          "_idx": "indexacion.cargar=false: el importe se conoce (para control) pero NO se carga linea por albaran; Caldas->Orember se indexa acumulado en facturacion."
+          "tarifa_pendiente": false
         },
         {
-          "_bloqueo": "Cargar en estado PEDIDO (tarifa_pendiente). Destino Montehermoso/Caceres (Acenorca) sin punto en Gesruta y sin tarifa: Caceres solo esta tarifado desde Vilanova da Rainha, no desde Aveiro (verificado 14/10). Julio pide tarifa por mail + alta del punto.",
           "cliente": {
             "codigo": "661",
             "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
@@ -131,8 +116,18 @@
           "salida": "05/10/2026",
           "llegada": "06/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": null,
+              "precio": null,
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": null,
+              "factor": "0,1450"
+            }
           },
           "km": {
             "inicio": "5136",

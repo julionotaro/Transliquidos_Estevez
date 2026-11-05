@@ -46,9 +46,9 @@
               "factor": "0,1597"
             },
             "reparto": {
-              "concepto": "REPARTOS",
+              "concepto": "REP",
               "cantidad": "1",
-              "importe": "90,00"
+              "precio": "90,00"
             }
           },
           "km": {

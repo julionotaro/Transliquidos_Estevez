@@ -115,15 +115,25 @@
           "salida": "29/10/2026",
           "llegada": "30/10/2026",
           "lineas": {
-            "porte": null,
-            "indexacion": null
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,820",
+              "precio": "88,45",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "2.106,88",
+              "factor": "0,1597"
+            }
           },
           "km": {
             "inicio": "1174895",
             "fin": "1176071",
             "carga": "1176"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         }
       ]
     }

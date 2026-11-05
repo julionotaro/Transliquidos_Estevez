@@ -60,8 +60,12 @@ leyendo la orden.json. Vos NO cargás en Gesruta.
   por código + `esperado` para que el bot verifique.
 - **Libro maestro** `datos/registro-procesamiento.csv`: una fila por albarán, **28 columnas,
   NUNCA un `;` en observaciones** (bug recurrente). `base = porte(+idx)`, `total = base·(1+iva)`.
-- **Archivo de documentos:** cada albarán renombrado por su referencia en
-  `procesados/<CLIENTE>/<AAAA-MM>/`. La ficha NO va a procesados (vive solo en ordenes/).
+- **Archivo de documentos:** un PDF por albarán, renombrado por su referencia, en
+  `procesados/<CLIENTE>/<AAAA-MM>/`. **El PDF del albarán debe contener la OC + la documentación
+  de carga (CMR / albarán de carga / báscula) en UN SOLO archivo**, no la OC y la carga por separado
+  (regla Julio 05/11). Si las páginas vienen sueltas en el escaneo, unirlas en ese único PDF.
+  *Dejar lo ya archivado como está; implementar el PDF único de ahora en más.* La ficha NO va a
+  procesados (vive solo en ordenes/).
 
 ## 4. Cerrar
 - **Correr el validador:** `python3 -I herramientas/validar_carga.py`. Si falla, arreglar.

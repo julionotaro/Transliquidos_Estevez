@@ -241,38 +241,47 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
     avisos.push('[' + ctx + '] PESO PENDIENTE: falta documento de peso (albaran/CMR); no se factura el peso de la OC (D-01) -> REVISAR, completar con el peso real.');
   }
 
-  if (!tarifaPendiente && !pesoPendiente) {
-    var porteImporte;
-    if (precioFijo !== null) {
-      porteImporte = precioFijo;
-      alb.lineas.porte = { um: 'UN', cantidad: '1', precio: fmt(precioFijo, 2), concepto_esperado: reg.concepto, iva_esperado: reg.iva };
-    } else {
-      porteImporte = tons * tar.precio;
-      alb.lineas.porte = { um: 'TN', cantidad: fmt(tons, 3), precio: fmt(tar.precio, 2), concepto_esperado: reg.concepto, iva_esperado: reg.iva };
-    }
+  // LINEAS — RESILIENCIA (Julio 05/11): se completan TODAS las lineas posibles y se deja en null SOLO
+  // el dato que falta (la TARIFA -> precio null; el PESO/TN -> cantidad null). El bot carga lo lleno y
+  // deja vacio ese campo; NO deja el albaran sin lineas ni aborta por un dato puntual. (El aborto es
+  // solo si faltan los datos BASICOS del viaje: cabecera/matricula.) Los flags tarifa_pendiente /
+  // peso_pendiente indican cual es el dato que falta.
+  var porteImporte = null;
+  if (precioFijo !== null) {
+    porteImporte = precioFijo;
+    alb.lineas.porte = { um: 'UN', cantidad: '1', precio: fmt(precioFijo, 2), concepto_esperado: reg.concepto, iva_esperado: reg.iva };
+  } else {
+    if (tons !== null && tar.precio !== null) { porteImporte = tons * tar.precio; }
+    alb.lineas.porte = {
+      um: 'TN',
+      cantidad: (tons !== null) ? fmt(tons, 3) : null,      // null si falta el PESO (peso_pendiente)
+      precio: (tar.precio !== null) ? fmt(tar.precio, 2) : null, // null si falta la TARIFA (tarifa_pendiente)
+      concepto_esperado: reg.concepto,
+      iva_esperado: reg.iva,
+    };
+  }
+  // INDEXACION
+  if (esBaltransa) {
     // BALTRANSA: linea de indexacion fija en cero (cantidad 1, factor 0) — regla R-04.
-    if (esBaltransa) {
-      alb.lineas.indexacion = { concepto: reg.idx, cantidad: '1', factor: '0' };
-    } else if (raw.idx_incluida === true) {
-      // Precio fijo con INDEXACION INCLUIDA en el precio (FORESTAL, COMATRA): no se
-      // agrega linea de indexacion aparte. Se declara en el raw con "idx_incluida": true.
-      alb.lineas.indexacion = null;
+    alb.lineas.indexacion = { concepto: reg.idx, cantidad: '1', factor: '0' };
+  } else if (raw.idx_incluida === true) {
+    // Precio fijo con INDEXACION INCLUIDA en el precio (FORESTAL, COMATRA): no hay linea de idx.
+    alb.lineas.indexacion = null;
+  } else {
+    // indexacion por linea (acumulada -> cargar:false, para control de totales)
+    var grupo = idxMod.grupoIndexacion(razon).grupo;
+    var hit = idxMod.buscarPct(grupo, fIso, deps.indexacion);
+    if (hit && !hit.ambiguo && hit.pct != null) {
+      alb.lineas.indexacion = { concepto: reg.idx, cantidad: (porteImporte !== null) ? fmt(porteImporte, 2) : null, factor: fmt(hit.pct, 4) };
+      if (esIdxAcumulada(razon, po.esperado, pd.esperado)) { alb.lineas.indexacion.cargar = false; }
     } else {
-      // indexacion por linea (acumulada -> cargar:false, para control de totales)
-      var grupo = idxMod.grupoIndexacion(razon).grupo;
-      var hit = idxMod.buscarPct(grupo, fIso, deps.indexacion);
-      if (hit && !hit.ambiguo && hit.pct != null) {
-        alb.lineas.indexacion = { concepto: reg.idx, cantidad: fmt(porteImporte, 2), factor: fmt(hit.pct, 4) };
-        if (esIdxAcumulada(razon, po.esperado, pd.esperado)) { alb.lineas.indexacion.cargar = false; }
-      } else {
-        avisos.push('[' + ctx + '] indexacion sin tramo vigente: ' + grupo + ' @ ' + fIso + (hit && hit.ambiguo ? ' (ambiguo)' : ''));
-      }
+      avisos.push('[' + ctx + '] indexacion sin tramo vigente: ' + grupo + ' @ ' + fIso + (hit && hit.ambiguo ? ' (ambiguo)' : ''));
     }
-    // REPARTO (D-08): una MISMA carga entregada en DOS destinos -> linea REPARTOS, importe fijo
-    // (por defecto 90,00), FUERA de la base de indexacion. Se declara en el raw con "reparto": <importe>.
-    if (typeof raw.reparto === 'number') {
-      alb.lineas.reparto = { concepto: 'REPARTOS', cantidad: '1', importe: fmt(raw.reparto, 2) };
-    }
+  }
+  // REPARTO (D-08): doble destino -> linea con codigo REP (cantidad 1, precio 90 por defecto), FUERA
+  // de la base de indexacion. Se declara en el raw con "reparto": <importe>.
+  if (typeof raw.reparto === 'number') {
+    alb.lineas.reparto = { concepto: 'REP', cantidad: '1', precio: fmt(raw.reparto, 2) };
   }
   return alb;
 }
