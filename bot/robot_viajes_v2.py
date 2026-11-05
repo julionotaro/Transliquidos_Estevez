@@ -851,21 +851,32 @@ def _load_cabecera_prove(ver, prov):
       - Remolque: codigo VACIO; Matricula remolque (al lado): matricula COMPLETA.
       - Proveedor (debajo): codigo del proveedor (THEC = '5').
       - Sin chofer en la cabecera. De aca en mas, albaranes normales.
-    Resiliente: carga lo que haya, no aborta por un campo."""
+    Navegacion por TAB (calibrada en vivo 2026-11-04). Al final VERIFICA que la cabecera quedo
+    cargada; si quedo en blanco, falla ruidoso (no graba un viaje con la cabecera vacia)."""
     mat=(ver.get("matricula") or ""); rem=(ver.get("remolque") or ""); prov_cod=str(prov or "5")
     log("--- CABECERA THEC/PROVE: 'PROVE' + tractora %r + remolque %r + proveedor %s ---"%(mat,rem,prov_cod))
-    # Cabeza = PROVE (el cursor ya esta en Cabeza tras la hoja blanca)
-    ensure_ges(); pyautogui.write("PROVE",interval=0.06); time.sleep(0.2); pyautogui.press('tab'); time.sleep(1.0)
-    # Matricula tractora COMPLETA (no autocompleta)
-    if mat: field(V_MAT_TRACT, mat, "Matricula tractora (THEC)", clear=True)
-    # Remolque: codigo VACIO (no se toca). Matricula remolque COMPLETA
-    if rem: field(V_MAT_REMOL, rem, "Matricula remolque (THEC)", clear=True)
-    # Proveedor (codigo; Tab para que autocomplete la razon social)
-    field(V_PROVEEDOR, prov_cod, "Proveedor", tab=True, clear=True)
+    # CALIBRADO EN VIVO 2026-11-04: navegacion por TAB (deterministica). NO clickear las matriculas
+    # (clickearlas descoordinaba y dejaba la cabecera en blanco). Orden de Tab en 'Entrada de Viajes':
+    # Cabeza -> Matricula tractora -> codigo Remolque -> Matricula remolque -> Chofer. El cursor ya
+    # esta en Cabeza (hoja blanca). El Proveedor NO esta en esa cadena de Tab -> clic directo al final.
+    ensure_ges(); time.sleep(0.3)
+    pyautogui.write("PROVE",interval=0.06); time.sleep(0.25); pyautogui.press('tab'); time.sleep(0.6)  # -> Matricula tractora
+    if mat: pyautogui.write(mat,interval=0.05); time.sleep(0.2)
+    pyautogui.press('tab'); time.sleep(0.5)     # -> codigo Remolque (queda VACIO)
+    pyautogui.press('tab'); time.sleep(0.5)     # -> Matricula remolque
+    if rem: pyautogui.write(rem,interval=0.05); time.sleep(0.2)
+    pyautogui.press('tab'); time.sleep(0.5)     # -> Chofer (queda vacio en THEC)
+    # Proveedor: clic directo (no esta en la cadena de Tab) + codigo + Tab (autocompleta razon social)
+    field(V_PROVEEDOR, prov_cod, "Proveedor", tab=True)
+    # VERIFICAR que la cabecera quedo cargada: si la tractora/remolque quedaron en blanco o distintos,
+    # la cabecera NO se cargo bien -> FALLAR RUIDOSO y NO grabar un viaje con la cabecera en blanco.
     mt=vread(V_MAT_TRACT,"Matricula tractora (post)")
+    mr=vread(V_MAT_REMOL,"Matricula remolque (post)")
     if mat and _alnum(mt)!=_alnum(mat):
-        log("  AVISO THEC: tractora quedo %r (esperaba %r) -> sigo igual (no abandono)."%(mt,mat))
-    log("  CABECERA THEC OK (PROVE, tractora=%s remolque=%s proveedor=%s)"%(mat,rem,prov_cod))
+        log("  ABORTO THEC: la matricula tractora quedo %r (esperaba %r). La cabecera NO se cargo -> NO grabo viaje en blanco."%(mt,mat)); return False
+    if rem and _alnum(mr)!=_alnum(rem):
+        log("  ABORTO THEC: la matricula remolque quedo %r (esperaba %r). La cabecera NO se cargo -> NO grabo viaje en blanco."%(mr,rem)); return False
+    log("  CABECERA THEC OK (PROVE, tractora=%s remolque=%s proveedor=%s)"%(mt,mr,prov_cod))
     return True
 
 def load_cabecera(cab, already_editing=False, empresa=None):
@@ -973,6 +984,16 @@ try:
             if alb.get("peso_pendiente"): _pend.append("peso")
             if _des.get("codigo") is None: _pend.append("destino")
             if not _lin.get("porte"): _pend.append("porte")
+            # Resiliencia a nivel LINEA (Julio 2026-11-05): si la linea SI se cargo pero falta un dato
+            # puntual (tarifa/precio, cantidad/TN, factor de indexacion), la linea queda cargada con ese
+            # campo vacio -> se reporta aca para completarlo despues. NO es Pedido (estado CARGADO).
+            if not _sin_lineas:
+                _p=(_lin.get("porte") or {})
+                if not str(_p.get("cantidad","")).strip(): _pend.append("cantidad_porte")
+                if not str(_p.get("precio","")).strip(): _pend.append("precio_porte")
+                _ix=_lin.get("indexacion")
+                if _ix and (_ix.get("cargar") is not False) and (not str(_ix.get("factor","")).strip()):
+                    _pend.append("factor_indexacion")
             if duo_sec: _pend.append("km/dietas (viaje lider)")
             elif _km2.get("pendiente"): _pend.append("km")
             elif (not autonomo) and (not CARGAR_KM_FORM_PROPIO) and (not _sin_lineas): _pend.append("km_form_propio (temporal)")

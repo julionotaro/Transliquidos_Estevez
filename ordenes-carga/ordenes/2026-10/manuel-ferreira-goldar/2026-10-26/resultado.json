@@ -1,0 +1,91 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/manuel-ferreira-goldar/2026-10-26/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-04T10:43:48",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "9039",
+      "chofer": "MANUEL FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2034358",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2034458",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2034368",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2034364",
+          "nro_albaran_gesruta": "04",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "9039",
+      "chofer": "MANUEL FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "",
+      "estado": "abortado",
+      "motivo": "cabecera no verificada (matricula/remolque/chofer)",
+      "albaranes": []
+    },
+    {
+      "cabeza": "9039",
+      "chofer": "MANUEL FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v3.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2034366",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2034375",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}

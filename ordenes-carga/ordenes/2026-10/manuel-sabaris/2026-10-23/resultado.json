@@ -1,0 +1,46 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/manuel-sabaris/2026-10-23/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-04T12:21:17",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "2256",
+      "chofer": "MANUEL SABARIS",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "712094",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "001346",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "229896",
+          "nro_albaran_gesruta": "03",
+          "estado": "PEDIDO",
+          "motivo": "tarifa; porte",
+          "pendiente_de": [
+            "tarifa",
+            "porte"
+          ]
+        }
+      ]
+    }
+  ]
+}

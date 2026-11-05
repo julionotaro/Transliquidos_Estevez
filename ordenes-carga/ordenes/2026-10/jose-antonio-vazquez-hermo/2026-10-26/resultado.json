@@ -1,0 +1,36 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/jose-antonio-vazquez-hermo/2026-10-26/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-04T12:15:31",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "7394",
+      "chofer": "JOSE ANTONIO VAZQUEZ HERMO",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2033842",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "712678",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}
