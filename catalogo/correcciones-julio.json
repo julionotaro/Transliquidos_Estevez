@@ -88,7 +88,7 @@
     },
     {
       "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "archivo_procesados/nombre",
-      "regla": "Al procesar y guardar un ALBARAN (documento de transporte), RENOMBRARLO con su Nº de REFERENCIA + .pdf (ej 20261009185425.pdf -> 2027535.pdf). Si hay una orden de carga asociada al mismo albaran, '<ref>-orden.pdf'. Las FICHAS del chofer conservan su nombre original (son compartidas por varios albaranes). El path renombrado se refleja en la columna pdf_doc del registro.",
+      "regla": "Al procesar y guardar un ALBARAN (documento de transporte), RENOMBRARLO con su Nº de REFERENCIA + .pdf (ej 20261009185425.pdf -> 2027535.pdf). ACTUALIZACION 05/11: el PDF del albaran debe contener la OC + la documentacion de carga (CMR/albaran de carga/bascula) en UN SOLO archivo <ref>.pdf; si vienen en paginas sueltas, unirlas. YA NO se separa la OC en un '<ref>-orden.pdf' aparte (ese era el formato viejo): dejar los '-orden.pdf' ya archivados como estan, pero de ahora en mas un unico PDF con OC + carga. Las FICHAS del chofer conservan su nombre original (son compartidas por varios albaranes) y NO van a procesados. El path renombrado se refleja en la columna pdf_doc del registro.",
       "estado": "confirmada"
     },
     {

@@ -48,11 +48,14 @@ Ruta: **`procesados/<CLIENTE>/<AAAA-MM>/`**
 
 Archivos:
 
-- **`<referencia>.pdf`**: el/los documento(s) de transporte del albarán, nombrado por su
+- **`<referencia>.pdf`** — **UN solo PDF por albarán** que contiene **la OC + la documentación
+  de carga** (CMR / albarán de carga / báscula) **juntas en el mismo archivo**, nombrado por su
   **referencia de facturación** (la misma que va en la columna `referencia` del registro).
-  Ej.: `710297.pdf`, `5050141131.pdf`, `338681.pdf`.
-- **`<referencia>-orden.pdf`**: si además hay una **orden de carga/transporte** asociada al
-  mismo albarán. Ej.: `338681-orden.pdf`, `2027535-orden.pdf`.
+  Ej.: `710297.pdf`, `5050141131.pdf`, `338681.pdf`. Si las páginas vienen sueltas en el escaneo,
+  **unirlas** en ese único PDF. **Regla Julio 05/11.**
+- **NO separar la OC del resto** en un `<referencia>-orden.pdf` aparte: ese formato de dos
+  archivos es el **viejo** (lote ya archivado). **Dejar lo ya hecho como está; de ahora en más,
+  un único PDF con OC + carga.** Los `-orden.pdf` existentes se conservan (no re-tocar).
 - **NUNCA** nombrar por el timestamp del escaneo. Un archivo con nombre de timestamp dentro
   de `procesados/<CLIENTE>/` es señal de documento SIN procesar mal archivado.
 
