@@ -60,24 +60,34 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
   **no se abre Líneas**, el albarán queda **Pedido** (verde). Igual que `tarifa_pendiente` a efectos
   de no cargar líneas.
 
-## Conducta resiliente del bot (Julio 2026-11-03)
+## Conducta resiliente del bot (Julio 2026-11-03; aclarado 2026-11-05)
 
-Un campo faltante en **un** albarán **nunca** abandona el viaje entero. Reglas:
-- **Cabecera (matrícula/chofer):** único caso que justifica saltear un viaje. Si no se puede crear,
-  se saltea ese viaje (queda `estado: abortado` en el resultado) y **los demás viajes siguen**.
-- **Cada albarán:** cargar siempre la cabecera con lo que haya (cliente/origen/destino/carga/ref/
-  fechas). Si un `codigo` viene `null`, no inventar: se carga lo que esté y el albarán queda Pedido.
-- **Líneas:** se abren y cargan **solo** si `porte` es objeto y no hay `tarifa_pendiente` ni
-  `peso_pendiente`. Si `porte` es `null`, o `tarifa_pendiente`, o `peso_pendiente` → **no** se abre
-  Líneas: queda **Pedido** (verde). Indexación `cargar:false` = acumulada (no se carga línea);
-  `null` = sin línea.
+La resiliencia opera a **nivel de línea/dato**, NO a nivel de los datos básicos del viaje. Hay que
+distinguir TRES casos (Julio 2026-11-05):
+
+1. **Datos básicos del viaje — cabecera de "Entrada de Viaje"** (matrícula tractora / remolque /
+   chofer): si NO coinciden o NO se cargan, el viaje **SE ABORTA** (fallar ruidoso). Es lo correcto:
+   un viaje sin sus datos básicos no se puede facturar. Es el **único** caso que saltea un viaje; el
+   bot deja `estado: abortado` y **sigue con los demás viajes**. (Confirmado en vivo: remolque que no
+   coincidía → abortó bien; se corrigió la matrícula en Gesruta y cargó.)
+
+2. **Dato puntual faltante DENTRO de una línea** (tarifa/precio, cantidad/TN, factor de indexación),
+   **sin** flag de pendiente: la línea **SÍ se carga**, completando lo que haya y dejando **SOLO** ese
+   campo vacío. **No** es Pedido (queda `estado: CARGADO`); el campo faltante se reporta en
+   `pendiente_de` (`precio_porte` / `cantidad_porte` / `factor_indexacion`) para completarlo luego.
+
+3. **Albarán no cargable por diseño** → **Pedido** (verde, sin abrir Líneas): `tarifa_pendiente`,
+   `peso_pendiente`, `porte` null, o destino sin código. Indexación `cargar:false` = acumulada (no se
+   carga línea); `null` = sin línea.
+
 - **KM:** `pendiente:true` o `cargar:false` (2ª cisterna duo) → saltear el formulario / Gastos.
 - Nº de viaje/albarán: capturados de pantalla, nunca pre-asignados.
 - El `resultado.json` reporta por albarán `estado` (`CARGADO`/`PEDIDO`) y `pendiente_de` (ver
   `CONTRATO-resultado-json.md`).
 
-En una línea: **carga todo lo que puede, deja Pedido lo que no, nunca inventa un dato, nunca abandona
-el viaje por un campo, y reporta qué quedó pendiente.**
+En una línea: **los datos básicos del viaje mal/ausentes → abortar ese viaje (los demás siguen); un
+dato de línea faltante → cargar la línea con ese campo vacío; nunca inventa; siempre reporta lo
+pendiente.**
 
 ## Cabecera — campos extra
 

@@ -65,8 +65,10 @@ La extracción (Claude nube) lo lee **de git** y actualiza `datos/registro-proce
   `nro_albaran_gesruta`.
 - **`estado` por ALBARÁN** (Julio 2026-11-03): `CARGADO` (se cargaron las líneas) | `PEDIDO` (quedó
   verde, sin líneas: `tarifa_pendiente` / `peso_pendiente` / destino sin código / sin porte). Cada
-  albarán trae además **`pendiente_de`**: lista corta de qué faltó (`tarifa`, `peso`, `destino`,
-  `porte`, `km`, `km_form_propio (temporal)`, `km/dietas (viaje lider)`). `motivo` = esa lista en texto.
+  albarán trae además **`pendiente_de`**: lista corta de qué faltó. Valores: `tarifa`, `peso`,
+  `destino`, `porte` (deja el albarán en PEDIDO); `precio_porte`, `cantidad_porte`, `factor_indexacion`
+  (la línea se cargó con ese campo vacío — sigue CARGADO, a completar luego); `km`,
+  `km_form_propio (temporal)`, `km/dietas (viaje lider)`. `motivo` = esa lista en texto.
 - **`estado` por VIAJE:** `grabado` (se grabó el viaje) | `abortado` (no se pudo; la cabecera
   matrícula/chofer es el único caso que saltea un viaje — los demás viajes siguen). Fallar ruidoso:
   mejor `abortado` + motivo que un número inventado.

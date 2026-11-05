@@ -4,6 +4,19 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-05) — Resiliencia a nivel de línea: reportar campo vacío
+
+Aclaración de dominio (Julio 2026-11-05), confirmada en producción (remolque que no coincidía →
+abortó bien, se corrigió en Gesruta y cargó):
+- **Datos básicos del viaje** (matrícula/remolque/chofer) mal o ausentes → **abortar ese viaje** (los
+  demás siguen). Es lo correcto.
+- **Dato puntual faltante en una línea** (precio/tarifa, cantidad/TN, factor de indexación) → la línea
+  **se carga igual** dejando SOLO ese campo vacío (ya lo hacía: `porte.get(...,"")`). **No** es Pedido.
+
+Cambio: el `resultado.json` ahora **reporta** en `pendiente_de` qué dato de línea quedó vacío
+(`precio_porte` / `cantidad_porte` / `factor_indexacion`), manteniendo `estado: CARGADO`, para
+completarlo después. Contratos (orden/resultado) actualizados con la distinción de 3 casos.
+
 ## `viajes-2` (2026-11-04b) — Cabecera THEC: navegación por Tab (calibrada en vivo)
 
 La 1ª versión THEC **clickeaba** cada campo de matrícula y eso descoordinaba la pantalla: tras

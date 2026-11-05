@@ -984,6 +984,16 @@ try:
             if alb.get("peso_pendiente"): _pend.append("peso")
             if _des.get("codigo") is None: _pend.append("destino")
             if not _lin.get("porte"): _pend.append("porte")
+            # Resiliencia a nivel LINEA (Julio 2026-11-05): si la linea SI se cargo pero falta un dato
+            # puntual (tarifa/precio, cantidad/TN, factor de indexacion), la linea queda cargada con ese
+            # campo vacio -> se reporta aca para completarlo despues. NO es Pedido (estado CARGADO).
+            if not _sin_lineas:
+                _p=(_lin.get("porte") or {})
+                if not str(_p.get("cantidad","")).strip(): _pend.append("cantidad_porte")
+                if not str(_p.get("precio","")).strip(): _pend.append("precio_porte")
+                _ix=_lin.get("indexacion")
+                if _ix and (_ix.get("cargar") is not False) and (not str(_ix.get("factor","")).strip()):
+                    _pend.append("factor_indexacion")
             if duo_sec: _pend.append("km/dietas (viaje lider)")
             elif _km2.get("pendiente"): _pend.append("km")
             elif (not autonomo) and (not CARGAR_KM_FORM_PROPIO) and (not _sin_lineas): _pend.append("km_form_propio (temporal)")
