@@ -37,9 +37,10 @@ function filasDeOrden(orden) {
       var cant = numES(porte.cantidad);
       var prec = numES(porte.precio);
       var importe = (cant != null && prec != null) ? cant * prec : null;
+      // Destino (col G del Excel): como lo escribe Julio -> MAYUSCULAS, multi-destino unido con '+'.
       var destinos = (a.destinos && a.destinos.length)
-        ? a.destinos.join(', ')
-        : ((a.destino && a.destino.esperado) || '');
+        ? a.destinos.map(function (x) { return String(x).toUpperCase(); }).join('+')
+        : ((a.destino && a.destino.esperado) || '').toUpperCase();
       var nRep = (a.destinos && a.destinos.length) ? a.destinos.length : 1;
       filas.push([
         emp,                                                    // A Emp (TLE / THEC)

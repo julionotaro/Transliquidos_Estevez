@@ -1,0 +1,4040 @@
+{
+ "_nota": "Base COMPLETA de puntos exportada de Gesruta (datos/gesruta/puntos-geograficos-2026-08-27.csv), decodificada de cp850 a UTF-8. La usa el resolver POR DEBAJO de puntos-alta.json (los curados, con alias, mandan; esta base aporta el resto de codigos para no tener que dar de alta a mano). Regenerar desde el CSV si cambia el export. id_punto = Cod.Pto. de Gesruta.",
+ "puntos": [
+  {
+   "id_punto": "ESTRA",
+   "nombre_canonico": "A ESTRADA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ABRA",
+   "nombre_canonico": "ABRANTES (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ACOR",
+   "nombre_canonico": "ACOR-BIODIESEL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ACRIL",
+   "nombre_canonico": "ACRILATOS, SAU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GIMPE",
+   "nombre_canonico": "ADHESIVOS GIMPEX, S.L",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ADIEG",
+   "nombre_canonico": "ADIEGO HERMANOS, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AGREL",
+   "nombre_canonico": "AGRELA SANTO TIRSO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AGUED",
+   "nombre_canonico": "AGUEDA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CAMPO",
+   "nombre_canonico": "AGUILAR CAMPO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AGULL",
+   "nombre_canonico": "AGULLENT",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AGURA",
+   "nombre_canonico": "AGURAIN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AHLST",
+   "nombre_canonico": "AHLSTROM LABELPACK",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALANQ",
+   "nombre_canonico": "ALANQUE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALAVA",
+   "nombre_canonico": "ALAVA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AB",
+   "nombre_canonico": "ALBACETE",
+   "provincia": "ALBACETE"
+  },
+  {
+   "id_punto": "ALBAC",
+   "nombre_canonico": "ALBACETE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALCAL",
+   "nombre_canonico": "ALCALA HENARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALCAN",
+   "nombre_canonico": "ALCANENA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALCAZ",
+   "nombre_canonico": "ALCAZAR DE S. JUAN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALCAÑ",
+   "nombre_canonico": "ALCAÑIZ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALCOB",
+   "nombre_canonico": "ALCOBENDAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALCOV",
+   "nombre_canonico": "ALCOVER",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALCO",
+   "nombre_canonico": "ALCOVER QUIMINA, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALDEA",
+   "nombre_canonico": "ALDEAMAYOR",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALEG",
+   "nombre_canonico": "ALEGIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALEMA",
+   "nombre_canonico": "ALEMANIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALENQ",
+   "nombre_canonico": "ALENQUER",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALFAR",
+   "nombre_canonico": "ALFARO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALFEN",
+   "nombre_canonico": "ALFENA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALGEC",
+   "nombre_canonico": "ALGECIRAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALGRY",
+   "nombre_canonico": "ALGRY QUYIMICA, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "A",
+   "nombre_canonico": "ALICANTE",
+   "provincia": "ALICANTE"
+  },
+  {
+   "id_punto": "ALICA",
+   "nombre_canonico": "ALICANTE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9713",
+   "nombre_canonico": "ALJUSTREL (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALLO",
+   "nombre_canonico": "ALLO",
+   "provincia": "NAVARRA"
+  },
+  {
+   "id_punto": "ALMA",
+   "nombre_canonico": "ALMADA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALMEI",
+   "nombre_canonico": "ALMEIRIN (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALMEN",
+   "nombre_canonico": "ALMENDRALEJO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AL",
+   "nombre_canonico": "ALMERIA",
+   "provincia": "ALMERÍA"
+  },
+  {
+   "id_punto": "9714",
+   "nombre_canonico": "ALMODOVAR (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALMUS",
+   "nombre_canonico": "ALMUSAFFES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALONS",
+   "nombre_canonico": "ALONSOTEGUI",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALOVE",
+   "nombre_canonico": "ALOVERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9728",
+   "nombre_canonico": "ALPIARÇA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALTO",
+   "nombre_canonico": "ALTORRICON (HU)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALVER",
+   "nombre_canonico": "ALVERCA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AMAD",
+   "nombre_canonico": "AMADORA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AMBAR",
+   "nombre_canonico": "AMBARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AMBER",
+   "nombre_canonico": "AMBERES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AMELI",
+   "nombre_canonico": "AMELIE LES BAINS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AMORE",
+   "nombre_canonico": "AMOREBIETA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AMORI",
+   "nombre_canonico": "AMORIN REVESTIMENTOS, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AMPOS",
+   "nombre_canonico": "AMPOSTA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ANADI",
+   "nombre_canonico": "ANADIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ANDO",
+   "nombre_canonico": "ANDOAIN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ANDOR",
+   "nombre_canonico": "ANDORRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ANLEO",
+   "nombre_canonico": "ANLEO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ANLSE",
+   "nombre_canonico": "ANLEO-SEVARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AQUAC",
+   "nombre_canonico": "AQUACRIA AROUSA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9732",
+   "nombre_canonico": "ARAIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARAND",
+   "nombre_canonico": "ARANDA DEL DUERO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARANG",
+   "nombre_canonico": "ARANGUREN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARANJ",
+   "nombre_canonico": "ARANJUEZ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARAYA",
+   "nombre_canonico": "ARAYA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARAZU",
+   "nombre_canonico": "ARAZURI",
+   "provincia": "NAVARRA"
+  },
+  {
+   "id_punto": "ARCHE",
+   "nombre_canonico": "ARCHELA CONTRACHAPADOS,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARGA",
+   "nombre_canonico": "ARGANIL (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARNED",
+   "nombre_canonico": "ARNEDO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARRAN",
+   "nombre_canonico": "ARRANCUDIAGA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARRIG",
+   "nombre_canonico": "ARRIGORRIAGA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARTAB",
+   "nombre_canonico": "ARTABRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARTEI",
+   "nombre_canonico": "ARTEIXO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PONTE",
+   "nombre_canonico": "AS PONTES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SOMOZ",
+   "nombre_canonico": "AS SOMOZAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ASTOR",
+   "nombre_canonico": "ASTORGA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ASTUR",
+   "nombre_canonico": "ASTURIAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ASTLV",
+   "nombre_canonico": "ASTURIAS-MARSELLA-PORRIÑO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ASUA",
+   "nombre_canonico": "ASUA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AVANC",
+   "nombre_canonico": "AVANCA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AVEIR",
+   "nombre_canonico": "AVEIRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AV",
+   "nombre_canonico": "AVILA",
+   "provincia": "ÁVILA"
+  },
+  {
+   "id_punto": "AVILE",
+   "nombre_canonico": "AVILES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AVINT",
+   "nombre_canonico": "AVINTES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AVIS",
+   "nombre_canonico": "AVIS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AZAMB",
+   "nombre_canonico": "AZAMBUJA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AZPEI",
+   "nombre_canonico": "AZPEITIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "AZUQU",
+   "nombre_canonico": "AZUQUECA DE HENARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BA",
+   "nombre_canonico": "BADAJOZ",
+   "provincia": "BADAJOZ"
+  },
+  {
+   "id_punto": "BADAL",
+   "nombre_canonico": "BADALONA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BADRI",
+   "nombre_canonico": "BADRINAS, SAU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BAION",
+   "nombre_canonico": "BAION",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BAKEL",
+   "nombre_canonico": "BAKELITE IBERICA, SAU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BARAC",
+   "nombre_canonico": "BARAKALDO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BARAK",
+   "nombre_canonico": "BARAKALDO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BARBA",
+   "nombre_canonico": "BARBASTRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BARBE",
+   "nombre_canonico": "BARBERA DEL VALLES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "B",
+   "nombre_canonico": "BARCELONA",
+   "provincia": "BARCELONA"
+  },
+  {
+   "id_punto": "BARRE",
+   "nombre_canonico": "BARREIRO(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BASAU",
+   "nombre_canonico": "BASAURI",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BASSE",
+   "nombre_canonico": "BASSENS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BASTA",
+   "nombre_canonico": "BASTAVALES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BEGON",
+   "nombre_canonico": "BEGONTE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BELGI",
+   "nombre_canonico": "BELGICA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BENAV",
+   "nombre_canonico": "BENAVENTE(PORT.)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BENIC",
+   "nombre_canonico": "BENICARLO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BERA",
+   "nombre_canonico": "BERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BERAN",
+   "nombre_canonico": "BERANGO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BER",
+   "nombre_canonico": "BERANTEVILLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BERME",
+   "nombre_canonico": "BERMEO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BERRE",
+   "nombre_canonico": "BERRE-LETANG",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BET",
+   "nombre_canonico": "BETANZOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BI",
+   "nombre_canonico": "BILBAO",
+   "provincia": "BILBAO"
+  },
+  {
+   "id_punto": "BILLA",
+   "nombre_canonico": "BILLABONA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BIOHU",
+   "nombre_canonico": "BIO OILS HUELVA SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BIOCA",
+   "nombre_canonico": "BIOCARB.DE CASTILLA,SA",
+   "provincia": "ZAMORA"
+  },
+  {
+   "id_punto": "BIOCS",
+   "nombre_canonico": "BIOCARBUR.SALAMANCA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BIOCO",
+   "nombre_canonico": "BIOCOM PISUERGA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARAGO",
+   "nombre_canonico": "BIODIESEL ARAGON, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BIODI",
+   "nombre_canonico": "BIODIESEL CLM, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BION",
+   "nombre_canonico": "BIONOR BERANTEVILLA,SLU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BIONO",
+   "nombre_canonico": "BIONORTE, S.A.",
+   "provincia": "ASTURIAS"
+  },
+  {
+   "id_punto": "BIOPO",
+   "nombre_canonico": "BIOPORT DIESEL,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BIOVI",
+   "nombre_canonico": "BIOVIGO ENERGY,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BIZKA",
+   "nombre_canonico": "BIZKAIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BOIRO",
+   "nombre_canonico": "BOIRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BOURD",
+   "nombre_canonico": "BOURDEAUX",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BRAGA",
+   "nombre_canonico": "BRAGA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BRAG",
+   "nombre_canonico": "BRAGANÇA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ILE",
+   "nombre_canonico": "BRENNTAG ILE FRANCE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BRENN",
+   "nombre_canonico": "BRENNTAG QUIMICA, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BRENT",
+   "nombre_canonico": "BRENNTAG QUIMICA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BU",
+   "nombre_canonico": "BURGOS",
+   "provincia": "BURGOS"
+  },
+  {
+   "id_punto": "CABAN",
+   "nombre_canonico": "CABANILLAS DEL CAMPO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CC",
+   "nombre_canonico": "CACERES",
+   "provincia": "CÁCERES"
+  },
+  {
+   "id_punto": "CACIA",
+   "nombre_canonico": "CACIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CA",
+   "nombre_canonico": "CADIZ",
+   "provincia": "CÁDIZ"
+  },
+  {
+   "id_punto": "CALAH",
+   "nombre_canonico": "CALAHORRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CALA",
+   "nombre_canonico": "CALATAYUD",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CALD",
+   "nombre_canonico": "CALDAS DA RAINHA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "1",
+   "nombre_canonico": "CALDAS DE REIS",
+   "provincia": "PONTEVEDRA"
+  },
+  {
+   "id_punto": "CALAV",
+   "nombre_canonico": "CALDAS RAINHA/AVIS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CALPE",
+   "nombre_canonico": "CALDAS RAINHA/PENICHE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CALVI",
+   "nombre_canonico": "CALDAS-VIGO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CAMBA",
+   "nombre_canonico": "CAMBADOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CAMUÑ",
+   "nombre_canonico": "CAMUÑAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CANCI",
+   "nombre_canonico": "CANCIENES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CANGA",
+   "nombre_canonico": "CANGAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CANOV",
+   "nombre_canonico": "CANOVELLES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CANTA",
+   "nombre_canonico": "CANTABRIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CAPAR",
+   "nombre_canonico": "CAPARROSO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CARBA",
+   "nombre_canonico": "CARBALLO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CARRE",
+   "nombre_canonico": "CARREGADO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CARBE",
+   "nombre_canonico": "CARREGADO/BENAVENTE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CARTA",
+   "nombre_canonico": "CARTAGENA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CARVA",
+   "nombre_canonico": "CARVALHOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CASAR",
+   "nombre_canonico": "CASARRUBIOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CASTA",
+   "nombre_canonico": "CASTANHEIRA RIBATEJO(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BISBA",
+   "nombre_canonico": "CASTELLBISBAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CS",
+   "nombre_canonico": "CASTELLON",
+   "provincia": "CASTELLÓN"
+  },
+  {
+   "id_punto": "CASTE",
+   "nombre_canonico": "CASTELLON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CAST",
+   "nombre_canonico": "CASTELO BRANCO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CAS",
+   "nombre_canonico": "CASTRILLON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9722",
+   "nombre_canonico": "CASTRO DAIRE(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CASTR",
+   "nombre_canonico": "CASTRO URDIALES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CATEN",
+   "nombre_canonico": "CATENVA, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CELUL",
+   "nombre_canonico": "CELUL.ASTURIAS,S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CERAN",
+   "nombre_canonico": "CERANO(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CERCE",
+   "nombre_canonico": "CERCEDA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CERVE",
+   "nombre_canonico": "CERVERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CESUR",
+   "nombre_canonico": "CESURES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CHALA",
+   "nombre_canonico": "CHALANDRAY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CHAV",
+   "nombre_canonico": "CHAVES (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CHIE",
+   "nombre_canonico": "CHIETI(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CHIVA",
+   "nombre_canonico": "CHIVA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ANDAL",
+   "nombre_canonico": "CIAL.ANDALUZA CONTRACHAP.SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CIERB",
+   "nombre_canonico": "CIERVANA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CIPAD",
+   "nombre_canonico": "CIPADE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CIRON",
+   "nombre_canonico": "CIRON, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CR",
+   "nombre_canonico": "CIUDAD REAL",
+   "provincia": "CIUDAD REAL"
+  },
+  {
+   "id_punto": "CIUDA",
+   "nombre_canonico": "CIUDAD REAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CLARI",
+   "nombre_canonico": "CLARIANT, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CLEOP",
+   "nombre_canonico": "CLEOPATRE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COGER",
+   "nombre_canonico": "COGERSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COIMB",
+   "nombre_canonico": "COIMBRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARTIA",
+   "nombre_canonico": "COLAS ARTIACH, SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COLLE",
+   "nombre_canonico": "COLLE INDUSTR.L'OUEST",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COLUM",
+   "nombre_canonico": "COLUMBIAN CARBON SPAIN,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FREPA",
+   "nombre_canonico": "COMERC.FREPANSA,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PREPA",
+   "nombre_canonico": "COMERC.PREPANSA,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "EPELE",
+   "nombre_canonico": "COMERCIAL EPELE, SL.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GODO",
+   "nombre_canonico": "COMERCIAL GODO, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COMO",
+   "nombre_canonico": "COMO(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CONDE",
+   "nombre_canonico": "CONDEIXA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CONSE",
+   "nombre_canonico": "CONSERVAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CONST",
+   "nombre_canonico": "CONSTANCIA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LUBAD",
+   "nombre_canonico": "CONTRACHAP.LUBADI,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CONTR",
+   "nombre_canonico": "CONTRACHAPADOS INDUSTRIALES, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MORAT",
+   "nombre_canonico": "CONTRACHAPADOS MORATI, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COR",
+   "nombre_canonico": "COR QUIMICA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CO",
+   "nombre_canonico": "CORDOBA",
+   "provincia": "CÓRDOBA"
+  },
+  {
+   "id_punto": "CORIS",
+   "nombre_canonico": "CORISTANCO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CORTE",
+   "nombre_canonico": "CORTEGAÇA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CORU",
+   "nombre_canonico": "CORUCHE (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "C",
+   "nombre_canonico": "CORUÑA",
+   "provincia": "LA CORUÑA"
+  },
+  {
+   "id_punto": "COSTA",
+   "nombre_canonico": "COSTA IBERICA-MADEIRAS,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COVER",
+   "nombre_canonico": "COVERIGHT SURFACES, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COVE",
+   "nombre_canonico": "COVERIGHT,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "COVI",
+   "nombre_canonico": "COVILHA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9723",
+   "nombre_canonico": "CREMONA (IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CROMO",
+   "nombre_canonico": "CROMOGENIA UNITS, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CRYST",
+   "nombre_canonico": "CRYSTAL PHARMA,SAU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CU",
+   "nombre_canonico": "CUENCA",
+   "provincia": "CUENCA"
+  },
+  {
+   "id_punto": "CULLE",
+   "nombre_canonico": "CULLEREDO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CUNTI",
+   "nombre_canonico": "CUNTIS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CURIA",
+   "nombre_canonico": "CURIA SPAIN, SAU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CURTI",
+   "nombre_canonico": "CURTIS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DARBO",
+   "nombre_canonico": "DARBO, SAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DECOT",
+   "nombre_canonico": "DECOTEC PRINTING,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DEKIT",
+   "nombre_canonico": "DEKITRA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DISAL",
+   "nombre_canonico": "DISALCO, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DISCE",
+   "nombre_canonico": "DISCEFA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DISOL",
+   "nombre_canonico": "DISOLV.REUNIDAS,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DISSO",
+   "nombre_canonico": "DISSOLTIN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DODRO",
+   "nombre_canonico": "DODRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9706",
+   "nombre_canonico": "DROGAFIEIRA, SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DROG",
+   "nombre_canonico": "DROGAS CONDE, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DROGA",
+   "nombre_canonico": "DROGAS VIGO, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DUEÑA",
+   "nombre_canonico": "DUEÑAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DUPON",
+   "nombre_canonico": "DUPONT INTER.SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DURAN",
+   "nombre_canonico": "DURANGO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DUSSE",
+   "nombre_canonico": "DUSSELDORF",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ECIJA",
+   "nombre_canonico": "ECIJA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ECOCA",
+   "nombre_canonico": "ECOCARBURANTES ESPAÑOLES, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "EUCAL",
+   "nombre_canonico": "ECUALIPTO DE PONTEVEDRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "EGEA",
+   "nombre_canonico": "EGEA CABALLEROS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "EGGER",
+   "nombre_canonico": "EGGER PANNEAUX",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ELORR",
+   "nombre_canonico": "ELORRIO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ENAGA",
+   "nombre_canonico": "ENAGAS TRANSPORTE,SAU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ENCE",
+   "nombre_canonico": "ENCE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ENTAB",
+   "nombre_canonico": "ENTABAN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "UREÑA",
+   "nombre_canonico": "ENVASES UREÑA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ERAND",
+   "nombre_canonico": "ERANDIO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ERMES",
+   "nombre_canonico": "ERMESINDE(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ESMOR",
+   "nombre_canonico": "ESMORIZ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ESPIN",
+   "nombre_canonico": "ESPINHO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ESTAR",
+   "nombre_canonico": "ESTARREJA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ESTRE",
+   "nombre_canonico": "ESTREMOZ (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ETS",
+   "nombre_canonico": "ETS RIGHINI,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ETXEB",
+   "nombre_canonico": "ETXEBARRI",
+   "provincia": ""
+  },
+  {
+   "id_punto": "EUROP",
+   "nombre_canonico": "EUROPAC",
+   "provincia": ""
+  },
+  {
+   "id_punto": "EVORA",
+   "nombre_canonico": "EVORA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9717",
+   "nombre_canonico": "FARO ALBUFEIRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FAURE",
+   "nombre_canonico": "FAURECIA SYSTEMS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FAUSI",
+   "nombre_canonico": "FAUS INT.FLOORING,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FERR",
+   "nombre_canonico": "FERRARA(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9716",
+   "nombre_canonico": "FERREIRA ALENTEJO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ALENT",
+   "nombre_canonico": "FERREIRA DE ALENTEJO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FERRE",
+   "nombre_canonico": "FERREIRA DO ZEZERE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FE",
+   "nombre_canonico": "FERROL",
+   "provincia": "LA CORUÑA"
+  },
+  {
+   "id_punto": "FIAES",
+   "nombre_canonico": "FIAES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FIGUE",
+   "nombre_canonico": "FIGUEIRA FOZ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FINSA",
+   "nombre_canonico": "FINSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FINFR",
+   "nombre_canonico": "FINSA FRANCE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FINSF",
+   "nombre_canonico": "FINSA FRANCE SAS",
+   "provincia": "FRANCIA"
+  },
+  {
+   "id_punto": "FLOR",
+   "nombre_canonico": "FLORENCE(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FONMA",
+   "nombre_canonico": "FONMARTY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FORES",
+   "nombre_canonico": "FORESA FRANCE SAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FOS",
+   "nombre_canonico": "FOS-ROC, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FOSRO",
+   "nombre_canonico": "FOSROC EUCO, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FRADE",
+   "nombre_canonico": "FRADELOS (PORT.)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FR",
+   "nombre_canonico": "FRANCIA",
+   "provincia": "FRANCIA"
+  },
+  {
+   "id_punto": "FROSI",
+   "nombre_canonico": "FROSINONE(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FUENL",
+   "nombre_canonico": "FUENLABRADA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GAFAN",
+   "nombre_canonico": "GAFANHA DE NAZARET",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GAJAN",
+   "nombre_canonico": "GAJANO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CANO",
+   "nombre_canonico": "GALDACANO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GALDA",
+   "nombre_canonico": "GALDAKAO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GARNI",
+   "nombre_canonico": "GARNICA PLYWOOD",
+   "provincia": "LEÓN"
+  },
+  {
+   "id_punto": "GARNL",
+   "nombre_canonico": "GARNICA PLYWOOD",
+   "provincia": "LEON"
+  },
+  {
+   "id_punto": "GARN",
+   "nombre_canonico": "GARNICA PLYWOOD VAL.D.J",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FRIGO",
+   "nombre_canonico": "GASOLEO FRIGOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GAVA",
+   "nombre_canonico": "GAVA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GAZAN",
+   "nombre_canonico": "GAZANHA DE NAZARET (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GENER",
+   "nombre_canonico": "GENERAL QUIMICA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GENOU",
+   "nombre_canonico": "GENOUILLAC",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GENTI",
+   "nombre_canonico": "GENTINA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GERMA",
+   "nombre_canonico": "GERMAN RDGUEZ.IND.SA",
+   "provincia": "GUADALAJARA"
+  },
+  {
+   "id_punto": "GE",
+   "nombre_canonico": "GERONA",
+   "provincia": "GERONA"
+  },
+  {
+   "id_punto": "GETAF",
+   "nombre_canonico": "GETAFE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GIJ",
+   "nombre_canonico": "GIJON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GIJON",
+   "nombre_canonico": "GIJON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GIJAN",
+   "nombre_canonico": "GIJON/ANLEO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GIOVA",
+   "nombre_canonico": "GIOVANNI BOZZETTO, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GIVOR",
+   "nombre_canonico": "GIVORS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GKN",
+   "nombre_canonico": "GKN INDUGASA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GODEL",
+   "nombre_canonico": "GODELLETA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GR",
+   "nombre_canonico": "GRANADA",
+   "provincia": "GRANADA"
+  },
+  {
+   "id_punto": "GRANO",
+   "nombre_canonico": "GRANOLLERS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GREEN",
+   "nombre_canonico": "GREEN FUEL EXTREMADURA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZENTI",
+   "nombre_canonico": "GRUPO ZENTIA,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GU",
+   "nombre_canonico": "GUADALAJARA",
+   "provincia": "GUADALAJARA"
+  },
+  {
+   "id_punto": "GUADA",
+   "nombre_canonico": "GUADALAJARA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUALB",
+   "nombre_canonico": "GUALBA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUAR",
+   "nombre_canonico": "GUARDA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUARD",
+   "nombre_canonico": "GUARDA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUARN",
+   "nombre_canonico": "GUARNIZO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUERO",
+   "nombre_canonico": "GUEROLA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUIM",
+   "nombre_canonico": "GUIMARAES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUIPU",
+   "nombre_canonico": "GUIPUZCOA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GUISS",
+   "nombre_canonico": "GUISSONA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ILARD",
+   "nombre_canonico": "HA ILARDUYA,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HARIN",
+   "nombre_canonico": "HARINAS ALMELA,SC",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HELDE",
+   "nombre_canonico": "HELDER ROB.MOREIRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HERN",
+   "nombre_canonico": "HERNANI",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HERNA",
+   "nombre_canonico": "HERNANI,ARRIONDAS,SALAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HEX",
+   "nombre_canonico": "HEXION SPECIALITY",
+   "provincia": "VITORIA"
+  },
+  {
+   "id_punto": "HEXIH",
+   "nombre_canonico": "HEXION SPECIALITY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HEXIO",
+   "nombre_canonico": "HEXION SPECIALITY, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HIJOS",
+   "nombre_canonico": "HIJOS GASPAR ROSA, SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HOVIO",
+   "nombre_canonico": "HOVIONE, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "H",
+   "nombre_canonico": "HUELVA",
+   "provincia": "HUELVA"
+  },
+  {
+   "id_punto": "HU",
+   "nombre_canonico": "HUESCA",
+   "provincia": "HUESCA"
+  },
+  {
+   "id_punto": "HUTTE",
+   "nombre_canonico": "HUTTENES A.ILARDUYA,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IBERD",
+   "nombre_canonico": "IBERDROLA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IBERI",
+   "nombre_canonico": "IBERIA ASHLAND, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IBL",
+   "nombre_canonico": "IBL SPA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IGORR",
+   "nombre_canonico": "IGORRE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IGUAL",
+   "nombre_canonico": "IGUALADA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ILLA",
+   "nombre_canonico": "ILLA DE AROUSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INAMA",
+   "nombre_canonico": "INAMA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FAUS",
+   "nombre_canonico": "IND.AUXILIARES FAUS, SLU",
+   "provincia": "VALENCIA"
+  },
+  {
+   "id_punto": "ENVAS",
+   "nombre_canonico": "IND.ENV.CONTRACHAP.SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GERON",
+   "nombre_canonico": "IND.ENVAS.CONTRACHAP.SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MONTO",
+   "nombre_canonico": "IND.PEREZ MONTOSA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INDCU",
+   "nombre_canonico": "IND.QUIM.CUADRADO,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIO B",
+   "nombre_canonico": "IND.QUIM.RIO BLANCO,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INVAL",
+   "nombre_canonico": "IND.TABLERO DE VALGA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INDVA",
+   "nombre_canonico": "IND.TABLERO VALGA, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INDUS",
+   "nombre_canonico": "INDUSTR.PLAST.QUIMICO,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FERSE",
+   "nombre_canonico": "INDUSTRIAL FERSEB,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "JOMAR",
+   "nombre_canonico": "INDUSTRIAS JOMAR",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LOSAN",
+   "nombre_canonico": "INDUSTRIAS LOSAN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MONZO",
+   "nombre_canonico": "INDUSTRIAS MONZON, SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PROA",
+   "nombre_canonico": "INDUSTRIAS PROA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INFOY",
+   "nombre_canonico": "INFOYMA, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INICI",
+   "nombre_canonico": "INIC.BIONERGET.SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INNOS",
+   "nombre_canonico": "INNOSPEC SPAIN, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INNSB",
+   "nombre_canonico": "INNSBRUCK",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INSOC",
+   "nombre_canonico": "INSOCO, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INTAS",
+   "nombre_canonico": "INTASA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BOIS",
+   "nombre_canonico": "INTERBOIS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "INTER",
+   "nombre_canonico": "INTERBON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PANEL",
+   "nombre_canonico": "INTERPANEL, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IP",
+   "nombre_canonico": "IP DECOR SPAIN, SAU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IREGU",
+   "nombre_canonico": "IREGUA CHAPAS Y TABL.SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IRUN",
+   "nombre_canonico": "IRUN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IRURE",
+   "nombre_canonico": "IRURENA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ISORO",
+   "nombre_canonico": "ISOROY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IT",
+   "nombre_canonico": "ITALIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IURRE",
+   "nombre_canonico": "IURRETA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IZURT",
+   "nombre_canonico": "IZURTZA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CARRI",
+   "nombre_canonico": "J.GARCIA CARRION",
+   "provincia": ""
+  },
+  {
+   "id_punto": "JABER",
+   "nombre_canonico": "JABER, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "J",
+   "nombre_canonico": "JAEN",
+   "provincia": "JAEN"
+  },
+  {
+   "id_punto": "JARRI",
+   "nombre_canonico": "JARRIE (FR)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "THEBA",
+   "nombre_canonico": "JEAN THEBAULT",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9709",
+   "nombre_canonico": "JOHN DEERE IBERICA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "JOUBE",
+   "nombre_canonico": "JOUBERT LES ELIOTS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "JP",
+   "nombre_canonico": "JP&SB CONVERTING",
+   "provincia": ""
+  },
+  {
+   "id_punto": "KALLO",
+   "nombre_canonico": "KALLO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "KELSI",
+   "nombre_canonico": "KELSIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "KRONO",
+   "nombre_canonico": "KRONOSPAN, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CANON",
+   "nombre_canonico": "LA CANONJA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CAÑIZ",
+   "nombre_canonico": "LA CAÑIZA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIOJA",
+   "nombre_canonico": "LA RIOJA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TOJA",
+   "nombre_canonico": "LA TOJA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZAIDA",
+   "nombre_canonico": "LA ZAIDA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LACRO",
+   "nombre_canonico": "LACROIX EMBALLAGES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LAINA",
+   "nombre_canonico": "LAINATE(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LALIN",
+   "nombre_canonico": "LALIN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LAMAN",
+   "nombre_canonico": "LAMANOR, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LAME",
+   "nombre_canonico": "LAMEGO (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LANA",
+   "nombre_canonico": "LANA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LANDI",
+   "nombre_canonico": "LANDIN (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LANGR",
+   "nombre_canonico": "LANGREO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LANTA",
+   "nombre_canonico": "LANTARON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LANTE",
+   "nombre_canonico": "LANTEMIL (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LAVER",
+   "nombre_canonico": "LAVERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LAVRA",
+   "nombre_canonico": "LAVRADIO (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LEGUT",
+   "nombre_canonico": "LEGUTIANO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LEIOA",
+   "nombre_canonico": "LEIOA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LEIRI",
+   "nombre_canonico": "LEIRIA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LEKUM",
+   "nombre_canonico": "LEKUMBERRI",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LE",
+   "nombre_canonico": "LEON",
+   "provincia": "LEON"
+  },
+  {
+   "id_punto": "LEVAL",
+   "nombre_canonico": "LEON/VALLADOLID",
+   "provincia": ""
+  },
+  {
+   "id_punto": "L",
+   "nombre_canonico": "LERIDA",
+   "provincia": "LÉRIDA"
+  },
+  {
+   "id_punto": "LESAK",
+   "nombre_canonico": "LESAKA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LEZO",
+   "nombre_canonico": "LEZO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LICEM",
+   "nombre_canonico": "LICEMA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LINAR",
+   "nombre_canonico": "LINARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LINXE",
+   "nombre_canonico": "LINXE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LISBO",
+   "nombre_canonico": "LISBOA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LIVO",
+   "nombre_canonico": "LIVORNO(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LLANE",
+   "nombre_canonico": "LLANERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LLEID",
+   "nombre_canonico": "LLEIDA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LLIRI",
+   "nombre_canonico": "LLIRIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LLODI",
+   "nombre_canonico": "LLODIO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LO",
+   "nombre_canonico": "LOGROÑO",
+   "provincia": "LOGROÑO"
+  },
+  {
+   "id_punto": "LORCO",
+   "nombre_canonico": "LORCOL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LOULA",
+   "nombre_canonico": "LOULAY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LOURE",
+   "nombre_canonico": "LOURES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LOUS",
+   "nombre_canonico": "LOUSA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LOUSA",
+   "nombre_canonico": "LOUSADA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LU",
+   "nombre_canonico": "LUGO",
+   "provincia": "LUGO"
+  },
+  {
+   "id_punto": "LUGON",
+   "nombre_canonico": "LUGONES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LUSO",
+   "nombre_canonico": "LUSO FINSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LUTXA",
+   "nombre_canonico": "LUTXANA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LYON",
+   "nombre_canonico": "LYON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MACEI",
+   "nombre_canonico": "MACEIRA-LIZ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OJA",
+   "nombre_canonico": "MAD.Y TABL.DEL OJA, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "BENIG",
+   "nombre_canonico": "MADERAS BENIGANIM, SAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LLOD",
+   "nombre_canonico": "MADERAS DE LLODIO,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MADER",
+   "nombre_canonico": "MADERAS IGLESIAS, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "M",
+   "nombre_canonico": "MADRID",
+   "provincia": "MADRID"
+  },
+  {
+   "id_punto": "ALMAR",
+   "nombre_canonico": "MADRID-ALMARAZ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MAGNE",
+   "nombre_canonico": "MAGNE (FR)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MAIA",
+   "nombre_canonico": "MAIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MAJA",
+   "nombre_canonico": "MAJADAHONDA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MA",
+   "nombre_canonico": "MALAGA",
+   "provincia": "MALAGA"
+  },
+  {
+   "id_punto": "MALIA",
+   "nombre_canonico": "MALIAÑO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MALVA",
+   "nombre_canonico": "MALVAUX INDUSTRIES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MALVE",
+   "nombre_canonico": "MALVEIRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9730",
+   "nombre_canonico": "MANGUALDE (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MANGU",
+   "nombre_canonico": "MANGUALDE(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MANLL",
+   "nombre_canonico": "MANLLEU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MANRE",
+   "nombre_canonico": "MANRESA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MANT",
+   "nombre_canonico": "MANTUA(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MARCI",
+   "nombre_canonico": "MARCILLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MARIN",
+   "nombre_canonico": "MARIN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MARI",
+   "nombre_canonico": "MARINHA GRANDE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MARRU",
+   "nombre_canonico": "MARRUECOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MARSE",
+   "nombre_canonico": "MARSELLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MARTO",
+   "nombre_canonico": "MARTORELL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MASDE",
+   "nombre_canonico": "MASDENVERGE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MATAR",
+   "nombre_canonico": "MATARO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MATOS",
+   "nombre_canonico": "MATOSINHOS (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9704",
+   "nombre_canonico": "MATRIC. PO 9704 BJ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "1438",
+   "nombre_canonico": "MATRIC. PO1438BB",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MATR",
+   "nombre_canonico": "MATRIC. PO4034AY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "4034",
+   "nombre_canonico": "MATRIC. PO4034AY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "4150",
+   "nombre_canonico": "MATRIC. PO4150AC",
+   "provincia": ""
+  },
+  {
+   "id_punto": "5054",
+   "nombre_canonico": "MATRIC. PO5054AY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "5856",
+   "nombre_canonico": "MATRIC. PO5856AN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "4157",
+   "nombre_canonico": "MATRIC.PO4157BF",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MEDIL",
+   "nombre_canonico": "MEDILAND SAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MEDIN",
+   "nombre_canonico": "MEDINA DEL CAMPO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MEIS",
+   "nombre_canonico": "MEIS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MEJOR",
+   "nombre_canonico": "MEJORADA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MELID",
+   "nombre_canonico": "MELIDE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MEMMA",
+   "nombre_canonico": "MEM MARTINS (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MENDA",
+   "nombre_canonico": "MENDARO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MEND",
+   "nombre_canonico": "MENDAVIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MENGU",
+   "nombre_canonico": "MENGUIBAR",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MERID",
+   "nombre_canonico": "MERIDA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MIERE",
+   "nombre_canonico": "MIERES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MIND",
+   "nombre_canonico": "MINDELO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MIR",
+   "nombre_canonico": "MIRANDA DE EBRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MIRAN",
+   "nombre_canonico": "MIRANDELA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MODE",
+   "nombre_canonico": "MODENA(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MODIV",
+   "nombre_canonico": "MODIVAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MOGAD",
+   "nombre_canonico": "MOGADOURO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MOLLE",
+   "nombre_canonico": "MOLLERUSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MOMEN",
+   "nombre_canonico": "MOMENTIVE SPECIALITY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MOFOR",
+   "nombre_canonico": "MONFORTE LEMOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MONSA",
+   "nombre_canonico": "MONSARAZ (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MONTE",
+   "nombre_canonico": "MONTESALGUEIRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9727",
+   "nombre_canonico": "MONZON (HUESCA)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MORA",
+   "nombre_canonico": "MORA (PORTUGAL)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MORAÑ",
+   "nombre_canonico": "MORAÑA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MORCE",
+   "nombre_canonico": "MORCENX",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MOS",
+   "nombre_canonico": "MOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MOSTO",
+   "nombre_canonico": "MOSTOLES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MUGAR",
+   "nombre_canonico": "MUGARDOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MUGIC",
+   "nombre_canonico": "MUGICA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MU",
+   "nombre_canonico": "MURCIA",
+   "provincia": "MURCIA"
+  },
+  {
+   "id_punto": "MUSKI",
+   "nombre_canonico": "MUSKIZ",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MUXIA",
+   "nombre_canonico": "MUXIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NAJER",
+   "nombre_canonico": "NAJERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NALCO",
+   "nombre_canonico": "NALCO ESPAÑOLA,SLU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NARON",
+   "nombre_canonico": "NARON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NAVAR",
+   "nombre_canonico": "NAVARRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NAVIA",
+   "nombre_canonico": "NAVIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NAVSE",
+   "nombre_canonico": "NAVIA-SEVARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NEFAB",
+   "nombre_canonico": "NEFAB PONTEV. SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NEGRE",
+   "nombre_canonico": "NEGREIRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NE",
+   "nombre_canonico": "NELAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NELAS",
+   "nombre_canonico": "NELAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NEW",
+   "nombre_canonico": "NEW QUIMICA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NOBLE",
+   "nombre_canonico": "NOBLEJAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NOIA",
+   "nombre_canonico": "NOIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NOPCO",
+   "nombre_canonico": "NOPCO PAPER",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NOVA",
+   "nombre_canonico": "NOVARA(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GROVE",
+   "nombre_canonico": "O GROVE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OPORT",
+   "nombre_canonico": "O PORTO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OCAÑA",
+   "nombre_canonico": "OCAÑA",
+   "provincia": "TOLEDO"
+  },
+  {
+   "id_punto": "9719",
+   "nombre_canonico": "OLHAO (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OLIVE",
+   "nombre_canonico": "OLIVEIRA AZEMEIS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FRAD",
+   "nombre_canonico": "OLIVEIRA FRADES(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OLIV",
+   "nombre_canonico": "OLIVEIRA HOSPITAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OLLON",
+   "nombre_canonico": "OLLONIEGO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OLMED",
+   "nombre_canonico": "OLMEDO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OLVEG",
+   "nombre_canonico": "OLVEGA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ONDAR",
+   "nombre_canonico": "ONDARROA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ONTE",
+   "nombre_canonico": "ONTE, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ONTIG",
+   "nombre_canonico": "ONTIGOLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ONZON",
+   "nombre_canonico": "ONZONILLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "1003",
+   "nombre_canonico": "OR.LEON,ZAM.TORD.BARC.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "1002",
+   "nombre_canonico": "OR.PONF.LEON,TORD.PAMPL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "1000",
+   "nombre_canonico": "OR.TORD.SSEB.PAMP.BILBAO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ORANG",
+   "nombre_canonico": "ORANGE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OR",
+   "nombre_canonico": "OREMBER",
+   "provincia": "ORENSE"
+  },
+  {
+   "id_punto": "ORE",
+   "nombre_canonico": "ORENSE",
+   "provincia": "ORENSE"
+  },
+  {
+   "id_punto": "ORIO",
+   "nombre_canonico": "ORIO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OROZK",
+   "nombre_canonico": "OROZKO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "OVAR",
+   "nombre_canonico": "OVAR",
+   "provincia": ""
+  },
+  {
+   "id_punto": "O",
+   "nombre_canonico": "OVIEDO",
+   "provincia": "OVIEDO"
+  },
+  {
+   "id_punto": "OYON",
+   "nombre_canonico": "OYON",
+   "provincia": "LOGROÑO"
+  },
+  {
+   "id_punto": "PADRO",
+   "nombre_canonico": "PADRON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PAIO",
+   "nombre_canonico": "PAIO PIRES (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "P",
+   "nombre_canonico": "PALENCIA",
+   "provincia": "PALENCIA"
+  },
+  {
+   "id_punto": "PA",
+   "nombre_canonico": "PAMPLONA",
+   "provincia": "PAMPLONA"
+  },
+  {
+   "id_punto": "PANGU",
+   "nombre_canonico": "PANGUANETA,SPA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PANIB",
+   "nombre_canonico": "PANIBERICA DE LEVADURA,SA",
+   "provincia": "VALLADOLID"
+  },
+  {
+   "id_punto": "CORRE",
+   "nombre_canonico": "PANNEAUX CORREZE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PAPEL",
+   "nombre_canonico": "PAPELERA ZICUÑAGA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PARED",
+   "nombre_canonico": "PAREDES (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PATER",
+   "nombre_canonico": "PATERNA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9724",
+   "nombre_canonico": "PAVIA (IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PEGAM",
+   "nombre_canonico": "PEGAM.CABALLERO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PENAG",
+   "nombre_canonico": "PENAGOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PEREI",
+   "nombre_canonico": "PEREIRO DE AGUIAR",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PEREZ",
+   "nombre_canonico": "PEREZ CHARRO RUBEN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PICAS",
+   "nombre_canonico": "PICASSENT",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PIERA",
+   "nombre_canonico": "PIERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PIEVE",
+   "nombre_canonico": "PIEVE FISSIRAGA(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PINAS",
+   "nombre_canonico": "PINA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PINH",
+   "nombre_canonico": "PINHEL (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PINTO",
+   "nombre_canonico": "PINTO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "POBRA",
+   "nombre_canonico": "POBRA DO CARAMIÑAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LAXE",
+   "nombre_canonico": "POL.IND. A LAXE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "POUSA",
+   "nombre_canonico": "POL.IND.POUSADOIRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "POLAN",
+   "nombre_canonico": "POLANCO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "POLIN",
+   "nombre_canonico": "POLINYA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "POLYR",
+   "nombre_canonico": "POLYREY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "POMB",
+   "nombre_canonico": "POMBAL (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PONFE",
+   "nombre_canonico": "PONFERRADA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ARNEL",
+   "nombre_canonico": "PONTEARNELAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PONTC",
+   "nombre_canonico": "PONTECESURES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9711",
+   "nombre_canonico": "PONTEDESOR (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PONT",
+   "nombre_canonico": "PONTEDEUME",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PO",
+   "nombre_canonico": "PONTEVEDRA",
+   "provincia": "PONTEVEDRA"
+  },
+  {
+   "id_punto": "PORRI",
+   "nombre_canonico": "PORRIÑO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VARIO",
+   "nombre_canonico": "PORRIÑO-OPORTO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PORT",
+   "nombre_canonico": "PORTALEGRE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PORTA",
+   "nombre_canonico": "PORTAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9718",
+   "nombre_canonico": "PORTIMAO (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PORTU",
+   "nombre_canonico": "PORTUGAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PREFA",
+   "nombre_canonico": "PREFABRIC.ASTURIANOS,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "YELES",
+   "nombre_canonico": "PROD.QUIMICOS YELES,SL",
+   "provincia": "TOLEDO"
+  },
+  {
+   "id_punto": "PROQU",
+   "nombre_canonico": "PROQUIMAN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PUERT",
+   "nombre_canonico": "PUERTOLLANO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PURIP",
+   "nombre_canonico": "PURIPLAST IBERICA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ADHES",
+   "nombre_canonico": "QS ADHESIVES, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "QUER",
+   "nombre_canonico": "QUER",
+   "provincia": ""
+  },
+  {
+   "id_punto": "QUIDE",
+   "nombre_canonico": "QUIDE, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9708",
+   "nombre_canonico": "QUIM.IND.DE SERVICIOS,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "QUIMI",
+   "nombre_canonico": "QUIM.SINTETICA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "QUIM",
+   "nombre_canonico": "QUIMICA IND.SERVIC.,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MER",
+   "nombre_canonico": "QUIMICA MER, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SANZ",
+   "nombre_canonico": "QUIMICAS SANZ, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PUR",
+   "nombre_canonico": "QUIMIPUR, SLU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "QUINC",
+   "nombre_canonico": "QUINCOCES YUSO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "QUINT",
+   "nombre_canonico": "QUINTANAR DEL REY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RABAD",
+   "nombre_canonico": "RABADE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RATES",
+   "nombre_canonico": "RATES POVOA BARZIM",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9726",
+   "nombre_canonico": "RECASA (TOLEDO)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RECHA",
+   "nombre_canonico": "RECHAPADOS DEL NORTE, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RECIN",
+   "nombre_canonico": "RECHAPADOS E INAMA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RECYO",
+   "nombre_canonico": "RECYOIL,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "REDON",
+   "nombre_canonico": "REDONDELA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "REGG",
+   "nombre_canonico": "REGGIO EMILIA(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "REIN",
+   "nombre_canonico": "REINOSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "REKAR",
+   "nombre_canonico": "REKAR IBERICA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RENT",
+   "nombre_canonico": "RENTERIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RENTE",
+   "nombre_canonico": "RENTERIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "REPAR",
+   "nombre_canonico": "REPARTOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "REUS",
+   "nombre_canonico": "REUS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIACH",
+   "nombre_canonico": "RIACHOS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIAÑO",
+   "nombre_canonico": "RIAÑO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIBAD",
+   "nombre_canonico": "RIBADEO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIB",
+   "nombre_canonico": "RIBADUMIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIBA",
+   "nombre_canonico": "RIBARROJA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIBAR",
+   "nombre_canonico": "RIBARROJA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIBEI",
+   "nombre_canonico": "RIBEIRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RIO",
+   "nombre_canonico": "RIO DE MOURO(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MEAO",
+   "nombre_canonico": "RIO MEAO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RION",
+   "nombre_canonico": "RION DES LANDES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ROCHE",
+   "nombre_canonico": "ROCHEFORT",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ROCKW",
+   "nombre_canonico": "ROCKWOOL FRANCE, SAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ROTNE",
+   "nombre_canonico": "ROTTNEROS MIRANDA,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ROUEN",
+   "nombre_canonico": "ROUEN (FR.)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "RUBI",
+   "nombre_canonico": "RUBI",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SFRUI",
+   "nombre_canonico": "S.FRUITOS VALLES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "JOAO",
+   "nombre_canonico": "S.JOAO MADEIRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SABAD",
+   "nombre_canonico": "SABADELL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SABIÑ",
+   "nombre_canonico": "SABIÑANIGO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SABUG",
+   "nombre_canonico": "SABUGAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CRIST",
+   "nombre_canonico": "SAINT GOBAIN CRIST.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GOBAI",
+   "nombre_canonico": "SAINT GOBAIN EUROCOUSTIC",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SA",
+   "nombre_canonico": "SALAMANCA",
+   "provincia": "SALAMANCA"
+  },
+  {
+   "id_punto": "SALAS",
+   "nombre_canonico": "SALAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SALAN",
+   "nombre_canonico": "SALAS/ANLEO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SALGI",
+   "nombre_canonico": "SALAS/GIJON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SALSE",
+   "nombre_canonico": "SALAS/SEVARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SALC",
+   "nombre_canonico": "SALCEDO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SALVA",
+   "nombre_canonico": "SALVATIERRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SAMOR",
+   "nombre_canonico": "SAMORACORREIA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MAMED",
+   "nombre_canonico": "SAN MAMEDE INFESTA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SATUR",
+   "nombre_canonico": "SAN SATURNINO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SS",
+   "nombre_canonico": "SAN SEBASTIAN",
+   "provincia": "SAN SEBAST."
+  },
+  {
+   "id_punto": "SANFI",
+   "nombre_canonico": "SANFINS (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "S",
+   "nombre_canonico": "SANTANDER",
+   "provincia": "SANTANDER"
+  },
+  {
+   "id_punto": "SANTA",
+   "nombre_canonico": "SANTAREM",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SANTI",
+   "nombre_canonico": "SANTIAGO",
+   "provincia": "LA CORUÑA"
+  },
+  {
+   "id_punto": "SANTE",
+   "nombre_canonico": "SANTIAGO Y TEVAR, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SANTO",
+   "nombre_canonico": "SANTO TIRSO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SANTU",
+   "nombre_canonico": "SANTURCE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SARIE",
+   "nombre_canonico": "SARIEGO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SARRI",
+   "nombre_canonico": "SARRIMAD, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "DANGE",
+   "nombre_canonico": "SAS JOURBERT DANGELY",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SAVEL",
+   "nombre_canonico": "SAVELO, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SG",
+   "nombre_canonico": "SEGOVIA",
+   "provincia": "SEGOVIA"
+  },
+  {
+   "id_punto": "SEGOV",
+   "nombre_canonico": "SEGOVIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SEIXA",
+   "nombre_canonico": "SEIXAL(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SEIXO",
+   "nombre_canonico": "SEIXO DE MIRA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SELEN",
+   "nombre_canonico": "SELENA IBERIA, SLU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SENYE",
+   "nombre_canonico": "SENYERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SERIP",
+   "nombre_canonico": "SERIPANNEAUX",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SERRE",
+   "nombre_canonico": "SERRERIGAS IREGUA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SERT",
+   "nombre_canonico": "SERTA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SERVY",
+   "nombre_canonico": "SERVYECO IBERIA,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SERZE",
+   "nombre_canonico": "SERZEDELO(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SESE",
+   "nombre_canonico": "SESEÑA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SESTA",
+   "nombre_canonico": "SESTAO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SETE",
+   "nombre_canonico": "SETE (FRANCIA)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SETUB",
+   "nombre_canonico": "SETUBAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SETBE",
+   "nombre_canonico": "SETUBAL/BENAVENTE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SEVAR",
+   "nombre_canonico": "SEVARES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SE",
+   "nombre_canonico": "SEVILLA",
+   "provincia": "SEVILLA"
+  },
+  {
+   "id_punto": "SIERO",
+   "nombre_canonico": "SIERO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SIGUE",
+   "nombre_canonico": "SIGUEIRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SIKA",
+   "nombre_canonico": "SIKA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SILLA",
+   "nombre_canonico": "SILLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SILLE",
+   "nombre_canonico": "SILLEDA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SINDE",
+   "nombre_canonico": "SINDE (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SINES",
+   "nombre_canonico": "SINES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SM FR",
+   "nombre_canonico": "SM FRANCE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SNIAC",
+   "nombre_canonico": "SNIACE, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SOBRA",
+   "nombre_canonico": "SOBRALINHO(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9725",
+   "nombre_canonico": "SOLOGAS (AS SOMOZAS)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SOLSO",
+   "nombre_canonico": "SOLSONA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SONAE",
+   "nombre_canonico": "SONAE ARAUCO, SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SONDI",
+   "nombre_canonico": "SONDIKA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SO",
+   "nombre_canonico": "SORIA",
+   "provincia": "SORIA"
+  },
+  {
+   "id_punto": "SOUIL",
+   "nombre_canonico": "SOUILLAC(FR)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SOUSE",
+   "nombre_canonico": "SOUSELAS (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "PAUL",
+   "nombre_canonico": "ST.PAUL (FR)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "IRIA",
+   "nombre_canonico": "STA.IRIA AZOIA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "MARTI",
+   "nombre_canonico": "SUM.IND.MARTI,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "SUMIT",
+   "nombre_canonico": "SUMITOMO BAKELITE,SLU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "HISPA",
+   "nombre_canonico": "T.HISPANOS, SLU.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LEV",
+   "nombre_canonico": "T.LEVANTE-MUGARTAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "T.VED",
+   "nombre_canonico": "T.VEDRAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9707",
+   "nombre_canonico": "TAB.GARFER/UTISA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TABAZ",
+   "nombre_canonico": "TABAZA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TAFIB",
+   "nombre_canonico": "TABL.FIBRAS IBERICOS,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GARFE",
+   "nombre_canonico": "TABLEROS GARFER, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TALOS",
+   "nombre_canonico": "TABLEROS LOSAN, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TABLE",
+   "nombre_canonico": "TABLESTUY, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TABOA",
+   "nombre_canonico": "TABOADA (LU)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TABUA",
+   "nombre_canonico": "TABUA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TACON",
+   "nombre_canonico": "TACON DECOR, SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TAFAL",
+   "nombre_canonico": "TAFALLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TAGUI",
+   "nombre_canonico": "TAGUIVE, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TARAN",
+   "nombre_canonico": "TARANCON",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TARNO",
+   "nombre_canonico": "TARNOS (FR.)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "T",
+   "nombre_canonico": "TARRAGONA",
+   "provincia": "TARRAGONA"
+  },
+  {
+   "id_punto": "TARRA",
+   "nombre_canonico": "TARRASA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TART",
+   "nombre_canonico": "TARTAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9720",
+   "nombre_canonico": "TAVIRA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TEIXE",
+   "nombre_canonico": "TEIXEIRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TEPSA",
+   "nombre_canonico": "TEPSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TERMO",
+   "nombre_canonico": "TERMOLAN, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TERM",
+   "nombre_canonico": "TERMOLAN,SA(VILAR FORMOSO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TE",
+   "nombre_canonico": "TERUEL",
+   "provincia": "TERUEL"
+  },
+  {
+   "id_punto": "TOCHA",
+   "nombre_canonico": "TOCHA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TO",
+   "nombre_canonico": "TOLEDO",
+   "provincia": "TOLEDO"
+  },
+  {
+   "id_punto": "TOLOS",
+   "nombre_canonico": "TOLOSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TOMAR",
+   "nombre_canonico": "TOMAR (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9731",
+   "nombre_canonico": "TORDERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "1004",
+   "nombre_canonico": "TORDES.ZARAGOZA,BARCEL.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TORD",
+   "nombre_canonico": "TORDESILLAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TOREL",
+   "nombre_canonico": "TORELLO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TOREN",
+   "nombre_canonico": "TORENO, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TORO",
+   "nombre_canonico": "TORO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TOR",
+   "nombre_canonico": "TORRELAVEGA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TORRE",
+   "nombre_canonico": "TORRES NOVAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TORTO",
+   "nombre_canonico": "TORTOSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TRADE",
+   "nombre_canonico": "TRADEMA VALLADOLID",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FARO",
+   "nombre_canonico": "TRANS.MAD.FARO,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9705",
+   "nombre_canonico": "TRANSF.MAD.FARO,SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TREV",
+   "nombre_canonico": "TREVISO(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TRILL",
+   "nombre_canonico": "TRILLO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TROFA",
+   "nombre_canonico": "TROFA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TUDEL",
+   "nombre_canonico": "TUDELA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TUI",
+   "nombre_canonico": "TUI",
+   "provincia": ""
+  },
+  {
+   "id_punto": "UNICO",
+   "nombre_canonico": "UNICOL, SRL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FENOS",
+   "nombre_canonico": "UNION FENOSA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FRANC",
+   "nombre_canonico": "UNION FRANCAMAR, SL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "UREMI",
+   "nombre_canonico": "UREÑA/J.MIGUEL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "URNIE",
+   "nombre_canonico": "URNIETA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "URSA",
+   "nombre_canonico": "URSA IBERICA, S.A.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "LESGR",
+   "nombre_canonico": "USINE DE LESGOR",
+   "provincia": ""
+  },
+  {
+   "id_punto": "UTEBO",
+   "nombre_canonico": "UTEBO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "UTICH",
+   "nombre_canonico": "UTISA CHINCHILLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "UTI",
+   "nombre_canonico": "UTISA TERUEL",
+   "provincia": "TERUEL"
+  },
+  {
+   "id_punto": "UTISA",
+   "nombre_canonico": "UTISA VALENCIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "UTREC",
+   "nombre_canonico": "UTISA-REKAR",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALAD",
+   "nombre_canonico": "VALADARES(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALBO",
+   "nombre_canonico": "VALBOPAN, SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALD",
+   "nombre_canonico": "VALDEMORO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALDE",
+   "nombre_canonico": "VALDEPEÑAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALDI",
+   "nombre_canonico": "VALDILECHA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "V",
+   "nombre_canonico": "VALENCIA",
+   "provincia": "VALENCIA"
+  },
+  {
+   "id_punto": "VALEN",
+   "nombre_canonico": "VALENTIN HERRAN,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALGA",
+   "nombre_canonico": "VALGA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VA",
+   "nombre_canonico": "VALLADOLID",
+   "provincia": "VALLADOLID"
+  },
+  {
+   "id_punto": "VALMA",
+   "nombre_canonico": "VALLADOLID-MADRID",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALAV",
+   "nombre_canonico": "VALLADOLID/AVILA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VACOR",
+   "nombre_canonico": "VALLADOLID/CORDOBA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALLM",
+   "nombre_canonico": "VALLMOLL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VALT",
+   "nombre_canonico": "VALTIERRA",
+   "provincia": "NAVARRA"
+  },
+  {
+   "id_punto": "VARE",
+   "nombre_canonico": "VARESE(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9729",
+   "nombre_canonico": "VARIOS GALICIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9715",
+   "nombre_canonico": "VEJA (PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VENDA",
+   "nombre_canonico": "VENDAS NOVAS(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VERA",
+   "nombre_canonico": "VERA DE BIDASOA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VERIN",
+   "nombre_canonico": "VERIN",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VERO",
+   "nombre_canonico": "VERONA(IT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VERVI",
+   "nombre_canonico": "VERVIT, SRL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VIANA",
+   "nombre_canonico": "VIANA DO CASTELO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VIC",
+   "nombre_canonico": "VIC",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VICOL",
+   "nombre_canonico": "VICOLOZANO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VIDRE",
+   "nombre_canonico": "VIDRERES",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VIGO",
+   "nombre_canonico": "VIGO",
+   "provincia": "PONTEVEDRA"
+  },
+  {
+   "id_punto": "VIGSA",
+   "nombre_canonico": "VIGO,SANTIAGO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILAF",
+   "nombre_canonico": "VILA FRANCA DE XIRA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILA",
+   "nombre_canonico": "VILA REAL",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9721",
+   "nombre_canonico": "VILA REAL STO ANTONIO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILAD",
+   "nombre_canonico": "VILADECANS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILAG",
+   "nombre_canonico": "VILAGARCIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILAN",
+   "nombre_canonico": "VILANOVA AROUSA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "CERV",
+   "nombre_canonico": "VILANOVA CERVEIRA(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9710",
+   "nombre_canonico": "VILANOVA DA RAINHA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "9712",
+   "nombre_canonico": "VILANOVA DE SANTO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "FAMAL",
+   "nombre_canonico": "VILANOVA FAMALICAO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "GAIA",
+   "nombre_canonico": "VILANOVA GAIA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILAR",
+   "nombre_canonico": "VILARINHO(PT)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILAB",
+   "nombre_canonico": "VILLABONA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILLB",
+   "nombre_canonico": "VILLABRAZARO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILLA",
+   "nombre_canonico": "VILLACAÑAS",
+   "provincia": "TOLEDO"
+  },
+  {
+   "id_punto": "2",
+   "nombre_canonico": "VILLAGARCIA",
+   "provincia": "PONTEVEDRA"
+  },
+  {
+   "id_punto": "VIL",
+   "nombre_canonico": "VILLALBA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "NUBLA",
+   "nombre_canonico": "VILLANUBLA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILL",
+   "nombre_canonico": "VILLAREJO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "TUERT",
+   "nombre_canonico": "VILLATUERTA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VILSA",
+   "nombre_canonico": "VILLAVICIOSA/SALAS",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VISEU",
+   "nombre_canonico": "VISEU",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VI",
+   "nombre_canonico": "VITORIA",
+   "provincia": "VITORIA"
+  },
+  {
+   "id_punto": "VIVEI",
+   "nombre_canonico": "VIVEIRO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VIZ",
+   "nombre_canonico": "VIZCAYA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "VOCAL",
+   "nombre_canonico": "VOLCALIS-ISOLAM.MINERAIS,SA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "XILOF",
+   "nombre_canonico": "XILOFRANCE",
+   "provincia": ""
+  },
+  {
+   "id_punto": "YFFIN",
+   "nombre_canonico": "YFFINIAC (FR.)",
+   "provincia": ""
+  },
+  {
+   "id_punto": "YUNCO",
+   "nombre_canonico": "YUNCOS",
+   "provincia": "TOLEDO"
+  },
+  {
+   "id_punto": "1001",
+   "nombre_canonico": "ZAM.OR.TORD.SANT.PAMP",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZA",
+   "nombre_canonico": "ZAMORA",
+   "provincia": "ZAMORA"
+  },
+  {
+   "id_punto": "ZAVAL",
+   "nombre_canonico": "ZAMORA-VALLADOLID",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZAMUD",
+   "nombre_canonico": "ZAMUDIO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "Z",
+   "nombre_canonico": "ZARAGOZA",
+   "provincia": "ZARAGOZA"
+  },
+  {
+   "id_punto": "ZARBA",
+   "nombre_canonico": "ZARAGOZA, BARCELONA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZARAM",
+   "nombre_canonico": "ZARAMILLO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZARZA",
+   "nombre_canonico": "ZARZALEJO",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZIERB",
+   "nombre_canonico": "ZIERBANA",
+   "provincia": "VITORIA"
+  },
+  {
+   "id_punto": "ZNDS",
+   "nombre_canonico": "ZNDS TABLEROS, S.L.",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZUERA",
+   "nombre_canonico": "ZUERA",
+   "provincia": ""
+  },
+  {
+   "id_punto": "ZUMAI",
+   "nombre_canonico": "ZUMAIA",
+   "provincia": ""
+  }
+ ]
+}

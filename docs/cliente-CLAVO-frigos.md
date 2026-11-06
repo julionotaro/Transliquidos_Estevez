@@ -196,6 +196,10 @@ Destino=último + Campo2 abreviado ≤19; indexación agregada tipo FORESA; cerc
 
 - Código de cliente: `catalogo/clientes-gesruta.js` (CLAVO = 4).
 - **Tarifas €/km + índice mensual:** `catalogo/tarifas-clavo.json` (las resuelve el armador).
+- **Puntos:** el resolver usa `catalogo/puntos-alta.json` (curados, con alias) + la **base completa
+  de Gesruta** `catalogo/puntos-gesruta-base.json` (807 puntos, de `datos/gesruta/puntos-geograficos`)
+  por debajo → **no hay que dar de alta puntos a mano**; sólo los que no estén en el export (ej.
+  TORREJON=9735, agregado después) van a `puntos-alta.json`.
 - Tarifas por corredor (histórico, unidad KM): `catalogo/rutas-por-cliente.json` (cliente 4).
 - **Modo €/km (armador):** `herramientas/armar_orden/armar_orden.js` (rama CLAVO, `armarAlbaranKm`).
 - **Filas del Excel FRIGOS:** `herramientas/armar_orden/excel_frigos.js`.

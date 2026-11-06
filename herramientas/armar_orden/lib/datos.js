@@ -47,9 +47,24 @@ function cargarIndexacion() {
   return filas;
 }
 
-/** Catalogo de puntos para resolver-punto.js: [{id_punto, nombre_canonico, alias}]. */
+/** Catalogo de puntos para resolver-punto.js: [{id_punto, nombre_canonico, alias}].
+ *  CURADOS (puntos-alta.json, con alias) + base COMPLETA de Gesruta (puntos-gesruta-base.json)
+ *  por debajo: los curados mandan y la base aporta el resto de codigos, asi no hay que dar de
+ *  alta puntos a mano. Dedup por nombre normalizado (el curado gana). */
 function cargarPuntos() {
-  return JSON.parse(fs.readFileSync(p('catalogo/puntos-alta.json'), 'utf8'));
+  var curados = JSON.parse(fs.readFileSync(p('catalogo/puntos-alta.json'), 'utf8'));
+  var base = (JSON.parse(fs.readFileSync(p('catalogo/puntos-gesruta-base.json'), 'utf8')).puntos) || [];
+  function norm(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim(); }
+  var vistos = {};
+  curados.forEach(function (c) { if (c && c.nombre_canonico) { vistos[norm(c.nombre_canonico)] = true; } });
+  var extra = [];
+  base.forEach(function (b) {
+    var n = norm(b.nombre_canonico);
+    if (!b.id_punto || !n || vistos[n]) { return; }
+    vistos[n] = true;
+    extra.push({ id_punto: b.id_punto, nombre_canonico: b.nombre_canonico, alias: '', origen_alta: 'gesruta-base' });
+  });
+  return curados.concat(extra);
 }
 
 /** Materiales: nombre de carga (MAYUS) -> codigo Gesruta. materiales.csv (cp850; nombres ASCII). */
