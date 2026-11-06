@@ -36,14 +36,18 @@ multiplica por los km con carga. El cálculo manuscrito del talón (`K × €/km
 
 | Corredor / sentido | €/km (histórico → vigente) |
 |---|---|
-| **SALIDA** — distribución centro/norte (corredor Tordesillas↔Madrid: Getafe, Torrejón, Castro Urdiales, Colmenar…) | 1,44 → 1,48 → **1,52** |
-| **RETORNO** / backbone Galicia (Tordesillas↔Caldas de Reis y retornos a base) | 1,24 → 1,27 → **1,31** |
-| **Cercanías / fijos** (Reinosa, Campiño): importe fijo, no €/km | Reinosa ≈ **306**, Campiño ≈ **206** *(revisar vigencia 2026)* |
+| **SALIDA** (`S`) — distribución centro/norte (corredor Tordesillas↔Madrid: Getafe, Torrejón, Castro Urdiales, Colmenar…) | 1,44 → 1,48 → **1,52** |
+| **RETORNO** (`R`) / backbone Galicia (Tordesillas↔Caldas de Reis y retornos a base) | 1,24 → 1,27 → **1,31** |
+| **Cercanías** (`C`, local tipo Campiño) — importe **fijo** | **212 €** (oct; 206 en ene) |
+| **Tordesillas–Reinosa** (`U`) — importe **fijo** | **315 €** (oct; 306 en ene) |
 
-- **Manda la tarifa más reciente** (sube durante el año, como el resto de
-  clientes). En el Excel de enero eran 1,48 / 1,27; en octubre 1,52 / 1,31.
-- El Excel marca el sentido en la columna **L**: `S`=Salida (1,52), `R`=Retorno
-  (1,31), `U`=Unidad/ruta fija (Reinosa 306), `C`=Cercanías (Campiño 206).
+- **Manda la tarifa más reciente** (sube durante el año). Los valores de
+  referencia (S, R, Cercanías, Reinosa) viven en las **celdas de cada solapa
+  mensual** del Excel y cambian mes a mes. **Octubre 2026:** S `1,52` · R `1,31`
+  · Tordesillas–Caldas `1,31` · Cercanías `212` · Reinosa `315`. (Enero: 1,48 /
+  1,27 / 206 / 306.)
+- El Excel marca el sentido en la columna **L**: `S`=Salida, `R`=Retorno,
+  `U`=ruta fija (Reinosa), `C`=Cercanías.
 
 ---
 
@@ -111,20 +115,30 @@ Una línea por albarán, **Estado `Pedido`**:
 | Origen / Destino | por **código de punto Gesruta** (ej. CALDAS DE REIS = `1`, TORREJON = `9735`) |
 
 Debajo, **CARGAS** (punto + fecha de carga) y **DESCARGAS** (punto + fecha de
-descarga). **Sin línea de indexación** (la tarifa €/km es cerrada).
+descarga). **Sin línea de indexación en el albarán**: la indexación va **agregada
+en facturación** (ver §5.4).
 
-> **Multi-reparto:** un talón con varios destinos (Getafe/Torrejón/Torija) se
-> cargó como **UN** albarán con **UNA** línea de porte por el **km total** del
-> viaje; los destinos intermedios van en CARGAS/DESCARGAS. CLAVO **NO** lleva
-> línea `REP` (eso es FORESA): el multi-destino ya está contenido en los km.
-> *(Confirmar con Julio si siempre es 1 albarán por talón.)*
+> **Multi-reparto:** un talón con varios destinos = **UN** albarán con **UNA**
+> línea de porte por el **km total** del viaje (confirmado Julio 06/11). En el
+> campo **Destino** va el **ÚLTIMO** destino; en **Campo2** van **TODOS** los
+> destinos con **abreviaturas**, procurando **≤ 19 caracteres** para que entren
+> en la factura. CLAVO **NO** lleva línea `REP` (eso es FORESA): el multi-destino
+> ya está contenido en los km.
 
 ### 5.3 Kilómetros (odómetro / tacógrafo)
-Control de odómetro, **separado de la facturación**: **Nueva lectura** (odómetro),
-**Fecha**, y **Km carga / Km vacío** por chófer (= Km Bonificables). Se registra
-por apunte/segmento (ej. Caldas 671.055 → 1.ª descarga 671.299 ⇒ km carga 244).
-*(Confirmar: ¿un apunte por segmento/destino, o uno por viaje? El km de este form
-—244— es por segmento y no coincide con el km facturado del porte —764—.)*
+**Un apunte por viaje** (confirmado Julio 06/11): **Nueva lectura** (odómetro
+final del viaje), **Fecha**, y **Km carga = km total con carga** (= la `Cantidad`
+del porte, ej. 764) y **Km vacío** (ej. 0) por chófer (= Km Bonificables). *(El
+`244` de la pantalla de ejemplo fue un error de llenado de Julio; el correcto es
+km carga 764, km vacío 0.)*
+
+### 5.4 Indexación de gasóleo — AGREGADA, como FORESA (confirmado Julio 06/11)
+CLAVO **sí** lleva indexación, **igual que FORESA**: **NO** por albarán, sino
+**una sola línea en el momento de FACTURACIÓN** sobre el acumulado del período
+(modalidad **agregada**). Concepto **G** (CLAVO español → nacional). El **% es
+mensual**: **agosto = 0,0766 · septiembre = 0,1370 · octubre = PENDIENTE** (Julio
+aún tiene que conseguirlo). En el armador se trataría como la agregada de FORESA
+(la línea por albarán va con `cargar: false` / se acumula y se cierra en factura).
 
 ---
 
@@ -152,16 +166,20 @@ gastos son **control interno del Excel** (coste / pago a empleados, hoja PALETS)
 
 ---
 
-## 8. Pendientes / a confirmar
+## 8. Pendientes
 
-1. **Kilómetros:** ¿un apunte por segmento (por destino) o uno por viaje? (244 vs 764).
-2. **Multi-reparto:** ¿siempre 1 albarán con km total, o 1 por destino?
-3. **Indexación:** confirmar que CLAVO va **sin** línea de índice de gasóleo
-   (el doc maestro lo marcó "revisar período"; las pantallas no muestran índice).
-4. **Cercanías fijas** (Reinosa 306 / Campiño 206): confirmar vigencia 2026.
-5. **Agrupación de viajes** en Gesruta: ¿un viaje por tramo, o varios albaranes
-   por viaje/tractora-día?
-6. **Armador:** falta el **modo €/km** en el pipeline (hoy es €/TN + precio fijo).
+*(Resueltos el 06/11: km form = 1 apunte/viaje con km total; multi-reparto = 1
+albarán, Destino=último + Campo2 abreviado ≤19; indexación = agregada tipo FORESA;
+cercanías/fijos de octubre = 212/315.)*
+
+1. **% de indexación de OCTUBRE 2026** — Julio lo tiene que conseguir (ago 0,0766
+   · sep 0,1370). Sin él, la línea de índice del período de octubre queda pendiente.
+2. **Armador:** falta el **modo €/km** (hoy el pipeline es €/TN + precio fijo) y la
+   **indexación agregada mensual** de CLAVO (reusar la mecánica agregada de FORESA).
+3. **Agrupación de viajes** en Gesruta: confirmar si es un viaje por tramo o varios
+   albaranes por viaje/tractora-día (la pantalla mostró 1 albarán por viaje).
+4. **THEC 9400 LLC (Manuel Eirín):** alta en `flota.json` con su remolque cuando
+   llegue un juego suyo.
 
 ---
 
