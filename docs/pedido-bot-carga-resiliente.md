@@ -80,10 +80,10 @@ albaranes de la ficha van en **UN viaje** de Gesruta (una ficha = un viaje con N
      El **Importe lo calcula Gesruta** (cantidad × precio). NO teclear el importe.
    - Para `U`/`C` (importe fijo Reinosa/cercanías): **`um:"UN"`, Cantidad `1`, Precio = el fijo**.
    - **Origen y Destino por código.**
-3. **Multi-punto → Campo1:** si el albarán trae **`campo1`**, escribirlo en el campo **Campo1** de
-   Gesruta (son todos los puntos del lado múltiple, abreviados). El campo **Origen** lleva el **1er**
-   punto y **Destino** el **último** (ya vienen resueltos por código). Las **Cargas/Descargas** se
-   cargan con sus puntos y fechas.
+3. **Multi-punto → campos separados:** si el albarán trae **`campo1`** (todos los puntos de la
+   **carga**), escribirlo en **Campo1**; si trae **`campo2`** (todos los del **reparto**), en
+   **Campo2**. El campo **Origen** lleva el **1er** punto de la carga y **Destino** el **último** del
+   reparto (ya vienen resueltos por código). Las **Cargas/Descargas** se cargan con sus puntos y fechas.
 4. **Indexación `cargar:false`** (CLAVO es **agregada**, como FORESA): **NO** cargar la línea de
    indexación por albarán — se cierra en facturación. (Si `factor` viene vacío, igual: no se carga.)
 5. **Kilómetros:** **1 apunte por viaje** con **Km carga = `km.carga`** (el total) y **Km vacío =

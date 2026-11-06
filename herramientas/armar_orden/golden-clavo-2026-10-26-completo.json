@@ -1,5 +1,5 @@
 {
-  "_nota": "BLANCO del golden CLAVO juego COMPLETO (8 tramos, viaje 00051053). Total porte 3.802,26 = Ingr/Bnf de Gesruta. Sentido derivado; idx oct 9,15% prueba; multi-destino -> Campo1. Es solo fixture de test: el juego NO se archiva ni registra (es prueba, Julio 06/11).",
+  "_nota": "BLANCO golden CLAVO juego COMPLETO (8 tramos, total 3.802,26; sentido derivado; idx 9,15% prueba; multi-destino -> Campo2). Fixture de PRUEBA, no se archiva ni registra.",
   "empresa": "TLE",
   "viajes": [
     {
@@ -62,7 +62,7 @@
             "Torrejon",
             "Torija"
           ],
-          "campo1": "GETAF/TORRE/TORIJ"
+          "campo2": "GETAF/TORRE/TORIJ"
         },
         {
           "cliente": {

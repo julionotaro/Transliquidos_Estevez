@@ -60,14 +60,14 @@ Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**
 
 - **Papeles:** **parte/hoja de ruta** (con el **odómetro** inicio/fin de cada tramo + dietas) +
   **talones de porte** TLE (1 por tramo, con `K ≤ km` y `km × €/km`) + albaranes de terceros (prueba).
-- **Por tramo extraé:** origen (**1er punto** si hay varias cargas) + lista de orígenes; **destino =
-  último** + lista de destinos (si hay varios repartos) — el lado múltiple va a **Campo1**; carga
+- **Por tramo extraé:** origen (**1er punto** si hay varias cargas) + lista de orígenes (→ **Campo1**);
+  **destino = último** + lista de destinos si hay varios repartos (→ **Campo2**); carga
   (CONGELADO/PAN RALLADO/…), **odómetro inicio/fin**, km vacío, fecha carga/descarga. El **sentido lo
   deriva el armador** (S/R/U/C de origen/destino/km); no se lee.
 - **La tarifa NO se teclea del talón:** la resuelve el armador por sentido + mes
   (`catalogo/tarifas-clavo.json`); y el **sentido lo DERIVA solo** de origen/destino/km (no hace falta
   declararlo). El `raw` del tramo lleva: `cliente_lit` (CLAVO → el armador detecta modo km),
-  `origen_lit`, `destino_lit` (último) + `destinos`/`origenes` (listas, para Campo1 y la col Origen/Destino del Excel), `km_facturable`
+  `origen_lit` (1er) + `origenes` (→ Campo1), `destino_lit` (último) + `destinos` (→ Campo2), `km_facturable`
   (= odómetro fin − inicio), `km_inicio`/`km_fin`/`km_vacio`, `carga_lit`, `salida`/`llegada`.
   Todos los albaranes de la ficha van en **UN viaje** (una ficha = un viaje de Gesruta).
 - **Dos salidas** (flujo objetivo): la **orden.json** (armador, modo km) **y** las **filas del Excel

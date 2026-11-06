@@ -168,7 +168,7 @@ function mesDeFecha(fechaDDMMYYYY) {
 
 // Campo2 de Gesruta: todos los destinos de un multi-reparto, abreviados, <=19
 // caracteres para que entren en la factura (regla Julio 06/11).
-function abreviarDestinos(destinos, maxLen) {
+function abreviarPuntos(destinos, maxLen) {
   if (!destinos || !destinos.length) { return null; }
   var abv = destinos.map(function (d) {
     var s = cruce.norm(d).replace(/[^A-Z0-9 ]/g, '').trim();
@@ -279,20 +279,20 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
     km: kmBlock,
     tarifa_pendiente: tarifaPendiente,
   };
-  // MULTI-PUNTO -> Campo1 de Gesruta (Julio 06/11). Un tramo es multiple en UN solo lado:
-  //  - varias CARGAS: Origen = 1er punto (viene en origen_lit), Campo1 = todos los origenes.
-  //  - varios REPARTOS: Destino = ultimo punto (viene en destino_lit), Campo1 = todos los destinos.
-  // Campo1 = la lista completa abreviada (<=19 car. para que entre en la factura). CLAVO NO lleva
-  // linea REP (el multi-destino ya esta en los km). Se guardan tambien las listas (origenes/destinos)
+  // MULTI-PUNTO (Julio 06/11): van a campos SEPARADOS de Gesruta (no chocan):
+  //  - Campo1 = TODOS los puntos de la CARGA (origenes); Origen = 1er punto de la carga.
+  //  - Campo2 = TODOS los puntos del REPARTO (destinos); Destino = ultimo punto del reparto.
+  // Cada lista abreviada (<=19 car. para que entre en la factura). CLAVO NO lleva linea REP (el
+  // multi-destino ya esta en los km). Las listas completas (origenes/destinos) tambien se guardan
   // para la columna Origen/Destino del Excel (nombres completos unidos con '+').
-  var multi = null;
-  if (raw.origenes && raw.origenes.length > 1) { alb.origenes = raw.origenes; multi = raw.origenes; }
+  if (raw.origenes && raw.origenes.length > 1) {
+    alb.origenes = raw.origenes;
+    alb.campo1 = abreviarPuntos(raw.origenes, 19);
+  }
   if (raw.destinos && raw.destinos.length > 1) {
     alb.destinos = raw.destinos;
-    if (!multi) { multi = raw.destinos; }
-    else { avisos.push('[' + ctx + '] CLAVO: multi-origen Y multi-destino en el mismo albaran -> Campo1 solo admite una lista, revisar'); }
+    alb.campo2 = abreviarPuntos(raw.destinos, 19);
   }
-  if (multi) { alb.campo1 = abreviarDestinos(multi, 19); }
   return alb;
 }
 

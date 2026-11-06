@@ -75,11 +75,11 @@ CLAVO FOOD FACTORY (cliente `4`) se factura **por kilómetro**, no por TN. El al
 - `lineas.indexacion`: **agregada como FORESA** → `{ concepto: "G", cantidad: <importe del porte>,
   factor: <% mensual|null>, cargar: false }`. `cargar:false` ⇒ el bot **NO** carga la línea por
   albarán; la indexación se cierra en facturación. `factor:null` = el % del mes aún no se sabe.
-- **Multi-punto → `Campo1`** (un tramo es múltiple en un solo lado): varias **cargas** →
-  `origen` = 1er punto, `origenes` = lista; varios **repartos** → `destino` = último punto,
-  `destinos` = lista. `campo1`: string con **todos** los puntos de ese lado abreviados (≤19 car.)
-  → va al campo **Campo1** de Gesruta. Las listas `origenes`/`destinos` dan los nombres completos
-  (col Origen/Destino del Excel, unidos con `+`). CLAVO **NO** lleva línea `reparto`/`REP`.
+- **Multi-punto → campos separados:** varias **cargas** → `origen` = 1er punto, `origenes` = lista,
+  **`campo1`** = esa lista abreviada (≤19 car.) → campo **Campo1** de Gesruta. Varios **repartos** →
+  `destino` = último punto, `destinos` = lista, **`campo2`** = esa lista abreviada → campo **Campo2**
+  de Gesruta. Las listas `origenes`/`destinos` dan los nombres completos (col Origen/Destino del
+  Excel, unidos con `+`). CLAVO **NO** lleva línea `reparto`/`REP`.
 - `km`: 1 apunte por viaje → `{ inicio, fin, carga, vacio }` (`carga` = km total con carga = la
   `cantidad` del porte). Es el formulario **Kilómetros** de Gesruta.
 - THEC (empresa `"THEC"`) → modelo PROVE en la cabecera (igual que los demás; ver abajo).

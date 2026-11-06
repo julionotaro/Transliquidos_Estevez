@@ -120,13 +120,14 @@ Debajo, **CARGAS** (punto + fecha de carga) y **DESCARGAS** (punto + fecha de
 descarga). **Sin línea de indexación en el albarán**: la indexación va **agregada
 en facturación** (ver §5.4).
 
-> **Multi-punto → Campo1** (un tramo es múltiple en UN solo lado, confirmado Julio 06/11):
-> varias **cargas** → **Origen** = 1er punto, **Campo1** = todos los orígenes; varios
-> **repartos** → **Destino** = último punto, **Campo1** = todos los destinos. En **Campo1**
-> van **todos** los puntos con **abreviaturas** (**≤ 19 caracteres**, para que entren en la
-> factura). En el Excel, la columna **Origen/Destino** lleva la lista completa unida con `+`.
-> Un albarán con varios destinos = **UN** albarán con **UNA** línea de porte por el **km
-> total** (CLAVO **NO** lleva línea `REP` —eso es FORESA—: el multi ya está en los km).
+> **Multi-punto → campos separados** (confirmado Julio 06/11):
+> - varias **cargas** → **Origen** = **1er** punto de la carga; **Campo1** = **todos** los orígenes.
+> - varios **repartos** → **Destino** = **último** punto del reparto; **Campo2** = **todos** los destinos.
+>
+> Cada campo lleva su lista **abreviada** (**≤ 19 caracteres**, para que entre en la factura). En el
+> Excel, las columnas **Origen/Destino** llevan la lista completa unida con `+`. Un albarán con varios
+> destinos = **UN** albarán con **UNA** línea de porte por el **km total** (CLAVO **NO** lleva línea
+> `REP` —eso es FORESA—: el multi ya está en los km).
 
 ### 5.3 Kilómetros (odómetro / tacógrafo)
 **Un apunte por viaje** (confirmado Julio 06/11): **Nueva lectura** (odómetro
@@ -172,7 +173,7 @@ gastos son **control interno del Excel** (coste / pago a empleados, hoja PALETS)
 ## 8. Pendientes
 
 *(Resueltos el 06/11: km form = 1 apunte/viaje con km total; multi-reparto = 1 albarán,
-Destino=último (o Origen=1º) + Campo1 abreviado ≤19; indexación agregada tipo FORESA; cercanías/fijos oct
+Origen=1º carga+Campo1 y Destino=último reparto+Campo2 abreviados ≤19; indexación agregada tipo FORESA; cercanías/fijos oct
 212/315; **sentido derivado** por fórmula; **U/C fijo = um UN, cantidad 1, precio fijo**
 —pantalla Reinosa 315,00—; **una ficha entera = 1 viaje con N albaranes** —viaje 00051053,
 8 tramos, total 3.802,26—; puntos CLAVO se dan de alta en `puntos-alta.json` con el código de
