@@ -70,6 +70,7 @@ Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**
   `origen_lit` (1er) + `origenes` (→ Campo1), `destino_lit` (último) + `destinos` (→ Campo2), `km_facturable`
   (= odómetro fin − inicio), `km_inicio`/`km_fin`/`km_vacio`, `carga_lit`, `salida`/`llegada`.
   Todos los albaranes de la ficha van en **UN viaje** (una ficha = un viaje de Gesruta).
+- **Excel como `.xlsx`** (para abrir/pegar directo): `python3 -I herramientas/armar_orden/excel_frigos_xlsx.py <orden.json> <salida.xlsx>` (mismas columnas, fechas y números tipados).
 - **Dos salidas** (flujo objetivo): la **orden.json** (armador, modo km) **y** las **filas del Excel
   FRIGOS** para pegar: `node herramientas/armar_orden/excel_frigos.js <orden.json>` (TSV, columnas A–Q).
 - **Dietas, palets, gasoil, AdBlue, otros gastos:** control interno del Excel (de la parte); **NO** se
