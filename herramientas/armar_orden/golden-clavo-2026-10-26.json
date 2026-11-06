@@ -1,5 +1,5 @@
 {
-  "_nota": "BLANCO golden CLAVO leg (Caldas->Torrejon 764x1,52=1.161,28; idx oct 9,15% prueba; multi-destino -> Campo2).",
+  "_nota": "BLANCO golden CLAVO leg (Caldas->Torrejon 764x1,52=1.161,28; idx oct 9,15% prueba; multi-destino -> Campo2; campo2 entre fechas y lineas).",
   "empresa": "TLE",
   "viajes": [
     {
@@ -35,6 +35,12 @@
           "llegada": "27/10/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "Getafe",
+            "Torrejon",
+            "Torija"
+          ],
+          "campo2": "GETAF/TORRE/TORIJ",
           "lineas": {
             "porte": {
               "um": "TN",
@@ -56,13 +62,7 @@
             "fin": "671819",
             "vacio": "0"
           },
-          "tarifa_pendiente": false,
-          "destinos": [
-            "Getafe",
-            "Torrejon",
-            "Torija"
-          ],
-          "campo2": "GETAF/TORRE/TORIJ"
+          "tarifa_pendiente": false
         }
       ]
     }

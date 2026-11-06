@@ -265,6 +265,8 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
     if (duoSec) { kmBlock.cargar = false; }
   }
 
+  // Orden de campos = el ORDEN DE CARGA en la pantalla Entrada de Albaranes: cabecera del albaran
+  // (cliente/origen/destino/carga/ref/fechas) -> Campo1/Campo2 -> lineas (porte/indexacion) -> km.
   var alb = {
     cliente: { codigo: codCli.codigo, esperado: esperadoCli },
     origen: { codigo: po.codigo, esperado: po.esperado },
@@ -275,16 +277,13 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
     llegada: raw.llegada,
     facturacion: 'km',
     sentido: sentido || null,
-    lineas: { porte: porte, indexacion: indexacion },
-    km: kmBlock,
-    tarifa_pendiente: tarifaPendiente,
   };
-  // MULTI-PUNTO (Julio 06/11): van a campos SEPARADOS de Gesruta (no chocan):
+  // MULTI-PUNTO (Julio 06/11): campos SEPARADOS de Gesruta (se escriben DESPUES de las fechas y
+  // ANTES de la linea de porte, igual que en la pantalla):
   //  - Campo1 = TODOS los puntos de la CARGA (origenes); Origen = 1er punto de la carga.
   //  - Campo2 = TODOS los puntos del REPARTO (destinos); Destino = ultimo punto del reparto.
-  // Cada lista abreviada (<=19 car. para que entre en la factura). CLAVO NO lleva linea REP (el
-  // multi-destino ya esta en los km). Las listas completas (origenes/destinos) tambien se guardan
-  // para la columna Origen/Destino del Excel (nombres completos unidos con '+').
+  // Cada lista abreviada (<=19 car. para que entre en la factura). Las listas completas
+  // (origenes/destinos) se guardan para la columna Origen/Destino del Excel (nombres con '+').
   if (raw.origenes && raw.origenes.length > 1) {
     alb.origenes = raw.origenes;
     alb.campo1 = abreviarPuntos(raw.origenes, 19);
@@ -293,6 +292,9 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
     alb.destinos = raw.destinos;
     alb.campo2 = abreviarPuntos(raw.destinos, 19);
   }
+  alb.lineas = { porte: porte, indexacion: indexacion };
+  alb.km = kmBlock;
+  alb.tarifa_pendiente = tarifaPendiente;
   return alb;
 }
 
