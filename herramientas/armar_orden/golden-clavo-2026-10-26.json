@@ -1,5 +1,5 @@
 {
-  "_nota": "BLANCO del golden CLAVO (FRIGOS, por km). Verificado contra la pantalla de Gesruta que mostro Julio (viaje 00051053, Caldas->Torrejon 764 x 1,52 = 1.161,28, IVA 21). Lo reproduce el armador en modo km. factor de indexacion null = % de octubre pendiente (agregada).",
+  "_nota": "BLANCO del golden CLAVO (FRIGOS, por km). Verificado contra la pantalla de Gesruta (viaje 00051053, Caldas->Torrejon 764 x 1,52 = 1.161,28, IVA 21). idx octubre 9,15% (valor de prueba de Julio 06/11).",
   "empresa": "TLE",
   "viajes": [
     {
@@ -46,7 +46,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "1.161,28",
-              "factor": null,
+              "factor": "0,0915",
               "cargar": false
             }
           },

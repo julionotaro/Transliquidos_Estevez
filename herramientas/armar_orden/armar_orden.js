@@ -178,16 +178,36 @@ function abreviarDestinos(destinos, maxLen) {
   return (out.length > maxLen) ? out.slice(0, maxLen) : out;
 }
 
+// Deriva el SENTIDO (S/R/U/C) de origen+destino+km, replicando la formula de la
+// columna L del Excel FRIGOS (Julio 06/11). Bases: Caldas de Reis y Tordesillas.
+//   km<110 -> C (cercanias) ; Tordesillas<->Reinosa -> U ; destino Caldas -> R ;
+//   origen Caldas/Tordesillas -> S ; destino Tordesillas -> R ; si no -> null.
+function derivarSentido(origenEsperado, destinoEsperado, km) {
+  if (km === 0) { return null; }
+  if (km != null && km < 110) { return 'C'; }
+  var o = cruce.norm(origenEsperado || '');
+  var d = cruce.norm(destinoEsperado || '');
+  function has(s, t) { return s.indexOf(t) >= 0; }
+  if ((has(o, 'TORDESILLAS') && has(d, 'REINOSA')) || (has(o, 'REINOSA') && has(d, 'TORDESILLAS'))) { return 'U'; }
+  if (has(d, 'CALDAS')) { return 'R'; }
+  if (has(o, 'CALDAS') || has(o, 'TORDESILLAS')) { return 'S'; }
+  if (has(d, 'TORDESILLAS')) { return 'R'; }
+  return null;
+}
+
 function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNom, deps, avisos, duoSec) {
   var clavo = deps.clavo;
   var mes = mesDeFecha(raw.salida);
-  var sentido = String(raw.sentido || '').toUpperCase();
-  var tarMes = (clavo.tarifas_km && clavo.tarifas_km[mes]) || null;
 
   // km con carga: preferir km_facturable; si no, odometro fin - inicio.
   var km = null;
   if (typeof raw.km_facturable === 'number') { km = raw.km_facturable; }
   else if (typeof raw.km_inicio === 'number' && typeof raw.km_fin === 'number') { km = raw.km_fin - raw.km_inicio; }
+
+  // SENTIDO: lo trae el raw, o se DERIVA de origen/destino/km (formula columna L).
+  var sentido = raw.sentido ? String(raw.sentido).toUpperCase() : derivarSentido(po.esperado, pd.esperado, km);
+  if (!sentido) { avisos.push('[' + ctx + '] CLAVO: no se pudo derivar el sentido (origen/destino/km) -> revisar'); }
+  var tarMes = (clavo.tarifas_km && clavo.tarifas_km[mes]) || null;
 
   // porte + importe segun sentido
   var importe = null;
@@ -207,13 +227,14 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
     var fijo = tarMes ? (sentido === 'U' ? tarMes.reinosa : tarMes.cercanias) : null;
     if (fijo == null) { avisos.push('[' + ctx + '] TARIFA PENDIENTE: CLAVO sin importe fijo (' + sentido + ') en ' + mes); }
     importe = fijo;
+    // Importe fijo (U=Reinosa, C=cercanias): se entra como um UN, cantidad 1, precio=fijo
+    // (confirmado con la pantalla de Gesruta de Julio, 06/11: Reinosa 315,00).
     porte = {
       um: 'UN', cantidad: '1',
       precio: (fijo != null) ? fmt(fijo, 2) : null,
       concepto_esperado: clavo.concepto,
       iva_esperado: clavo.iva,
     };
-    avisos.push('[' + ctx + '] CLAVO sentido ' + sentido + ' (importe fijo): confirmar como se entra en Gesruta (um/cantidad/precio).');
   } else {
     avisos.push('[' + ctx + '] CLAVO sin sentido S/R/U/C -> no se resuelve la tarifa (revisar)');
     porte = { um: 'TN', cantidad: (km != null) ? fmt(km, 3) : null, precio: null, concepto_esperado: clavo.concepto, iva_esperado: clavo.iva };

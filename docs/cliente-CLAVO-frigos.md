@@ -46,8 +46,10 @@ multiplica por los km con carga. El cálculo manuscrito del talón (`K × €/km
   mensual** del Excel y cambian mes a mes. **Octubre 2026:** S `1,52` · R `1,31`
   · Tordesillas–Caldas `1,31` · Cercanías `212` · Reinosa `315`. (Enero: 1,48 /
   1,27 / 206 / 306.)
-- El Excel marca el sentido en la columna **L**: `S`=Salida, `R`=Retorno,
-  `U`=ruta fija (Reinosa), `C`=Cercanías.
+- El **sentido** (columna **L** del Excel) **lo deriva el armador** de origen/destino/km
+  (fórmula de Julio): `km<110`→`C`; Tordesillas↔Reinosa→`U`; destino *Caldas*→`R`; origen
+  *Caldas*/*Tordesillas*→`S`; destino *Tordesillas*→`R`. No hace falta declararlo.
+- El importe M del Excel: `S`→km×1,52 · `R`→km×1,31 · `U`→315 (Reinosa) · `C`→212 (cercanías).
 
 ---
 
@@ -168,27 +170,25 @@ gastos son **control interno del Excel** (coste / pago a empleados, hoja PALETS)
 
 ## 8. Pendientes
 
-*(Resueltos el 06/11: km form = 1 apunte/viaje con km total; multi-reparto = 1
-albarán, Destino=último + Campo2 abreviado ≤19; indexación = agregada tipo FORESA;
-cercanías/fijos de octubre = 212/315.)*
+*(Resueltos el 06/11: km form = 1 apunte/viaje con km total; multi-reparto = 1 albarán,
+Destino=último + Campo2 abreviado ≤19; indexación agregada tipo FORESA; cercanías/fijos oct
+212/315; **sentido derivado** por fórmula; **U/C fijo = um UN, cantidad 1, precio fijo**
+—pantalla Reinosa 315,00—; **una ficha entera = 1 viaje con N albaranes** —viaje 00051053,
+8 tramos, total 3.802,26—; puntos CLAVO se dan de alta en `puntos-alta.json` con el código de
+`datos/gesruta/puntos-geograficos-2026-08-27.csv`.)*
 
-1. **% de indexación de OCTUBRE 2026** — Julio lo tiene que conseguir (ago 0,0766
-   · sep 0,1370). Sin él, la línea de índice sale con `factor:null` (se cierra en facturación).
-2. **Agrupación de viajes** en Gesruta: confirmar si es un viaje por tramo o varios
-   albaranes por viaje/tractora-día (la pantalla mostró 1 albarán por viaje).
-3. **Alta de puntos CLAVO** que falten en `puntos-alta.json` con su código Gesruta
-   (hoy sólo TORREJON=9735; faltan Castro Urdiales, Torija, Colmenar, Valdemoro, Quer…).
-4. **THEC 9400 LLC (Manuel Eirín):** alta en `flota.json` con su remolque cuando
-   llegue un juego suyo.
-5. **Importe fijo U/C** (Reinosa/cercanías): confirmar cómo se entra en Gesruta
-   (hoy el armador lo emite como `um:UN, cantidad:1, precio:<fijo>` y lo marca para verificar).
+1. **% de indexación de OCTUBRE 2026** — pendiente del real. Hoy hay un **valor de prueba
+   `0,0915`** en `tarifas-clavo.json` (lo dio Julio 06/11); reemplazar por el definitivo.
+2. **THEC 9400 LLC (Manuel Eirín):** alta en `flota.json` con su remolque cuando llegue un juego suyo.
+3. **Registro + archivo** del juego CLAVO (hoy se generó la orden + filas Excel, "a modo de prueba").
 
 ### Implementado (06/11)
-- **Modo €/km en el armador** (`herramientas/armar_orden/armar_orden.js`, rama CLAVO) +
-  catálogo `catalogo/tarifas-clavo.json` + punto TORREJON=9735. **Golden test** del ejemplo
-  (Caldas→Torrejón 764 × 1,52 = 1.161,28) en verde.
-- **Generador de filas del Excel FRIGOS:** `herramientas/armar_orden/excel_frigos.js`
-  (`node excel_frigos.js <orden.json>` → TSV columnas A–Q para pegar).
+- **Modo €/km en el armador** (`armar_orden.js`, rama CLAVO) + `catalogo/tarifas-clavo.json` +
+  puntos TORREJON=9735 y CASTRO URDIALES=CASTR. **Sentido auto-derivado** (fórmula columna L).
+- **Juego completo procesado** (8 tramos, viaje 00051053) → `ordenes-carga/ordenes/2026-10/
+  jose-carlos-rodriguez/2026-10-26/orden.json` + `filas-excel-frigos.tsv`. **Total 3.802,26 =
+  Ingr/Bnf de Gesruta.** Golden (leg + completo) en verde.
+- **Generador de filas del Excel FRIGOS:** `herramientas/armar_orden/excel_frigos.js`.
 
 ---
 

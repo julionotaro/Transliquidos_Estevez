@@ -12,7 +12,9 @@
   },
   "indexacion_pct": {
     "2026-08": 0.0766,
-    "2026-09": 0.1370
+    "2026-09": 0.1370,
+    "2026-10": 0.0915
   },
+  "_idx_octubre_provisorio": "El 0,0915 de 2026-10 es un valor de PRUEBA que dio Julio (06/11) para procesar el juego completo; reemplazar por el % real de octubre cuando lo confirme.",
   "_pendiente": "Faltan los meses intermedios de tarifas_km (feb-sep) y el indexacion_pct de octubre (Julio lo consigue). Un mes sin tarifa -> tarifa_pendiente (resiliencia). Un mes sin idx_pct -> factor de indexacion vacio (se cierra en facturacion)."
 }

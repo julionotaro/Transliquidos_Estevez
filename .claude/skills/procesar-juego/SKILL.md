@@ -64,9 +64,11 @@ Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**
   carga (CONGELADO/PAN RALLADO/…), **odómetro inicio/fin**, km vacío, **sentido** `S`/`R`/`U`/`C`
   (salida / retorno / Reinosa fijo / cercanías), fecha carga/descarga.
 - **La tarifa NO se teclea del talón:** la resuelve el armador por sentido + mes
-  (`catalogo/tarifas-clavo.json`). El `raw` del tramo lleva: `facturacion:"km"` (o deja que el armador
-  lo detecte por cliente 4), `sentido`, `km_facturable` (= odómetro fin − inicio), `destino_lit`
-  (último), `destinos` (lista), `km_inicio`/`km_fin`/`km_vacio`, `carga_lit`, `salida`/`llegada`.
+  (`catalogo/tarifas-clavo.json`); y el **sentido lo DERIVA solo** de origen/destino/km (no hace falta
+  declararlo). El `raw` del tramo lleva: `cliente_lit` (CLAVO → el armador detecta modo km),
+  `origen_lit`, `destino_lit` (último) + `destinos` (lista, para Campo2), `km_facturable`
+  (= odómetro fin − inicio), `km_inicio`/`km_fin`/`km_vacio`, `carga_lit`, `salida`/`llegada`.
+  Todos los albaranes de la ficha van en **UN viaje** (una ficha = un viaje de Gesruta).
 - **Dos salidas** (flujo objetivo): la **orden.json** (armador, modo km) **y** las **filas del Excel
   FRIGOS** para pegar: `node herramientas/armar_orden/excel_frigos.js <orden.json>` (TSV, columnas A–Q).
 - **Dietas, palets, gasoil, AdBlue, otros gastos:** control interno del Excel (de la parte); **NO** se

@@ -65,6 +65,13 @@ var CASOS = [
     // Verificado contra la pantalla de Gesruta de Julio: Caldas->Torrejon, 764 x 1,52 =
     // 1.161,28, concepto P, IVA 21, origen 1 / destino 9735. factor idx null = % oct pendiente.
   },
+  {
+    nombre: 'clavo-jose-carlos-rodriguez 2026-10-26 COMPLETO (8 tramos, sentido derivado, idx 9,15% prueba)',
+    raw: raw('clavo-jose-carlos-rodriguez-2026-10-26-completo.json'),
+    blanco: blanco('2026-10/jose-carlos-rodriguez/2026-10-26'),
+    // Juego entero (viaje Gesruta 00051053). Total porte = 3.802,26 = Ingr/Bnf de la
+    // pantalla. Sentido S/R/U/C DERIVADO (formula columna L). idx octubre 9,15% (prueba).
+  },
 ];
 
 // Quita recursivamente las claves que empiezan con "_" (anotaciones).

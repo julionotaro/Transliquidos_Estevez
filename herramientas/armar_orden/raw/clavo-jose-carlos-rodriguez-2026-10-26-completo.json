@@ -1,0 +1,88 @@
+{
+  "_nota": "JUEGO COMPLETO de CLAVO (FRIGOS) - tractora 5132-LMC, chofer Jose Carlos Rodriguez, 26-31/10/2026. 8 tramos = 8 albaranes en UN viaje (Gesruta viaje 00051053). Datos del PARTE/hoja de ruta (odometros) + talones. El SENTIDO se deriva solo (no se declara). Carga = CONGELADO para todos (como se cargo en Gesruta; en la parte el tramo 2 es pan rallado y el 5 seco, pero no cambia el precio -se factura por km-). El total debe dar 3.802,26 (= Ingr/Bnf de la pantalla de Gesruta). km_vacio = odometro inicio de este tramo - odometro fin del anterior.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-26",
+  "chofer": "JOSE CARLOS RODRIGUEZ",
+  "cabeza": "5132",
+  "viajes": [
+    {
+      "matricula": "5132LMC",
+      "remolque": "R9520BCV",
+      "albaranes": [
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "TORREJON",
+          "destinos": ["Getafe", "Torrejon", "Torija"],
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "26/10/2026", "llegada": "27/10/2026",
+          "km_facturable": 764, "km_inicio": 671055, "km_fin": 671819, "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "AZUQUECA DE HENARES",
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "27/10/2026", "llegada": "27/10/2026",
+          "km_facturable": 231, "km_inicio": 671848, "km_fin": 672079, "km_vacio": 29
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "CASTRO URDIALES",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "27/10/2026", "llegada": "28/10/2026",
+          "km_facturable": 341, "km_inicio": 672079, "km_fin": 672420, "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "REINOSA",
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "28/10/2026", "llegada": "28/10/2026",
+          "km_facturable": 202, "km_inicio": 672542, "km_fin": 672744, "km_vacio": 122
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "REINOSA",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "28/10/2026", "llegada": "29/10/2026",
+          "km_facturable": 203, "km_inicio": 672744, "km_fin": 672947, "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "REINOSA",
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "29/10/2026", "llegada": "29/10/2026",
+          "km_facturable": 204, "km_inicio": 672947, "km_fin": 673151, "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "BURGOS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "29/10/2026", "llegada": "29/10/2026",
+          "km_facturable": 187, "km_inicio": 673151, "km_fin": 673338, "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "CALDAS DE REIS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "30/10/2026", "llegada": "31/10/2026",
+          "km_facturable": 451, "km_inicio": 673503, "km_fin": 673954, "km_vacio": 165
+        }
+      ]
+    }
+  ]
+}

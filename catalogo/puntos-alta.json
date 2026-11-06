@@ -31,7 +31,19 @@
   "tipo": "generico",
   "empresa_sede": "",
   "origen_alta": "gesruta-clavo",
-  "_nota": "Punto de distribucion de CLAVO (FRIGOS). Codigo 9735 de la pantalla de Gesruta (06/11). Faltan por dar de alta el resto de la red CLAVO (Castro Urdiales, Torija, Colmenar, Valdemoro, Quer, etc.) con sus codigos de Gesruta."
+  "_nota": "Punto de distribucion de CLAVO (FRIGOS). Codigo 9735 de la pantalla de Gesruta (06/11). El resto de la red CLAVO que falte se da de alta aqui tomando el codigo de datos/gesruta/puntos-geograficos-2026-08-27.csv (la base de destinos de Gesruta)."
+ },
+ {
+  "id_punto": "CASTR",
+  "nombre_canonico": "CASTRO URDIALES",
+  "alias": "",
+  "municipio": "",
+  "provincia": "",
+  "pais": "",
+  "tipo": "generico",
+  "empresa_sede": "",
+  "origen_alta": "gesruta-clavo",
+  "_nota": "Punto CLAVO (FRIGOS). Codigo CASTR de la base de Gesruta (puntos-geograficos-2026-08-27.csv). Dado de alta 06/11 para el juego de Jose Carlos Rodriguez."
  },
  {
   "id_punto": "9713",

@@ -67,6 +67,7 @@ CLAVO FOOD FACTORY (cliente `4`) se factura **por kilómetro**, no por TN. El al
 
 - `facturacion`: `"km"` — marca el modo (el bot lo trata distinto al porte por TN).
 - `sentido`: `"S"` (salida) | `"R"` (retorno) | `"U"` (ruta fija Reinosa) | `"C"` (cercanías).
+  Lo **deriva el armador** de origen/destino/km (no hace falta leerlo): determina la tarifa.
 - `lineas.porte`: para `S`/`R` → `{ um: "TN", cantidad: <km>, precio: <€/km>, concepto_esperado:
   "P", iva_esperado: "21" }`. **La `cantidad` son los KM** (Gesruta muestra la UM como `TN`, es
   cosmético); el **Importe lo calcula Gesruta** = cantidad × precio. Para `U`/`C` → importe fijo
