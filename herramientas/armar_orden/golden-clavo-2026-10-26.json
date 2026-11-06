@@ -1,0 +1,70 @@
+{
+  "_nota": "BLANCO del golden CLAVO (FRIGOS, por km). Verificado contra la pantalla de Gesruta que mostro Julio (viaje 00051053, Caldas->Torrejon 764 x 1,52 = 1.161,28, IVA 21). Lo reproduce el armador en modo km. factor de indexacion null = % de octubre pendiente (agregada).",
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "5132",
+        "verificar": {
+          "matricula": "5132LMC",
+          "remolque": "R9520BCV",
+          "chofer": "JOSE CARLOS RODRIGUEZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9735",
+            "esperado": "TORREJON"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "26/10/2026",
+          "llegada": "27/10/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "764,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.161,28",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "764",
+            "inicio": "671055",
+            "fin": "671819",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false,
+          "destinos": [
+            "Getafe",
+            "Torrejon",
+            "Torija"
+          ],
+          "campo2": "GETAF/TORRE/TORIJ"
+        }
+      ]
+    }
+  ]
+}

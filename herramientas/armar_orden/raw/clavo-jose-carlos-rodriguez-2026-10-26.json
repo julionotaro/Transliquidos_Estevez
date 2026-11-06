@@ -1,0 +1,30 @@
+{
+  "_nota": "HECHOS CRUDOS de un tramo de CLAVO (FRIGOS), facturacion POR KM. Juego real tractora 5132-LMC, chofer Jose Carlos Rodriguez, 26/10/2026. Tramo Caldas de Reis -> Getafe/Torrejon/Torija (multi-reparto; Destino=ultimo=Torrejon, Campo2=todos). Es el tramo que Julio mostro cargado en Gesruta (viaje 00051053): porte P, cantidad=km, precio=EUR/km, 764 x 1,52 = 1.161,28, IVA 21, origen Caldas=1, destino Torrejon=9735. sentido S (salida). El km facturable (764) sale del odometro de la parte (671055->671819). Blanco del golden en herramientas/armar_orden/golden-clavo-2026-10-26.json.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-26",
+  "chofer": "JOSE CARLOS RODRIGUEZ",
+  "cabeza": "5132",
+  "viajes": [
+    {
+      "matricula": "5132LMC",
+      "remolque": "R9520BCV",
+      "albaranes": [
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "TORREJON",
+          "destinos": ["Getafe", "Torrejon", "Torija"],
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "26/10/2026",
+          "llegada": "27/10/2026",
+          "sentido": "S",
+          "km_facturable": 764,
+          "km_inicio": 671055,
+          "km_fin": 671819,
+          "km_vacio": 0
+        }
+      ]
+    }
+  ]
+}

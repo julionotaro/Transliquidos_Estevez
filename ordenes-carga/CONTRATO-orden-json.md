@@ -60,6 +60,27 @@ pantalla. Este archivo es el "contrato" entre las dos. Confirmado con Julio 2026
   **no se abre Líneas**, el albarán queda **Pedido** (verde). Igual que `tarifa_pendiente` a efectos
   de no cargar líneas.
 
+## Albarán CLAVO (FRIGOS) — facturación POR KM (Julio 2026-11-06)
+
+CLAVO FOOD FACTORY (cliente `4`) se factura **por kilómetro**, no por TN. El albarán trae
+`facturacion: "km"` y estos campos propios (detalle en `docs/cliente-CLAVO-frigos.md`):
+
+- `facturacion`: `"km"` — marca el modo (el bot lo trata distinto al porte por TN).
+- `sentido`: `"S"` (salida) | `"R"` (retorno) | `"U"` (ruta fija Reinosa) | `"C"` (cercanías).
+- `lineas.porte`: para `S`/`R` → `{ um: "TN", cantidad: <km>, precio: <€/km>, concepto_esperado:
+  "P", iva_esperado: "21" }`. **La `cantidad` son los KM** (Gesruta muestra la UM como `TN`, es
+  cosmético); el **Importe lo calcula Gesruta** = cantidad × precio. Para `U`/`C` → importe fijo
+  (`um: "UN"`, `cantidad: "1"`, `precio: <fijo>`).
+- `lineas.indexacion`: **agregada como FORESA** → `{ concepto: "G", cantidad: <importe del porte>,
+  factor: <% mensual|null>, cargar: false }`. `cargar:false` ⇒ el bot **NO** carga la línea por
+  albarán; la indexación se cierra en facturación. `factor:null` = el % del mes aún no se sabe.
+- `destino`: el **ÚLTIMO** destino (por código). `campo2`: string con **todos** los destinos
+  abreviados (≤19 car.) → va al campo **Campo2** de Gesruta. `destinos`: la lista completa (origen
+  del `campo2`, para verificar). CLAVO **NO** lleva línea `reparto`/`REP`.
+- `km`: 1 apunte por viaje → `{ inicio, fin, carga, vacio }` (`carga` = km total con carga = la
+  `cantidad` del porte). Es el formulario **Kilómetros** de Gesruta.
+- THEC (empresa `"THEC"`) → modelo PROVE en la cabecera (igual que los demás; ver abajo).
+
 ## Conducta resiliente del bot (Julio 2026-11-03; aclarado 2026-11-05)
 
 La resiliencia opera a **nivel de línea/dato**, NO a nivel de los datos básicos del viaje. Hay que

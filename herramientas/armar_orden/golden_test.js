@@ -16,6 +16,7 @@ var ROOT = require('./lib/datos.js').ROOT;
 
 function raw(f) { return path.join(__dirname, 'raw', f); }
 function blanco(rel) { return path.join(ROOT, 'ordenes-carga/ordenes', rel, 'orden.json'); }
+function fixture(f) { return path.join(__dirname, f); } // blanco fuera de ordenes/ (no exige ficha)
 
 // Casos: raw de entrada -> orden.json hecho a mano (blanco).
 var CASOS = [
@@ -56,6 +57,13 @@ var CASOS = [
     // Gaps CERRADOS el 2026-11-02: idx FORESA-BRESFOR 16-31/10 = 0,1597 (suplemento
     // actualizado; la orden a mano se corrigio de 0,1664) y QUIMIDROGA Miranda->Braga
     // 61,65 (tarifas-confirmadas-julio.json). Ya no hay gaps: debe empatar entero.
+  },
+  {
+    nombre: 'clavo-jose-carlos-rodriguez 2026-10-26 (CLAVO FRIGOS: facturacion POR KM + idx agregada)',
+    raw: raw('clavo-jose-carlos-rodriguez-2026-10-26.json'),
+    blanco: fixture('golden-clavo-2026-10-26.json'),
+    // Verificado contra la pantalla de Gesruta de Julio: Caldas->Torrejon, 764 x 1,52 =
+    // 1.161,28, concepto P, IVA 21, origen 1 / destino 9735. factor idx null = % oct pendiente.
   },
 ];
 

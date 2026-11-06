@@ -1,0 +1,18 @@
+{
+  "_nota": "Tarifas de CLAVO FOOD FACTORY (FRIGOS), facturacion POR KM (unico cliente asi). El armador resuelve la tarifa por SENTIDO (columna L del Excel: S/R/U/C) y MES de carga -cambian durante el anio; manda la vigente-. Importe = km con carga x EUR/km (S=salida, R=retorno) o importe FIJO (U=Tordesillas-Reinosa, C=cercanias). Indexacion AGREGADA como FORESA: linea con cargar:false, se cierra en facturacion, concepto G (nacional); factor = indexacion_pct del mes. Valores confirmados por Julio (pantallas Gesruta + solapas del Excel FRIGOS, 06/11/2026). Ver docs/cliente-CLAVO-frigos.md.",
+  "cliente": "CLAVO FOOD FACTORY, S.A.",
+  "codigo_gesruta": "4",
+  "concepto": "P",
+  "iva": "21",
+  "idx_concepto": "G",
+  "unidad": "KM",
+  "tarifas_km": {
+    "2026-01": { "S": 1.48, "R": 1.27, "cercanias": 206, "reinosa": 306 },
+    "2026-10": { "S": 1.52, "R": 1.31, "cercanias": 212, "reinosa": 315 }
+  },
+  "indexacion_pct": {
+    "2026-08": 0.0766,
+    "2026-09": 0.1370
+  },
+  "_pendiente": "Faltan los meses intermedios de tarifas_km (feb-sep) y el indexacion_pct de octubre (Julio lo consigue). Un mes sin tarifa -> tarifa_pendiente (resiliencia). Un mes sin idx_pct -> factor de indexacion vacio (se cierra en facturacion)."
+}

@@ -154,6 +154,119 @@ function esIdxAcumulada(razonSocial, origenCanon, destinoCanon) {
   });
 }
 
+// ---------- CLAVO FOOD FACTORY (FRIGOS): facturacion POR KM ----------
+// Modelo distinto a los clientes quimicos (ver docs/cliente-CLAVO-frigos.md):
+// importe = km con carga x EUR/km (sentido S=salida / R=retorno) o importe FIJO
+// (U=Tordesillas-Reinosa, C=cercanias). Concepto P / IVA 21 (CLAVO es espanol).
+// Indexacion AGREGADA como FORESA (cargar:false, se cierra en facturacion),
+// concepto G, factor = % mensual de CLAVO. La tarifa la RESUELVE el armador por
+// sentido + mes (tarifas-clavo.json); NO se teclea del talon.
+function mesDeFecha(fechaDDMMYYYY) {
+  var iso = fechaISO(fechaDDMMYYYY); // YYYY-MM-DD
+  return iso ? iso.slice(0, 7) : null; // YYYY-MM
+}
+
+// Campo2 de Gesruta: todos los destinos de un multi-reparto, abreviados, <=19
+// caracteres para que entren en la factura (regla Julio 06/11).
+function abreviarDestinos(destinos, maxLen) {
+  if (!destinos || !destinos.length) { return null; }
+  var abv = destinos.map(function (d) {
+    var s = cruce.norm(d).replace(/[^A-Z0-9 ]/g, '').trim();
+    return s.length > 5 ? s.slice(0, 5) : s;
+  });
+  var out = abv.join('/');
+  return (out.length > maxLen) ? out.slice(0, maxLen) : out;
+}
+
+function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNom, deps, avisos, duoSec) {
+  var clavo = deps.clavo;
+  var mes = mesDeFecha(raw.salida);
+  var sentido = String(raw.sentido || '').toUpperCase();
+  var tarMes = (clavo.tarifas_km && clavo.tarifas_km[mes]) || null;
+
+  // km con carga: preferir km_facturable; si no, odometro fin - inicio.
+  var km = null;
+  if (typeof raw.km_facturable === 'number') { km = raw.km_facturable; }
+  else if (typeof raw.km_inicio === 'number' && typeof raw.km_fin === 'number') { km = raw.km_fin - raw.km_inicio; }
+
+  // porte + importe segun sentido
+  var importe = null;
+  var porte;
+  if (sentido === 'S' || sentido === 'R') {
+    var precioKm = tarMes ? tarMes[sentido] : null;
+    if (precioKm == null) { avisos.push('[' + ctx + '] TARIFA PENDIENTE: CLAVO sin EUR/km para sentido ' + sentido + ' en ' + mes); }
+    if (km != null && precioKm != null) { importe = km * precioKm; }
+    porte = {
+      um: 'TN', // Gesruta muestra TN aunque el numero sea KM (cosmetico)
+      cantidad: (km != null) ? fmt(km, 3) : null,
+      precio: (precioKm != null) ? fmt(precioKm, 4) : null,
+      concepto_esperado: clavo.concepto,
+      iva_esperado: clavo.iva,
+    };
+  } else if (sentido === 'U' || sentido === 'C') {
+    var fijo = tarMes ? (sentido === 'U' ? tarMes.reinosa : tarMes.cercanias) : null;
+    if (fijo == null) { avisos.push('[' + ctx + '] TARIFA PENDIENTE: CLAVO sin importe fijo (' + sentido + ') en ' + mes); }
+    importe = fijo;
+    porte = {
+      um: 'UN', cantidad: '1',
+      precio: (fijo != null) ? fmt(fijo, 2) : null,
+      concepto_esperado: clavo.concepto,
+      iva_esperado: clavo.iva,
+    };
+    avisos.push('[' + ctx + '] CLAVO sentido ' + sentido + ' (importe fijo): confirmar como se entra en Gesruta (um/cantidad/precio).');
+  } else {
+    avisos.push('[' + ctx + '] CLAVO sin sentido S/R/U/C -> no se resuelve la tarifa (revisar)');
+    porte = { um: 'TN', cantidad: (km != null) ? fmt(km, 3) : null, precio: null, concepto_esperado: clavo.concepto, iva_esperado: clavo.iva };
+  }
+  var tarifaPendiente = (porte.precio === null);
+
+  // INDEXACION AGREGADA (como FORESA): linea con cargar:false, concepto G, base = importe del porte,
+  // factor = % mensual de CLAVO (si falta el mes -> factor null, se cierra en facturacion).
+  var idxPct = (clavo.indexacion_pct && clavo.indexacion_pct[mes] != null) ? clavo.indexacion_pct[mes] : null;
+  var indexacion = {
+    concepto: clavo.idx_concepto,
+    cantidad: (importe != null) ? fmt(importe, 2) : null,
+    factor: (idxPct != null) ? fmt(idxPct, 4) : null,
+    cargar: false,
+  };
+  if (idxPct == null) { avisos.push('[' + ctx + '] CLAVO indexacion: falta el % del mes ' + mes + ' (agregada, se cierra en facturacion) -> factor vacio'); }
+
+  // KM (form Kilometros): 1 apunte por viaje, km carga = km total con carga, km vacio.
+  var kmBlock;
+  if (raw.km_pendiente || km == null) {
+    kmBlock = { pendiente: true };
+    avisos.push('[' + ctx + '] km PENDIENTE (no leido en la ficha/parte)');
+  } else {
+    kmBlock = { carga: String(km) };
+    if (typeof raw.km_inicio === 'number') { kmBlock.inicio = String(raw.km_inicio); }
+    if (typeof raw.km_fin === 'number') { kmBlock.fin = String(raw.km_fin); }
+    if (typeof raw.km_vacio === 'number') { kmBlock.vacio = String(raw.km_vacio); }
+    if (duoSec) { kmBlock.cargar = false; }
+  }
+
+  var alb = {
+    cliente: { codigo: codCli.codigo, esperado: esperadoCli },
+    origen: { codigo: po.codigo, esperado: po.esperado },
+    destino: { codigo: pd.codigo, esperado: pd.esperado },
+    carga: { codigo: codCarga, esperado: cargaNom },
+    referencia: String(raw.referencia != null ? raw.referencia : ''),
+    salida: raw.salida,
+    llegada: raw.llegada,
+    facturacion: 'km',
+    sentido: sentido || null,
+    lineas: { porte: porte, indexacion: indexacion },
+    km: kmBlock,
+    tarifa_pendiente: tarifaPendiente,
+  };
+  // Multi-reparto: Destino lleva el ultimo destino (ya viene en destino_lit); Campo2 lleva TODOS
+  // los destinos abreviados (<=19). CLAVO NO lleva linea REP (el multi-destino ya esta en los km).
+  if (raw.destinos && raw.destinos.length) {
+    alb.destinos = raw.destinos;
+    alb.campo2 = abreviarDestinos(raw.destinos, 19);
+  }
+  return alb;
+}
+
 // ---------- armado de un albaran ----------
 function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
   var ctx = (raw.referencia || '?');
@@ -171,6 +284,17 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
   // material
   var cargaNom = String(raw.carga_lit || '').trim().toUpperCase();
   var codCarga = deps.materiales[cargaNom] || null;
+
+  // CLAVO FOOD FACTORY (FRIGOS) -> facturacion POR KM (modelo aparte). Disparador: cliente
+  // resuelve a codigo 4, o el raw declara facturacion:'km'. Ver armarAlbaranKm.
+  var esClavo = (codCli.codigo === '4') || (raw.facturacion === 'km');
+  if (esClavo) {
+    if (codCli.motivo) { avisos.push('[' + ctx + '] cod cliente: ' + codCli.motivo); }
+    if (!po.ok) { avisos.push('[' + ctx + '] origen: ' + po.aviso); }
+    if (!pd.ok) { avisos.push('[' + ctx + '] destino: ' + pd.aviso); }
+    if (!codCarga) { avisos.push('[' + ctx + '] carga sin codigo: "' + raw.carga_lit + '"'); }
+    return armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNom, deps, avisos, duoSec);
+  }
 
   // PRECIO FIJO del documento (HELM/BALTRANSA/FORESTAL): um=UN, cantidad 1. Lo leo yo
   // de la OC y lo paso en el raw; no sale de tarifario.
@@ -358,6 +482,7 @@ function cargarDeps() {
     confirmadas: datos.cargarTarifasConfirmadas(),
     rnm: datos.cargarTarifarioRNM(),
     flota: datos.cargarFlota(),
+    clavo: datos.cargarClavo(),
   };
 }
 

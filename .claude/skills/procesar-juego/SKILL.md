@@ -53,6 +53,27 @@ leyendo la orden.json. Vos NO cargás en Gesruta.
   con cantidad 1 e importe 0.
 - **Viaje nuevo si cambia tractora o remolque** (Gesruta necesita otro viaje para las matrículas).
 
+## 2 bis. Cliente CLAVO (FRIGOS) — facturación POR KM (rama aparte)
+
+Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**: se factura
+**por kilómetro**, no por TN. Guía completa en **`docs/cliente-CLAVO-frigos.md`**. Resumen:
+
+- **Papeles:** **parte/hoja de ruta** (con el **odómetro** inicio/fin de cada tramo + dietas) +
+  **talones de porte** TLE (1 por tramo, con `K ≤ km` y `km × €/km`) + albaranes de terceros (prueba).
+- **Por tramo extraé:** origen, **destino = último** + la **lista de todos** los destinos (multi-reparto),
+  carga (CONGELADO/PAN RALLADO/…), **odómetro inicio/fin**, km vacío, **sentido** `S`/`R`/`U`/`C`
+  (salida / retorno / Reinosa fijo / cercanías), fecha carga/descarga.
+- **La tarifa NO se teclea del talón:** la resuelve el armador por sentido + mes
+  (`catalogo/tarifas-clavo.json`). El `raw` del tramo lleva: `facturacion:"km"` (o deja que el armador
+  lo detecte por cliente 4), `sentido`, `km_facturable` (= odómetro fin − inicio), `destino_lit`
+  (último), `destinos` (lista), `km_inicio`/`km_fin`/`km_vacio`, `carga_lit`, `salida`/`llegada`.
+- **Dos salidas** (flujo objetivo): la **orden.json** (armador, modo km) **y** las **filas del Excel
+  FRIGOS** para pegar: `node herramientas/armar_orden/excel_frigos.js <orden.json>` (TSV, columnas A–Q).
+- **Dietas, palets, gasoil, AdBlue, otros gastos:** control interno del Excel (de la parte); **NO** se
+  cargan a Gesruta por ahora.
+- **Pendiente:** el **% de índice del mes** (agregado, se cierra en facturación) y el **alta de puntos
+  CLAVO** que falten en `puntos-alta.json` con su código Gesruta.
+
 ## 3. Generar la salida
 - **orden.json** (ver CONTRATO) en `ordenes-carga/ordenes/<AAAA-MM>/<chofer-slug>/<AAAA-MM-DD>/`
   (mes y fecha = primera fecha de carga), junto a la **ficha** copiada ahí (`ficha_<ts>.pdf`).

@@ -85,6 +85,11 @@ function cargarTarifasConfirmadas() {
   return (j.tarifas || []).filter(function (t) { return t.confirmado === true; });
 }
 
+/** Tarifas de CLAVO (FRIGOS): facturacion POR KM. {concepto, iva, idx_concepto, tarifas_km:{mes:{S,R,cercanias,reinosa}}, indexacion_pct:{mes:pct}}. */
+function cargarClavo() {
+  return JSON.parse(fs.readFileSync(p('catalogo/tarifas-clavo.json'), 'utf8'));
+}
+
 /** Tarifario propio de RNM: {origen, destino, eur_viaje, eur_tn}. RNM factura por EUR/TN. */
 function cargarTarifarioRNM() {
   var txt = fs.readFileSync(p('datos/gesruta/tarifarios/tarifario-RNM-2026.csv'), 'utf8');
@@ -104,4 +109,5 @@ module.exports = {
   cargarTarifasConfirmadas: cargarTarifasConfirmadas,
   cargarTarifarioRNM: cargarTarifarioRNM,
   cargarFlota: cargarFlota,
+  cargarClavo: cargarClavo,
 };

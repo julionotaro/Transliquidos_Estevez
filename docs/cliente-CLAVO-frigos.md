@@ -173,20 +173,34 @@ albarán, Destino=último + Campo2 abreviado ≤19; indexación = agregada tipo 
 cercanías/fijos de octubre = 212/315.)*
 
 1. **% de indexación de OCTUBRE 2026** — Julio lo tiene que conseguir (ago 0,0766
-   · sep 0,1370). Sin él, la línea de índice del período de octubre queda pendiente.
-2. **Armador:** falta el **modo €/km** (hoy el pipeline es €/TN + precio fijo) y la
-   **indexación agregada mensual** de CLAVO (reusar la mecánica agregada de FORESA).
-3. **Agrupación de viajes** en Gesruta: confirmar si es un viaje por tramo o varios
+   · sep 0,1370). Sin él, la línea de índice sale con `factor:null` (se cierra en facturación).
+2. **Agrupación de viajes** en Gesruta: confirmar si es un viaje por tramo o varios
    albaranes por viaje/tractora-día (la pantalla mostró 1 albarán por viaje).
+3. **Alta de puntos CLAVO** que falten en `puntos-alta.json` con su código Gesruta
+   (hoy sólo TORREJON=9735; faltan Castro Urdiales, Torija, Colmenar, Valdemoro, Quer…).
 4. **THEC 9400 LLC (Manuel Eirín):** alta en `flota.json` con su remolque cuando
    llegue un juego suyo.
+5. **Importe fijo U/C** (Reinosa/cercanías): confirmar cómo se entra en Gesruta
+   (hoy el armador lo emite como `um:UN, cantidad:1, precio:<fijo>` y lo marca para verificar).
+
+### Implementado (06/11)
+- **Modo €/km en el armador** (`herramientas/armar_orden/armar_orden.js`, rama CLAVO) +
+  catálogo `catalogo/tarifas-clavo.json` + punto TORREJON=9735. **Golden test** del ejemplo
+  (Caldas→Torrejón 764 × 1,52 = 1.161,28) en verde.
+- **Generador de filas del Excel FRIGOS:** `herramientas/armar_orden/excel_frigos.js`
+  (`node excel_frigos.js <orden.json>` → TSV columnas A–Q para pegar).
 
 ---
 
 ## 9. Dónde vive cada cosa
 
 - Código de cliente: `catalogo/clientes-gesruta.js` (CLAVO = 4).
-- Tarifas por corredor (unidad KM): `catalogo/rutas-por-cliente.json` (cliente 4).
-- Regla de odómetro → km carga/vacío: `catalogo/correcciones-julio.json`
-  (campo "kilometros/odometro", 16/10) y la regla CLAVO (06/11).
+- **Tarifas €/km + índice mensual:** `catalogo/tarifas-clavo.json` (las resuelve el armador).
+- Tarifas por corredor (histórico, unidad KM): `catalogo/rutas-por-cliente.json` (cliente 4).
+- **Modo €/km (armador):** `herramientas/armar_orden/armar_orden.js` (rama CLAVO, `armarAlbaranKm`).
+- **Filas del Excel FRIGOS:** `herramientas/armar_orden/excel_frigos.js`.
+- **Golden test:** `herramientas/armar_orden/golden_test.js` (caso CLAVO) + blanco
+  `golden-clavo-2026-10-26.json` + raw `raw/clavo-jose-carlos-rodriguez-2026-10-26.json`.
+- Contrato de la orden (campos km): `ordenes-carga/CONTRATO-orden-json.md`.
+- Regla de odómetro → km carga/vacío: `catalogo/correcciones-julio.json` y la regla CLAVO (06/11).
 - Modelo PROVE (THEC): regla "empresa/cabecera (PROVE)" en `correcciones-julio.json`.

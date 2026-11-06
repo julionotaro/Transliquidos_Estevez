@@ -22,6 +22,18 @@
   "origen_alta": "gesruta-usado"
  },
  {
+  "id_punto": "9735",
+  "nombre_canonico": "TORREJON",
+  "alias": "TORREJON DE ARDOZ",
+  "municipio": "",
+  "provincia": "MADRID",
+  "pais": "",
+  "tipo": "generico",
+  "empresa_sede": "",
+  "origen_alta": "gesruta-clavo",
+  "_nota": "Punto de distribucion de CLAVO (FRIGOS). Codigo 9735 de la pantalla de Gesruta (06/11). Faltan por dar de alta el resto de la red CLAVO (Castro Urdiales, Torija, Colmenar, Valdemoro, Quer, etc.) con sus codigos de Gesruta."
+ },
+ {
   "id_punto": "9713",
   "nombre_canonico": "ALJUSTREL (PT)",
   "alias": "",
