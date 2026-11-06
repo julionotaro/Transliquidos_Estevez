@@ -67,6 +67,33 @@ matrícula/chófer no cargables, §1). Un dato puntual faltante **nunca** aborta
 
 ---
 
+## CLAVO (FRIGOS) — carga POR KM (cliente `4`)
+
+Cuando el albarán trae **`facturacion:"km"`** (cliente CLAVO), la carga es distinta. Todos los
+albaranes de la ficha van en **UN viaje** de Gesruta (una ficha = un viaje con N albaranes).
+
+1. **Entrada de Viajes (cabecera):** igual que siempre — cabeza (código tractora) / matrícula /
+   remolque / chófer. Si es THEC → **PROVE** (ver arriba). Empresa siempre **TLE (0006)**.
+2. **Entrada de Albaranes — línea de porte** (`lineas.porte`):
+   - Para `S`/`R`: **Cdgo `P` (PORTES NACIONALES)**, **Cantidad = los KM** (`cantidad`), **UM `TN`**
+     (Gesruta lo muestra así aunque sea km — es cosmético), **Precio = €/km** (`precio`), **IVA 21**.
+     El **Importe lo calcula Gesruta** (cantidad × precio). NO teclear el importe.
+   - Para `U`/`C` (importe fijo Reinosa/cercanías): **`um:"UN"`, Cantidad `1`, Precio = el fijo**.
+   - **Origen y Destino por código.**
+3. **Multi-punto → Campo1:** si el albarán trae **`campo1`**, escribirlo en el campo **Campo1** de
+   Gesruta (son todos los puntos del lado múltiple, abreviados). El campo **Origen** lleva el **1er**
+   punto y **Destino** el **último** (ya vienen resueltos por código). Las **Cargas/Descargas** se
+   cargan con sus puntos y fechas.
+4. **Indexación `cargar:false`** (CLAVO es **agregada**, como FORESA): **NO** cargar la línea de
+   indexación por albarán — se cierra en facturación. (Si `factor` viene vacío, igual: no se carga.)
+5. **Kilómetros:** **1 apunte por viaje** con **Km carga = `km.carga`** (el total) y **Km vacío =
+   `km.vacio`**. (El `km.carga` coincide con la Cantidad del porte.)
+6. **NO cargar** dietas, palets, gasoil, AdBlue ni otros gastos (son control interno del Excel).
+
+Todo lo demás (resiliencia por dato faltante, captura de Nº de viaje/albarán, `resultado.json`) es igual.
+
+---
+
 ## Qué devolver (`resultado.json`, uno por juego)
 Por cada albarán: `{referencia, estado, nro_viaje_gesruta, nro_albaran_gesruta, pendiente_de}` donde
 `estado` ∈ `CARGADO` | `PEDIDO`, y `pendiente_de` dice qué falta (p. ej. `"destino"`, `"tarifa"`,

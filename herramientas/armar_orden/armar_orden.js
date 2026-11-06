@@ -279,12 +279,20 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
     km: kmBlock,
     tarifa_pendiente: tarifaPendiente,
   };
-  // Multi-reparto: Destino lleva el ultimo destino (ya viene en destino_lit); Campo2 lleva TODOS
-  // los destinos abreviados (<=19). CLAVO NO lleva linea REP (el multi-destino ya esta en los km).
-  if (raw.destinos && raw.destinos.length) {
+  // MULTI-PUNTO -> Campo1 de Gesruta (Julio 06/11). Un tramo es multiple en UN solo lado:
+  //  - varias CARGAS: Origen = 1er punto (viene en origen_lit), Campo1 = todos los origenes.
+  //  - varios REPARTOS: Destino = ultimo punto (viene en destino_lit), Campo1 = todos los destinos.
+  // Campo1 = la lista completa abreviada (<=19 car. para que entre en la factura). CLAVO NO lleva
+  // linea REP (el multi-destino ya esta en los km). Se guardan tambien las listas (origenes/destinos)
+  // para la columna Origen/Destino del Excel (nombres completos unidos con '+').
+  var multi = null;
+  if (raw.origenes && raw.origenes.length > 1) { alb.origenes = raw.origenes; multi = raw.origenes; }
+  if (raw.destinos && raw.destinos.length > 1) {
     alb.destinos = raw.destinos;
-    alb.campo2 = abreviarDestinos(raw.destinos, 19);
+    if (!multi) { multi = raw.destinos; }
+    else { avisos.push('[' + ctx + '] CLAVO: multi-origen Y multi-destino en el mismo albaran -> Campo1 solo admite una lista, revisar'); }
   }
+  if (multi) { alb.campo1 = abreviarDestinos(multi, 19); }
   return alb;
 }
 

@@ -60,21 +60,26 @@ Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**
 
 - **Papeles:** **parte/hoja de ruta** (con el **odómetro** inicio/fin de cada tramo + dietas) +
   **talones de porte** TLE (1 por tramo, con `K ≤ km` y `km × €/km`) + albaranes de terceros (prueba).
-- **Por tramo extraé:** origen, **destino = último** + la **lista de todos** los destinos (multi-reparto),
-  carga (CONGELADO/PAN RALLADO/…), **odómetro inicio/fin**, km vacío, **sentido** `S`/`R`/`U`/`C`
-  (salida / retorno / Reinosa fijo / cercanías), fecha carga/descarga.
+- **Por tramo extraé:** origen (**1er punto** si hay varias cargas) + lista de orígenes; **destino =
+  último** + lista de destinos (si hay varios repartos) — el lado múltiple va a **Campo1**; carga
+  (CONGELADO/PAN RALLADO/…), **odómetro inicio/fin**, km vacío, fecha carga/descarga. El **sentido lo
+  deriva el armador** (S/R/U/C de origen/destino/km); no se lee.
 - **La tarifa NO se teclea del talón:** la resuelve el armador por sentido + mes
   (`catalogo/tarifas-clavo.json`); y el **sentido lo DERIVA solo** de origen/destino/km (no hace falta
   declararlo). El `raw` del tramo lleva: `cliente_lit` (CLAVO → el armador detecta modo km),
-  `origen_lit`, `destino_lit` (último) + `destinos` (lista, para Campo2), `km_facturable`
+  `origen_lit`, `destino_lit` (último) + `destinos`/`origenes` (listas, para Campo1 y la col Origen/Destino del Excel), `km_facturable`
   (= odómetro fin − inicio), `km_inicio`/`km_fin`/`km_vacio`, `carga_lit`, `salida`/`llegada`.
   Todos los albaranes de la ficha van en **UN viaje** (una ficha = un viaje de Gesruta).
 - **Dos salidas** (flujo objetivo): la **orden.json** (armador, modo km) **y** las **filas del Excel
   FRIGOS** para pegar: `node herramientas/armar_orden/excel_frigos.js <orden.json>` (TSV, columnas A–Q).
 - **Dietas, palets, gasoil, AdBlue, otros gastos:** control interno del Excel (de la parte); **NO** se
   cargan a Gesruta por ahora.
-- **Pendiente:** el **% de índice del mes** (agregado, se cierra en facturación) y el **alta de puntos
-  CLAVO** que falten en `puntos-alta.json` con su código Gesruta.
+- **Puntos:** el resolver usa la **base completa de Gesruta** (`catalogo/puntos-gesruta-base.json`)
+  por debajo de los curados → **no hay que dar de alta a mano** (salvo puntos agregados a Gesruta
+  después del export). **Pendiente:** el **% de índice del mes** (agregado, se cierra en facturación).
+- **Archivado (igual que los químicos):** cliente `CLAVO`. La **parte/ficha** del chófer va a
+  `ordenes/`; el **talón + sus albaranes de entrega** a `procesados/CLAVO/<AAAA-MM>/` en **un PDF por
+  tramo** (ver `docs/nomenclatura-archivos.md`, sección CLAVO).
 
 ## 3. Generar la salida
 - **orden.json** (ver CONTRATO) en `ordenes-carga/ordenes/<AAAA-MM>/<chofer-slug>/<AAAA-MM-DD>/`

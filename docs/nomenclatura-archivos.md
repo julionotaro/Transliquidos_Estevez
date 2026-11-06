@@ -59,6 +59,18 @@ Archivos:
 - **NUNCA** nombrar por el timestamp del escaneo. Un archivo con nombre de timestamp dentro
   de `procesados/<CLIENTE>/` es señal de documento SIN procesar mal archivado.
 
+### CLAVO (FRIGOS) — mismo esquema (Julio 06/11)
+
+CLAVO usa **el mismo procedimiento de archivado que los químicos**: cliente `CLAVO`, carpeta
+`procesados/CLAVO/<AAAA-MM>/`. Dos buckets:
+
+- **Fichas de chóferes** (la **parte** / hoja de ruta): van a **`ordenes/`** (como siempre), NO a
+  procesados — son compartidas por todos los tramos de ese chófer/semana.
+- **Talón + albaranes:** por cada tramo, **UN PDF** con el **talón de porte TLE + sus albaranes de
+  entrega** juntos (equivalente a la OC + documentación de carga de los químicos). Como CLAVO **no
+  tiene referencia de facturación**, se nombra por el **Nº de albarán de Gesruta** (capturado al
+  cargar); si aún no se cargó, `<AAAA-MM-DD>-<destino>.pdf` provisional.
+
 ### Carpetas especiales en `procesados/`
 
 - **`_descartados/`**: juegos YA RESUELTOS que NO se procesan (duplicados o ya facturados).

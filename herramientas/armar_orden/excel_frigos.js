@@ -37,19 +37,25 @@ function filasDeOrden(orden) {
       var cant = numES(porte.cantidad);
       var prec = numES(porte.precio);
       var importe = (cant != null && prec != null) ? cant * prec : null;
-      // Destino (col G del Excel): como lo escribe Julio -> MAYUSCULAS, multi-destino unido con '+'.
-      var destinos = (a.destinos && a.destinos.length)
-        ? a.destinos.map(function (x) { return String(x).toUpperCase(); }).join('+')
-        : ((a.destino && a.destino.esperado) || '').toUpperCase();
+      // Origen (E) y Destino (G) del Excel: como lo escribe Julio -> MAYUSCULAS, y la lista
+      // multiple (varias cargas o varios repartos) unida con '+'.
+      function up(s) { return String(s || '').toUpperCase(); }
+      var origenTxt = (a.origenes && a.origenes.length)
+        ? a.origenes.map(up).join('+')
+        : up(a.origen && a.origen.esperado);
+      var nCarg = (a.origenes && a.origenes.length) ? a.origenes.length : 1;
+      var destinoTxt = (a.destinos && a.destinos.length)
+        ? a.destinos.map(up).join('+')
+        : up(a.destino && a.destino.esperado);
       var nRep = (a.destinos && a.destinos.length) ? a.destinos.length : 1;
       filas.push([
         emp,                                                    // A Emp (TLE / THEC)
         mat,                                                    // B Tractora
         a.salida || '',                                         // C Fecha carga
         a.llegada || '',                                        // D Fecha descarga
-        (a.origen && a.origen.esperado) || '',                  // E Origen
-        1,                                                      // F Nº Carg
-        destinos,                                               // G Destino (todos)
+        origenTxt,                                              // E Origen (todos si multi)
+        nCarg,                                                  // F Nº Carg
+        destinoTxt,                                             // G Destino (todos si multi)
         nRep,                                                   // H Nº Rep
         km.inicio != null ? km.inicio : '',                     // I Kms. carga (odometro inicio)
         km.fin != null ? km.fin : '',                           // J Kms. Descarga (odometro fin)

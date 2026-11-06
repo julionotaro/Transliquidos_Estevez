@@ -68,9 +68,10 @@ var CASOS = [
   {
     nombre: 'clavo-jose-carlos-rodriguez 2026-10-26 COMPLETO (8 tramos, sentido derivado, idx 9,15% prueba)',
     raw: raw('clavo-jose-carlos-rodriguez-2026-10-26-completo.json'),
-    blanco: blanco('2026-10/jose-carlos-rodriguez/2026-10-26'),
+    blanco: fixture('golden-clavo-2026-10-26-completo.json'),
     // Juego entero (viaje Gesruta 00051053). Total porte = 3.802,26 = Ingr/Bnf de la
     // pantalla. Sentido S/R/U/C DERIVADO (formula columna L). idx octubre 9,15% (prueba).
+    // Es solo fixture: el juego es PRUEBA, no se archiva ni registra (Julio 06/11).
   },
 ];
 
