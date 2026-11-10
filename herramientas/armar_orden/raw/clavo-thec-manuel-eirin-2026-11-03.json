@@ -1,0 +1,24 @@
+{
+  "_nota": "SINTETICO (regresion): viaje de CLAVO con chofer de THEC (Manuel Eirin, 9400LLC). Verifica la correccion de Julio 10/11: CLAVO + THEC se carga en el PERFIL THEC (empresa THEC, cabecera normal, SIN proveedor/PROVE, km normales). No es un juego real; es solo para el golden. Aunque el raw traiga 'proveedor', el armador debe ignorarlo para CLAVO y forzar empresa THEC.",
+  "empresa": "THEC",
+  "chofer": "MANUEL EIRIN",
+  "cabeza": "9400",
+  "proveedor": "5",
+  "viajes": [
+    {
+      "matricula": "9400LLC",
+      "remolque": "R0000AAA",
+      "albaranes": [
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "CALDAS DE REIS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "03/11/2026", "llegada": "04/11/2026",
+          "km_facturable": 451, "km_inicio": 100000, "km_fin": 100451, "km_vacio": 0
+        }
+      ]
+    }
+  ]
+}

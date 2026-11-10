@@ -73,6 +73,13 @@ var CASOS = [
     // pantalla. Sentido S/R/U/C DERIVADO (formula columna L). idx octubre 9,15% (prueba).
     // Es solo fixture: el juego es PRUEBA, no se archiva ni registra (Julio 06/11).
   },
+  {
+    nombre: 'clavo-thec-manuel-eirin 2026-11-03 (CLAVO + THEC -> perfil THEC, NO PROVE) [sintetico]',
+    raw: raw('clavo-thec-manuel-eirin-2026-11-03.json'),
+    blanco: fixture('golden-clavo-thec-2026-11-03.json'),
+    // Correccion Julio 10/11: CLAVO con chofer THEC -> empresa THEC + cabecera normal (cabeza
+    // 9400, sin PROVE/proveedor), km normales. Aunque el raw traiga proveedor, el armador lo ignora.
+  },
 ];
 
 // Quita recursivamente las claves que empiezan con "_" (anotaciones).

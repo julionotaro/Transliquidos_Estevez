@@ -1,0 +1,64 @@
+{
+  "_nota": "BLANCO (sintetico) CLAVO + THEC -> perfil THEC. empresa THEC, cabeza 9400 (normal), sin proveedor, km normales. Correccion Julio 10/11.",
+  "empresa": "THEC",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "9400",
+        "verificar": {
+          "matricula": "9400LLC",
+          "remolque": "R0000AAA",
+          "chofer": "MANUEL EIRIN"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "03/11/2026",
+          "llegada": "04/11/2026",
+          "facturacion": "km",
+          "sentido": "R",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "451,000",
+              "precio": null,
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": null,
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "451",
+            "inicio": "100000",
+            "fin": "100451",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": true
+        }
+      ]
+    }
+  ]
+}

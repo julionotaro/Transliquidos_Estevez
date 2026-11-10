@@ -100,7 +100,7 @@ Empresa siempre **0006 TRANS. LIQUIDOS ESTÉVEZ** (TLE), incluido THEC (ver §6)
 - **Cabeza** = código de tractora (ej. `5132`) → **Matrícula** autocompleta
   (`5132LMC`). **Remolque** (`9520` → `R9520BCV`). **Chófer** por código
   (ej. `19` = JOSE CARLOS RODRIGUEZ).
-- THEC: ver §6 (PROVE).
+- THEC: ver §6 (perfil THEC, NO PROVE).
 
 ### 5.2 Entrada de Albaranes (la línea de porte)
 Una línea por albarán, **Estado `Pedido`**:
@@ -146,19 +146,24 @@ aún tiene que conseguirlo). En el armador se trataría como la agregada de FORE
 
 ---
 
-## 6. THEC (empresa HEC en el Excel) → modelo PROVE
+## 6. THEC (empresa HEC en el Excel) → perfil THEC de Gesruta (NO PROVE)
 
-Igual que ya definimos para THEC (confirmado Julio 06/11): el viaje de THEC se
-carga **en el perfil de TLE** (empresa 0006). En Entrada de Viajes: **Cabeza =
-`PROVE`**, matrícula de tractora **completa** tecleada, remolque **completo**
-tecleado, **Proveedor = `5`**. Km y costos de proveedor **vacíos**. De ahí, el/los
-albarán(es) igual que §5.2. Disparador: el tramo es de un camión THEC.
+**CORRECCIÓN Julio 10/11 (importante):** para **CLAVO**, un viaje con chófer de **THEC**
+**NO** usa el modelo PROVE. Se carga **en el perfil THEC de Gesruta**:
+- **empresa = THEC** (no TLE).
+- **cabecera NORMAL**: Cabeza = el **código de tractora** (no la palabra `PROVE`), matrícula,
+  remolque y chófer como siempre. **Sin** campo `proveedor`.
+- **km normales** (el formulario Kilómetros se carga igual que para TLE; no van vacíos).
+
+El modelo **PROVE** (empresa TLE, cabeza `PROVE`, proveedor `5`, km vacíos) sigue vigente **sólo
+para los clientes químicos**, no para CLAVO. En el armador: cuando el viaje es CLAVO y hay chófer
+THEC, fuerza `empresa:"THEC"` y cabecera normal (nunca PROVE).
 
 Tractoras vistas (de los bloques del Excel):
 - **5132LMC** → R9520BCV, José Carlos Rodríguez — TLE (propio).
 - **6124HZT** → Luis M. Triñanes — TLE (propio).
-- **9400 LLC** → Manuel Eirín — **THEC** (PROVE). *Pendiente de alta en
-  `flota.json` con su remolque cuando llegue un juego suyo.*
+- **9400 LLC** → Manuel Eirín — **THEC** (perfil THEC). *Pendiente de alta en `flota.json` (del
+  perfil THEC) con su remolque cuando llegue un juego suyo.*
 
 ---
 
@@ -209,4 +214,4 @@ Origen=1º carga+Campo1 y Destino=último reparto+Campo2 abreviados ≤19; index
   `golden-clavo-2026-10-26.json` + raw `raw/clavo-jose-carlos-rodriguez-2026-10-26.json`.
 - Contrato de la orden (campos km): `ordenes-carga/CONTRATO-orden-json.md`.
 - Regla de odómetro → km carga/vacío: `catalogo/correcciones-julio.json` y la regla CLAVO (06/11).
-- Modelo PROVE (THEC): regla "empresa/cabecera (PROVE)" en `correcciones-julio.json`.
+- THEC en CLAVO: perfil THEC (NO PROVE) — regla "facturacion por km" en `correcciones-julio.json` §6 del doc. PROVE queda solo para quimicos.

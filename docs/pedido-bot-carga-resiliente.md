@@ -73,7 +73,8 @@ Cuando el albarán trae **`facturacion:"km"`** (cliente CLAVO), la carga es dist
 albaranes de la ficha van en **UN viaje** de Gesruta (una ficha = un viaje con N albaranes).
 
 1. **Entrada de Viajes (cabecera):** igual que siempre — cabeza (código tractora) / matrícula /
-   remolque / chófer. Si es THEC → **PROVE** (ver arriba). Empresa siempre **TLE (0006)**.
+   remolque / chófer. Si el chófer es de **THEC** → **perfil THEC** (empresa **THEC**, cabecera
+   normal con el código de tractora, **sin** PROVE; la orden ya trae `empresa:"THEC"`). Si no, TLE (0006).
 2. **Entrada de Albaranes — línea de porte** (`lineas.porte`):
    - Para `S`/`R`: **Cdgo `P` (PORTES NACIONALES)**, **Cantidad = los KM** (`cantidad`), **UM `TN`**
      (Gesruta lo muestra así aunque sea km — es cosmético), **Precio = €/km** (`precio`), **IVA 21**.

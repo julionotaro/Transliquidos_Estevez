@@ -477,30 +477,37 @@ function armarOrden(raw, deps) {
   deps = deps || cargarDeps();
   var avisos = [];
   raw._deps_flota = deps.flota;
+  var esClavoOrden = false;
   var viajes = (raw.viajes || []).map(function (v) {
     var cab = resolverCabecera(raw, v, avisos);
+    var albaranes = (v.albaranes || []).map(function (a) { return armarAlbaran(a, cab.tipo, deps, avisos, !!v.duo_secundario); });
+    var esClavoViaje = albaranes.some(function (a) { return a.cliente && a.cliente.codigo === '4'; });
+    if (esClavoViaje) { esClavoOrden = true; }
     var cabecera = {
       cabeza: raw.cabeza,
       verificar: { matricula: v.matricula, remolque: cab.remolque, chofer: cab.chofer },
       tipo: cab.tipo,
     };
     if (v.duo_secundario) { cabecera.duo_secundario = true; }
-    // PROVEEDOR (ej THEC): el viaje se carga en el perfil de TLE (empresa SIGUE siendo TLE), pero en
-    // la pantalla de Entrada de Viajes la CABEZA lleva la palabra 'PROVE' (no el codigo de tractora),
-    // la matricula se digita completa, y se agrega el campo proveedor (THEC = '5'). Disparador: que el
-    // raw traiga 'proveedor'. KM: por defecto se dejan VACIOS (km_proveedor_vacio !== false).
-    if (raw.proveedor) {
+    // PROVEEDOR (ej THEC) en clientes NORMALES: el viaje se carga en el perfil de TLE (empresa SIGUE
+    // siendo TLE), pero en Entrada de Viajes la CABEZA lleva 'PROVE' (no el codigo de tractora), la
+    // matricula se digita completa y se agrega el campo proveedor (THEC = '5'); los KM van VACIOS.
+    // EXCEPCION CLAVO (Julio 10/11): un viaje de CLAVO con chofer de THEC NO usa PROVE -> se carga en
+    // el PERFIL THEC de Gesruta (empresa THEC, cabecera NORMAL con el codigo de tractora, km normales).
+    if (raw.proveedor && !esClavoViaje) {
       cabecera.cabeza = 'PROVE';
       cabecera.proveedor = String(raw.proveedor);
+      if (raw.km_proveedor_vacio !== false) { albaranes.forEach(function (al) { al.km = { cargar: false }; }); }
     }
-    var albaranes = (v.albaranes || []).map(function (a) { return armarAlbaran(a, cab.tipo, deps, avisos, !!v.duo_secundario); });
-    if (raw.proveedor && raw.km_proveedor_vacio !== false) { albaranes.forEach(function (al) { al.km = { cargar: false }; }); }
     return {
       cabecera: cabecera,
       albaranes: albaranes,
     };
   });
-  return { orden: { empresa: raw.empresa, viajes: viajes }, avisos: avisos };
+  // Empresa del orden: normalmente raw.empresa. CLAVO con chofer THEC -> perfil THEC (no PROVE).
+  var empresa = raw.empresa;
+  if (esClavoOrden && (raw.proveedor || raw.empresa === 'THEC')) { empresa = 'THEC'; }
+  return { orden: { empresa: empresa, viajes: viajes }, avisos: avisos };
 }
 
 function cargarDeps() {

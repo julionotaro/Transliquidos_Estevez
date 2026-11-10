@@ -82,7 +82,9 @@ CLAVO FOOD FACTORY (cliente `4`) se factura **por kilómetro**, no por TN. El al
   Excel, unidos con `+`). CLAVO **NO** lleva línea `reparto`/`REP`.
 - `km`: 1 apunte por viaje → `{ inicio, fin, carga, vacio }` (`carga` = km total con carga = la
   `cantidad` del porte). Es el formulario **Kilómetros** de Gesruta.
-- THEC (empresa `"THEC"`) → modelo PROVE en la cabecera (igual que los demás; ver abajo).
+- THEC (chófer de THEC en un viaje CLAVO) → **perfil THEC de Gesruta**: `empresa:"THEC"`, cabecera
+  **normal** (cabeza = código de tractora, **sin** `proveedor`), km normales. **NO** usa PROVE
+  (corrección Julio 10/11; PROVE sigue sólo para los clientes químicos). El armador lo fuerza solo.
 
 ## Conducta resiliente del bot (Julio 2026-11-03; aclarado 2026-11-05)
 
