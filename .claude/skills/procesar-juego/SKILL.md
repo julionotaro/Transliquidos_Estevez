@@ -82,13 +82,26 @@ Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**
   `ordenes/`; el **talón + sus albaranes de entrega** a `procesados/CLAVO/<AAAA-MM>/` en **un PDF por
   tramo** (ver `docs/nomenclatura-archivos.md`, sección CLAVO).
 
-## 3. Generar la salida
-- **orden.json** (ver CONTRATO) en `ordenes-carga/ordenes/<AAAA-MM>/<chofer-slug>/<AAAA-MM-DD>/`
-  (mes y fecha = primera fecha de carga), junto a la **ficha** copiada ahí (`ficha_<ts>.pdf`).
-  Un archivo por juego; NO reusar un orden.json gigante. Números con coma decimal; destino/carga
-  por código + `esperado` para que el bot verifique.
-- **Libro maestro** `datos/registro-procesamiento.csv`: una fila por albarán, **28 columnas,
-  NUNCA un `;` en observaciones** (bug recurrente). `base = porte(+idx)`, `total = base·(1+iva)`.
+## 3. Generar la salida (con las herramientas; NO a mano)
+1. **Escribir el `raw`** del juego en `herramientas/armar_orden/raw/<chofer-slug>-<AAAA-MM-DD>.json`
+   (formato: mirar cualquier raw existente). Incluir siempre:
+   - `"escaneo": "<nombre del PDF de entrada>"` en la raíz;
+   - `peso_kg` = el **peso REAL del documento** (nunca el mínimo 23.000 ya aplicado; el mínimo lo
+     aplica el armador), también en los de precio fijo si el documento lo trae;
+   - números **sin comillas**; `cabeza` **con comillas** (conserva el cero: `"03729"`);
+   - notas propias de un albarán en `"_obs": "..."` (van a las observaciones del registro).
+2. **Armar la orden:** `node herramientas/armar_orden/armar_orden.js <raw> <carpeta>/orden.json`.
+   El comando **valida el raw primero**: si dice `RAW CON ERRORES`, corregir el raw (no usar
+   `--forzar`). Los `AVISOS DE LECTURA` hay que **mirarlos contra el papel** (odómetro que retrocede,
+   peso fuera de rango, referencia que ya está en el registro = posible juego repetido…).
+   Carpeta: `ordenes-carga/ordenes/<AAAA-MM>/<chofer-slug>/<AAAA-MM-DD>/` (mes y fecha = primera
+   fecha de carga), junto a la **ficha** copiada ahí (`ficha_<ts>.pdf`). Un orden.json por juego.
+3. **Libro maestro:** `node herramientas/armar_orden/registro_filas.js <raw> --agregar` genera y
+   agrega las filas (28 columnas, cuentas y formato correctos). **No escribir filas a mano.**
+   Sin `--agregar` solo las muestra. Rechaza referencias que ya están en el registro.
+- Si un albarán sale con **`INDEXACION PENDIENTE`** (falta el % del tramo en
+  `datos/gesruta/indexacion-gasoleo.json`): la línea de índice va con el factor vacío y la fila
+  queda `INDICE_PENDIENTE`. **Avisar a Julio**; cuando esté el %, regenerar orden y fila.
 - **Archivo de documentos:** un PDF por albarán, renombrado por su referencia, en
   `procesados/<CLIENTE>/<AAAA-MM>/`. **El PDF del albarán debe contener la OC + la documentación
   de carga (CMR / albarán de carga / báscula) en UN SOLO archivo**, no la OC y la carga por separado

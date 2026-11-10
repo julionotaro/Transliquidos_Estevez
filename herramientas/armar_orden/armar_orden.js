@@ -430,7 +430,13 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
       alb.lineas.indexacion = { concepto: reg.idx, cantidad: (porteImporte !== null) ? fmt(porteImporte, 2) : null, factor: fmt(hit.pct, 4) };
       if (esIdxAcumulada(razon, po.esperado, pd.esperado)) { alb.lineas.indexacion.cargar = false; }
     } else {
-      avisos.push('[' + ctx + '] indexacion sin tramo vigente: ' + grupo + ' @ ' + fIso + (hit && hit.ambiguo ? ' (ambiguo)' : ''));
+      // Falta el % de ese tramo (tabla sin actualizar) o es ambiguo. RESILIENCIA: la linea se emite
+      // igual con el FACTOR VACIO (dato puntual faltante), NO como null: null significa "este albaran
+      // no lleva indice" y el bot lo cargaria sin linea, como si estuviera completo (subfacturacion
+      // silenciosa). Con factor null el bot carga la linea y reporta pendiente factor_indexacion.
+      avisos.push('[' + ctx + '] INDEXACION PENDIENTE: sin tramo vigente para ' + grupo + ' @ ' + fIso + (hit && hit.ambiguo ? ' (ambiguo)' : '') + ' -> linea con factor vacio; cargar el % en datos/gesruta/indexacion-gasoleo.json y regenerar');
+      alb.lineas.indexacion = { concepto: reg.idx, cantidad: (porteImporte !== null) ? fmt(porteImporte, 2) : null, factor: null };
+      if (esIdxAcumulada(razon, po.esperado, pd.esperado)) { alb.lineas.indexacion.cargar = false; }
     }
   }
   // REPARTO (D-08): doble destino -> linea con codigo REP (cantidad 1, precio 90 por defecto), FUERA
@@ -528,12 +534,25 @@ module.exports = { armarOrden: armarOrden, cargarDeps: cargarDeps, fmt: fmt, fec
 
 // ---------- CLI: node armar_orden.js <raw.json> [salida.json] ----------
 if (require.main === module) {
-  var entrada = process.argv[2];
-  if (!entrada) { console.error('uso: node armar_orden.js <raw.json> [salida.json]'); process.exit(2); }
+  var argv = process.argv.slice(2);
+  var forzar = argv.indexOf('--forzar') >= 0;
+  var posicionales = argv.filter(function (a) { return a.slice(0, 2) !== '--'; });
+  var entrada = posicionales[0];
+  if (!entrada) { console.error('uso: node armar_orden.js <raw.json> [salida.json] [--forzar]'); process.exit(2); }
   var raw = JSON.parse(fs.readFileSync(entrada, 'utf8'));
+  // 1) VALIDAR EL RAW antes de armar: un raw mal escrito (clave mal tipeada, numero como texto,
+  //    cabeza que no es de esa matricula, fecha imposible) NO se arma hasta corregirlo.
+  var val = require('./validar_raw.js').validarRaw(raw);
+  if (val.errores.length) {
+    console.error('RAW CON ERRORES (' + val.errores.length + ') — corregir el raw y volver a correr:');
+    val.errores.forEach(function (e) { console.error('  ❌ ' + e); });
+    if (!forzar) { console.error('\nNo se armo la orden. (--forzar la arma igual; solo si el error es un falso positivo y se avisa a Julio.)'); process.exit(1); }
+  }
+  // 2) ARMAR
   var res = armarOrden(raw);
   var txt = JSON.stringify(res.orden, null, 2);
-  if (process.argv[3]) { fs.writeFileSync(process.argv[3], txt + '\n'); console.error('escrito ' + process.argv[3]); }
+  if (posicionales[1]) { fs.writeFileSync(posicionales[1], txt + '\n'); console.error('escrito ' + posicionales[1]); }
   else { console.log(txt); }
-  if (res.avisos.length) { console.error('\nAVISOS (' + res.avisos.length + '):'); res.avisos.forEach(function (a) { console.error('  - ' + a); }); }
+  if (val.avisos.length) { console.error('\nAVISOS DE LECTURA (' + val.avisos.length + ') — mirar contra el papel:'); val.avisos.forEach(function (a) { console.error('  ⚠️  ' + a); }); }
+  if (res.avisos.length) { console.error('\nAVISOS DEL ARMADOR (' + res.avisos.length + '):'); res.avisos.forEach(function (a) { console.error('  - ' + a); }); }
 }
