@@ -8,8 +8,29 @@
     {
       "matricula": "3729JWP",
       "albaranes": [
-        { "cliente_lit": "FORESA", "origen_lit": "CALDAS DE REIS", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "260032", "salida": "26/10/2026", "llegada": "27/10/2026", "peso_kg": 22100, "km_pendiente": true },
-        { "cliente_lit": "QUIMIDROGA", "origen_lit": "BARCELONA", "destino_lit": "LEIRIA", "carga_lit": "VINKA-PLAST", "referencia": "713124", "salida": "28/10/2026", "llegada": "30/10/2026", "peso_kg": 22740, "km_pendiente": true }
+        {
+          "cliente_lit": "FORESA",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "260032",
+          "salida": "26/10/2026",
+          "llegada": "27/10/2026",
+          "peso_kg": 22100,
+          "km_pendiente": true
+        },
+        {
+          "cliente_lit": "QUIMIDROGA",
+          "origen_lit": "BARCELONA",
+          "destino_lit": "LEIRIA",
+          "carga_lit": "VINKA-PLAST",
+          "referencia": "713124",
+          "salida": "28/10/2026",
+          "llegada": "29/10/2026",
+          "peso_kg": 22740,
+          "km_inicio": 107965,
+          "km_fin": 109149
+        }
       ]
     }
   ]

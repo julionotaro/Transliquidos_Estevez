@@ -70,7 +70,7 @@
           },
           "referencia": "713124",
           "salida": "28/10/2026",
-          "llegada": "30/10/2026",
+          "llegada": "29/10/2026",
           "lineas": {
             "porte": {
               "um": "TN",
@@ -86,7 +86,9 @@
             }
           },
           "km": {
-            "pendiente": true
+            "inicio": "107965",
+            "fin": "109149",
+            "carga": "1184"
           },
           "tarifa_pendiente": false
         }
