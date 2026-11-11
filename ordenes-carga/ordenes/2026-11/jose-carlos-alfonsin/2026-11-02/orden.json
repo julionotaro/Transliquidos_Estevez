@@ -84,7 +84,7 @@
             "codigo": "83",
             "esperado": "ALCOHOL"
           },
-          "referencia": "2600001861",
+          "referencia": "TQ5603360",
           "salida": "04/11/2026",
           "llegada": "05/11/2026",
           "lineas": {
@@ -98,7 +98,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "1.725,00",
-              "factor": "0,1600"
+              "factor": "0,1553"
             }
           },
           "km": {

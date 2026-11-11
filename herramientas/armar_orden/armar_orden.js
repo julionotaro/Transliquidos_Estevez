@@ -422,6 +422,12 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
   } else if (raw.idx_incluida === true) {
     // Precio fijo con INDEXACION INCLUIDA en el precio (FORESTAL, COMATRA): no hay linea de idx.
     alb.lineas.indexacion = null;
+  } else if (typeof raw.idx_pct === 'number') {
+    // INDICE INFORMADO EN LA OC (tarifa cerrada): se RESPETA el % de la OC en vez del lookup por
+    // grupo/fecha. Caso Transtambre (Julio 11/11): la OC fija "precio + N% index gasoil" y ese N
+    // manda (el grupo del cliente daria otro valor). concepto G/GPT segun nacional/internacional.
+    alb.lineas.indexacion = { concepto: reg.idx, cantidad: (porteImporte !== null) ? fmt(porteImporte, 2) : null, factor: fmt(raw.idx_pct, 4) };
+    if (esIdxAcumulada(razon, po.esperado, pd.esperado)) { alb.lineas.indexacion.cargar = false; }
   } else {
     // indexacion por linea (acumulada -> cargar:false, para control de totales)
     var grupo = idxMod.grupoIndexacion(razon).grupo;

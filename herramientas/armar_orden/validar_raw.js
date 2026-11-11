@@ -29,11 +29,11 @@ var CLAVES = {
   raiz: ['empresa', 'escaneo', 'fecha_inicio', 'chofer', 'cabeza', 'proveedor', 'km_proveedor_vacio', 'viajes'],
   viaje: ['matricula', 'cabeza', 'remolque', 'duo_secundario', 'albaranes'],
   albaran: ['cliente_lit', 'origen_lit', 'destino_lit', 'carga_lit', 'referencia', 'salida', 'llegada',
-    'peso_kg', 'peso_pendiente', 'peso_ok_redondo', 'precio_fijo', 'idx_incluida', 'reparto',
+    'peso_kg', 'peso_pendiente', 'peso_ok_redondo', 'precio_fijo', 'idx_incluida', 'idx_pct', 'reparto',
     'km_inicio', 'km_fin', 'km_vacio', 'km_pendiente', 'um',
     'facturacion', 'sentido', 'km_facturable', 'origenes', 'destinos'],
 };
-var NUMERICAS = ['peso_kg', 'precio_fijo', 'reparto', 'km_inicio', 'km_fin', 'km_vacio', 'km_facturable'];
+var NUMERICAS = ['peso_kg', 'precio_fijo', 'reparto', 'km_inicio', 'km_fin', 'km_vacio', 'km_facturable', 'idx_pct'];
 var BOOLEANAS = ['peso_pendiente', 'peso_ok_redondo', 'idx_incluida', 'km_pendiente'];
 var TEXTO_OBLIGATORIO = ['cliente_lit', 'origen_lit', 'destino_lit', 'carga_lit', 'salida', 'llegada'];
 
