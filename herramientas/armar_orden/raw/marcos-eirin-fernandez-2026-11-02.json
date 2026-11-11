@@ -1,0 +1,32 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111132000.pdf (14 pags: 4 hojas de ficha TLE + 10 CMR FORESA). Marcos Eirin Fernandez (TLE propio), tractora 3729JLH (la ficha dice '3729SLH' = J mal leida; el CMR confirma 3729JLH, cabeza 3729). SHUTTLE FORESA Caldas->Orember, 10 albaranes. DOS REMOLQUES: PO01372R para la carga FINCAT (ABEIRO 3009, T1) y R7749BDB (su habitual) para las COLA (RES 2090/2061/2130) -> 2 viajes (regla 'viaje nuevo si cambia remolque'). PRODUCTOS: RES -> COLA 13,85; ABEIRO 3009 -> FINCAT 20,16. Idx ACUMULADA (OREMBER -> cargar:false), todas carga nov 1a quinc -> 0,1553. PESOS del CMR casilla 13. Ref FORESA = Nro corto que empieza en 20. TRACTOR/PLATAFORMA de cada leg = casilla 6 del CMR. salida = fecha de carga del CMR (en T7 el CMR dice 05/11, la ficha 4/11; manda el CMR). Odometro de la ficha consistente (~124 km/leg), monotono -> se cargan. Dietas (control interno) NO van a Gesruta.",
+  "escaneo": "20261111132000.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "MARCOS EIRIN FERNANDEZ",
+  "cabeza": "3729",
+  "viajes": [
+    {
+      "matricula": "3729JLH",
+      "remolque": "PO01372R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2036035", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25060, "km_inicio": 1077614, "km_fin": 1077738 }
+      ]
+    },
+    {
+      "matricula": "3729JLH",
+      "remolque": "R7749BDB",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036051", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25240, "km_inicio": 1077863, "km_fin": 1077987 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036028", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 25260, "km_inicio": 1078111, "km_fin": 1078235 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036030", "salida": "03/11/2026", "llegada": "03/11/2026", "peso_kg": 25240, "km_inicio": 1078351, "km_fin": 1078481 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036048", "salida": "03/11/2026", "llegada": "04/11/2026", "peso_kg": 25260, "km_inicio": 1078605, "km_fin": 1078729 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036025", "salida": "04/11/2026", "llegada": "04/11/2026", "peso_kg": 25234, "km_inicio": 1078851, "km_fin": 1078975 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036049", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 25200, "km_inicio": 1079100, "km_fin": 1079224 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036026", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 24580, "km_inicio": 1079346, "km_fin": 1079470 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2035959", "salida": "05/11/2026", "llegada": "06/11/2026", "peso_kg": 25180, "km_inicio": 1079594, "km_fin": 1079718 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036023", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 25100, "km_inicio": 1079840, "km_fin": 1079964 }
+      ]
+    }
+  ]
+}
