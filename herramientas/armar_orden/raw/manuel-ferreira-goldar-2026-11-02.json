@@ -1,0 +1,54 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111131929.pdf (18 pags: 3 hojas de ficha TLE + 9 CMR FORESA + 6 tickets bascula FINSA). Manuel Ferreira Goldar (TLE propio). SHUTTLE FORESA Caldas->Orember, 9 albaranes. DOS TRACTORAS en la semana: 9039KDR (su habitual, legs del 2-4/11) y 2541HPJ (habitual de Pablo Carles; la manejo Ferreira los 5-6/11) -> el armador avisa 'chofer != flota' en los viajes de 2541HPJ y pone Pablo Carles; el chofer REAL es Ferreira (ficha). TRES REMOLQUES: R7936BCV (cargas COLA), PO01372R y R8574BBC (cargas FINCAT). Por la regla 'viaje nuevo si cambia tractora/remolque' -> 5 viajes (una tractora+remolque por viaje), que ademas separan COLA de FINCAT. PRODUCTOS: RES 2090/2061/2130 -> COLA 13,85; ABEIRO/AVEIRO 3009 -> FINCAT 20,16 (regla de los raws de octubre). Idx ACUMULADA (destino OREMBER -> cargar:false), todas carga nov 1a quinc -> 0,1553. PESOS del CMR casilla 13 (la bascula FINSA difiere +-40/80 kg; precedente oct = albaran). T9 (18.540 <23TN) -> el armador aplica minimo 23. Ref FORESA = Nro corto que empieza en 20 (sup. der. del CMR). TRACTOR/PLATAFORMA de cada leg = casilla 6 del CMR (no la cabecera de la ficha, poco fiable). KM: los de 9039KDR son consistentes (~946-947k) y van; los de 2541HPJ estan ilegibles/mezclados en la ficha (1.569k vs 369k) -> se omiten (KM PENDIENTE), no se inventan. Dietas de la ficha (control interno) NO van a Gesruta.",
+  "escaneo": "20261111131929.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "MANUEL FERREIRA GOLDAR",
+  "cabeza": "9039",
+  "viajes": [
+    {
+      "matricula": "9039KDR",
+      "cabeza": "9039",
+      "remolque": "R7936BCV",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036043", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25180, "km_inicio": 946219, "km_fin": 946342 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2035957", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25260, "km_inicio": 946463, "km_fin": 946587 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036052", "salida": "03/11/2026", "llegada": "04/11/2026", "peso_kg": 25220, "km_inicio": 946983, "km_fin": 947108 }
+      ]
+    },
+    {
+      "matricula": "9039KDR",
+      "cabeza": "9039",
+      "remolque": "R8574BBC",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2036036", "salida": "03/11/2026", "llegada": "03/11/2026", "peso_kg": 24300, "km_inicio": 946710, "km_fin": 946837 }
+      ]
+    },
+    {
+      "matricula": "9039KDR",
+      "cabeza": "9039",
+      "remolque": "PO01372R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2036037", "salida": "04/11/2026", "llegada": "04/11/2026", "peso_kg": 23290, "km_inicio": 947231, "km_fin": 947355 }
+      ]
+    },
+    {
+      "matricula": "2541HPJ",
+      "cabeza": "2541",
+      "remolque": "PO01372R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2036038", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 24520 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2036039", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 24680 }
+      ]
+    },
+    {
+      "matricula": "2541HPJ",
+      "cabeza": "2541",
+      "remolque": "R7936BCV",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036042", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 25260 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036024", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 18540 }
+      ]
+    }
+  ]
+}
