@@ -1,0 +1,24 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111141939.pdf (8 pags: 1 hoja ficha TLE + docs de 2 hauls). Jose Carlos Alfonsin (TLE AUTONOMO, apellido ALFONSIN), tractora 4916NJG (cabeza 4916). DOS viajes por cambio de REMOLQUE: V1 R1783BBJ (FORESA), V2 PO02289R (alcohol; la tractora 0332LPL pre-impresa en los albaranes de alcohol NO coincide, Alfonsin corrigio a mano 4916NJG). AUTONOMO: km con vacio (van a Gastos). T1 FORESA Caldas->HARINAS ALMELA Enguera, albaran 2036356 en 2 compartimentos (RES 1440 18.960 + RES 2130 6.080 = 25.040 kg), COLA. T2 TERQUIMSA Tarragona->ZELNOVA ZELTIA O Porrino, ALCOHOL DESNATURALIZADO 23.560, orden de TRANSTAMBRE (cliente 20), PRECIO FIJO 1.725 EUR + 15,53% index gasoil (precio_fijo). REVISAR con Julio: (a) el 15,53% de indice del albaran Transtambre vs el que calcule el armador; (b) la REFERENCIA de T2 (use 2600001861 = albaran de entrega IBERALCOHOL; hay tambien codigo Terquimsa TQ5603360). Pesos del CMR/albaran. Dietas NO van a Gesruta.",
+  "escaneo": "20261111141939.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "JOSE CARLOS ALFONSIN",
+  "cabeza": "4916",
+  "viajes": [
+    {
+      "matricula": "4916NJG",
+      "remolque": "R1783BBJ",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "VALENCIA", "carga_lit": "COLA", "referencia": "2036356", "salida": "02/11/2026", "llegada": "04/11/2026", "peso_kg": 25040, "km_inicio": 97181, "km_fin": 98229, "km_vacio": 361 }
+      ]
+    },
+    {
+      "matricula": "4916NJG",
+      "remolque": "PO02289R",
+      "albaranes": [
+        { "cliente_lit": "TRANSTAMBRE, S.L.", "origen_lit": "TARRAGONA", "destino_lit": "PORRIÑO", "carga_lit": "ALCOHOL", "referencia": "2600001861", "salida": "04/11/2026", "llegada": "05/11/2026", "peso_kg": 23560, "precio_fijo": 1725, "km_inicio": 98590, "km_fin": 99795, "km_vacio": 72 }
+      ]
+    }
+  ]
+}

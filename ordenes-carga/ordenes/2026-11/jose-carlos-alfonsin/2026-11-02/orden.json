@@ -1,0 +1,115 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "4916",
+        "verificar": {
+          "matricula": "4916NJG",
+          "remolque": "R1783BBJ",
+          "chofer": "JOSE CARLOS ALFONSIN"
+        },
+        "tipo": "autonomo"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "V",
+            "esperado": "VALENCIA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2036356",
+          "salida": "02/11/2026",
+          "llegada": "04/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,040",
+              "precio": "64,04",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.603,56",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "97181",
+            "fin": "98229",
+            "carga": "1048",
+            "vacio": "361"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "4916",
+        "verificar": {
+          "matricula": "4916NJG",
+          "remolque": "PO02289R",
+          "chofer": "JOSE CARLOS ALFONSIN"
+        },
+        "tipo": "autonomo"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "20",
+            "esperado": "TRANSTAMBRE, S.L."
+          },
+          "origen": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "destino": {
+            "codigo": "PORRI",
+            "esperado": "PORRIÑO"
+          },
+          "carga": {
+            "codigo": "83",
+            "esperado": "ALCOHOL"
+          },
+          "referencia": "2600001861",
+          "salida": "04/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "1.725,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.725,00",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "98590",
+            "fin": "99795",
+            "carga": "1205",
+            "vacio": "72"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
