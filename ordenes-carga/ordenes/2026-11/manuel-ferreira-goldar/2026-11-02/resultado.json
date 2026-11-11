@@ -1,0 +1,139 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/manuel-ferreira-goldar/2026-11-02/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-11T15:42:16",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "9039",
+      "chofer": "MANUEL FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036043",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2035957",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2036052",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "9039",
+      "chofer": "MANUEL FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v2.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036036",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "9039",
+      "chofer": "MANUEL FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v3.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036037",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "2541",
+      "chofer": "PABLO CARLES SANTOS",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v4.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036038",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        },
+        {
+          "referencia": "2036039",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "2541",
+      "chofer": "PABLO CARLES SANTOS",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v5.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036042",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        },
+        {
+          "referencia": "2036024",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        }
+      ]
+    }
+  ]
+}
