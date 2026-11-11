@@ -1,0 +1,25 @@
+{
+  "_nota": "SINTETICO (no es carga real) para el golden: un juego con DOS tractoras en la misma ficha -> la cabecera de cada viaje debe llevar SU cabeza (9039 y 2541), no una unica cabeza global. Cubre cabeza-por-viaje (armar_orden.js cabezaDeViaje). FORESA Caldas->Orember COLA, idx acumulada cargar:false.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "MANUEL FERREIRA GOLDAR",
+  "cabeza": "9039",
+  "viajes": [
+    {
+      "matricula": "9039KDR",
+      "cabeza": "9039",
+      "remolque": "R7936BCV",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "9999001", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25000 }
+      ]
+    },
+    {
+      "matricula": "2541HPJ",
+      "cabeza": "2541",
+      "remolque": "R7936BCV",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "9999002", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25000 }
+      ]
+    }
+  ]
+}

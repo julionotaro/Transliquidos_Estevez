@@ -27,7 +27,7 @@ var clientesGesruta = require('../../catalogo/clientes-gesruta.js');
 // ---------- claves permitidas (las que el armador lee) ----------
 var CLAVES = {
   raiz: ['empresa', 'escaneo', 'fecha_inicio', 'chofer', 'cabeza', 'proveedor', 'km_proveedor_vacio', 'viajes'],
-  viaje: ['matricula', 'remolque', 'duo_secundario', 'albaranes'],
+  viaje: ['matricula', 'cabeza', 'remolque', 'duo_secundario', 'albaranes'],
   albaran: ['cliente_lit', 'origen_lit', 'destino_lit', 'carga_lit', 'referencia', 'salida', 'llegada',
     'peso_kg', 'peso_pendiente', 'peso_ok_redondo', 'precio_fijo', 'idx_incluida', 'reparto',
     'km_inicio', 'km_fin', 'km_vacio', 'km_pendiente', 'um',
@@ -124,14 +124,21 @@ function validarRaw(raw, deps, opciones) {
     if (typeof v.matricula !== 'string' || !v.matricula.trim()) { errores.push(dv + ': falta "matricula"'); }
     if (!Array.isArray(v.albaranes) || !v.albaranes.length) { errores.push(dv + ': falta "albaranes"'); return; }
 
-    // CABEZA <-> MATRICULA (error real 03/11: cabeza 3729 llevaba a OTRO camion)
+    // CABEZA <-> MATRICULA (error real 03/11: cabeza 3729 llevaba a OTRO camion).
+    // La cabeza puede declararse POR VIAJE (v.cabeza) cuando un juego tiene mas de
+    // una tractora; si no viene, se usa la del raiz (raw.cabeza). Se valida la
+    // cabeza EFECTIVA de cada viaje contra SU matricula.
     var mat = String(v.matricula || '').toUpperCase().replace(/[\s-]/g, '');
     var fl = flota[mat];
-    if (typeof raw.cabeza === 'string' && mat) {
-      if (fl && fl.cabeza && fl.cabeza !== raw.cabeza) {
-        errores.push(dv + ': la matricula ' + mat + ' lleva cabeza "' + fl.cabeza + '" en la flota, pero el raw dice "' + raw.cabeza + '" -> se cargaria en OTRO camion');
-      } else if (sinCeros(raw.cabeza) !== sinCeros(digitos(mat))) {
-        errores.push(dv + ': la cabeza "' + raw.cabeza + '" no corresponde a la matricula ' + mat + ' (deberia ser ' + digitos(mat) + ')');
+    if (v.cabeza != null && (typeof v.cabeza !== 'string' || !v.cabeza.trim())) {
+      errores.push(dv + ': "cabeza" debe ser TEXTO entre comillas (vino ' + JSON.stringify(v.cabeza) + '); como numero se pierde el cero a la izquierda (03729 != 3729)');
+    }
+    var cabezaEfectiva = (typeof v.cabeza === 'string' && v.cabeza.trim()) ? v.cabeza : raw.cabeza;
+    if (typeof cabezaEfectiva === 'string' && mat) {
+      if (fl && fl.cabeza && fl.cabeza !== cabezaEfectiva) {
+        errores.push(dv + ': la matricula ' + mat + ' lleva cabeza "' + fl.cabeza + '" en la flota, pero el raw dice "' + cabezaEfectiva + '" -> se cargaria en OTRO camion');
+      } else if (sinCeros(cabezaEfectiva) !== sinCeros(digitos(mat))) {
+        errores.push(dv + ': la cabeza "' + cabezaEfectiva + '" no corresponde a la matricula ' + mat + ' (deberia ser ' + digitos(mat) + ')');
       }
     }
     if (mat && !/^\d{4}[A-Z]{3}$/.test(mat)) { avisos.push(dv + ': matricula "' + v.matricula + '" con formato inusual (se espera 4 digitos + 3 letras)'); }

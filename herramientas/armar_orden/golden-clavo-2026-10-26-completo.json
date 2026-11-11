@@ -52,7 +52,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "1.161,28",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },
@@ -97,7 +97,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "302,61",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },
@@ -142,7 +142,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "518,32",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },
@@ -187,7 +187,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "315,00",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },
@@ -232,7 +232,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "315,00",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },
@@ -277,7 +277,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "315,00",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },
@@ -322,7 +322,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "284,24",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },
@@ -367,7 +367,7 @@
             "indexacion": {
               "concepto": "G",
               "cantidad": "590,81",
-              "factor": "0,0915",
+              "factor": "0,1450",
               "cargar": false
             }
           },

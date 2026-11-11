@@ -66,11 +66,11 @@ var CASOS = [
     // 1.161,28, concepto P, IVA 21, origen 1 / destino 9735. factor idx null = % oct pendiente.
   },
   {
-    nombre: 'clavo-jose-carlos-rodriguez 2026-10-26 COMPLETO (8 tramos, sentido derivado, idx 9,15% prueba)',
+    nombre: 'clavo-jose-carlos-rodriguez 2026-10-26 COMPLETO (8 tramos, sentido derivado, idx 14,5% octubre)',
     raw: raw('clavo-jose-carlos-rodriguez-2026-10-26-completo.json'),
     blanco: fixture('golden-clavo-2026-10-26-completo.json'),
     // Juego entero (viaje Gesruta 00051053). Total porte = 3.802,26 = Ingr/Bnf de la
-    // pantalla. Sentido S/R/U/C DERIVADO (formula columna L). idx octubre 9,15% (prueba).
+    // pantalla. Sentido S/R/U/C DERIVADO (formula columna L). idx octubre 14,5% (Julio 11/11).
     // Es solo fixture: el juego es PRUEBA, no se archiva ni registra (Julio 06/11).
   },
   {
@@ -79,6 +79,14 @@ var CASOS = [
     blanco: fixture('golden-clavo-thec-2026-11-03.json'),
     // Correccion Julio 10/11: CLAVO con chofer THEC -> empresa THEC + cabecera normal (cabeza
     // 9400, sin PROVE/proveedor), km normales. Aunque el raw traiga proveedor, el armador lo ignora.
+  },
+  {
+    nombre: 'sintetico dos tractoras (cabeza POR VIAJE: 9039 y 2541 en un mismo juego)',
+    raw: raw('sintetico-dos-tractoras.json'),
+    blanco: fixture('golden-dos-tractoras.json'),
+    // Regresion de cabezaDeViaje (armar_orden.js) + validar_raw.js: un juego con dos
+    // tractoras arma cada viaje con SU cabeza (9039KDR->9039, 2541HPJ->2541), no una
+    // unica cabeza global. Sintetico (pesos redondos, sin km); se compara la estructura.
   },
 ];
 

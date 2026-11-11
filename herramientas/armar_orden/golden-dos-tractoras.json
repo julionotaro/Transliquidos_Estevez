@@ -1,0 +1,111 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "9039",
+        "verificar": {
+          "matricula": "9039KDR",
+          "remolque": "R7936BCV",
+          "chofer": "MANUEL FERREIRA GOLDAR"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "9999001",
+          "salida": "02/11/2026",
+          "llegada": "02/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,000",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "346,25",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "pendiente": true
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "2541",
+        "verificar": {
+          "matricula": "2541HPJ",
+          "remolque": "R7936BCV",
+          "chofer": "PABLO CARLES SANTOS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "9999002",
+          "salida": "02/11/2026",
+          "llegada": "02/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,000",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "346,25",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "pendiente": true
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

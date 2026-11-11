@@ -461,12 +461,27 @@ function nombresCompatibles(a, b) {
 // VERIFICA; si no coincide, se avisa ruidoso. Asi un error de lectura del nombre o
 // una matricula mal leida (3/8, 4716/4916) no corrompe la orden: o manda flota, o
 // se marca para revisar.
+// CABEZA (numero de tractora que se teclea en Gesruta) POR VIAJE. Puede llevar un
+// CERO A LA IZQUIERDA que la matricula no refleja (flota.json: '3729'=3729JLH vs
+// '03729'=3729JWP). Prioridad: override explicito del viaje (v.cabeza) -> campo
+// cabeza de la flota (autoritativo, desambigua ceros) -> digitos iniciales de la
+// matricula -> raw.cabeza (retrocompat: juegos de una sola tractora). Asi un juego
+// con DOS tractoras (p.ej. un chofer que cambia de tractora en la semana) arma cada
+// viaje con su cabeza correcta, en vez de una unica cabeza global.
+function cabezaDeViaje(raw, v, fl) {
+  if (v.cabeza) { return String(v.cabeza); }
+  if (fl && fl.cabeza) { return String(fl.cabeza); }
+  var m = String(v.matricula || '').match(/^\d+/);
+  if (m) { return m[0]; }
+  return raw.cabeza;
+}
+
 function resolverCabecera(raw, v, avisos) {
   var ctx = 'cabecera ' + (v.matricula || '?');
   var fl = raw._deps_flota[v.matricula];
   if (!fl) {
     avisos.push('[' + ctx + '] matricula NO esta en el padron de flota -> uso la lectura, VERIFICAR (posible mala lectura de la matricula)');
-    return { chofer: raw.chofer || null, remolque: v.remolque || null, tipo: tipoChofer(raw.chofer) };
+    return { chofer: raw.chofer || null, remolque: v.remolque || null, tipo: tipoChofer(raw.chofer), cabeza: cabezaDeViaje(raw, v, null) };
   }
   if (raw.chofer && !nombresCompatibles(raw.chofer, fl.chofer)) {
     avisos.push('[' + ctx + '] chofer leido "' + raw.chofer + '" != flota "' + fl.chofer + '" -> manda flota');
@@ -475,7 +490,7 @@ function resolverCabecera(raw, v, avisos) {
   if (v.remolque && cruce.norm(v.remolque) !== cruce.norm(fl.remolque)) {
     avisos.push('[' + ctx + '] remolque leido "' + v.remolque + '" != habitual flota "' + fl.remolque + '" -> uso el leido (cambio de remolque)');
   }
-  return { chofer: fl.chofer, remolque: remolque, tipo: fl.tipo };
+  return { chofer: fl.chofer, remolque: remolque, tipo: fl.tipo, cabeza: cabezaDeViaje(raw, v, fl) };
 }
 
 // ---------- armado de la orden completa ----------
@@ -490,7 +505,7 @@ function armarOrden(raw, deps) {
     var esClavoViaje = albaranes.some(function (a) { return a.cliente && a.cliente.codigo === '4'; });
     if (esClavoViaje) { esClavoOrden = true; }
     var cabecera = {
-      cabeza: raw.cabeza,
+      cabeza: cab.cabeza,
       verificar: { matricula: v.matricula, remolque: cab.remolque, chofer: cab.chofer },
       tipo: cab.tipo,
     };
