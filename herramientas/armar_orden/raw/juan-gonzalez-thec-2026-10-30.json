@@ -1,0 +1,27 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111131901.pdf (14 pags: 4 hojas de ficha THEC + 10 CMR/albaranes FORESA). Ficha de TRANSPORTES HNOS. ESTEVEZ CASAL (THEC). Conductor Juan L. Gonzalez (leido 'Juan L. Glz'), tractora 8168JSD, remolque R9866BCH (ficha: R-9866-BCH). PROVE (confirmado Julio 03-04/11): un viaje de THEC se carga EN EL PERFIL DE TLE (empresa=TLE). La CABEZA lleva 'PROVE' (no el codigo de tractora), la matricula completa, el remolque (codigo) vacio con su matricula al lado, y PROVEEDOR='5' (codigo THEC). KM Y COSTOS VACIOS (cargar:false). Shuttle FORESA Caldas->Orember, 10 albaranes COLA (RES 2090/2061 -> cod 1), idx ACUMULADA (destino OREMBER -> cargar:false). 1 viaje, mismo remolque R9866BCH. Pesos leidos del CMR (casilla 13), coinciden EXACTO con la cantidad de la ficha. T1 carga 30/10 -> idx FORESA oct 2a quinc 0.1597; T2-T10 carga 2-6/11 -> idx nov 1a quinc 0.1553 (el armador lo resuelve por 'salida'). Ref FORESA = Nro corto que empieza en 20 (casilla superior derecha del CMR, NO el 5030...). Odometro de la ficha monotono creciente (leg carga ~116-125 km, retorno vacio ~121-127), sin retrocesos. OJO: en la ficha p1, sobre el Tramo 1 (30/10) hay una anotacion manuscrita en rojo '30.10 GR-Hnos' -> REPORTADO a Julio por si T1 lleva tratamiento distinto; aqui se procesa como los demas (PROVE). Dietas de la ficha (Lun 2 a Vie 6, 28 EUR/dia, total 140) = control interno, NO se cargan a Gesruta.",
+  "escaneo": "20261111131901.pdf",
+  "empresa": "TLE",
+  "proveedor": "5",
+  "fecha_inicio": "2026-10-30",
+  "chofer": "JUAN L. GONZALEZ",
+  "cabeza": "8168",
+  "viajes": [
+    {
+      "matricula": "8168JSD",
+      "remolque": "R9866BCH",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036040", "salida": "30/10/2026", "llegada": "02/11/2026", "peso_kg": 25140, "km_inicio": 342637, "km_fin": 342753 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036047", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25220, "km_inicio": 342880, "km_fin": 343003 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036027", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 25260, "km_inicio": 343124, "km_fin": 343249 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036031", "salida": "03/11/2026", "llegada": "03/11/2026", "peso_kg": 25260, "km_inicio": 343370, "km_fin": 343493 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036056", "salida": "03/11/2026", "llegada": "04/11/2026", "peso_kg": 25220, "km_inicio": 343614, "km_fin": 343739 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036045", "salida": "04/11/2026", "llegada": "04/11/2026", "peso_kg": 25220, "km_inicio": 343862, "km_fin": 343985 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036044", "salida": "04/11/2026", "llegada": "05/11/2026", "peso_kg": 25280, "km_inicio": 344106, "km_fin": 344231 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036053", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 25240, "km_inicio": 344352, "km_fin": 344475 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036050", "salida": "05/11/2026", "llegada": "06/11/2026", "peso_kg": 25300, "km_inicio": 344596, "km_fin": 344721 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2035960", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 25160, "km_inicio": 344842, "km_fin": 344965 }
+      ]
+    }
+  ]
+}
