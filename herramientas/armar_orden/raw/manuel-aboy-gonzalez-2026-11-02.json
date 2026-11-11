@@ -1,0 +1,19 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111141326.pdf (9 pags: 1 hoja ficha TLE + CMR/albaranes de 3 hauls). Manuel Aboy Gonzalez (TLE propio), tractora 5713LMN (cabeza 5713), remolque R1639BDD -> 1 viaje, 3 albaranes, 3 clientes. T1 FORESA Caldas->Finsa Cella/TERUEL, RES 0201 -> COLA 23.160 (ref FORESA 2036542). T2 QUIMIDROGA Miranda de Ebro->TMG Sao Cosme do Vale (V.N.Famalicao, PT), MEXIFLEX 911P 20.460 (ref = Referencia en factura 713899; QUIMIDROGA factura Portugal como NACIONAL). Destino real TMG Sao Cosme do Vale; se carga al punto Gesruta BRAGA (PT) (misma tarifa Burgos->Famalicao/Braga 61,65, como el precedente de octubre). T3 RNM Aveiro->ENCE Navia, SOSA 24.480 (ref guia RNM 0141172720, empieza en 0). Pesos del CMR/guia casilla 13 (T1 CMR 23.160, bascula FINSA 23.200; T2 albaran QUIMIDROGA 20.460). Odometro 5713LMN consistente. Dietas NO van a Gesruta.",
+  "escaneo": "20261111141326.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "MANUEL ABOY GONZALEZ",
+  "cabeza": "5713",
+  "viajes": [
+    {
+      "matricula": "5713LMN",
+      "remolque": "R1639BDD",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "2036542", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 23160, "km_inicio": 520644, "km_fin": 521585 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "MIRANDA DE EBRO", "destino_lit": "BRAGA (PT)", "carga_lit": "MEXIFLEX", "referencia": "713899", "salida": "04/11/2026", "llegada": "05/11/2026", "peso_kg": 20460, "km_inicio": 521959, "km_fin": 522582 },
+        { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "AVEIRO", "destino_lit": "NAVIA", "carga_lit": "SOSA", "referencia": "0141172720", "salida": "05/11/2026", "llegada": "06/11/2026", "peso_kg": 24480, "km_inicio": 522739, "km_fin": 523317 }
+      ]
+    }
+  ]
+}

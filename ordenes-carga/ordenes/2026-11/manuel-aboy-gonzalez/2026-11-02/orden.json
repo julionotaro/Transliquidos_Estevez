@@ -1,0 +1,141 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "5713",
+        "verificar": {
+          "matricula": "5713LMN",
+          "remolque": "R1639BDD",
+          "chofer": "MANUEL ABOY GONZALEZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2036542",
+          "salida": "02/11/2026",
+          "llegada": "03/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,160",
+              "precio": "56,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.296,96",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "520644",
+            "fin": "521585",
+            "carga": "941"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "MIR",
+            "esperado": "MIRANDA DE EBRO"
+          },
+          "destino": {
+            "codigo": "BRAGA",
+            "esperado": "BRAGA (PT)"
+          },
+          "carga": {
+            "codigo": "MEXIFL",
+            "esperado": "MEXIFLEX"
+          },
+          "referencia": "713899",
+          "salida": "04/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "61,65",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.417,95",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "521959",
+            "fin": "522582",
+            "carga": "623"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "NAVIA",
+            "esperado": "NAVIA"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "0141172720",
+          "salida": "05/11/2026",
+          "llegada": "06/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,480",
+              "precio": "40,30",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "986,54",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "522739",
+            "fin": "523317",
+            "carga": "578"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
