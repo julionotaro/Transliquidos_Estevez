@@ -1,0 +1,19 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111141051.pdf (5 pags: 1 hoja ficha TLE + 2 CMR FORESA Orember + 1 guia BRESFOR + 1 ticket FINSA Cella). Pablo Carles Santos (TLE propio), tractora 7963MDF (cabeza 7963), remolque PO02628R (unico) -> 1 viaje. 3 albaranes: T1 y T2 FORESA Caldas->Orember COLA 13,85 (resinas RES 2090, idx agregada cargar:false, carga 02/11 -> 0,1553); T3 BRESFOR Aveiro(Gafanha da Nazare)->Finsa Cella/TERUEL, producto FORESA RES 2130 -> COLA, INTERNACIONAL (PI, IVA 0, idx GPT), tarifa Aveiro->Teruel 56. Ref FORESA = 20xxxxx; ref BRESFOR = Nro que empieza en 5050 (doc int/guia de remessa). Pesos del CMR/guia casilla 13 (T3: guia 23.200; el ticket FINSA Cella dice 23.160). Odometro 7963MDF consistente y monotono. Dietas NO van a Gesruta.",
+  "escaneo": "20261111141051.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "PABLO CARLES SANTOS",
+  "cabeza": "7963",
+  "viajes": [
+    {
+      "matricula": "7963MDF",
+      "remolque": "PO02628R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036055", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 24420, "km_inicio": 405822, "km_fin": 405945 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036029", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 24220, "km_inicio": 406068, "km_fin": 406196 },
+        { "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141858", "salida": "03/11/2026", "llegada": "04/11/2026", "peso_kg": 23200, "km_inicio": 406506, "km_fin": 407352 }
+      ]
+    }
+  ]
+}
