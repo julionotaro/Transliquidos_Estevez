@@ -7,14 +7,24 @@
   "idx_concepto": "G",
   "unidad": "KM",
   "tarifas_km": {
-    "2026-01": { "S": 1.48, "R": 1.27, "cercanias": 206, "reinosa": 306 },
-    "2026-10": { "S": 1.52, "R": 1.31, "cercanias": 212, "reinosa": 315 }
+    "2026-01": {
+      "S": 1.48,
+      "R": 1.27,
+      "cercanias": 206,
+      "reinosa": 306
+    },
+    "2026-10": {
+      "S": 1.52,
+      "R": 1.31,
+      "cercanias": 212,
+      "reinosa": 315
+    }
   },
   "indexacion_pct": {
     "2026-08": 0.0766,
-    "2026-09": 0.1370,
-    "2026-10": 0.0915
+    "2026-09": 0.137,
+    "2026-10": 0.145
   },
-  "_idx_octubre_provisorio": "El 0,0915 de 2026-10 es un valor de PRUEBA que dio Julio (06/11) para procesar el juego completo; reemplazar por el % real de octubre cuando lo confirme.",
-  "_pendiente": "Faltan los meses intermedios de tarifas_km (feb-sep) y el indexacion_pct de octubre (Julio lo consigue). Un mes sin tarifa -> tarifa_pendiente (resiliencia). Un mes sin idx_pct -> factor de indexacion vacio (se cierra en facturacion)."
+  "_pendiente": "Faltan los meses intermedios de tarifas_km (feb-sep). Un mes sin tarifa -> tarifa_pendiente (resiliencia).",
+  "_nota_indexacion": "CLAVO se indexa por MES COMPLETO (no por quincena): octubre 0,145 confirmado Julio 11/11 (coincide con Quimidroga mensual). ago 0,0766, sep 0,1370."
 }
