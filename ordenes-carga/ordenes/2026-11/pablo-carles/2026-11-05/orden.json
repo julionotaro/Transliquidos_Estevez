@@ -1,0 +1,59 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "7963",
+        "verificar": {
+          "matricula": "7963MDF",
+          "remolque": "PO02628R",
+          "chofer": "PABLO CARLES SANTOS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "VINILO",
+            "esperado": "ACETATO DE VINILO"
+          },
+          "referencia": "200859030",
+          "salida": "05/11/2026",
+          "llegada": "09/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,740",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.717,83",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "407640",
+            "fin": "408808",
+            "carga": "1168"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
