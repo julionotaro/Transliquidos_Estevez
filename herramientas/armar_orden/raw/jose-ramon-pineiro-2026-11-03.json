@@ -1,0 +1,19 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111141154.pdf (13 pags: 1 hoja ficha TLE + docs de 3 hauls brokered por RNM). Jose Ramon Pineiro (TLE propio), tractora 8420KKT (cabeza 8420), remolque PO01956R -> 1 viaje, 3 albaranes, cliente RNM en los 3 (RNM subcontrata a TLE). T1 BONDALTI Estarreja(PT)->WACKER Leon, SOSA 23.540 (carrier RNM en el CMR). T2 ASTURIANA DE ZINC Aviles(San Juan de Nieva)->RNM Famalicao, ACIDO SULFURICO 24.140. T3 RNM Aveiro->ENCE Navia, SOSA 23.780. REFERENCIAS: T3 = guia RNM 0141172721 (empieza en 0, OK). T1 y T2 NO traen guia RNM '0...' en el escaneo -> uso T1=5113063259 (guia BONDALTI) y T2=2601021460 (carta de porte Asturiana); A CONFIRMAR con Julio la referencia correcta. Pesos del CMR/guia casilla 13. Odometro 8420KKT consistente. Dietas NO van a Gesruta.",
+  "escaneo": "20261111141154.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-03",
+  "chofer": "JOSE RAMON PINEIRO",
+  "cabeza": "8420",
+  "viajes": [
+    {
+      "matricula": "8420KKT",
+      "remolque": "PO01956R",
+      "albaranes": [
+        { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "ESTARREJA", "destino_lit": "LEON", "carga_lit": "SOSA", "referencia": "5113063259", "salida": "03/11/2026", "llegada": "04/11/2026", "peso_kg": 23540, "km_inicio": 968266, "km_fin": 968742 },
+        { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "AVILES", "destino_lit": "VILANOVA FAMALICAO", "carga_lit": "ACIDO SULFURICO", "referencia": "2601021460", "salida": "04/11/2026", "llegada": "05/11/2026", "peso_kg": 24140, "km_inicio": 968916, "km_fin": 969445 },
+        { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "AVEIRO", "destino_lit": "NAVIA", "carga_lit": "SOSA", "referencia": "0141172721", "salida": "05/11/2026", "llegada": "06/11/2026", "peso_kg": 23780, "km_inicio": 969575, "km_fin": 970145 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "8420",
+        "verificar": {
+          "matricula": "8420KKT",
+          "remolque": "PO01956R",
+          "chofer": "JOSE RAMON PINEIRO"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "ESTAR",
+            "esperado": "ESTARREJA"
+          },
+          "destino": {
+            "codigo": "LE",
+            "esperado": "LEON"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "5113063259",
+          "salida": "03/11/2026",
+          "llegada": "04/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,540",
+              "precio": null,
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": null,
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "968266",
+            "fin": "968742",
+            "carga": "476"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "AVILE",
+            "esperado": "AVILES"
+          },
+          "destino": {
+            "codigo": "FAMAL",
+            "esperado": "VILANOVA FAMALICAO"
+          },
+          "carga": {
+            "codigo": "20",
+            "esperado": "ACIDO SULFURICO"
+          },
+          "referencia": "2601021460",
+          "salida": "04/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,140",
+              "precio": "39,13",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "944,60",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "968916",
+            "fin": "969445",
+            "carga": "529"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "NAVIA",
+            "esperado": "NAVIA"
+          },
+          "carga": {
+            "codigo": "51",
+            "esperado": "SOSA"
+          },
+          "referencia": "0141172721",
+          "salida": "05/11/2026",
+          "llegada": "06/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,780",
+              "precio": "40,30",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "958,33",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "969575",
+            "fin": "970145",
+            "carga": "570"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
