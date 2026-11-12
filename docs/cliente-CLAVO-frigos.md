@@ -63,6 +63,16 @@ multiplica por los km con carga. El cálculo manuscrito del talón (`K × €/km
 
 No hay tickets de gasóleo sueltos: el gasóleo sale del parte.
 
+### Qué se LEE y qué se ARCHIVA (confirmado Julio 12/11)
+- **Para procesar (facturar) se lee SOLO:** la **ficha/parte** ("Dietas") y el/los **talón(es)
+  de porte**. De ahí salen km, odómetros, fechas, orígenes/destinos y mercancía. Los **albaranes
+  de terceros NO se leen** (se archivan tal cual — ahorro de tokens).
+- **Archivo de documentación:** un PDF por **viaje** con el **scan del talón + los documentos que
+  acompañan ese viaje** (todo menos la ficha, que va a la carpeta de la orden). **Nombre del archivo
+  = `<chofer-slug>-<fecha>`** (a diferencia de los químicos, que se nombran por el Nº de referencia,
+  porque CLAVO no tiene ref por albarán). Va en `procesados/CLAVO/<AAAA-MM>/<chofer>-<fecha>.pdf`.
+- **Por ahora SOLO choferes de TLE** (no THEC): el perfil THEC de CLAVO queda para más adelante.
+
 ---
 
 ## 4. El Excel de control (`CONTROL_FACTURACION_FRIGOS_2026.xlsx`)

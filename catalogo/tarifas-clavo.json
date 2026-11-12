@@ -18,6 +18,12 @@
       "R": 1.31,
       "cercanias": 212,
       "reinosa": 315
+    },
+    "2026-11": {
+      "S": 1.52,
+      "R": 1.31,
+      "cercanias": 212,
+      "reinosa": 315
     }
   },
   "indexacion_pct": {
@@ -26,5 +32,5 @@
     "2026-10": 0.145
   },
   "_pendiente": "Faltan los meses intermedios de tarifas_km (feb-sep). Un mes sin tarifa -> tarifa_pendiente (resiliencia).",
-  "_nota_indexacion": "CLAVO se indexa por MES COMPLETO (no por quincena): octubre 0,145 confirmado Julio 11/11 (coincide con Quimidroga mensual). ago 0,0766, sep 0,1370."
+  "_nota_indexacion": "CLAVO se indexa por MES COMPLETO (no por quincena): octubre 0,145 confirmado Julio 11/11 (coincide con Quimidroga mensual). ago 0,0766, sep 0,1370. NOVIEMBRE: las tarifas_km son IGUALES a octubre (confirmado Julio 12/11). El INDICE NO se carga por albaran: se pone UNA sola linea en el momento de la FACTURACION sobre el monto total de todos los viajes (por eso la linea por albaran va cargar:false; si falta el % del mes el factor queda vacio y se cierra en facturacion, sin bloquear)."
 }
