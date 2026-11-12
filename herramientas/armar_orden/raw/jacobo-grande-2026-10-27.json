@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111171337.pdf (5 pags: 1 hoja ficha TLE + CMR FORESA + orden/albaran/CMR IQOXE). Jacobo Grande (TLE propio), tractora 7585MCG (cabeza 7585), remolque R3697BDK -> 1 viaje, 2 albaranes. T1 FORESA Caldas->URSA Iberica (El Pla de Santa Maria, Tarragona), RES 3181 -> COLA 23.040, ref 2033377. T2 IQOXE La Canonja (Tarragona) -> PERSAN Azambuja Grande (PT), IQOXINOL 23-2, 23.880; cliente RNM (RNM es el gestor/carrier, subcontrata a TLE), INTERNACIONAL (PI); ref 229897 (Nro de CMR/transporte IQOXE, como el precedente de octubre 229896). Pesos del CMR/albaran casilla 13. Dietas NO van a Gesruta.",
+  "escaneo": "20261111171337.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-27",
+  "chofer": "JACOBO GRANDE",
+  "cabeza": "7585",
+  "viajes": [
+    {
+      "matricula": "7585MCG",
+      "remolque": "R3697BDK",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "URSA", "carga_lit": "COLA", "referencia": "2033377", "salida": "27/10/2026", "llegada": "29/10/2026", "peso_kg": 23040, "km_inicio": 417615, "km_fin": 418660 },
+        { "cliente_lit": "RNM TRANSPORTES QUIMICOS, S.A.", "origen_lit": "TARRAGONA", "destino_lit": "AZAMBUJA", "carga_lit": "IQOXINOL", "referencia": "229897", "salida": "29/10/2026", "llegada": "02/11/2026", "peso_kg": 23880, "km_inicio": 418714, "km_fin": 419995 }
+      ]
+    }
+  ]
+}

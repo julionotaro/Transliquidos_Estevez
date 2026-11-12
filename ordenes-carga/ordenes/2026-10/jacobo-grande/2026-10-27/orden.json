@@ -1,0 +1,100 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "7585",
+        "verificar": {
+          "matricula": "7585MCG",
+          "remolque": "R3697BDK",
+          "chofer": "JACOBO GRANDE MENDEZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "URSA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2033377",
+          "salida": "27/10/2026",
+          "llegada": "29/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,040",
+              "precio": null,
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": null,
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "417615",
+            "fin": "418660",
+            "carga": "1045"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "destino": {
+            "codigo": "AZAMB",
+            "esperado": "AZAMBUJA(PT)"
+          },
+          "carga": {
+            "codigo": "IQOXIN",
+            "esperado": "IQOXINOL"
+          },
+          "referencia": "229897",
+          "salida": "29/10/2026",
+          "llegada": "02/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,880",
+              "precio": "88,45",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "2.112,19",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "418714",
+            "fin": "419995",
+            "carga": "1281"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
