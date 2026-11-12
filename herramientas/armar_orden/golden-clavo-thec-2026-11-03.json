@@ -1,5 +1,5 @@
 {
-  "_nota": "BLANCO (sintetico) CLAVO + THEC -> perfil THEC. empresa THEC, cabeza 9400 (normal), sin proveedor, km normales. Correccion Julio 10/11.",
+  "_nota": "BLANCO (sintetico) CLAVO + THEC -> perfil THEC. empresa THEC, cabeza 9400 (normal), sin proveedor, km normales. Correccion Julio 10/11. Sentido R (destino Caldas) -> tarifa noviembre 1,31 (= octubre, confirmado Julio 12/11); idx agregada factor vacio (se cierra en facturacion).",
   "empresa": "THEC",
   "viajes": [
     {
@@ -39,13 +39,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "451,000",
-              "precio": null,
+              "precio": "1,3100",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": null,
+              "cantidad": "590,81",
               "factor": null,
               "cargar": false
             }
@@ -56,7 +56,7 @@
             "fin": "100451",
             "vacio": "0"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         }
       ]
     }
