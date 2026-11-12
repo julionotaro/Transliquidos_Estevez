@@ -22,8 +22,8 @@
             "esperado": "CALDAS DE REIS"
           },
           "destino": {
-            "codigo": null,
-            "esperado": "OVER"
+            "codigo": "QUER",
+            "esperado": "QUER"
           },
           "carga": {
             "codigo": "6",
