@@ -1,0 +1,25 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111171140.pdf (6 pags: 1 hoja ficha TLE + CMR/albaranes). Francisco Asensi (TLE propio), tractora 2498KZL (cabeza 2498). DOS remolques -> 2 viajes: V1 R1007BCV (T1,T2), V2 R3487BCD (T3) - la ficha anota 'taller cambio rodamientos', el R1007BCV fue al taller y el T3 uso R3487BCD. T1 FORESA Caldas->IP DECOR (Tordera, Barcelona), RES 0011 -> COLA 23.220, ref 2035387, nacional. T2 QUIMIDROGA Barcelona(Relisa)->NUDESA Silleda, LISINA LIQUIDA 50% 23.960 (ref factura 713355; QUIMIDROGA nacional). Destino real Nudesa Silleda; se carga al punto PONTEVEDRA (tarifa Barcelona->Pontevedra 79,71). T3 FORESA Caldas->Orember, RES 2090 -> COLA 25.300, idx agregada cargar:false, ref 2036021. Pesos del CMR/albaran casilla 13. Dietas NO van a Gesruta.",
+  "escaneo": "20261111171140.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-28",
+  "chofer": "FRANCISCO ASENSI",
+  "cabeza": "2498",
+  "viajes": [
+    {
+      "matricula": "2498KZL",
+      "remolque": "R1007BCV",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TORDERA", "carga_lit": "COLA", "referencia": "2035387", "salida": "28/10/2026", "llegada": "29/10/2026", "peso_kg": 23220, "km_inicio": 886919, "km_fin": 888119 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "PONTEVEDRA", "carga_lit": "LISINA", "referencia": "713355", "salida": "30/10/2026", "llegada": "03/11/2026", "peso_kg": 23960, "km_inicio": 888255, "km_fin": 889719 }
+      ]
+    },
+    {
+      "matricula": "2498KZL",
+      "remolque": "R3487BCD",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2036021", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 25300, "km_inicio": 889354, "km_fin": 889543 }
+      ]
+    }
+  ]
+}

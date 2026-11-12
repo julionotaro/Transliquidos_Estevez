@@ -1,0 +1,155 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2498",
+        "verificar": {
+          "matricula": "2498KZL",
+          "remolque": "R1007BCV",
+          "chofer": "FRANCISCO ASENSI"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2035387",
+          "salida": "28/10/2026",
+          "llegada": "29/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,220",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.680,20",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "886919",
+            "fin": "888119",
+            "carga": "1200"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "PO",
+            "esperado": "PONTEVEDRA"
+          },
+          "carga": {
+            "codigo": "62",
+            "esperado": "LISINA"
+          },
+          "referencia": "713355",
+          "salida": "30/10/2026",
+          "llegada": "03/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,960",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.909,85",
+              "factor": "0,1450"
+            }
+          },
+          "km": {
+            "inicio": "888255",
+            "fin": "889719",
+            "carga": "1464"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "2498",
+        "verificar": {
+          "matricula": "2498KZL",
+          "remolque": "R3487BCD",
+          "chofer": "FRANCISCO ASENSI"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2036021",
+          "salida": "02/11/2026",
+          "llegada": "02/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,300",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "350,40",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "inicio": "889354",
+            "fin": "889543",
+            "carga": "189"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
