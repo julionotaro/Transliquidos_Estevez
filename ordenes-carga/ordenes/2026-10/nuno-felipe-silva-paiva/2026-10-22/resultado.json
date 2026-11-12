@@ -1,0 +1,54 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/nuno-felipe-silva-paiva/2026-10-22/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-12T13:01:11",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "8504",
+      "chofer": "NUNO FELIPE SILVA PAIVA",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2032762",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "5050141625",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "339326",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "200858712",
+          "nro_albaran_gesruta": "04",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        }
+      ]
+    }
+  ]
+}

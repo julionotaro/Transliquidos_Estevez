@@ -1,0 +1,55 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-10/francisco-asensi/2026-10-28/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-12T12:30:23",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "2498",
+      "chofer": "FRANCISCO ASENSI",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2035387",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "713355",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "2498",
+      "chofer": "FRANCISCO ASENSI",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v2.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036021",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}
