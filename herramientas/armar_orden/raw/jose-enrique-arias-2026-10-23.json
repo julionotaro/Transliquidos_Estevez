@@ -1,0 +1,20 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111142100.pdf (16 pags). Jose Enrique Arias Vazquez (TLE propio), tractora 0275JLC (cabeza 0275), remolque R1943BBL -> 1 viaje, 4 albaranes. NO es un juego descuadrado: trae DOS hojas de ficha (p1 cubre los tramos de OCTUBRE, p2 los de NOVIEMBRE), que entre ambas cubren las 4 cargas. Pagina->albaran: p1-p2 fichas (oct 23/10+28/10 dietas 214; nov 02/11+04/11 dietas 200) -> carpeta de orden; p3 guia BRESFOR -> albaran 1; p4-p9 IQOXINOL (email RNM + CMR + CoA IQOXE) -> albaran 2; p10-p14 OC Transtambre + carta de porte Bioetanol + tickets bascula Altorricon -> albaran 3; p15-p16 orden QUIMIDROGA + albaran TEPSA -> albaran 4. Cargas: (1) BRESFOR/FORESA PORTUGAL Aveiro(Gafanha da Nazare)->FINSA Cella/TERUEL, RES 1350 -> COLA 23.540, ref 5050141632 (guia de remessa; pedido 0400893102), tarifa Aveiro->Teruel 56 PI IVA 0, km 1302534/1303419. (2) IQOXE La Canonja (Tarragona)->INTERHIGIENE Serzedelo (PT) via RNM, IQOXINOL 25-7 90% 23.980, cliente RNM (gestor, subcontrata a TLE), INTERNACIONAL; ref 229837 (OT IQOXE; RNM ref cliente 3100085631; guia RNM entrega 0141171963); destino SERZEDELO confirmado por ficha p1 y email RNM; TARIFA PENDIENTE (no hay tarifa RNM Tarragona->Serzedelo); km 1303814/1304865. (3) TRANSTAMBRE (broker) Bioetanol Galicia Teixeiro->Biodiesel Aragon Altorricon (Huesca), ACEITE CRUDO DE MAIZ 23.200, OC Transtambre PRECIO 56 EUR/TN + 15,97% index gasoil (idx_pct 0,1597); ref 319574 (albaran Bioetanol Galicia; resguardo 329.458); 'DISCRECION COMERCIAL': la carta de porte se emite como descarga en Mengibar (Valora Energy/Inv.Patrimoniales Almazara) aunque la descarga real es Altorricon (BioAragon); el camion es TLE (tractora 0275JLC) con cisterna THEC R1943BBL. TARIFA PENDIENTE: el armador no tiene tarifa Teixeiro->Altorricon ni mapea a TRANSTAMBRE -> cargar a mano 56 EUR/TN + idx 0,1597 segun OC; km 1305161/1306068. (4) QUIMIDROGA Barcelona(TEPSA QD4)->CONDUCTORES ELECTRICOS REVI (Quintela, Orense), VINKA-PLAST QD 390 23.960 (neto albaran TEPSA 202610007549CRP; orden decia 24.000), ref factura 713769 (nacional, destino ORENSE); sin km de ficha fiable (p2 leyo inicio 1301226, incoherente) -> KM PENDIENTE. Pesos del CMR/albaran/bascula. Dietas (214+200) NO van a Gesruta.",
+  "escaneo": "20261111142100.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-23",
+  "chofer": "JOSE ENRIQUE ARIAS",
+  "cabeza": "0275",
+  "viajes": [
+    {
+      "matricula": "0275JLC",
+      "remolque": "R1943BBL",
+      "albaranes": [
+        { "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141632", "salida": "23/10/2026", "llegada": "27/10/2026", "peso_kg": 23540, "km_inicio": 1302534, "km_fin": 1303419 },
+        { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "TARRAGONA", "destino_lit": "SERZEDELO", "carga_lit": "IQOXINOL", "referencia": "229837", "salida": "28/10/2026", "llegada": "29/10/2026", "peso_kg": 23980, "km_inicio": 1303814, "km_fin": 1304865 },
+        { "cliente_lit": "TRANSTAMBRE, S.L.", "origen_lit": "TEIXEIRO", "destino_lit": "ALTORRICON", "carga_lit": "ACEITE DE MAIZ", "referencia": "319574", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 23200, "idx_pct": 0.1597, "km_inicio": 1305161, "km_fin": 1306068 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "ORENSE", "carga_lit": "VINKA-PLAST", "referencia": "713769", "salida": "03/11/2026", "llegada": "05/11/2026", "peso_kg": 23960, "peso_ok_redondo": true }
+      ]
+    }
+  ]
+}

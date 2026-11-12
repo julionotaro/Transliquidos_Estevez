@@ -1,0 +1,180 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "0275",
+        "verificar": {
+          "matricula": "0275JLC",
+          "remolque": "R1943BBL",
+          "chofer": "JOSE ENRIQUE ARIAS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "5050141632",
+          "salida": "23/10/2026",
+          "llegada": "27/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,540",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.318,24",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "1302534",
+            "fin": "1303419",
+            "carga": "885"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "destino": {
+            "codigo": "SERZE",
+            "esperado": "SERZEDELO(PT)"
+          },
+          "carga": {
+            "codigo": "IQOXIN",
+            "esperado": "IQOXINOL"
+          },
+          "referencia": "229837",
+          "salida": "28/10/2026",
+          "llegada": "29/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,980",
+              "precio": null,
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": null,
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "1303814",
+            "fin": "1304865",
+            "carga": "1051"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "20",
+            "esperado": "TRANSTAMBRE, S.L."
+          },
+          "origen": {
+            "codigo": "TEIXE",
+            "esperado": "TEIXEIRO"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "ALTORRICON"
+          },
+          "carga": {
+            "codigo": null,
+            "esperado": "ACEITE DE MAIZ"
+          },
+          "referencia": "319574",
+          "salida": "02/11/2026",
+          "llegada": "03/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,200",
+              "precio": null,
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": null,
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "1305161",
+            "fin": "1306068",
+            "carga": "907"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "ORE",
+            "esperado": "ORENSE"
+          },
+          "carga": {
+            "codigo": "VINKA",
+            "esperado": "VINKA-PLAST"
+          },
+          "referencia": "713769",
+          "salida": "03/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,960",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.909,85",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "pendiente": true
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
