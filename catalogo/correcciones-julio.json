@@ -247,8 +247,8 @@
       "estado": "confirmada"
     },
     {
-      "fecha": "2026-11-12", "por": "Julio", "cliente": "FORESA / TRANSTAMBRE", "campo": "referencia (entrada intermediada por Transtambre)",
-      "regla": "Los viajes de ENTRADA a FORESA Caldas desde plantas cargadoras (ej TERQUIMSA/STOCKMEIER Tarragona->Caldas, acetato de vinilo) pueden estar INTERMEDIADOS por TRANSTAMBRE: en ese caso la REFERENCIA sale de la 'Referencia de pedido' de la OC de Transtambre (formato TQxxxxxxx; mismo lugar de donde sale la ref del viaje quimico de Transtambre), NO del Nro 2008xxxx de FORESA. El cliente de facturacion sigue siendo FORESA. Confirmado Julio 12/11: Pablo Carles Tarragona->Caldas ref = TQ5605134 (antes se habia puesto 200859030).",
+      "fecha": "2026-11-12", "por": "Julio", "cliente": "FORESA / TRANSTAMBRE", "campo": "quien genera el viaje -> ref/cliente/tarifa/idx",
+      "regla": "Para un viaje de ENTRADA a FORESA (ej TERQUIMSA/STOCKMEIER Tarragona->Caldas, acetato de vinilo), lo que define REFERENCIA, CLIENTE, TARIFA e INDEXACION es QUIEN GENERA/GESTIONA el viaje, que se ve en el REMITENTE DEL MAIL de la OC: (a) si el pedido lo genera FORESA (entrega a Foresa, mail de Foresa) -> todo es de FORESA: ref = la de FORESA (Nro 2008xxxx) o la del albaran, cliente FORESA, tarifa e idx de FORESA. (b) solo si TRANSTAMBRE gestiona o solicita el viaje (a veces le da viajes a TLE) -> se usa la ref de la OC de Transtambre (TQxxxxxxx), y la tarifa/idx de Transtambre (sea tarifa cerrada o por TN). Confirmado Julio 12/11: Pablo Carles Tarragona->Caldas lo genera FORESA -> ref 200859030 (NO la TQ de la OC de Transtambre que venia en el sobre). Aunque aparezca una OC de Transtambre en el escaneo, no alcanza: lo que manda es quien genera el pedido.",
       "estado": "confirmada"
     },
     {

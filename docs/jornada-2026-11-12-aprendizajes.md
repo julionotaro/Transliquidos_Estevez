@@ -179,9 +179,11 @@ Julio pasó las diferencias que corrigió a mano en Gesruta para asentarlas y co
 3. **Vázquez Arteixo→Barcelona Q-QUAT.** El material **Q-Quat SÍ está** en el catálogo (cod **QUAT**,
    descripción "Q QUAT") → ya resuelve. Doble destino Barcelona (Zona Franca + Barna) → lleva reparto
    (REP 90), ya estaba.
-4. **Pablo Carles — Terquimsa Tarragona→Caldas: ref = TQ5605134.** Este viaje de entrada también es
-   **intermediado por TRANSTAMBRE**; la referencia sale de la "Referencia de pedido" de la OC de
-   Transtambre (mismo lugar que TQ5603360 del viaje de Alfonsín), no del Nº 2008xxxx de FORESA. PDF
-   archivado renombrado 200859030→TQ5605134.
+4. **Pablo Carles — Terquimsa Tarragona→Caldas: ref = 200859030 (FORESA).** *(Julio rectificó:
+   su indicación previa de usar TQ5605134 fue un error.)* Aunque en el sobre venga una OC de
+   Transtambre, este viaje es una **entrega a FORESA generada por FORESA** (se ve en el remitente del
+   mail) → ref, cliente, tarifa e idx son de **FORESA** (ref 200859030, el Nº 2008xxxx). Solo si
+   **Transtambre gestiona/solicita** el viaje se usa la ref/tarifa/idx de Transtambre. Lo que manda es
+   **quién genera el pedido**, no que aparezca una OC de Transtambre.
 5. **Pedro Fraga — km vacíos.** Dos tramos (2036041, 2036058) estaban en 124 por reconstrucción; la
    ficha dice **123**. Corregido en el orden.json (secuencia real 123,124,123,123,123,124,124,124,123,144).
