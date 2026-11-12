@@ -1,0 +1,141 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "8262",
+        "verificar": {
+          "matricula": "8262MNC",
+          "remolque": "R4714BCX",
+          "chofer": "CANDIDO JAMARDO"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "661",
+            "esperado": "RNM TRANSPORTES QUIMICOS, LDA"
+          },
+          "origen": {
+            "codigo": "AVILE",
+            "esperado": "AVILES"
+          },
+          "destino": {
+            "codigo": "VIANA",
+            "esperado": "VIANA DO CASTELO"
+          },
+          "carga": {
+            "codigo": "20",
+            "esperado": "ACIDO SULFURICO"
+          },
+          "referencia": "0141171881",
+          "salida": "27/10/2026",
+          "llegada": "28/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,920",
+              "precio": "36,50",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "873,08",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "334038",
+            "fin": "334528",
+            "carga": "490"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "URSA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2035893",
+          "salida": "02/11/2026",
+          "llegada": "03/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,320",
+              "precio": null,
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": null,
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "334804",
+            "fin": "335839",
+            "carga": "1035"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "ZA",
+            "esperado": "ZAMORA"
+          },
+          "carga": {
+            "codigo": "62",
+            "esperado": "LISINA"
+          },
+          "referencia": "713541",
+          "salida": "03/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,960",
+              "precio": "71,05",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.773,41",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "335954",
+            "fin": "336731",
+            "carga": "777"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
