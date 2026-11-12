@@ -1,0 +1,105 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "7394",
+        "verificar": {
+          "matricula": "7394LZP",
+          "remolque": "R1832BBC",
+          "chofer": "JOSE ANTONIO VAZQUEZ HERMO"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "ARTEI",
+            "esperado": "ARTEIXO"
+          },
+          "destino": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "carga": {
+            "codigo": null,
+            "esperado": "Q-QUAT 50"
+          },
+          "referencia": "10072585",
+          "salida": "02/11/2026",
+          "llegada": "04/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,080",
+              "precio": null,
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": null,
+              "factor": "0,1600"
+            },
+            "reparto": {
+              "concepto": "REP",
+              "cantidad": "1",
+              "precio": "90,00"
+            }
+          },
+          "km": {
+            "inicio": "451466",
+            "fin": "452628",
+            "carga": "1162"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "ORE",
+            "esperado": "ORENSE"
+          },
+          "carga": {
+            "codigo": "VINKA",
+            "esperado": "VINKA-PLAST"
+          },
+          "referencia": "713772",
+          "salida": "05/11/2026",
+          "llegada": "09/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,100",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.921,01",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "452719",
+            "fin": "453774",
+            "carga": "1055"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

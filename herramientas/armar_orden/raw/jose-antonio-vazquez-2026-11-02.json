@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111171641.pdf (8 pags: 1 hoja ficha TLE + orden/notas QUIMIDROGA-Solenis + cartas de porte vacio + orden/CMR QUIMIDROGA-TEPSA). Jose Antonio Vazquez Hermo (TLE propio), tractora 7394LZP (cabeza 7394), remolque R1832BBC -> 1 viaje, 2 albaranes. T1 QUIMIDROGA: carga Q-QUAT 50 en ARTEIXO QUIMICA (Solenis, Arteixo, La Coruna) -> DOS entregas en Barcelona: APLICLOR (S.Marti de Sesgueioles) 11.200 + Envas.Dir.Q2 Zona Franca 11.880 = 23.080 kg (la ficha leyo 'Q-DUST'; es Q-QUAT 50). Doble destino -> linea de reparto. REVISAR con Julio: material Q-QUAT 50, tarifa Arteixo->Barcelona, y la REFERENCIA (la orden de transporte QUIMIDROGA es 10072585; no trae 'Referencia en factura' tipo 713xxx; pedidos Solenis 7000043746 y 5000088249). T2 QUIMIDROGA Barcelona(TEPSA)->CONDUCTORES ELECTRICOS REVI (Quintela, Orense), VINKA-PLAST QD 390 24.100 (ref factura 713772; nacional; destino al punto ORENSE). Pesos del CMR/albaran. Dietas NO van a Gesruta.",
+  "escaneo": "20261111171641.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "JOSE ANTONIO VAZQUEZ HERMO",
+  "cabeza": "7394",
+  "viajes": [
+    {
+      "matricula": "7394LZP",
+      "remolque": "R1832BBC",
+      "albaranes": [
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "ARTEIXO", "destino_lit": "BARCELONA", "carga_lit": "Q-QUAT 50", "referencia": "10072585", "salida": "02/11/2026", "llegada": "04/11/2026", "peso_kg": 23080, "reparto": 90, "km_inicio": 451466, "km_fin": 452628 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "ORENSE", "carga_lit": "VINKA-PLAST", "referencia": "713772", "salida": "05/11/2026", "llegada": "09/11/2026", "peso_kg": 24100, "peso_ok_redondo": true, "km_inicio": 452719, "km_fin": 453774 }
+      ]
+    }
+  ]
+}
