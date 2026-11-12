@@ -3610,5 +3610,15 @@
   "pais": "",
   "tipo": "generico",
   "origen_alta": "gesruta (cod 9731; FORESA Caldas->Tordera COLA 72,36 - historico). Alta 03/11 juego Jose A. Vazquez (IP Decor Spain)"
+ },
+ {
+  "id_punto": "CASTE",
+  "nombre_canonico": "CASTELLON",
+  "alias": "CASTELLO|CASTELLON DE LA PLANA|QUIMIALMEL|QUIMIALMEL EUROMAP",
+  "municipio": "CASTELLON DE LA PLANA",
+  "provincia": "CASTELLON",
+  "pais": "ESPANA",
+  "tipo": "generico",
+  "origen_alta": "Correccion Julio 07/10 y 12/11: CASTELLON se carga como CASTE; el duplicado CS de puntos-gesruta-base NO se usa. Al estar en curados (puntos-alta) desplaza a CS en cargarPuntos. Destino de FORESTAL Mugardos->Castellon (Quimialmel) precio fijo 2.025."
  }
 ]

@@ -1,0 +1,96 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "6516",
+        "verificar": {
+          "matricula": "6516KTH",
+          "remolque": "R1644BDB",
+          "chofer": "JOSE RUBEN ABALO RECUNA"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "321",
+            "esperado": "FORESTAL DEL ATLANTICO, S.A."
+          },
+          "origen": {
+            "codigo": "MUGAR",
+            "esperado": "MUGARDOS"
+          },
+          "destino": {
+            "codigo": "CASTE",
+            "esperado": "CASTELLON"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "26P1369",
+          "salida": "03/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "2.025,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": null
+          },
+          "km": {
+            "inicio": "861625",
+            "fin": "862641",
+            "carga": "1016"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "PO",
+            "esperado": "PONTEVEDRA"
+          },
+          "carga": {
+            "codigo": "62",
+            "esperado": "LISINA"
+          },
+          "referencia": "713542",
+          "salida": "05/11/2026",
+          "llegada": "09/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,180",
+              "precio": "79,71",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.927,39",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "862934",
+            "fin": "864097",
+            "carga": "1163"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

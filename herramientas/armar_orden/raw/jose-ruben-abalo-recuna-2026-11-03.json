@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261112150536.pdf (7 pags). Jose Ruben Abalo Recuna (TLE propio), tractora 6516KTH (cabeza 6516), remolque R1644BDB -> 1 viaje, 2 albaranes. p1 ficha; p2-p4 FORESTAL (OC pedido 26P1369 + albaran de bascula 26065916 + firma Docuten); p5-p7 QUIMIDROGA (OC 713542 + bascula RELISA 751276 + ticket NUDESA descarga). T1 FORESTAL DEL ATLANTICO Mugardos->Quimialmel Castellon, 'Resina FORPLAST 2902-R' -> carga COLA (cod 1), ref = Nro PEDIDO Forestal 26P1369 (NO la ref cliente PP01261465); PRECIO FIJO 2.025 EUR/viaje (um UN, cantidad 1), P IVA 21, INDEXACION INCLUIDA (idx_incluida: no hay linea G); peso bascula FORESTAL neto 23.140 (la OC decia 25.000 previsto). T2 QUIMIDROGA Barcelona (Relisa)->NUDESA Nutrimentos Deza (Silleda, Pontevedra), LISINA LIQUIDA 50% -> LISINA cod 62, ref factura 713542; destino se carga PONTEVEDRA (cascada; Silleda no tiene tarifa propia) = 79,71; P IVA 21; PESO de CARGA (bascula RELISA neto) 24.180 (D-01; la OC decia 25.000 y el ticket NUDESA de descarga 24.160, se factura el de carga). Choferes PROPIO -> km en formulario Kilometros (vacio lo confirma Julio). Dietas 289,14 NO van a Gesruta.",
+  "escaneo": "20261112150536.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-03",
+  "chofer": "JOSE RUBEN ABALO RECUNA",
+  "cabeza": "6516",
+  "viajes": [
+    {
+      "matricula": "6516KTH",
+      "remolque": "R1644BDB",
+      "albaranes": [
+        { "cliente_lit": "FORESTAL DEL ATLANTICO, S.A.", "origen_lit": "MUGARDOS", "destino_lit": "CASTELLON", "carga_lit": "COLA", "referencia": "26P1369", "salida": "03/11/2026", "llegada": "05/11/2026", "peso_kg": 23140, "precio_fijo": 2025, "idx_incluida": true, "km_inicio": 861625, "km_fin": 862641 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "PONTEVEDRA", "carga_lit": "LISINA", "referencia": "713542", "salida": "05/11/2026", "llegada": "09/11/2026", "peso_kg": 24180, "km_inicio": 862934, "km_fin": 864097 }
+      ]
+    }
+  ]
+}
