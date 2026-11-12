@@ -77,13 +77,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "23,980",
-              "precio": null,
+              "precio": "86,00",
               "concepto_esperado": "PI",
               "iva_esperado": "0"
             },
             "indexacion": {
               "concepto": "GPT",
-              "cantidad": null,
+              "cantidad": "2.062,28",
               "factor": "0,1597"
             }
           },
@@ -92,7 +92,7 @@
             "fin": "1304865",
             "carga": "1051"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         },
         {
           "cliente": {
@@ -104,8 +104,8 @@
             "esperado": "TEIXEIRO"
           },
           "destino": {
-            "codigo": null,
-            "esperado": "ALTORRICON"
+            "codigo": "ALTO",
+            "esperado": "ALTORRICON (HU)"
           },
           "carga": {
             "codigo": null,
@@ -118,13 +118,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "23,200",
-              "precio": null,
+              "precio": "56,00",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": null,
+              "cantidad": "1.299,20",
               "factor": "0,1597"
             }
           },
@@ -133,7 +133,7 @@
             "fin": "1306068",
             "carga": "907"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         },
         {
           "cliente": {

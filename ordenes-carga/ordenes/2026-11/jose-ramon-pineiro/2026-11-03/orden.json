@@ -36,13 +36,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "23,540",
-              "precio": null,
+              "precio": "34,50",
               "concepto_esperado": "PI",
               "iva_esperado": "0"
             },
             "indexacion": {
               "concepto": "GPT",
-              "cantidad": null,
+              "cantidad": "812,13",
               "factor": "0,1600"
             }
           },
@@ -51,7 +51,7 @@
             "fin": "968742",
             "carga": "476"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         },
         {
           "cliente": {

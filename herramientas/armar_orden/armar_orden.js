@@ -122,7 +122,12 @@ function resolverTarifa(razonSocial, origenCanon, destinoCanon, materialNombre, 
   if (r.estado === 'SIN_TARIFA' && filt !== deps.tarifas) {
     r = tarifasMod.buscarTarifa(consulta, deps.tarifas);
   }
-  if (r.estado !== 'SIN_TARIFA' && r.tarifa) {
+  // Un match DIRECTO (ruta exacta en la tabla) manda. Un FALLBACK_PROVINCIA es una
+  // analogia difusa (precio de OTRO destino de la misma zona) y NO debe ganarle a una
+  // tarifa CONFIRMADA por Julio para esta ruta exacta: por eso solo el DIRECTO corta aca.
+  // (Caso real: Caldas->URSA caia a Caldas->TERMOLAN 28,89 por provincia, cuando el
+  // historico factura 72,36 -> ahora gana la confirmada de Julio.)
+  if (r.estado === 'DIRECTO' && r.tarifa) {
     return { precio: r.tarifa.valor, tipo: r.tarifa.tipo, via: r.estado, motivo: null };
   }
   // 2b) TARIFA CONFIRMADA por Julio (overlay fuera del export). Match cliente+origen+destino (+material).
@@ -133,6 +138,10 @@ function resolverTarifa(razonSocial, origenCanon, destinoCanon, materialNombre, 
       && (!t.material || cruce.norm(t.material) === cruce.norm(materialNombre));
   });
   if (cf) { return { precio: cf.precio, tipo: 'tn', via: 'confirmada-julio', motivo: null }; }
+  // 2c) Sin confirmada: si la tabla dio un FALLBACK por provincia, usarlo (mejor que nada).
+  if (r.estado !== 'SIN_TARIFA' && r.tarifa) {
+    return { precio: r.tarifa.valor, tipo: r.tarifa.tipo, via: r.estado, motivo: null };
+  }
   // 3) Cascada por ANALOGIA CONFIRMADA (destino real sin fila -> precio de otra ruta).
   var a = deps.analogias.find(function (c) {
     return cruce.norm(c.cliente) === cruce.norm(razonSocial)

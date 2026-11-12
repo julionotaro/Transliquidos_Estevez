@@ -11,8 +11,8 @@
       "remolque": "R1943BBL",
       "albaranes": [
         { "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141632", "salida": "23/10/2026", "llegada": "27/10/2026", "peso_kg": 23540, "km_inicio": 1302534, "km_fin": 1303419 },
-        { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "TARRAGONA", "destino_lit": "SERZEDELO", "carga_lit": "IQOXINOL", "referencia": "229837", "salida": "28/10/2026", "llegada": "29/10/2026", "peso_kg": 23980, "km_inicio": 1303814, "km_fin": 1304865 },
-        { "cliente_lit": "TRANSTAMBRE, S.L.", "origen_lit": "TEIXEIRO", "destino_lit": "ALTORRICON", "carga_lit": "ACEITE DE MAIZ", "referencia": "319574", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 23200, "idx_pct": 0.1597, "km_inicio": 1305161, "km_fin": 1306068 },
+        { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "TARRAGONA", "destino_lit": "SERZEDELO(PT)", "carga_lit": "IQOXINOL", "referencia": "229837", "salida": "28/10/2026", "llegada": "29/10/2026", "peso_kg": 23980, "km_inicio": 1303814, "km_fin": 1304865 },
+        { "cliente_lit": "TRANSTAMBRE, S.L.", "origen_lit": "TEIXEIRO", "destino_lit": "ALTORRICON (HU)", "carga_lit": "ACEITE DE MAIZ", "referencia": "319574", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 23200, "idx_pct": 0.1597, "km_inicio": 1305161, "km_fin": 1306068 },
         { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "ORENSE", "carga_lit": "VINKA-PLAST", "referencia": "713769", "salida": "03/11/2026", "llegada": "05/11/2026", "peso_kg": 23960, "peso_ok_redondo": true }
       ]
     }

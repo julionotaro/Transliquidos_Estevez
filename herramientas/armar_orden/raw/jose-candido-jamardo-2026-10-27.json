@@ -11,7 +11,7 @@
       "remolque": "R4714BCX",
       "albaranes": [
         { "cliente_lit": "RNM PRODUTOS QUIMICOS, LDA", "origen_lit": "AVILES", "destino_lit": "VIANA DO CASTELO", "carga_lit": "ACIDO SULFURICO", "referencia": "0141171881", "salida": "27/10/2026", "llegada": "28/10/2026", "peso_kg": 23920, "km_inicio": 334038, "km_fin": 334528 },
-        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "URSA", "carga_lit": "COLA", "referencia": "2035893", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 23320, "km_inicio": 334804, "km_fin": 335839 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "URSA IBERICA, S.A.", "carga_lit": "COLA", "referencia": "2035893", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 23320, "km_inicio": 334804, "km_fin": 335839 },
         { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "ZAMORA", "carga_lit": "LISINA", "referencia": "713541", "salida": "03/11/2026", "llegada": "05/11/2026", "peso_kg": 24960, "km_inicio": 335954, "km_fin": 336731 }
       ]
     }

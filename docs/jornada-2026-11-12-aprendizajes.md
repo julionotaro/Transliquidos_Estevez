@@ -97,6 +97,13 @@ Todas quedaron grabadas en `catalogo/correcciones-julio.json`. Resumen:
   (`v.cabeza || raw.cabeza`) por viaje.
 - **Golden:** caso sintético "dos tractoras" agregado; fixtures CLAVO actualizadas al índice de
   octubre (0,0915 → 0,1450) tras el cambio en `catalogo/tarifas-clavo.json`. Golden 11/11 verde.
+- **Precedencia tarifa confirmada > fallback por provincia (fix 12/11).** `resolverTarifa` solo
+  corta con la tabla cuando el match es **DIRECTO** (ruta exacta). Un **FALLBACK_PROVINCIA** (la
+  tabla no tiene la ruta y devuelve el precio de OTRO destino de la zona) ya NO le gana a una
+  **tarifa confirmada por Julio** para la ruta exacta: ahora se consulta `confirmadas` antes del
+  fallback. Caso real: FORESA Caldas→URSA caía a Caldas→**TERMOLAN 28,89** por provincia, cuando el
+  histórico factura **72,36** (y Julio confirmó el destino URSA). Golden verde; ningún otro albarán
+  de la tanda cambió su total.
 
 ---
 
@@ -127,22 +134,29 @@ cod 51; IQOXINOL → cod IQOXIN; ACETATO DE VINILO → cod VINILO; ALCOHOL (Tran
 
 ---
 
-## 6. Pendientes abiertos para Julio (6 albaranes en TARIFA_PENDIENTE)
+## 6. Resolución de las pendientes (Julio, 12/11) — TODO cerrado
 
-El validador los acepta como estado válido marcado; quedan a la espera de confirmación:
+Los 6 albaranes que quedaron en TARIFA_PENDIENTE fueron resueltos por Julio y re-armados (quedan en
+PENDIENTE_CARGA, listos para el bot). Todas las tarifas están en `tarifas-confirmadas-julio.json`:
 
-1. **RNM Estarreja→León SOSA** (ref 5113063259) — sin tarifa de la ruta.
-2. **FORESA Caldas→URSA Ibérica** (El Pla de Santa María, Tarragona; refs 2033377 y 2035893) — el
-   punto **URSA no tiene código Gesruta** ni tarifa Caldas→URSA → destino REVISAR + tarifa pendiente.
-3. **QUIMIDROGA Arteixo→Barcelona Q-QUAT 50** (ref 10072585) — material **Q-QUAT 50** (sin código),
-   tarifa Arteixo→Barcelona y referencia a confirmar (la OC trae orden 10072585, no "Referencia en
-   factura" 713xxx; doble destino Barcelona: Apliclor + Zona Franca → línea de reparto).
-4. **RNM Tarragona→Serzedelo IQOXINOL** (ref 229837, n6) — sin tarifa RNM Tarragona→Serzedelo
-   (distinta de Tarragona→Azambuja 88,45).
-5. **TRANSTAMBRE Teixeiro→Altorricón** bioetanol/aceite de maíz (ref 319574, n6) — **tarifa cerrada
-   por OC: 56 €/TN + 15,97% idx**; cliente Transtambre no mapeado y sin tarifa de la ruta → cargar a
-   mano según OC (el `idx_pct` 0,1597 ya quedó en el raw).
+1. **RNM Estarreja→León SOSA** (5113063259) → **34,50 €/TN** ("tenemos tarifa Aveiro-León a 34,50,
+   usar esa"). PI/IVA 0. Total 942,07.
+2. **FORESA Caldas→URSA Ibérica** (2033377, 2035893) → destino **URSA** (El Pla de Santa María,
+   Tarragona; cod Gesruta URSA, ya existía) y tarifa **72,36 €/TN** (histórico; = zona Cataluña). Ojo:
+   la tabla general caía a Caldas→Termolán 28,89 por fallback de provincia → se corrigió la
+   precedencia del armador (§3). Totales 2.339,44 / 2.358,90.
+3. **QUIMIDROGA Arteixo→Barcelona Q-QUAT 50** (10072585) → **79,71 €/TN** + línea REP 90 (doble
+   destino). Total 2.691,11. (Material Q-QUAT 50 = cod QUAT en materiales.csv; el armador lo deja con
+   aviso "carga sin código" — se completa en Gesruta.)
+4. **RNM Tarragona→Serzedelo IQOXINOL** (229837, n6) → **86,00 €/TN** ("Tarragona-Vilanova de
+   Famaliçao/Serzedelo/Carreira 86"). PI/IVA 0. Total 2.391,63.
+5. **TRANSTAMBRE Teixeiro→Altorricón** (319574, n6) → **56,00 €/TN + 15,97% idx** (tarifa cerrada OC,
+   "Sí"). P/IVA 21. Total 1.823,08.
 
-Además, rutas **aplicadas por cascada/histórico** que convendría ratificar (ver §4 y `pendientes-gesruta.md`):
-Huelva→Caldas FENOL 74,25; Barcelona→Orense 79,71 (¿Ourense = Pontevedra/Coruña?); Barcelona→Zamora
-71,05; Barcelona→Leiria 88,25; Avilés→Viana do Castelo 36,50.
+**Rutas por cascada/histórico — todas ratificadas por Julio 12/11** (ya billaban correcto; ahora en
+`tarifas-confirmadas-julio.json`): Huelva→Caldas FENOL **74,25**; Barcelona→Orense **79,71** (Ourense
+= misma que Pontevedra/Coruña); Barcelona→Zamora **71,05**; Barcelona→Leiria **88,25**; Avilés→Viana
+do Castelo **36,50**.
+
+> No quedan pendientes de esta jornada. (Las 3 TARIFA_PENDIENTE que siguen en el registro son de
+> juegos de octubre previos —Aveiro→Toro, Avilés→Sines, Aveiro→REVISAR—, ya en `pendientes-gesruta.md` §D.)

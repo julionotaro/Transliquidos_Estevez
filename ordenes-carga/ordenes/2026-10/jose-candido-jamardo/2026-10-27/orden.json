@@ -63,8 +63,8 @@
             "esperado": "CALDAS DE REIS"
           },
           "destino": {
-            "codigo": null,
-            "esperado": "URSA"
+            "codigo": "URSA",
+            "esperado": "URSA IBERICA, S.A."
           },
           "carga": {
             "codigo": "1",
@@ -77,13 +77,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "23,320",
-              "precio": null,
+              "precio": "72,36",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": null,
+              "cantidad": "1.687,44",
               "factor": "0,1553"
             }
           },
@@ -92,7 +92,7 @@
             "fin": "335839",
             "carga": "1035"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         },
         {
           "cliente": {
