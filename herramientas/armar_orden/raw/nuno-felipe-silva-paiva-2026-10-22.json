@@ -1,0 +1,20 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111171030.pdf (10 pags: 1 hoja ficha TLE + CMR/albaranes de 3 hauls, cargas de OCTUBRE procesadas ahora). Nuno Felipe Silva Paiva (TLE propio), tractora 8504KDR (cabeza 8504), remolque R4905BDF -> 1 viaje, 3 albaranes. T1 FORESA Caldas->Finsa Orember (Ourense), RES 2090 -> COLA, idx agregada cargar:false, carga 22/10 -> idx oct 2a quinc 0,1597, ref 2032762. T2 BRESFOR Aveiro->Finsa Cella/TERUEL, RES 1350 -> COLA, INTERNACIONAL (PI, IVA 0, idx GPT), tarifa Aveiro->Teruel 56, ref 5050141625 (guia de remessa, empieza en 5050). T3 BALTRANSA (broker) REPSOL Tarragona(El Morell)->FLEX 2000 Ovar (PT), ALCUPOL, PRECIO FIJO 2.300 EUR (um UN); Baltransa -> el armador pone idx cantidad 1 factor 0 (regla R-04); ref 339326 (Nro de la Orden de Transporte Baltransa 339.326). Pesos del CMR/guia casilla 13. Odometro 8504KDR del viaje (poco fiable, la ficha reinicia; se cargan como leidos). Dietas NO van a Gesruta.",
+  "escaneo": "20261111171030.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-22",
+  "chofer": "NUNO FELIPE SILVA PAIVA",
+  "cabeza": "8504",
+  "viajes": [
+    {
+      "matricula": "8504KDR",
+      "remolque": "R4905BDF",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2032762", "salida": "22/10/2026", "llegada": "23/10/2026", "peso_kg": 25220, "km_inicio": 11613, "km_fin": 11738 },
+        { "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141625", "salida": "23/10/2026", "llegada": "26/10/2026", "peso_kg": 24060, "km_inicio": 12067, "km_fin": 12903 },
+        { "cliente_lit": "BALTRANSA, S.A.", "origen_lit": "TARRAGONA", "destino_lit": "OVAR", "carga_lit": "ALCUPOL", "referencia": "339326", "salida": "27/10/2026", "llegada": "29/10/2026", "peso_kg": 23680, "um": "UN", "precio_fijo": 2300, "km_inicio": 13271, "km_fin": 14342 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "HUELVA", "destino_lit": "CALDAS DE REIS", "carga_lit": "FENOL", "referencia": "200858712", "salida": "04/11/2026", "llegada": "04/11/2026", "peso_kg": 24340, "_obs": "ENTRANTE de FENOL (MOEVE/Cepsa Palos de la Frontera -> FORESA Caldas). NO figura en la ficha del chofer (que solo trae 3 tramos de octubre) y es de fecha posterior (04/11); documentos completos en el escaneo. VERIFICAR con Julio." }
+      ]
+    }
+  ]
+}

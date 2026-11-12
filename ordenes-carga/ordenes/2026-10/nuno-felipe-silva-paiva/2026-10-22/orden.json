@@ -1,0 +1,181 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "8504",
+        "verificar": {
+          "matricula": "8504KDR",
+          "remolque": "R4905BDF",
+          "chofer": "NUNO FELIPE SILVA PAIVA"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2032762",
+          "salida": "22/10/2026",
+          "llegada": "23/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,220",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "349,30",
+              "factor": "0,1597",
+              "cargar": false
+            }
+          },
+          "km": {
+            "inicio": "11613",
+            "fin": "11738",
+            "carga": "125"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "5050141625",
+          "salida": "23/10/2026",
+          "llegada": "26/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,060",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.347,36",
+              "factor": "0,1597"
+            }
+          },
+          "km": {
+            "inicio": "12067",
+            "fin": "12903",
+            "carga": "836"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "10",
+            "esperado": "BALTRANSA, S.A."
+          },
+          "origen": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "destino": {
+            "codigo": "OVAR",
+            "esperado": "OVAR"
+          },
+          "carga": {
+            "codigo": "26",
+            "esperado": "ALCUPOL"
+          },
+          "referencia": "339326",
+          "salida": "27/10/2026",
+          "llegada": "29/10/2026",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "2.300,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1",
+              "factor": "0"
+            }
+          },
+          "km": {
+            "inicio": "13271",
+            "fin": "14342",
+            "carga": "1071"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "H",
+            "esperado": "HUELVA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": null,
+            "esperado": "FENOL"
+          },
+          "referencia": "200858712",
+          "salida": "04/11/2026",
+          "llegada": "04/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,340",
+              "precio": "74,25",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.807,24",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "pendiente": true
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
