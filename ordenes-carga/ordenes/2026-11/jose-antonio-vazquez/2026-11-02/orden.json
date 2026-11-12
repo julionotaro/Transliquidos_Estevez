@@ -26,8 +26,8 @@
             "esperado": "BARCELONA"
           },
           "carga": {
-            "codigo": null,
-            "esperado": "Q-QUAT 50"
+            "codigo": "QUAT",
+            "esperado": "Q QUAT"
           },
           "referencia": "10072585",
           "salida": "02/11/2026",

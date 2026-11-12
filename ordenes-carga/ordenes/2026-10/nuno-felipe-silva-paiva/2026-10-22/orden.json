@@ -150,8 +150,8 @@
             "esperado": "CALDAS DE REIS"
           },
           "carga": {
-            "codigo": null,
-            "esperado": "FENOL"
+            "codigo": "FENOL",
+            "esperado": "FENOL FUNDIDO"
           },
           "referencia": "200858712",
           "salida": "04/11/2026",
@@ -160,13 +160,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "24,340",
-              "precio": "74,25",
+              "precio": "83,75",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": "1.807,24",
+              "cantidad": "2.038,47",
               "factor": "0,1553"
             }
           },

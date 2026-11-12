@@ -10,7 +10,7 @@
       "matricula": "7394LZP",
       "remolque": "R1832BBC",
       "albaranes": [
-        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "ARTEIXO", "destino_lit": "BARCELONA", "carga_lit": "Q-QUAT 50", "referencia": "10072585", "salida": "02/11/2026", "llegada": "04/11/2026", "peso_kg": 23080, "reparto": 90, "km_inicio": 451466, "km_fin": 452628 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "ARTEIXO", "destino_lit": "BARCELONA", "carga_lit": "Q QUAT", "referencia": "10072585", "salida": "02/11/2026", "llegada": "04/11/2026", "peso_kg": 23080, "reparto": 90, "km_inicio": 451466, "km_fin": 452628 },
         { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "ORENSE", "carga_lit": "VINKA-PLAST", "referencia": "713772", "salida": "05/11/2026", "llegada": "09/11/2026", "peso_kg": 24100, "peso_ok_redondo": true, "km_inicio": 452719, "km_fin": 453774 }
       ]
     }

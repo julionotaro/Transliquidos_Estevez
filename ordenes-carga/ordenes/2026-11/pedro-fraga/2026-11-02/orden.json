@@ -180,7 +180,7 @@
             "inicio": "424344",
             "fin": "424468",
             "carga": "124",
-            "vacio": "124"
+            "vacio": "123"
           },
           "tarifa_pendiente": false
         },
@@ -223,7 +223,7 @@
             "inicio": "424591",
             "fin": "424715",
             "carga": "124",
-            "vacio": "124"
+            "vacio": "123"
           },
           "tarifa_pendiente": false
         },

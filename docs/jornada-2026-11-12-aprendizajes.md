@@ -97,13 +97,15 @@ Todas quedaron grabadas en `catalogo/correcciones-julio.json`. Resumen:
   (`v.cabeza || raw.cabeza`) por viaje.
 - **Golden:** caso sintético "dos tractoras" agregado; fixtures CLAVO actualizadas al índice de
   octubre (0,0915 → 0,1450) tras el cambio en `catalogo/tarifas-clavo.json`. Golden 11/11 verde.
-- **Precedencia tarifa confirmada > fallback por provincia (fix 12/11).** `resolverTarifa` solo
-  corta con la tabla cuando el match es **DIRECTO** (ruta exacta). Un **FALLBACK_PROVINCIA** (la
-  tabla no tiene la ruta y devuelve el precio de OTRO destino de la zona) ya NO le gana a una
-  **tarifa confirmada por Julio** para la ruta exacta: ahora se consulta `confirmadas` antes del
-  fallback. Caso real: FORESA Caldas→URSA caía a Caldas→**TERMOLAN 28,89** por provincia, cuando el
-  histórico factura **72,36** (y Julio confirmó el destino URSA). Golden verde; ningún otro albarán
-  de la tanda cambió su total.
+- **NO se tocó la lógica del armador (corrección de Julio 12/11).** Se había intentado hacer que una
+  tarifa confirmada le ganara al "fallback por provincia" — **revertido**: la cascada está bien. El
+  problema del caso URSA era de LECTURA: el "fallback por provincia" es un match por **token** del
+  nombre, y "URSA IBERICA, **S.A.**" matcheaba por el token basura **"S.A."** contra cualquier
+  empresa con ese sufijo (Clariant, Termolán…), agarrando Caldas→Termolán 28,89. La solución correcta
+  es leer la dirección completa del destino (**URSA, El Pla de Santa María, Tarragona**) y cargar el
+  destino en la **provincia que tiene la tarifa**: FORESA Caldas→**TARRAGONA 72,36 DIRECTA** (mismo
+  criterio que Enguera→Valencia). Lección: cuando un destino "empresa, S.A." no tiene ruta propia,
+  cascadear a su PROVINCIA, no dejar que el token del sufijo elija.
 
 ---
 
@@ -141,10 +143,10 @@ PENDIENTE_CARGA, listos para el bot). Todas las tarifas están en `tarifas-confi
 
 1. **RNM Estarreja→León SOSA** (5113063259) → **34,50 €/TN** ("tenemos tarifa Aveiro-León a 34,50,
    usar esa"). PI/IVA 0. Total 942,07.
-2. **FORESA Caldas→URSA Ibérica** (2033377, 2035893) → destino **URSA** (El Pla de Santa María,
-   Tarragona; cod Gesruta URSA, ya existía) y tarifa **72,36 €/TN** (histórico; = zona Cataluña). Ojo:
-   la tabla general caía a Caldas→Termolán 28,89 por fallback de provincia → se corrigió la
-   precedencia del armador (§3). Totales 2.339,44 / 2.358,90.
+2. **FORESA Caldas→URSA Ibérica** (2033377, 2035893) → se carga destino **TARRAGONA** (cod T), la
+   provincia donde está URSA (El Pla de Santa María) y donde vive la tarifa: FORESA Caldas→Tarragona
+   **72,36 €/TN DIRECTA** (criterio cascada, como Enguera→Valencia). Sin tocar el armador. Totales
+   2.339,44 / 2.358,90. (La entrega real es URSA Ibérica, queda en el _nota y observaciones.)
 3. **QUIMIDROGA Arteixo→Barcelona Q-QUAT 50** (10072585) → **79,71 €/TN** + línea REP 90 (doble
    destino). Total 2.691,11. (Material Q-QUAT 50 = cod QUAT en materiales.csv; el armador lo deja con
    aviso "carga sin código" — se completa en Gesruta.)
@@ -160,3 +162,26 @@ do Castelo **36,50**.
 
 > No quedan pendientes de esta jornada. (Las 3 TARIFA_PENDIENTE que siguen en el registro son de
 > juegos de octubre previos —Aveiro→Toro, Avilés→Sines, Aveiro→REVISAR—, ya en `pendientes-gesruta.md` §D.)
+
+## 7. Correcciones de Julio sobre la tanda (ya corregidas por él en Gesruta, 12/11)
+
+Julio pasó las diferencias que corrigió a mano en Gesruta para asentarlas y corregir nuestros registros:
+
+1. **TMG = Braga o Famaliçao (Aboy 713899, Asensi 713900).** Los MEXIFLEX Miranda→TMG descargan en
+   **V.N. Famaliçao** (TMG Sao Cosme do Vale), no Braga → destino **VILANOVA FAMALICAO** (cod FAMAL).
+   TMG tiene dos plantas (Braga/Ponte GMR y Famaliçao/Sao Cosme do Vale): **verificar en el CMR a cuál
+   descarga**. Misma zona → mismo 61,65 (total 1.990,23 por mínimo 23 TN). Confirmada Miranda→Famaliçao
+   61,65 agregada.
+2. **Nuno Huelva→Caldas: faltaba el material = FENOL (FENOL FUNDIDO).** Al cargar el material correcto,
+   la tarifa cambia de la genérica (Caldas↔Huelva "Cualquiera" 74,25) a la **específica por material
+   FENOL FUNDIDO = 83,75 €/TN** (la tabla tiene ambas; el material define la tarifa, como FINCAT≠COLA).
+   Total 2.526,38 → **2.849,62**. Coincide con lo que Julio cargó en Gesruta.
+3. **Vázquez Arteixo→Barcelona Q-QUAT.** El material **Q-Quat SÍ está** en el catálogo (cod **QUAT**,
+   descripción "Q QUAT") → ya resuelve. Doble destino Barcelona (Zona Franca + Barna) → lleva reparto
+   (REP 90), ya estaba.
+4. **Pablo Carles — Terquimsa Tarragona→Caldas: ref = TQ5605134.** Este viaje de entrada también es
+   **intermediado por TRANSTAMBRE**; la referencia sale de la "Referencia de pedido" de la OC de
+   Transtambre (mismo lugar que TQ5603360 del viaje de Alfonsín), no del Nº 2008xxxx de FORESA. PDF
+   archivado renombrado 200859030→TQ5605134.
+5. **Pedro Fraga — km vacíos.** Dos tramos (2036041, 2036058) estaban en 124 por reconstrucción; la
+   ficha dice **123**. Corregido en el orden.json (secuencia real 123,124,123,123,123,124,124,124,123,144).

@@ -74,13 +74,17 @@ aplica). Falta **darlas de alta como ruta en Gesruta** para que autocomplete (ma
 en GR). Diario completo: `docs/jornada-2026-11-12-aprendizajes.md`.
 
 - [ ] **RNM Estarreja→León** SOSA = **34,50 €/TN** (= Aveiro→León). PI/IVA 0.
-- [ ] **FORESA Caldas→URSA Ibérica** (El Pla de Santa María, Tarragona; cod punto URSA) = **72,36 €/TN**
-  (histórico; = zona Cataluña/Tordera). P/IVA 21. *OJO Gesruta:* la tabla general trae un fallback a
-  Caldas→Termolán 28,89 que es incorrecto para esta ruta; cargar la ruta directa a 72,36.
-- [ ] **QUIMIDROGA Arteixo→Barcelona** Q-QUAT 50 = **79,71 €/TN** (+ reparto 90 por doble destino). P/IVA 21.
+- [x] **FORESA Caldas→URSA Ibérica** (El Pla de Santa María, **Tarragona**) → se carga destino
+  **TARRAGONA** (cod T), que YA tiene la tarifa directa Caldas→Tarragona **72,36 €/TN** en la tabla.
+  No hace falta alta; la entrega real URSA queda en observaciones. P/IVA 21. (Criterio Enguera→Valencia.)
+- [ ] **QUIMIDROGA Arteixo→Barcelona** Q-QUAT (cod QUAT) = **79,71 €/TN** (+ reparto 90 por doble destino
+  Zona Franca + Barna). P/IVA 21.
 - [ ] **RNM Tarragona→Vilanova Famaliçao/Serzedelo/Carreira** IQOXINOL = **86,00 €/TN**. PI/IVA 0.
 - [ ] **TRANSTAMBRE Teixeiro→Altorricón** = **56,00 €/TN + 15,97% idx** (tarifa cerrada OC). P/IVA 21.
-- [ ] **FORESA Huelva→Caldas** FENOL = **74,25 €/TN** (Palos de la Frontera = origen HUELVA). P/IVA 21.
+- [x] **FORESA Huelva→Caldas** FENOL **FUNDIDO** = **83,75 €/TN** (tarifa específica por material en la
+  tabla; la genérica "Cualquiera" es 74,25). Palos de la Frontera = origen HUELVA. P/IVA 21.
+- [ ] **QUIMIDROGA Miranda→V.N. Famaliçao** (TMG Sao Cosme do Vale) MEXIFLEX = **61,65 €/TN** (= Braga,
+  misma zona). P/IVA 21. *Verificar en cada CMR si TMG descarga en Braga (Ponte GMR) o Famaliçao.*
 - [ ] **QUIMIDROGA Barcelona→Orense** = **79,71 €/TN** (Ourense = misma cascada Galicia). P/IVA 21.
 - [ ] **QUIMIDROGA Barcelona→Zamora** LISINA = **71,05 €/TN**. P/IVA 21.
 - [ ] **QUIMIDROGA Barcelona→Leiria** VINKA-PLAST = **88,25 €/TN**. P/IVA 21 (PT nacional).

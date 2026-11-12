@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - leido de entrada/20261111171234.pdf (6 pags: 1 hoja ficha TLE + albaran metanol FORESA + ADR + orden/CMR/albaran QUIMIDROGA). Francisco Asensi (TLE propio), tractora 2498KZL (cabeza 2498), remolque R1007BCV -> 1 viaje, 2 albaranes. OJO: el albaran de metanol FORESA trae '2541HPJ' pre-impreso, pero la ficha, el CMR de Quimidroga y el odometro (continuo con el juego previo de Asensi) confirman 2498KZL. T1 FORESA Villagarcia de Arousa -> CURIA Spain (Boecillo, Valladolid), METANOL, albaran 2600003498, 20.080 kg. T2 QUIMIDROGA Miranda de Ebro -> TMG Tecidos Plast (Braga/Ponte, Portugal), MEXIFLEX 911P 20.380 (ref factura 713900; QUIMIDROGA factura Portugal como NACIONAL; destino al punto BRAGA (PT)). Pesos del albaran/CMR casilla 13. Dietas NO van a Gesruta.",
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111171234.pdf (6 pags: 1 hoja ficha TLE + albaran metanol FORESA + ADR + orden/CMR/albaran QUIMIDROGA). Francisco Asensi (TLE propio), tractora 2498KZL (cabeza 2498), remolque R1007BCV -> 1 viaje, 2 albaranes. OJO: el albaran de metanol FORESA trae '2541HPJ' pre-impreso, pero la ficha, el CMR de Quimidroga y el odometro (continuo con el juego previo de Asensi) confirman 2498KZL. T1 FORESA Villagarcia de Arousa -> CURIA Spain (Boecillo, Valladolid), METANOL, albaran 2600003498, 20.080 kg. T2 QUIMIDROGA Miranda de Ebro -> TMG Tecidos Plast (Braga/Ponte, Portugal), MEXIFLEX 911P 20.380 (ref factura 713900; QUIMIDROGA factura Portugal como NACIONAL; destino al punto VILANOVA FAMALICAO (FAMAL), TMG Sao Cosme do Vale -correccion Julio 12/11, antes BRAGA-). Pesos del albaran/CMR casilla 13. Dietas NO van a Gesruta.",
   "escaneo": "20261111171234.pdf",
   "empresa": "TLE",
   "fecha_inicio": "2026-11-03",
@@ -11,7 +11,7 @@
       "remolque": "R1007BCV",
       "albaranes": [
         { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "VALLADOLID", "carga_lit": "METANOL", "referencia": "2600003498", "salida": "03/11/2026", "llegada": "04/11/2026", "peso_kg": 20080, "km_inicio": 889780, "km_fin": 890326 },
-        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "MIRANDA DE EBRO", "destino_lit": "BRAGA (PT)", "carga_lit": "MEXIFLEX", "referencia": "713900", "salida": "05/11/2026", "llegada": "06/11/2026", "peso_kg": 20380, "km_inicio": 890567, "km_fin": 891177 }
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "MIRANDA DE EBRO", "destino_lit": "VILANOVA FAMALICAO", "carga_lit": "MEXIFLEX", "referencia": "713900", "salida": "05/11/2026", "llegada": "06/11/2026", "peso_kg": 20380, "km_inicio": 890567, "km_fin": 891177 }
       ]
     }
   ]

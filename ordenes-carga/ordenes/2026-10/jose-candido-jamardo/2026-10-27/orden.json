@@ -63,8 +63,8 @@
             "esperado": "CALDAS DE REIS"
           },
           "destino": {
-            "codigo": "URSA",
-            "esperado": "URSA IBERICA, S.A."
+            "codigo": "T",
+            "esperado": "TARRAGONA"
           },
           "carga": {
             "codigo": "1",

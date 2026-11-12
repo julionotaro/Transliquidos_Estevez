@@ -11,7 +11,19 @@
       "confirmado": true,
       "fecha": "2026-11-02",
       "por": "Julio",
-      "nota": "Miranda de Ebro -> TMG Tecidos (Ponte GMR, Braga, PT). Historico de facturacion estable; no esta en el tarifario Quimidroga (carece de origen Miranda). Quimidroga factura PT como NACIONAL (P, IVA 21)."
+      "nota": "Miranda de Ebro -> TMG Tecidos, PLANTA de BRAGA (Ponte GMR), PT. OJO: TMG tiene DOS plantas, Braga (Ponte GMR) y V.N. Famalicao (Sao Cosme do Vale); verificar en el CMR a cual descarga (Julio 12/11). Historico estable; no esta en el tarifario Quimidroga. Quimidroga factura PT como NACIONAL (P, IVA 21)."
+    },
+    {
+      "cliente": "QUIMIDROGA, S.A.",
+      "origen": "MIRANDA DE EBRO",
+      "destino": "VILANOVA FAMALICAO",
+      "material": "MEXIFLEX",
+      "precio": 61.65,
+      "vigente_desde": "2026-01-01",
+      "confirmado": true,
+      "fecha": "2026-11-12",
+      "por": "Julio",
+      "nota": "Miranda de Ebro -> TMG Tecidos, PLANTA de V.N. FAMALICAO (Sao Cosme do Vale), PT, MEXIFLEX. Julio 12/11 corrigio: estos viajes (Aboy 713899, Asensi 713900) descargan en Famalicao, no en Braga; misma zona que Braga -> mismo 61,65. Quimidroga factura PT como NACIONAL (P, IVA 21). cod punto FAMAL."
     },
     {
       "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
@@ -93,18 +105,6 @@
       "nota": "RNM Estarreja (Bondalti/CUF, PT) -> Leon, SOSA. Julio 12/11: 'Tenemos tarifa Aveiro-Leon para RNM a 34,50 EUR/TN, usemos esa para Estarreja-Leon'. RNM portuguesa -> PI/IVA 0/GPT."
     },
     {
-      "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
-      "origen": "CALDAS DE REIS",
-      "destino": "URSA IBERICA, S.A.",
-      "material": "COLA",
-      "precio": 72.36,
-      "vigente_desde": "2026-01-01",
-      "confirmado": true,
-      "fecha": "2026-11-12",
-      "por": "Julio",
-      "nota": "FORESA Caldas de Reis -> URSA IBERICA (El Pla de Santa Maria, Tarragona), COLA/resinas. Julio 12/11 confirmo el destino ('Lo dice claro el albaran: URSA - El Pla de Santa Maria - Tarragona'); el precio sale del historico de facturacion (lineas 50088/50110 = 72,36, misma zona Cataluna que Tordera). Punto URSA (cod Gesruta URSA) ya existe. P IVA 21; idx G por linea."
-    },
-    {
       "cliente": "QUIMIDROGA, S.A.",
       "origen": "ARTEIXO",
       "destino": "BARCELONA",
@@ -136,18 +136,6 @@
       "fecha": "2026-11-12",
       "por": "Julio",
       "nota": "TRANSTAMBRE (broker) Teixeiro (Bioetanol Galicia) -> Altorricon (Biodiesel Aragon, Huesca), aceite crudo de maiz/bioetanol. TARIFA CERRADA por OC: 56,00 EUR/TN + 15,97% idx (idx_pct 0,1597 en el raw). Julio 12/11 confirmo ('Si'). TRANSTAMBRE es cliente espanol (cod 20) -> P IVA 21, idx G. Discrecion comercial: la carta de porte se emite como Mengibar; vale el transporte real Teixeiro->Altorricon."
-    },
-    {
-      "cliente": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.",
-      "origen": "HUELVA",
-      "destino": "CALDAS DE REIS",
-      "material": "FENOL",
-      "precio": 74.25,
-      "vigente_desde": "2026-01-01",
-      "confirmado": true,
-      "fecha": "2026-11-12",
-      "por": "Julio",
-      "nota": "FORESA Huelva (Palos de la Frontera, entrada de FENOL) -> Caldas de Reis = 74,25 EUR/TN. Ratificado por Julio 12/11. P IVA 21; idx G por linea."
     },
     {
       "cliente": "QUIMIDROGA, S.A.",

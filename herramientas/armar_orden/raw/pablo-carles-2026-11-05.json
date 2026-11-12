@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - leido de entrada/20261111141116.pdf (7 pags: 1 hoja ficha TLE + email pedido FORESA + albaran TERQUIMSA + ticket bascula Terquimsa + CoA AmSpec + certificado inhibidor). Pablo Carles Santos (TLE propio), tractora 7963MDF (cabeza 7963), remolque PO02628R -> 1 viaje, 1 albaran. ENTRANTE: TERQUIMSA Tarragona -> FORESA Caldas de Reis, ACETATO DE VINILO (VAM) 23.740 kg neto. Cliente facturado = FORESA (compra la materia prima; TLE la trae). Nacional (P, IVA 21, idx G). Tarifa Tarragona->Caldas (misma ruta que el precedente pablo-carles-santos 26/10, ref 200858072). REFERENCIA = el Nro que empieza en 2008 (pedido/analisis FORESA; aqui 200859030, se omite el sufijo /1). Peso del albaran/bascula TERQUIMSA (neto 23.740). Odometro 7963MDF. Dietas NO van a Gesruta.",
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111141116.pdf (7 pags: 1 hoja ficha TLE + email pedido FORESA + albaran TERQUIMSA + ticket bascula Terquimsa + CoA AmSpec + certificado inhibidor). Pablo Carles Santos (TLE propio), tractora 7963MDF (cabeza 7963), remolque PO02628R -> 1 viaje, 1 albaran. ENTRANTE: TERQUIMSA Tarragona -> FORESA Caldas de Reis, ACETATO DE VINILO (VAM) 23.740 kg neto. Cliente facturado = FORESA (compra la materia prima; TLE la trae). Nacional (P, IVA 21, idx G). Tarifa Tarragona->Caldas (misma ruta que el precedente pablo-carles-santos 26/10, ref 200858072). REFERENCIA = TQ5605134 (Julio 12/11): este viaje de entrada Tarragona->Caldas es INTERMEDIADO por TRANSTAMBRE; la referencia sale de la 'Referencia de pedido' de la OC de Transtambre (mismo lugar de donde salio TQ5603360 del viaje de Alfonsin), NO del Nro 2008xxxx de FORESA. Cliente de facturacion sigue siendo FORESA. Peso del albaran/bascula TERQUIMSA (neto 23.740). Odometro 7963MDF. Dietas NO van a Gesruta.",
   "escaneo": "20261111141116.pdf",
   "empresa": "TLE",
   "fecha_inicio": "2026-11-05",
@@ -10,7 +10,7 @@
       "matricula": "7963MDF",
       "remolque": "PO02628R",
       "albaranes": [
-        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "TARRAGONA", "destino_lit": "CALDAS DE REIS", "carga_lit": "ACETATO DE VINILO", "referencia": "200859030", "salida": "05/11/2026", "llegada": "09/11/2026", "peso_kg": 23740, "km_inicio": 407640, "km_fin": 408808 }
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "TARRAGONA", "destino_lit": "CALDAS DE REIS", "carga_lit": "ACETATO DE VINILO", "referencia": "TQ5605134", "salida": "05/11/2026", "llegada": "09/11/2026", "peso_kg": 23740, "km_inicio": 407640, "km_fin": 408808 }
       ]
     }
   ]

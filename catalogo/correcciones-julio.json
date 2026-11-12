@@ -240,6 +240,21 @@
       "fecha": "2026-11-11", "por": "Julio", "cliente": "TODOS", "campo": "cabecera/cabeza (por viaje)",
       "regla": "La CABEZA (tractora) es POR VIAJE, no por juego: cuando una ficha tiene VARIOS viajes (por cambio de tractora/remolque, regla 2026-10-14), cada viaje lleva SU cabeza. El armador la deriva por viaje con cabezaDeViaje(): prioridad cabeza explicita del viaje -> cabeza de FLOTA por matricula (respetando el CERO A LA IZQUIERDA, regla 03/11) -> digitos iniciales de la matricula -> cabeza del juego. En orden.json cabecera.cabeza se setea por viaje; el validador valida la cabeza EFECTIVA de cada viaje (v.cabeza||raw.cabeza) contra su matricula. Confirmado por Julio: 'Cabeza por-viaje en el armador'. Caso: shuttle FORESA Orember con 2 tractoras distintas en la misma ficha.",
       "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-12", "por": "Julio", "cliente": "TODOS", "campo": "destino (empresa sin ruta propia -> provincia)",
+      "regla": "Cuando el destino es una EMPRESA (razon social 'XXX, S.A./S.L./Lda') que NO tiene ruta propia en el tarifario, se carga el destino en su PROVINCIA/ZONA (que si tiene tarifa), leyendo la DIRECCION COMPLETA del albaran. Es la misma cascada de siempre (Enguera->Valencia, Finsa Teruel->Teruel). OJO: el 'fallback por provincia' del armador es por TOKEN del nombre; un destino como 'URSA IBERICA, S.A.' puede matchear por el token basura 'S.A.' contra CUALQUIER empresa (Clariant/Termolan/...) y agarrar una tarifa equivocada (caso real: Caldas->URSA cayo a Caldas->Termolan 28,89). Por eso NO se deja el literal 'EMPRESA, S.A.' como destino: se pone la PROVINCIA. Confirmado por Julio 12/11 (la logica de cascada esta bien; el error era no leer la direccion completa). Caso: FORESA Caldas->URSA Iberica (El Pla de Santa Maria, Tarragona) -> destino TARRAGONA (cod T) = Caldas->Tarragona 72,36 DIRECTA. NO tocar la precedencia del armador por esto.",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-12", "por": "Julio", "cliente": "FORESA / TRANSTAMBRE", "campo": "referencia (entrada intermediada por Transtambre)",
+      "regla": "Los viajes de ENTRADA a FORESA Caldas desde plantas cargadoras (ej TERQUIMSA/STOCKMEIER Tarragona->Caldas, acetato de vinilo) pueden estar INTERMEDIADOS por TRANSTAMBRE: en ese caso la REFERENCIA sale de la 'Referencia de pedido' de la OC de Transtambre (formato TQxxxxxxx; mismo lugar de donde sale la ref del viaje quimico de Transtambre), NO del Nro 2008xxxx de FORESA. El cliente de facturacion sigue siendo FORESA. Confirmado Julio 12/11: Pablo Carles Tarragona->Caldas ref = TQ5605134 (antes se habia puesto 200859030).",
+      "estado": "confirmada"
+    },
+    {
+      "fecha": "2026-11-12", "por": "Julio", "cliente": "QUIMIDROGA", "campo": "destino (TMG dos plantas)",
+      "regla": "TMG Tecidos (destino de MEXIFLEX desde Miranda de Ebro) tiene DOS plantas en el norte de Portugal: BRAGA (Ponte GMR) y V.N. FAMALICAO (Sao Cosme do Vale, cod Gesruta FAMAL). VERIFICAR EN EL CMR a cual descarga; Sao Cosme do Vale = Famalicao, no Braga. Tarifa igual en ambas (misma zona): Miranda->Braga = Miranda->Famalicao = 61,65 EUR/TN, nacional P IVA 21 (Quimidroga factura PT nacional), con minimo 23 TN. Confirmado Julio 12/11 (viajes Aboy 713899 y Asensi 713900 descargaban en Famalicao, se habia puesto Braga).",
+      "estado": "confirmada"
     }
   ],
   "_fuente_tarifas": {
@@ -251,7 +266,9 @@
     "precios_sin_tarifario": "Clientes sin tarifario propio y con precio FIJO confirmado por Julio (hoy solo FORESTAL Mugardos->Castellon 2.025) viven como REGLA en 'reglas', no aqui."
   },
   "correcciones_puntuales": [
-    {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."}
+    {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."},
+    {"fecha": "2026-11-12", "juego": "Nuno Silva 22/10 FENOL (ref 200858712)", "campo": "material/tarifa", "valor": "FENOL FUNDIDO (cod FENOL) -> 83,75 EUR/TN", "nota": "Faltaba el material. Cargado el material FENOL FUNDIDO, la tabla aplica la tarifa ESPECIFICA por material FORESA Huelva->Caldas FENOL FUNDIDO = 83,75 (no la generica 'Cualquiera' 74,25 que se habia usado). El material define la tarifa (como FINCAT!=COLA). Confirmado por Julio (lo corrigio en Gesruta)."},
+    {"fecha": "2026-11-12", "juego": "Pedro Fraga 02/11 shuttle Orember (ref 2036041, 2036058)", "campo": "km_vacio", "valor": "123 (no 124)", "nota": "Dos tramos estaban en 124 por reconstruccion; la ficha (observaciones de las 4 hojas) dice 123. Secuencia real de km vacio por tramo: 123,124,123,123,123,124,124,124,123,144. km_vacio de autonomo va a Gastos, por eso importa el valor exacto."}
   ],
   "codigos_gesruta": {
     "_nota": "Gesruta carga TODO por codigo, no por texto tecleado. Estos son los codigos a usar en la planilla. Fuente: datos/gesruta (clientes 321/403 de linea-facturacion col cli_codcli; cargas por literal; puntos de puntos-geograficos; conceptos de col cli_codcon).",
