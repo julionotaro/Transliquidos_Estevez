@@ -1,0 +1,98 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/pedro-fraga/2026-11-02/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-12T10:24:33",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "5358",
+      "chofer": "PEDRO FRAGA",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036057",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2036032",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2036022",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2036041",
+          "nro_albaran_gesruta": "04",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2036058",
+          "nro_albaran_gesruta": "05",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2036034",
+          "nro_albaran_gesruta": "06",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2036054",
+          "nro_albaran_gesruta": "07",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2036046",
+          "nro_albaran_gesruta": "08",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        }
+      ]
+    },
+    {
+      "cabeza": "5358",
+      "chofer": "PEDRO FRAGA",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v2.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038085",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        },
+        {
+          "referencia": "2038082",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "",
+          "pendiente_de": []
+        }
+      ]
+    }
+  ]
+}
