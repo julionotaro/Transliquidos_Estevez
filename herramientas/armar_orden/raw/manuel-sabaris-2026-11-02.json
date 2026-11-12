@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261111171858.pdf (6 pags: 1 hoja ficha TLE + guia BRESFOR + ticket FINSA + orden/CMR/albaran QUIMIDROGA-TEPSA). Manuel Sabaris (TLE propio), tractora 2256JYX (cabeza 2256), remolque PO02194R -> 1 viaje, 2 albaranes. T1 BRESFOR Aveiro->Finsa Cella/TERUEL, RES 1350 -> COLA 23.560, INTERNACIONAL (PI, idx GPT), tarifa Aveiro->Teruel 56, ref 5050141839 (guia de remessa). T2 QUIMIDROGA Barcelona (TEPSA) -> LCR Luz Costa & Rodrigues (Leiria, Portugal), VINKA-PLAST QD 390 24.000 (ref factura 713556; QUIMIDROGA factura Portugal como NACIONAL). Pesos del CMR/guia casilla 13. Dietas NO van a Gesruta.",
+  "escaneo": "20261111171858.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "MANUEL SABARIS",
+  "cabeza": "2256",
+  "viajes": [
+    {
+      "matricula": "2256JYX",
+      "remolque": "PO02194R",
+      "albaranes": [
+        { "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.", "origen_lit": "AVEIRO", "destino_lit": "TERUEL", "carga_lit": "COLA", "referencia": "5050141839", "salida": "02/11/2026", "llegada": "03/11/2026", "peso_kg": 23560, "km_inicio": 1176373, "km_fin": 1177218 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "LEIRIA", "carga_lit": "VINKA-PLAST", "referencia": "713556", "salida": "04/11/2026", "llegada": "06/11/2026", "peso_kg": 24000, "peso_ok_redondo": true, "km_inicio": 1177660, "km_fin": 1178882 }
+      ]
+    }
+  ]
+}
