@@ -66,3 +66,29 @@ Fuente: `informes/rutas-sin-tarifa.md` (42 rutas del export anual, con Nº de vi
 - **Usé 56,00** (del general) en el juego de Asensi (albaranes 2029451 y 5050141127).
 - **Confirmar con Julio cuál es la tarifa VIGENTE** para Caldas→Teruel y Aveiro→Teruel; si no es
   56,00 hay que corregir esos albaranes.
+
+## F. Lote 11-12/11/2026 — pendientes de esta jornada
+
+Ver el diario completo en `docs/jornada-2026-11-12-aprendizajes.md`. Albaranes que quedaron en
+**TARIFA_PENDIENTE / REVISAR** (el validador los acepta; esperan confirmación de Julio):
+
+- [ ] **RNM Estarreja→León** SOSA (ref 5113063259) — sin tarifa de la ruta.
+- [ ] **FORESA Caldas→URSA Ibérica** (El Pla de Santa María, Tarragona; refs 2033377, 2035893) —
+  **URSA no tiene código Gesruta** ni tarifa Caldas→URSA → dar de alta el punto URSA y su tarifa.
+- [ ] **QUIMIDROGA Arteixo→Barcelona Q-QUAT 50** (ref 10072585) — material **Q-QUAT 50** (sin código
+  en `materiales.csv`), tarifa Arteixo→Barcelona y referencia a confirmar (la OC trae orden 10072585,
+  no "Referencia en factura" 713xxx; doble destino Barcelona Apliclor + Zona Franca → línea de reparto).
+- [ ] **RNM Tarragona→Serzedelo** IQOXINOL (ref 229837) — sin tarifa (distinta de Tarragona→Azambuja 88,45).
+- [ ] **TRANSTAMBRE Teixeiro→Altorricón** bioetanol/aceite de maíz (ref 319574) — **tarifa cerrada por
+  OC: 56 €/TN + 15,97% idx**; cliente Transtambre no mapeado → cargar a mano según OC (`idx_pct` 0,1597
+  ya en el raw). Material **ACEITE DE MAÍZ** sin código.
+
+Rutas **aplicadas por cascada/histórico** esta jornada que conviene **ratificar y cargar en Gesruta**:
+
+- [ ] **FORESA Huelva→Caldas** FENOL = **74,25** (Palos de la Frontera = destino HUELVA).
+- [ ] **QUIMIDROGA Barcelona→Orense** = **79,71** (se aplicó la 79,71 de Pontevedra/Coruña; **confirmar
+  si Ourense, provincia interior, difiere**).
+- [ ] **QUIMIDROGA Barcelona→Zamora** LISINA = **71,05**.
+- [ ] **QUIMIDROGA Barcelona→Leiria** VINKA-PLAST = **88,25**.
+- [ ] **RNM Avilés→Viana do Castelo** ácido sulfúrico = **36,50**.
+- [x] **FORESA Caldas→Enguera = VALENCIA 64,04** — confirmado por Julio 11/11 (en `tarifas-confirmadas-julio.json`).

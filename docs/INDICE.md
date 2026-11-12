@@ -1,7 +1,7 @@
 # ÍNDICE — Documentación TLE
 
 > **Leer esto primero, siempre.** No hace falta leer todo lo demás: hace falta saber qué existe y dónde está cada cosa.
-> Última actualización: 06/11/2026.
+> Última actualización: 12/11/2026.
 
 ---
 
@@ -141,6 +141,7 @@ extracción concretas.
 
 | Documento | Qué contiene |
 |---|---|
+| `jornada-2026-11-12-aprendizajes.md` | **DIARIO DE LA JORNADA 11-12/11.** Inventario de los ~17 juegos/~75 albaranes procesados, reglas nuevas confirmadas por Julio (tarifa cerrada/idx por OC, cabeza por-viaje), cambios de armador (`idx_pct`, `cabezaDeViaje`), tarifas aplicadas con su estado, y los 6 albaranes que quedaron en TARIFA_PENDIENTE. Apunta a `correcciones-julio.json` y `pendientes-gesruta.md` para lo canónico |
 | `ESTADO-Y-TRASPASO.md` | Estado operativo y traspaso entre sesiones |
 | `fase2-cierre-y-fase3-bloqueantes.md` | Qué cerró la fase 2 y qué bloquea la fase 3 |
 | `verificacion-fix-identidad-cliente-2026-08-04.md` | Verificación del arreglo del campo cliente |
