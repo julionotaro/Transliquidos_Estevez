@@ -1,0 +1,22 @@
+{
+  "_nota": "CLAVO (FRIGOS) - leido SOLO de la ficha/parte (p1-p2, 2 hojas, 6 tramos) + el talon T1 (p3, confirma K<=713) segun criterio Julio 12/11. Los demas documentos de terceros (p3-p41) NO se leyeron, se archivan. Chofer Jose Carlos Rodriguez (TLE propio), tractora 5132LMC (cabeza 5132), remolque R9520BCV -> 1 viaje, 6 albaranes (tramos). km facturable = odometro fin-inicio de la parte (el talon T1 lo confirma: K<=713). Sentido lo deriva el armador. Dietas 340,68 NO van a Gesruta. PUNTOS A REVISAR (destino solo afecta el punto Gesruta, NO el importe km): T1 destino 'O VER'/CAMWAY (713 km desde Caldas; consignatario Camway) -> verificar punto; T4 ONTIGOLA (Toledo); T3 origen multi AZUQUECA. Tramos: T1 Caldas->O Ver/Camway (CONGELADO) 673954/674667 S; T2 Tordesillas->Torrejon (Novafrigo) 674907/675157 S; T3 Torrejon+Azuqueca->Tordesillas (Novafrigo/Frumen, CONGELADO+PAN RALLADO, multi-carga) 675157/675403 R; T4 Tordesillas->Ontigola (Delfin) 675403/675657 S; T5 Tordesillas->Caldas (CLAVO) 675898/676349 R; T6 Caldas->Porriño (Stef) 676349/676421 C(cercanias). Palets del talon no se facturan.",
+  "escaneo": "20261112182310.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "JOSE CARLOS RODRIGUEZ",
+  "cabeza": "5132",
+  "viajes": [
+    {
+      "matricula": "5132LMC",
+      "remolque": "R9520BCV",
+      "albaranes": [
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OVER", "carga_lit": "CONGELADO", "referencia": "", "salida": "02/11/2026", "llegada": "03/11/2026", "km_inicio": 673954, "km_fin": 674667, "km_vacio": 0 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "TORREJON", "carga_lit": "CONGELADO", "referencia": "", "salida": "03/11/2026", "llegada": "04/11/2026", "km_inicio": 674907, "km_fin": 675157, "km_vacio": 240 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORREJON", "origenes": ["TORREJON", "AZUQUECA"], "destino_lit": "TORDESILLAS", "carga_lit": "CONGELADO", "referencia": "", "salida": "04/11/2026", "llegada": "04/11/2026", "km_inicio": 675157, "km_fin": 675403, "km_vacio": 0 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "ONTIGOLA", "carga_lit": "CONGELADO", "referencia": "", "salida": "05/11/2026", "llegada": "05/11/2026", "km_inicio": 675403, "km_fin": 675657, "km_vacio": 0 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "CALDAS DE REIS", "carga_lit": "CONGELADO", "referencia": "", "salida": "05/11/2026", "llegada": "06/11/2026", "km_inicio": 675898, "km_fin": 676349, "km_vacio": 241 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "PORRIÑO", "carga_lit": "CONGELADO", "referencia": "", "salida": "06/11/2026", "llegada": "06/11/2026", "km_inicio": 676349, "km_fin": 676421, "km_vacio": 0 }
+      ]
+    }
+  ]
+}

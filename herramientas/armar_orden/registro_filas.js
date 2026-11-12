@@ -117,7 +117,12 @@ function filasDeRaw(raw, opciones) {
       var carpeta = carpetaCliente(a.cliente.codigo, a.cliente.esperado, existentes, avisos);
       var ref = String(a.referencia || '');
       var mes = mesDe(a.salida) || 'SIN-FECHA';
-      var nombrePdf = ref ? ref : ((isoDe(a.salida) || 'sin-fecha') + '-' + String(a.destino.esperado || 'destino').toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+      // Nombre del PDF archivado: quimicos = Nro de referencia; CLAVO (por km, sin ref) =
+      // <chofer>-<fecha_inicio> (UN archivo por viaje: talon + docs que acompanan; Julio 12/11).
+      var slugCh = function (s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); };
+      var nombrePdf = ref ? ref
+        : (esKm ? slugCh(raw.chofer || ((v.cabecera || {}).verificar || {}).chofer || 'chofer') + '-' + (raw.fecha_inicio || isoDe(a.salida) || 'sin-fecha')
+                : (isoDe(a.salida) || 'sin-fecha') + '-' + slugCh(a.destino.esperado || 'destino'));
       var fila = [
         opciones.fecha || hoyISO(),                                   // 1 fecha_proceso
         escaneo,                                                      // 2 juego_ficha_pdf

@@ -1,0 +1,293 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "5132",
+        "verificar": {
+          "matricula": "5132LMC",
+          "remolque": "R9520BCV",
+          "chofer": "JOSE CARLOS RODRIGUEZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "OVER"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "02/11/2026",
+          "llegada": "03/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "713,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.083,76",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "713",
+            "inicio": "673954",
+            "fin": "674667",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "9735",
+            "esperado": "TORREJON"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "03/11/2026",
+          "llegada": "04/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "250,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "380,00",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "250",
+            "inicio": "674907",
+            "fin": "675157",
+            "vacio": "240"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "9735",
+            "esperado": "TORREJON"
+          },
+          "destino": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "04/11/2026",
+          "llegada": "04/11/2026",
+          "facturacion": "km",
+          "sentido": "R",
+          "origenes": [
+            "TORREJON",
+            "AZUQUECA"
+          ],
+          "campo1": "TORRE/AZUQU",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "246,000",
+              "precio": "1,3100",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "322,26",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "246",
+            "inicio": "675157",
+            "fin": "675403",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "ONTIG",
+            "esperado": "ONTIGOLA"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "05/11/2026",
+          "llegada": "05/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "254,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "386,08",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "254",
+            "inicio": "675403",
+            "fin": "675657",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "05/11/2026",
+          "llegada": "06/11/2026",
+          "facturacion": "km",
+          "sentido": "R",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "451,000",
+              "precio": "1,3100",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "590,81",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "451",
+            "inicio": "675898",
+            "fin": "676349",
+            "vacio": "241"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "PORRI",
+            "esperado": "PORRIÑO"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "06/11/2026",
+          "llegada": "06/11/2026",
+          "facturacion": "km",
+          "sentido": "C",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "212,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "212,00",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "72",
+            "inicio": "676349",
+            "fin": "676421",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
