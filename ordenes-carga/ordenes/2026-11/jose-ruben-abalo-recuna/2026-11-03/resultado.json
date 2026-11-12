@@ -1,0 +1,36 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/jose-ruben-abalo-recuna/2026-11-03/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-12T17:18:22",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "6516",
+      "chofer": "JOSE RUBEN ABALO RECUNA",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "26P1369",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "713542",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}
