@@ -79,26 +79,31 @@
           "llegada": "04/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "GETAFE",
+            "TORREJON"
+          ],
+          "campo2": "GETAF/TORRE",
           "lineas": {
             "porte": {
               "um": "TN",
-              "cantidad": "250,000",
+              "cantidad": "253,000",
               "precio": "1,5200",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": "380,00",
+              "cantidad": "384,56",
               "factor": null,
               "cargar": false
             }
           },
           "km": {
-            "carga": "250",
-            "inicio": "674907",
+            "carga": "253",
+            "inicio": "674904",
             "fin": "675157",
-            "vacio": "240"
+            "vacio": "237"
           },
           "tarifa_pendiente": false
         },
@@ -174,6 +179,12 @@
           "llegada": "05/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "GETAFE",
+            "VALDEMORO",
+            "ONTIGOLA"
+          ],
+          "campo2": "GETAF/VALDE/ONTIG",
           "lineas": {
             "porte": {
               "um": "TN",
