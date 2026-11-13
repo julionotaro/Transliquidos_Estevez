@@ -73,6 +73,7 @@ def caps_off():
 # ---- Coordenadas 1920x1080 ----
 C_REFE=(590,180); C_CLIENTE=(130,234); C_ORIGEN=(124,259); C_DESTINO=(124,286)
 C_CARGA=(124,337); C_SALIDA=(125,418); C_LLEGADA=(125,481)
+C_CAMPO1=(290,540); C_CAMPO2=(290,563)   # CLAVO multi-punto: Campo1=cargas, Campo2=repartos (pestaña Cabecera). Medido del screenshot 2026-11-13; VERIFICAR EN VIVO.
 LINEAS_TAB=(318,151); ADD_LINE=(1878,181)
 L_CANT1=(393,200); L_PRECIO1=(524,200)
 L_CDGO2=(40,226); L_CANT2=(393,226); L_PRECIO2=(524,226)
@@ -680,6 +681,14 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     if car.get("codigo"):
         field(C_CARGA, car["codigo"], "Carga", tab=True); wait_and_close(1.2,"post-carga")
     elif car.get("buscar"): log("  Carga BUSCADOR (%r) no calibrado -> salto"%car.get("buscar"))
+
+    # Campo1 / Campo2 (CLAVO multi-punto, Julio 2026-11-13): si la orden trae campo1/campo2 (listas de
+    # puntos ABREVIADAS <=19 car.), teclearlas TAL CUAL en los campos Campo1 (cargas) / Campo2
+    # (repartos) de la pestaña Cabecera del albaran. Opcion B (Julio): se usa el campo campo1/campo2 ya
+    # abreviado por la extraccion, NO los nombres completos de origenes/destinos (limite 19 car.).
+    campo1=alb.get("campo1"); campo2=alb.get("campo2")
+    if campo1: field(C_CAMPO1, str(campo1), "Campo1 (multi-carga)", clear=True)
+    if campo2: field(C_CAMPO2, str(campo2), "Campo2 (multi-reparto)", clear=True)
 
     # PEDIDO (queda verde, sin abrir Lineas) si: tarifa_pendiente, peso_pendiente, destino sin codigo,
     # o NO hay porte. Conducta resiliente (Julio 2026-11-03): un campo faltante NUNCA abandona el

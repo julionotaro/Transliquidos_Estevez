@@ -80,6 +80,11 @@ CLAVO FOOD FACTORY (cliente `4`) se factura **por kilómetro**, no por TN. El al
   `destino` = último punto, `destinos` = lista, **`campo2`** = esa lista abreviada → campo **Campo2**
   de Gesruta. Las listas `origenes`/`destinos` dan los nombres completos (col Origen/Destino del
   Excel, unidos con `+`). CLAVO **NO** lleva línea `reparto`/`REP`.
+  **El bot teclea `campo1`/`campo2` TAL CUAL** (ya abreviados ≤19 car.) en los campos **Campo1/Campo2**
+  de la pestaña Cabecera del albarán (coords `C_CAMPO1`/`C_CAMPO2`). **NUNCA** arma ese valor con los
+  nombres completos de `origenes`/`destinos` — esos (unidos con `+`) son **solo para el Excel**.
+  (Confirmado Julio 2026-11-13: la captura con nombres completos fue una carga manual puntual que
+  entraba en 19 car.; la regla es usar la abreviatura.)
 - `km`: 1 apunte por viaje → `{ inicio, fin, carga, vacio }` (`carga` = km total con carga = la
   `cantidad` del porte). Es el formulario **Kilómetros** de Gesruta.
 - THEC (chófer de THEC en un viaje CLAVO) → **perfil THEC de Gesruta**: `empresa:"THEC"`, cabecera

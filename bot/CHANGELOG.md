@@ -4,6 +4,18 @@ Historial de versiones del bot. La versión viva está en `VERSION` dentro de ca
 
 ---
 
+## `viajes-2` (2026-11-13) — Campo1/Campo2 (CLAVO multi-punto)
+
+Cliente CLAVO con varias cargas o varios repartos: Gesruta tiene un solo Origen y un solo Destino, así
+que los puntos múltiples van en **Campo1** (cargas) y **Campo2** (repartos) de la pestaña Cabecera del
+albarán. El bot **no lo hacía**; ahora, si la orden trae `campo1`/`campo2`, los teclea **tal cual**
+(ya abreviados ≤19 car. por la extracción — **Opción B** confirmada por Julio: se usa el campo
+`campo1`/`campo2`, no los nombres completos de `origenes`/`destinos`, que son solo para el Excel).
+
+- Coords nuevas `C_CAMPO1=(290,540)` / `C_CAMPO2=(290,563)` — **medidas del screenshot 2026-11-13**,
+  **VERIFICAR EN VIVO** en la 1ª corrida CLAVO.
+- Se cargan en la Cabecera, después de Carga y antes de ir a Líneas. Contrato actualizado.
+
 ## `viajes-2` (2026-11-05) — Resiliencia a nivel de línea: reportar campo vacío
 
 Aclaración de dominio (Julio 2026-11-05), confirmada en producción (remolque que no coincidía →
