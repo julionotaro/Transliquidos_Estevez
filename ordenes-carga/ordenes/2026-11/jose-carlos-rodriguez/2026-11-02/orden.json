@@ -34,6 +34,7 @@
           "llegada": "03/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "palets": 33,
           "lineas": {
             "porte": {
               "um": "TN",
@@ -84,6 +85,7 @@
             "TORREJON"
           ],
           "campo2": "GETAF/TORRE",
+          "palets": 46,
           "lineas": {
             "porte": {
               "um": "TN",
@@ -185,6 +187,7 @@
             "ONTIGOLA"
           ],
           "campo2": "GETAF/VALDE/ONTIG",
+          "palets": 6,
           "lineas": {
             "porte": {
               "um": "TN",
@@ -275,6 +278,7 @@
           "llegada": "06/11/2026",
           "facturacion": "km",
           "sentido": "C",
+          "palets": 17,
           "lineas": {
             "porte": {
               "um": "UN",

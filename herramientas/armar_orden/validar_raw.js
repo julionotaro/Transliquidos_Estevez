@@ -31,9 +31,9 @@ var CLAVES = {
   albaran: ['cliente_lit', 'origen_lit', 'destino_lit', 'carga_lit', 'referencia', 'salida', 'llegada',
     'peso_kg', 'peso_pendiente', 'peso_ok_redondo', 'precio_fijo', 'idx_incluida', 'idx_pct', 'reparto',
     'km_inicio', 'km_fin', 'km_vacio', 'km_pendiente', 'um',
-    'facturacion', 'sentido', 'km_facturable', 'origenes', 'destinos', 'archivo'],
+    'facturacion', 'sentido', 'km_facturable', 'origenes', 'destinos', 'archivo', 'palets'],
 };
-var NUMERICAS = ['peso_kg', 'precio_fijo', 'reparto', 'km_inicio', 'km_fin', 'km_vacio', 'km_facturable', 'idx_pct'];
+var NUMERICAS = ['peso_kg', 'precio_fijo', 'reparto', 'km_inicio', 'km_fin', 'km_vacio', 'km_facturable', 'idx_pct', 'palets'];
 var BOOLEANAS = ['peso_pendiente', 'peso_ok_redondo', 'idx_incluida', 'km_pendiente'];
 var TEXTO_OBLIGATORIO = ['cliente_lit', 'origen_lit', 'destino_lit', 'carga_lit', 'salida', 'llegada'];
 

@@ -92,13 +92,19 @@ tramo = un albarán** de Gesruta. Mapeo:
 | Kms con carga (K) | fin − inicio |
 | Kms en vacío (N) | inicio de este tramo − fin del anterior (misma tractora) |
 | L (S/R/U/C) | sentido → **determina la tarifa** |
-| Importe a facturar (M) | **K × €/km** (fijos U=306 / C=206) |
+| Importe a facturar (M) | **K × €/km** (fijos mensuales U/C; **oct-nov 2026 U=315 / C=212**; ene U=306 / C=206) |
 | Cliente / Carga | CLAVO / tipo de mercancía |
-| Palets Dev. | palets devueltos |
+| Palets Dev. (R) | **palets del talón** (línea "palets N"; si el talón no la trae → vacío). **Solo Excel, NUNCA Gesruta** (Julio 12/11) |
 | Dietas (Dobl/Noct/C-D/Dieta/Total), Gasoil, AdBlue, Otros | parte — **control interno** |
 | **GesR** | marca de **"ya cargado en Gesruta"** (confirmado Julio 06/11) |
 
 El Excel es la **fuente para la carga en Gesruta**.
+
+> **Generación automática (columnas A..R):** `herramientas/armar_orden/excel_frigos_xlsx.py <orden.json> <salida.xlsx>`
+> produce el **`.xlsx`** listo para pegar en el Excel de control desde la columna A (fechas como fecha,
+> km/importe/palets como número). Incluye **Palets Dev.** (col R) que sale del talón (campo `palets` del
+> raw → orden.json). `excel_frigos.js` da el mismo contenido en TSV (debug). Las columnas S..AA
+> (dietas/gastos) las completa Julio a mano.
 
 ---
 
@@ -138,6 +144,11 @@ en facturación** (ver §5.4).
 > Excel, las columnas **Origen/Destino** llevan la lista completa unida con `+`. Un albarán con varios
 > destinos = **UN** albarán con **UNA** línea de porte por el **km total** (CLAVO **NO** lleva línea
 > `REP` —eso es FORESA—: el multi ya está en los km).
+>
+> ⚠️ **AL CARGAR EN GESRUTA (feedback corrida Julio 12/11):** el `orden.json` ya trae `campo1`/`campo2`
+> (los emite el armador). El **bot DEBE teclearlos** en los campos **Campo1/Campo2** del albarán —no
+> dejarlos vacíos en multi-punto—. Es el paso que faltaba en la primera corrida de FRIGOS. El skill
+> `cargar-viajes-gesruta` ya lo recoge en Pantalla 2 (si se re-sincroniza desde la cuenta).
 
 ### 5.3 Kilómetros (odómetro / tacógrafo)
 **Un apunte por viaje** (confirmado Julio 06/11): **Nueva lectura** (odómetro

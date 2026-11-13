@@ -292,6 +292,12 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
     alb.destinos = raw.destinos;
     alb.campo2 = abreviarPuntos(raw.destinos, 19);
   }
+  // PALETS (CLAVO): dato del talon. SOLO va al Excel de control (col "Palets Dev."),
+  // NUNCA a Gesruta (Julio 12/11: "solo se carga en el excel, no en GR"). El skill de
+  // carga no lo coloca; queda aqui como metadato para excel_frigos.
+  if (raw.palets != null && raw.palets !== '') {
+    alb.palets = raw.palets;
+  }
   alb.lineas = { porte: porte, indexacion: indexacion };
   alb.km = kmBlock;
   alb.tarifa_pendiente = tarifaPendiente;

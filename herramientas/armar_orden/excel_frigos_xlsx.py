@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Genera un .xlsx con las filas del Excel FRIGOS (CLAVO) a partir de un orden.json.
-Mismas columnas que excel_frigos.js (A..Q), pero como libro de Excel real: fechas como
-fecha, km/importe como numero, listo para pegar o abrir con doble clic.
+Columnas A..R (= las del Excel de control hasta "Palets Dev."), como libro de Excel real:
+fechas como fecha, km/importe/palets como numero, listo para pegar o abrir con doble clic.
+"Palets Dev." (R) sale del talon y es SOLO para el Excel (no se carga en Gesruta).
 
 uso: python3 -I excel_frigos_xlsx.py <orden.json> <salida.xlsx>
 """
@@ -14,7 +15,7 @@ from openpyxl.styles import Font, Alignment
 COLS = ["Emp", "Tractora", "Fecha carga", "Fecha descarga", "Origen", "Nº Carg",
         "Destino", "Nº Rep", "Kms. carga", "Kms. Descarga", "Kms con carga",
         "Salida /Retorno/Unidad", "Importe a facturar por Km", "Kms en vacio",
-        "CLIENTE", "CARGA", "GesR"]
+        "CLIENTE", "CARGA", "GesR", "Palets Dev."]
 
 
 def num_es(s):
@@ -57,12 +58,14 @@ def filas(orden):
             des = a.get("destinos")
             destino = "+".join(x.upper() for x in des) if des else (a.get("destino") or {}).get("esperado", "").upper()
             n_rep = len(des) if des else 1
+            pal = a.get("palets")
             out.append([
                 emp, mat, fecha(a.get("salida")), fecha(a.get("llegada")),
                 origen, n_carg, destino, n_rep,
                 intz(km.get("inicio")), intz(km.get("fin")), intz(km.get("carga")),
                 a.get("sentido") or "", importe, intz(km.get("vacio")),
                 "CLAVO", (a.get("carga") or {}).get("esperado", ""), "",
+                intz(pal) if (pal is not None and pal != "") else "",
             ])
     return out
 
@@ -86,7 +89,7 @@ def main():
         ws.cell(r, 3).number_format = "DD/MM/YYYY"
         ws.cell(r, 4).number_format = "DD/MM/YYYY"
         ws.cell(r, 13).number_format = "#,##0.00"
-    widths = [6, 11, 12, 12, 26, 7, 26, 7, 11, 12, 12, 10, 12, 9, 9, 14, 6]
+    widths = [6, 11, 12, 12, 26, 7, 26, 7, 11, 12, 12, 10, 12, 9, 9, 14, 6, 10]
     for i, w in enumerate(widths, 1):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
     ws.freeze_panes = "A2"

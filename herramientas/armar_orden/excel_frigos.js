@@ -3,8 +3,9 @@
 // Toma un orden.json (modo km, cliente CLAVO) y emite las FILAS para pegar en el
 // Excel de control CONTROL_FACTURACION_FRIGOS (paso 3 del flujo objetivo). Salida
 // = TSV (separado por TAB) para pegar directo en Excel: cada campo cae en su
-// columna. Columnas A..Q (facturacion); las dietas/palets/gastos (R..AA) las
-// completa Julio desde la parte (control interno, no se cargan a Gesruta).
+// columna. Columnas A..R: A..Q facturacion + R "Palets Dev." (dato del talon, SOLO
+// Excel, no Gesruta). Las dietas/gastos (S..AA) las completa Julio desde la parte.
+// NOTA: el .xlsx real para pegar lo genera excel_frigos_xlsx.py (este .js = TSV/debug).
 //
 // uso: node excel_frigos.js <orden.json>   (imprime cabecera + filas TSV)
 'use strict';
@@ -22,7 +23,7 @@ var COLUMNAS = [
   'Emp', 'Tractora', 'Fecha carga', 'Fecha descarga', 'Origen', 'Nº Carg',
   'Destino', 'Nº Rep', 'Kms. carga', 'Kms. Descarga', 'Kms con carga',
   'Salida /Retorno/Unidad', 'Importe a facturar por Km', 'Kms en vacio',
-  'CLIENTE', 'CARGA', 'GesR',
+  'CLIENTE', 'CARGA', 'GesR', 'Palets Dev.',
 ];
 
 function filasDeOrden(orden) {
@@ -66,6 +67,7 @@ function filasDeOrden(orden) {
         'CLAVO',                                                // O CLIENTE
         (a.carga && a.carga.esperado) || '',                    // P CARGA
         '',                                                      // Q GesR (lo marca Julio al cargar)
+        (a.palets != null && a.palets !== '') ? a.palets : '',  // R Palets Dev. (del talon; solo Excel)
       ]);
     });
   });
