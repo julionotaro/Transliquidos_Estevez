@@ -686,9 +686,12 @@ def do_albaran(alb, n, autonomo=False, duo_secundario=False):
     # puntos ABREVIADAS <=19 car.), teclearlas TAL CUAL en los campos Campo1 (cargas) / Campo2
     # (repartos) de la pestaña Cabecera del albaran. Opcion B (Julio): se usa el campo campo1/campo2 ya
     # abreviado por la extraccion, NO los nombres completos de origenes/destinos (limite 19 car.).
+    # SIN clear: en Campo1/Campo2 el Backspace sobre vacio NO borra, MUEVE el foco al campo anterior
+    # (Julio 2026-11-13: con clear subia por los campos y escribia los repartos en Refe). Estan vacios
+    # en un albaran nuevo, asi que se clickea y se escribe directo.
     campo1=alb.get("campo1"); campo2=alb.get("campo2")
-    if campo1: field(C_CAMPO1, str(campo1), "Campo1 (multi-carga)", clear=True)
-    if campo2: field(C_CAMPO2, str(campo2), "Campo2 (multi-reparto)", clear=True)
+    if campo1: field(C_CAMPO1, str(campo1), "Campo1 (multi-carga)")
+    if campo2: field(C_CAMPO2, str(campo2), "Campo2 (multi-reparto)")
 
     # PEDIDO (queda verde, sin abrir Lineas) si: tarifa_pendiente, peso_pendiente, destino sin codigo,
     # o NO hay porte. Conducta resiliente (Julio 2026-11-03): un campo faltante NUNCA abandona el
