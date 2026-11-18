@@ -71,8 +71,10 @@ Notas del análisis documento por documento: `analisis/A..H.md`.
 
 ## 🚚 CARGA EN GESRUTA Y REGISTRO — `flujo-carga-y-registro.md` **VIGENTE**
 
-Cómo se carga un juego en Gesruta (por control de pantalla, skill `cargar-viajes-gesruta`)
-y dónde queda registrado. Decisión de Julio 08/10/2026:
+Cómo se carga un juego en Gesruta (por control de pantalla, skill `cargar-viajes-gesruta`
+— **respaldado y versionado en `.claude/skills/cargar-viajes-gesruta/SKILL.md`**; esa copia es
+la fuente de verdad, la de la cuenta se re-sincroniza desde ahí) y dónde queda registrado.
+Decisión de Julio 08/10/2026:
 
 - **git = libro mayor/respaldo** (`datos/registro-procesamiento.csv`, una fila por albarán);
   **n8n = operativo** (tabla `Viajes`, se espeja a git); **Gesruta = facturación real**.
@@ -87,6 +89,19 @@ y dónde queda registrado. Decisión de Julio 08/10/2026:
 en materia de extracción. Si contradice a `modelo-dominio-lectura.md`, gana
 `modelo-dominio-lectura.md` en el modelo de dominio y éste en las reglas de
 extracción concretas.
+
+
+---
+
+## 🧾 FACTURADOS — `flujo-facturados.md` **VIGENTE (17/11)**
+
+Cuando sale una factura (facturación **quincenal**), sus scans se mueven de
+`procesados/` a **`facturados/<AÑO>/<MM-mes de facturación>/<CLIENTE>/<Nº factura>/`**
+para que buscar el respaldo de una factura sea directo. Julio sube la factura a
+`facturas-entrada/`; Claude lee las referencias y mueve los scans con
+`herramientas/facturar/mover-facturados.js` (actualiza `pdf_doc` del registro + anota
+en `datos/facturacion-log.csv`). **Mes de facturación, NO de emisión** (una factura
+puede incluir viajes de un mes anterior que quedaron pendientes por falta de docs).
 
 
 ---
@@ -141,6 +156,7 @@ extracción concretas.
 
 | Documento | Qué contiene |
 |---|---|
+| `jornada-2026-11-17-facturados-y-auditoria.md` | **JORNADA 17/11.** Carpeta `facturados/` (mover scans al facturar, herramienta `mover-facturados.js`, bandeja `facturas-entrada/`) + auditoría de "información a salvo" (458 tests OK, fuentes trackeadas, skill del bot respaldado al repo) |
 | `jornada-2026-11-12-aprendizajes.md` | **DIARIO DE LA JORNADA 11-12/11.** Inventario de los ~17 juegos/~75 albaranes procesados, reglas nuevas confirmadas por Julio (tarifa cerrada/idx por OC, cabeza por-viaje), cambios de armador (`idx_pct`, `cabezaDeViaje`), tarifas aplicadas con su estado, y los 6 albaranes que quedaron en TARIFA_PENDIENTE. Apunta a `correcciones-julio.json` y `pendientes-gesruta.md` para lo canónico |
 | `ESTADO-Y-TRASPASO.md` | Estado operativo y traspaso entre sesiones |
 | `fase2-cierre-y-fase3-bloqueantes.md` | Qué cerró la fase 2 y qué bloquea la fase 3 |
@@ -223,6 +239,10 @@ Reglas de negocio reales que hoy están solo en documentos secundarios. Hasta qu
 |---|---|
 | `datos/gesruta/` | **Los export originales de Gesruta, versionados** (27/08/2026): `viajes-anio-2026-08-19.xls` (8.755 líneas), `tarifas-general-2026-08-04.xls` (704 tarifas), `puntos-geograficos-2026-08-27.csv` (807 puntos, **cp850**), `linea-facturacion-2026-08-26.csv`. Están en el repo a propósito: cuando se pasaban por chat, cada contenedor nuevo los perdía y había que volver a pedirlos |
 | `datos/` | Otras exportaciones y resúmenes derivados |
+| `facturados/` | Scans de viajes **ya facturados**, movidos desde `procesados/` al salir la factura. Estructura `AÑO/MM-mes/CLIENTE/Nº factura/`. Ver `docs/flujo-facturados.md` |
+| `facturas-entrada/` | Bandeja donde Julio sube los PDF de factura a procesar (se vacía tras cada tanda, igual que `entrada/`) |
+| `datos/facturacion-log.csv` | Índice de qué referencia entró en qué factura (cliente, mes de facturación, scan origen→destino). Lo escribe `mover-facturados.js` |
+| `herramientas/facturar/mover-facturados.js` | Mueve los scans facturados y actualiza registro + log. Dry-run por defecto; `--mover` aplica. Idempotente y ruidoso |
 | `catalogo/rutas-por-cliente.json` | **Conjunto CERRADO de rutas por cliente** con la tarifa observada, frecuencia y última fecha. Lo genera `herramientas/construir-matriz-rutas.py` desde el export anual. Sirve para preguntar "¿cuál de las rutas de ESTE cliente es?" en vez de "¿cuál de los 790 puntos es?" |
 | `catalogo/tarifa-por-analogia.json` | Candidatos donde la oficina cobra la tarifa de **otra** ruta del mismo cliente+origen (detectados por coincidencia exacta de importe). `confirmado: false` ⇒ **no se factura con ellos** hasta que Julio los valide |
 | `catalogo/tarifas-confirmadas-julio.json` | **Overlay de tarifas confirmadas por Julio** que no están (o están mal) en el export n8n. El armador las consulta tras la tabla y antes de la analogía. Match cliente+origen+destino (+material). Hoy: QUIMIDROGA Miranda→Braga 61,65 |

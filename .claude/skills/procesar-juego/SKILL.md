@@ -72,7 +72,9 @@ Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**
   Todos los albaranes de la ficha van en **UN viaje** (una ficha = un viaje de Gesruta).
 - **Excel como `.xlsx`** (para abrir/pegar directo): `python3 -I herramientas/armar_orden/excel_frigos_xlsx.py <orden.json> <salida.xlsx>` (mismas columnas, fechas y números tipados).
 - **Dos salidas** (flujo objetivo): la **orden.json** (armador, modo km) **y** las **filas del Excel
-  FRIGOS** para pegar: `node herramientas/armar_orden/excel_frigos.js <orden.json>` (TSV, columnas A–Q).
+  FRIGOS** para pegar: el `.xlsx` (A..R, incl. **Palets Dev.**) con `excel_frigos_xlsx.py`; el TSV de
+  debug con `node herramientas/armar_orden/excel_frigos.js <orden.json>`. Palets sale del talón
+  (campo `palets` del raw) y va **solo al Excel**, nunca a Gesruta.
 - **Dietas, palets, gasoil, AdBlue, otros gastos:** control interno del Excel (de la parte); **NO** se
   cargan a Gesruta por ahora.
 - **Puntos:** el resolver usa la **base completa de Gesruta** (`catalogo/puntos-gesruta-base.json`)
