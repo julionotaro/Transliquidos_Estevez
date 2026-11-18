@@ -61,54 +61,11 @@ function sugerir(clave, lista) {
   lista.forEach(function (k) { var x = distancia(clave, k); if (x < d) { d = x; mejor = k; } });
   return d <= 3 ? mejor : null;
 }
-// ---- comparacion de CHOFER (cabecera) ----
-function normNombre(s) {
-  return String(s == null ? '' : s).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[^A-Z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
-}
-function tokensNombre(s) { return normNombre(s).split(' ').filter(function (t) { return t.length >= 3; }); }
-// Apellidos = tokens significativos salvo el primero (nombre de pila). Un solo token -> ese.
-function apellidos(s) { var t = tokensNombre(s); return t.length > 1 ? t.slice(1) : t; }
-// Dos nombres son el MISMO chofer si comparten un apellido (exacto, o edit<=2 por mala lectura).
-// "JUAN L GONZALEZ" vs "JUAN L GIZ" -> apellidos GONZALEZ vs GIZ -> NO coinciden (surname manda,
-// no alcanza con compartir el nombre de pila "JUAN"). "GONZALES" vs "GONZALEZ" (edit 1) -> SI.
-function mismoChofer(a, b) {
-  var aa = apellidos(a), bb = apellidos(b), i, j;
-  if (!aa.length || !bb.length) { return false; }
-  for (i = 0; i < aa.length; i++) {
-    for (j = 0; j < bb.length; j++) {
-      if (aa[i] === bb[j]) { return true; }
-      if (aa[i].length >= 4 && bb[j].length >= 4 && distancia(aa[i], bb[j]) <= 1) { return true; }
-    }
-  }
-  return false;
-}
-// La MISMA persona (estricto, para el lookup inverso y para saber si el chofer leido
-// es "conocido"): todos los tokens significativos del nombre mas corto aparecen en el
-// otro (exacto o edit<=1). Distingue "MANUEL EIRIN" de "MARCOS EIRIN FERNANDEZ"
-// (comparten apellido pero NO son la misma persona: el nombre de pila difiere).
-function mismaPersona(a, b) {
-  var ta = tokensNombre(a), tb = tokensNombre(b);
-  if (!ta.length || !tb.length) { return false; }
-  var corto = ta.length <= tb.length ? ta : tb, largo = ta.length <= tb.length ? tb : ta, i, j, hay;
-  for (i = 0; i < corto.length; i++) {
-    hay = false;
-    for (j = 0; j < largo.length; j++) {
-      if (corto[i] === largo[j] || (corto[i].length >= 4 && largo[j].length >= 4 && distancia(corto[i], largo[j]) <= 1)) { hay = true; break; }
-    }
-    if (!hay) { return false; }
-  }
-  return true;
-}
-function matriculasDeChofer(nombre, padron) {
-  var out = [], m;
-  for (m in padron) { if (Object.prototype.hasOwnProperty.call(padron, m) && padron[m].chofer && mismaPersona(nombre, padron[m].chofer)) { out.push(m); } }
-  return out;
-}
-function esChoferConocido(nombre, padron) {
-  for (var m in padron) { if (Object.prototype.hasOwnProperty.call(padron, m) && padron[m].chofer && mismaPersona(nombre, padron[m].chofer)) { return true; } }
-  return false;
-}
+// ---- comparacion de CHOFER (cabecera): logica compartida con el armador ----
+var nombres = require('../../catalogo/nombres-chofer.js');
+var mismoChofer = nombres.mismoApellido;            // "¿podrian ser el mismo?" (apellido)
+var matriculasDeChofer = nombres.matriculasDeChofer; // matriculas cuyo chofer ES esa persona
+var esChoferConocido = nombres.esChoferConocido;     // ¿el leido es un chofer del padron?
 function matriculaCercana(mat, padron) { // misma longitud, edit<=2 (digito/letra mal leido)
   var best = null, d = 99, m;
   for (m in padron) { if (!Object.prototype.hasOwnProperty.call(padron, m)) { continue; } var x = distancia(mat, m); if (x < d) { d = x; best = m; } }
