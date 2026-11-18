@@ -1,0 +1,21 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118131031.pdf (24 pags: 2 hojas de ficha THEC + 22 albaranes FORESA metanol Villagarcia->Caldas). Jose J. Ferreira Goldar (THEC, NO en flota TLE), tractora 8382JJS, cisterna R6292BCW. THEC + quimico FORESA => modelo PROVE (empresa TLE, proveedor 5, cabeza='PROVE', km/costos vacios). SHUTTLE metanol Villagarcia->Caldas: se SUMAN las cantidades por DIA, 1 linea sin ref, total x 3,68 (Julio 18/11) + excel_metanol. 4 DIAS: 09/11 4 viaxes [26340,26320,26300,26320]=105280 (ALB 2600003532/35/37/39; ficha nota 'AVERIA MANGUITO BOMBA DIRECCION' pero los 4 viaxes estan completos); 10/11 6 viaxes [26320,26320,26320,26320,26300,26300]=157880 (ALB 2600003545/49/52/58/62/65); 12/11 6 viaxes [26280,26280,26300,26300,26320,26300]=157780 (ALB 2600003571/73/75/78/82/84); 13/11 6 viaxes [26300,26320,26300,26340,26300,26300]=157860 (ALB 2600003586/88/91/95/98/3600, 2a hoja de ficha). Ruta -> procesados/FORESA/Villagarcia-Caldas (Metanol)/.",
+  "escaneo": "20261118131031.pdf",
+  "empresa": "TLE",
+  "proveedor": "5",
+  "fecha_inicio": "2026-11-09",
+  "chofer": "JOSE J. FERREIRA GOLDAR",
+  "cabeza": "8382",
+  "viajes": [
+    {
+      "matricula": "8382JJS",
+      "remolque": "R6292BCW",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-09", "salida": "09/11/2026", "llegada": "09/11/2026", "peso_kg": 105280, "km_pendiente": true, "shuttle_cantidades": [26340, 26320, 26300, 26320] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-10", "salida": "10/11/2026", "llegada": "10/11/2026", "peso_kg": 157880, "km_pendiente": true, "shuttle_cantidades": [26320, 26320, 26320, 26320, 26300, 26300] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-12", "salida": "12/11/2026", "llegada": "12/11/2026", "peso_kg": 157780, "km_pendiente": true, "shuttle_cantidades": [26280, 26280, 26300, 26300, 26320, 26300] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-13", "salida": "13/11/2026", "llegada": "13/11/2026", "peso_kg": 157860, "km_pendiente": true, "shuttle_cantidades": [26300, 26320, 26300, 26340, 26300, 26300] }
+      ]
+    }
+  ]
+}
