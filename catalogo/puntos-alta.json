@@ -235,10 +235,10 @@
  {
   "id_punto": "TERMO",
   "nombre_canonico": "TERMOLAN, S.A.",
-  "alias": "",
+  "alias": "TERMOLAN|SANTO TIRSO|SAO TIRSO",
   "municipio": "",
   "provincia": "",
-  "pais": "",
+  "pais": "PT",
   "tipo": "generico",
   "empresa_sede": "",
   "origen_alta": "gesruta-usado"
@@ -642,10 +642,10 @@
  {
   "id_punto": "MEJOR",
   "nombre_canonico": "MEJORADA",
-  "alias": "",
+  "alias": "MEJORADA DEL CAMPO",
   "municipio": "",
   "provincia": "",
-  "pais": "",
+  "pais": "ES",
   "tipo": "generico",
   "empresa_sede": "",
   "origen_alta": "gesruta-usado"
@@ -3620,5 +3620,38 @@
   "pais": "ESPANA",
   "tipo": "generico",
   "origen_alta": "Correccion Julio 07/10 y 12/11: CASTELLON se carga como CASTE; el duplicado CS de puntos-gesruta-base NO se usa. Al estar en curados (puntos-alta) desplaza a CS en cargarPuntos. Destino de FORESTAL Mugardos->Castellon (Quimialmel) precio fijo 2.025."
+ },
+ {
+  "id_punto": "MAGNE",
+  "nombre_canonico": "MAGNE",
+  "alias": "MAGNÉ",
+  "municipio": "",
+  "provincia": "",
+  "pais": "FR",
+  "tipo": "generico",
+  "empresa_sede": "",
+  "origen_alta": "confirmado Julio 18/11 (correcciones tanda 18/11)"
+ },
+ {
+  "id_punto": "9741",
+  "nombre_canonico": "GRAND QUEVILLY",
+  "alias": "QUEVILLY",
+  "municipio": "",
+  "provincia": "",
+  "pais": "FR",
+  "tipo": "generico",
+  "empresa_sede": "",
+  "origen_alta": "confirmado Julio 18/11 (correcciones tanda 18/11)"
+ },
+ {
+  "id_punto": "LANDI",
+  "nombre_canonico": "LANDIM",
+  "alias": "",
+  "municipio": "",
+  "provincia": "",
+  "pais": "PT",
+  "tipo": "generico",
+  "empresa_sede": "",
+  "origen_alta": "confirmado Julio 18/11 (correcciones tanda 18/11)"
  }
 ]
