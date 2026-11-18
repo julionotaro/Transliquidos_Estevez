@@ -1,0 +1,141 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "4342",
+        "verificar": {
+          "matricula": "4342LBB",
+          "remolque": "R9990BDD",
+          "chofer": "RODRIGO PEREZ BAHAMONDE"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "321",
+            "esperado": "FORESTAL DEL ATLANTICO, S.A."
+          },
+          "origen": {
+            "codigo": "MUGAR",
+            "esperado": "MUGARDOS"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "MAGNE"
+          },
+          "carga": {
+            "codigo": "FENOLI",
+            "esperado": "COLA FENOLICA"
+          },
+          "referencia": "26P1357",
+          "salida": "03/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,130",
+              "precio": null,
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": null,
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "838342",
+            "fin": "839408",
+            "carga": "1066"
+          },
+          "tarifa_pendiente": true
+        },
+        {
+          "cliente": {
+            "codigo": "10",
+            "esperado": "BALTRANSA, S.A."
+          },
+          "origen": {
+            "codigo": null,
+            "esperado": "ROUEN"
+          },
+          "destino": {
+            "codigo": "VALD",
+            "esperado": "VALDEMORO"
+          },
+          "carga": {
+            "codigo": null,
+            "esperado": "ACEITE LUBRICANTE"
+          },
+          "referencia": "338172",
+          "salida": "09/11/2026",
+          "llegada": "10/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "2.800,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1",
+              "factor": "0"
+            }
+          },
+          "km": {
+            "inicio": "839968",
+            "fin": "841349",
+            "carga": "1381"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "637",
+            "esperado": "QUIMICAS DEL JARAMA, S.A."
+          },
+          "origen": {
+            "codigo": null,
+            "esperado": "MEJORADA DEL CAMPO"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "LANDIM"
+          },
+          "carga": {
+            "codigo": "33",
+            "esperado": "AMONIACO"
+          },
+          "referencia": "49926",
+          "salida": "12/11/2026",
+          "llegada": "13/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,920",
+              "precio": null,
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": null,
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "841399",
+            "fin": "842063",
+            "carga": "664"
+          },
+          "tarifa_pendiente": true
+        }
+      ]
+    }
+  ]
+}

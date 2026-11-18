@@ -50,7 +50,11 @@ function leerRegistro() {
 // si el cliente es nuevo, la primera palabra de su razon social (y se avisa).
 function carpetaCliente(codigo, nombre, filas, avisos) {
   for (var i = 0; i < filas.length; i++) {
-    if (filas[i][7] === String(codigo) && filas[i][26]) { return filas[i][26].split('/')[1]; }
+    // Solo filas cuyo pdf_doc sigue en procesados/: tras facturados/, la ruta pasa a
+    // facturados/<AÑO>/... y split('/')[1] daria "2026" (el año), no el cliente.
+    if (filas[i][7] === String(codigo) && filas[i][26] && filas[i][26].indexOf('procesados/') === 0) {
+      return filas[i][26].split('/')[1];
+    }
   }
   if (String(codigo) === '4') { return 'CLAVO'; }
   var c = String(nombre || 'SIN_CLIENTE').toUpperCase().replace(/[^A-Z0-9 ]/g, ' ').trim().split(/\s+/)[0] || 'SIN_CLIENTE';
