@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118121918.pdf (6 pags: ficha THEC + 5 albaranes FORESA metanol Villagarcia->Caldas 06/11). Jose J. Ferreira Goldar (THEC, NO en flota TLE), tractora 8382JJS, cisterna R6292BCW. THEC + quimico FORESA => modelo PROVE (empresa TLE, proveedor 5, cabeza='PROVE', km/costos vacios). SHUTTLE metanol Villagarcia->Caldas: se SUMAN las cantidades por DIA, 1 linea sin ref, total x 3,68 (Julio 18/11). Dia 06/11: 5 viaxes [26320,26320,26320,26320,26300]=131580 kg (ALB 2600003520/22/24/28/30). Ficha '5 VIAXES' coincide con 5 albaranes. shuttle_cantidades -> excel_metanol.",
+  "escaneo": "20261118121918.pdf",
+  "empresa": "TLE",
+  "proveedor": "5",
+  "fecha_inicio": "2026-11-06",
+  "chofer": "JOSE J. FERREIRA GOLDAR",
+  "cabeza": "8382",
+  "viajes": [
+    {
+      "matricula": "8382JJS",
+      "remolque": "R6292BCW",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-06", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 131580, "km_pendiente": true, "shuttle_cantidades": [26320, 26320, 26320, 26320, 26300] }
+      ]
+    }
+  ]
+}
