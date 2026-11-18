@@ -61,6 +61,59 @@ function sugerir(clave, lista) {
   lista.forEach(function (k) { var x = distancia(clave, k); if (x < d) { d = x; mejor = k; } });
   return d <= 3 ? mejor : null;
 }
+// ---- comparacion de CHOFER (cabecera) ----
+function normNombre(s) {
+  return String(s == null ? '' : s).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^A-Z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function tokensNombre(s) { return normNombre(s).split(' ').filter(function (t) { return t.length >= 3; }); }
+// Apellidos = tokens significativos salvo el primero (nombre de pila). Un solo token -> ese.
+function apellidos(s) { var t = tokensNombre(s); return t.length > 1 ? t.slice(1) : t; }
+// Dos nombres son el MISMO chofer si comparten un apellido (exacto, o edit<=2 por mala lectura).
+// "JUAN L GONZALEZ" vs "JUAN L GIZ" -> apellidos GONZALEZ vs GIZ -> NO coinciden (surname manda,
+// no alcanza con compartir el nombre de pila "JUAN"). "GONZALES" vs "GONZALEZ" (edit 1) -> SI.
+function mismoChofer(a, b) {
+  var aa = apellidos(a), bb = apellidos(b), i, j;
+  if (!aa.length || !bb.length) { return false; }
+  for (i = 0; i < aa.length; i++) {
+    for (j = 0; j < bb.length; j++) {
+      if (aa[i] === bb[j]) { return true; }
+      if (aa[i].length >= 4 && bb[j].length >= 4 && distancia(aa[i], bb[j]) <= 1) { return true; }
+    }
+  }
+  return false;
+}
+// La MISMA persona (estricto, para el lookup inverso y para saber si el chofer leido
+// es "conocido"): todos los tokens significativos del nombre mas corto aparecen en el
+// otro (exacto o edit<=1). Distingue "MANUEL EIRIN" de "MARCOS EIRIN FERNANDEZ"
+// (comparten apellido pero NO son la misma persona: el nombre de pila difiere).
+function mismaPersona(a, b) {
+  var ta = tokensNombre(a), tb = tokensNombre(b);
+  if (!ta.length || !tb.length) { return false; }
+  var corto = ta.length <= tb.length ? ta : tb, largo = ta.length <= tb.length ? tb : ta, i, j, hay;
+  for (i = 0; i < corto.length; i++) {
+    hay = false;
+    for (j = 0; j < largo.length; j++) {
+      if (corto[i] === largo[j] || (corto[i].length >= 4 && largo[j].length >= 4 && distancia(corto[i], largo[j]) <= 1)) { hay = true; break; }
+    }
+    if (!hay) { return false; }
+  }
+  return true;
+}
+function matriculasDeChofer(nombre, padron) {
+  var out = [], m;
+  for (m in padron) { if (Object.prototype.hasOwnProperty.call(padron, m) && padron[m].chofer && mismaPersona(nombre, padron[m].chofer)) { out.push(m); } }
+  return out;
+}
+function esChoferConocido(nombre, padron) {
+  for (var m in padron) { if (Object.prototype.hasOwnProperty.call(padron, m) && padron[m].chofer && mismaPersona(nombre, padron[m].chofer)) { return true; } }
+  return false;
+}
+function matriculaCercana(mat, padron) { // misma longitud, edit<=2 (digito/letra mal leido)
+  var best = null, d = 99, m;
+  for (m in padron) { if (!Object.prototype.hasOwnProperty.call(padron, m)) { continue; } var x = distancia(mat, m); if (x < d) { d = x; best = m; } }
+  return d <= 2 ? best : null;
+}
 function fecha(s) { // dd/mm/aaaa -> Date (UTC) o null si no existe
   var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(s || ''));
   if (!m) { return null; }
@@ -99,7 +152,7 @@ function clavesDesconocidas(obj, permitidas, donde, errores) {
 function validarRaw(raw, deps, opciones) {
   opciones = opciones || {};
   var errores = [], avisos = [];
-  var flota = (deps && deps.flota) || datos.cargarFlota();
+  var flota = (deps && deps.flota) || datos.cargarPadron();
   var registro = (opciones.registro === false) ? {} : (opciones.registro || referenciasDelRegistro());
   var hoy = opciones.hoy || new Date();
 
@@ -142,6 +195,43 @@ function validarRaw(raw, deps, opciones) {
       }
     }
     if (mat && !/^\d{4}[A-Z]{3}$/.test(mat)) { avisos.push(dv + ': matricula "' + v.matricula + '" con formato inusual (se espera 4 digitos + 3 letras)'); }
+
+    // CRUCE DE CABECERA: chofer + matricula contra el PADRON (flota TLE + externos THEC).
+    // La cabecera es la CABEZA de la orden; si va mal, traba la carga en Gesruta. Atrapa
+    // los 2 fallos reales: (a) matricula correcta pero chofer mal leido (Giz->Gonzalez),
+    // (b) chofer conocido con matricula mal leida (Rodrigo 4342->7347LBB). Un chofer/
+    // tractora externo NUEVO (ninguno en el padron) NO bloquea: avisa ruidoso para darlo
+    // de alta en catalogo/flota-externa.json.
+    var chofRead = String(raw.chofer || '').trim();
+    if (mat && chofRead) {
+      if (fl) {
+        // matricula EN el padron -> la tractora es valida (no traba GR). Si el chofer
+        // leido NO es el habitual de esa tractora: si el leido es un chofer CONOCIDO
+        // (otra persona del padron) puede ser un suplente/pool -> AVISO; si NO es
+        // conocido, es un nombre MAL LEIDO (p.ej. "Giz" por "Gonzalez") -> ERROR.
+        if (fl.chofer && !mismoChofer(chofRead, fl.chofer)) {
+          if (esChoferConocido(chofRead, flota)) {
+            avisos.push(dv + ': la tractora ' + mat + ' es habitual de "' + fl.chofer + '" pero leiste "' + chofRead + '" (otro chofer del padron) -> ¿condujo una tractora distinta de la suya? verificar contra la ficha');
+          } else {
+            errores.push(dv + ': el chofer leido "' + chofRead + '" NO coincide con "' + fl.chofer + '" (chofer de la tractora ' + mat + ' en el padron) y NO es un chofer conocido -> nombre MAL LEIDO: corregir antes de armar (si "' + chofRead + '" es un chofer nuevo de esa tractora, actualizar el padron)');
+          }
+        }
+      } else {
+        // matricula NO en el padron. Si el chofer leido es conocido con otra tractora,
+        // la matricula esta MAL LEIDA (p.ej. Rodrigo 4342 por 7347LBB) -> ERROR.
+        var porChofer = matriculasDeChofer(chofRead, flota);
+        if (porChofer.length) {
+          errores.push(dv + ': la matricula "' + mat + '" no esta en el padron, pero el chofer "' + chofRead + '" conduce ' + porChofer.join(' / ') + ' -> matricula MAL LEIDA: corregir a la del padron (si de verdad cambio de tractora, darla de alta)');
+        } else {
+          // ni matricula ni chofer conocidos -> posible externo NUEVO o doble mala lectura.
+          var sm = matriculaCercana(mat, flota);
+          var pista = sm ? (' ¿la matricula es "' + sm + '" (' + (flota[sm].chofer || '?') + ')?')
+                         : ' si es un chofer/tractora EXTERNO nuevo, darlo de alta en catalogo/flota-externa.json con el nombre canonico';
+          avisos.push(dv + ': cabecera NO reconocida -> ni la matricula "' + mat + '" ni el chofer "' + chofRead + '" estan en el padron (flota TLE + externos). VERIFICAR la lectura.' + pista);
+        }
+      }
+    }
+
     var esAutonomo = !!(fl && fl.tipo === 'autonomo');
 
     v.albaranes.forEach(function (a, ai) {
@@ -258,7 +348,7 @@ if (require.main === module) {
     archivos = fs.readdirSync(dir).filter(function (f) { return /\.json$/.test(f); }).map(function (f) { return path.join(dir, f); });
   }
   if (!archivos.length) { console.error('uso: node validar_raw.js <raw.json> [...] | --todos   [--sin-registro]'); process.exit(2); }
-  var deps = { flota: datos.cargarFlota() };
+  var deps = { flota: datos.cargarPadron() };
   var totalErr = 0, totalAv = 0;
   archivos.forEach(function (f) {
     var raw;

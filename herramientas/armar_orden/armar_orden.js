@@ -461,11 +461,30 @@ function armarAlbaran(raw, choferNacionalidad, deps, avisos, duoSec) {
 
 // ¿comparten algun token significativo (>=3) los dos nombres? (para no marcar falso
 // positivo entre "MARCOS" y "MARCOS EIRIN FERNANDEZ").
+// Compatibles si comparten un APELLIDO (no basta el nombre de pila): "JUAN L GONZALEZ"
+// vs "JUAN L GIZ" -> distintos (comparten JUAN pero el apellido difiere). Tolera mala
+// lectura del apellido (edit<=2): "GONZALES" ~ "GONZALEZ".
 function nombresCompatibles(a, b) {
   var ta = cruce.norm(a).split(' ').filter(function (t) { return t.length >= 3; });
   var tb = cruce.norm(b).split(' ').filter(function (t) { return t.length >= 3; });
-  for (var i = 0; i < ta.length; i++) { if (tb.indexOf(ta[i]) >= 0) { return true; } }
+  var aa = ta.length > 1 ? ta.slice(1) : ta;  // apellidos (sin el nombre de pila)
+  var bb = tb.length > 1 ? tb.slice(1) : tb;
+  for (var i = 0; i < aa.length; i++) {
+    for (var j = 0; j < bb.length; j++) {
+      if (aa[i] === bb[j]) { return true; }
+      if (aa[i].length >= 4 && bb[j].length >= 4 && distEdit(aa[i], bb[j]) <= 1) { return true; }
+    }
+  }
   return false;
+}
+function distEdit(a, b) {
+  var m = [], i, j;
+  for (i = 0; i <= b.length; i++) { m[i] = [i]; }
+  for (j = 0; j <= a.length; j++) { m[0][j] = j; }
+  for (i = 1; i <= b.length; i++) { for (j = 1; j <= a.length; j++) {
+    m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + (b[i - 1] === a[j - 1] ? 0 : 1));
+  } }
+  return m[b.length][a.length];
 }
 
 // La CABECERA se resuelve por la MATRICULA contra el padron de flota (la verdad:
@@ -552,7 +571,7 @@ function cargarDeps() {
     analogias: datos.cargarAnalogiasConfirmadas(),
     confirmadas: datos.cargarTarifasConfirmadas(),
     rnm: datos.cargarTarifarioRNM(),
-    flota: datos.cargarFlota(),
+    flota: datos.cargarPadron(),
     clavo: datos.cargarClavo(),
   };
 }

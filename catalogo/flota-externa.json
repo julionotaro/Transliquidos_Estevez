@@ -1,0 +1,7 @@
+{
+  "_nota": "Padron EXTERNO de cabecera: tractoras/choferes de THEC y terceros que NO estan en el padron TLE (catalogo/flota.json, export de Gesruta) pero conducen cargas (tipicamente modelo PROVE). Mismo formato que flota.json (matricula -> {remolque, chofer, tipo, empresa}) para CRUZAR la cabecera junto con la flota TLE: si la ficha trae una matricula/chofer que no coincide con el padron, se bloquea antes de armar. 'remolque': null = varia (THEC cambia de cisterna; no se exige). Fuente: historico de cargas (datos/registro-procesamiento.csv). AMPLIAR cuando Julio confirme un chofer/tractora externo nuevo: agregar su matricula con el nombre CANONICO del chofer.",
+  "tractoras": {
+    "8382JJS": { "remolque": null, "chofer": "JOSE J. FERREIRA GOLDAR", "tipo": "propio", "empresa": "THEC" },
+    "8168JSD": { "remolque": null, "chofer": "JUAN L. GONZALEZ", "tipo": "propio", "empresa": "THEC" }
+  }
+}

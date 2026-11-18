@@ -88,10 +88,27 @@ function cargarAnalogiasConfirmadas() {
   return (j.candidatos || []).filter(function (c) { return c.confirmado === true; });
 }
 
-/** Padron de flota: matricula tractora -> {remolque, chofer, tipo}. Fuente de verdad de la cabecera. */
+/** Padron de flota TLE: matricula tractora -> {remolque, chofer, tipo}. Export de Gesruta. */
 function cargarFlota() {
   var j = JSON.parse(fs.readFileSync(p('catalogo/flota.json'), 'utf8'));
   return j.tractoras || {};
+}
+
+/** Padron EXTERNO (THEC/terceros): matricula -> {remolque, chofer, tipo, empresa}. */
+function cargarFlotaExterna() {
+  try {
+    var j = JSON.parse(fs.readFileSync(p('catalogo/flota-externa.json'), 'utf8'));
+    return j.tractoras || {};
+  } catch (e) { return {}; }
+}
+
+/** Padron COMPLETO de cabecera = flota TLE + externos (THEC). Para verificar la
+ *  cabecera (chofer + matricula). La flota TLE manda si una matricula esta en ambas. */
+function cargarPadron() {
+  var ext = cargarFlotaExterna(), tle = cargarFlota(), out = {}, k;
+  for (k in ext) { if (Object.prototype.hasOwnProperty.call(ext, k)) { out[k] = ext[k]; } }
+  for (k in tle) { if (Object.prototype.hasOwnProperty.call(tle, k)) { out[k] = tle[k]; } }
+  return out;
 }
 
 /** Tarifas confirmadas por Julio (overlay fuera del export n8n). Solo confirmado:true. */
@@ -124,5 +141,7 @@ module.exports = {
   cargarTarifasConfirmadas: cargarTarifasConfirmadas,
   cargarTarifarioRNM: cargarTarifarioRNM,
   cargarFlota: cargarFlota,
+  cargarFlotaExterna: cargarFlotaExterna,
+  cargarPadron: cargarPadron,
   cargarClavo: cargarClavo,
 };
