@@ -124,9 +124,11 @@ function filasDeRaw(raw, opciones) {
       // Nombre del PDF archivado: quimicos = Nro de referencia; CLAVO (por km, sin ref) =
       // <chofer>-<fecha_inicio> (UN archivo por viaje: talon + docs que acompanan; Julio 12/11).
       var slugCh = function (s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); };
-      var nombrePdf = ref ? ref
-        : (esKm ? (ra.archivo ? String(ra.archivo).replace(/[^A-Za-z0-9._-]/g, '-') : slugCh(raw.chofer || ((v.cabecera || {}).verificar || {}).chofer || 'chofer') + '-' + (raw.fecha_inicio || isoDe(a.salida) || 'sin-fecha'))
-                : (isoDe(a.salida) || 'sin-fecha') + '-' + slugCh(a.destino.esperado || 'destino'));
+      // archivo explicito (CLAVO, shuttle metanol sin ref) gana; luego ref; luego derivados.
+      var nombrePdf = ra.archivo ? String(ra.archivo).replace(/[^A-Za-z0-9._-]/g, '-')
+        : (ref ? ref
+          : (esKm ? slugCh(raw.chofer || ((v.cabecera || {}).verificar || {}).chofer || 'chofer') + '-' + (raw.fecha_inicio || isoDe(a.salida) || 'sin-fecha')
+                  : (isoDe(a.salida) || 'sin-fecha') + '-' + slugCh(a.destino.esperado || 'destino')));
       var fila = [
         opciones.fecha || hoyISO(),                                   // 1 fecha_proceso
         escaneo,                                                      // 2 juego_ficha_pdf
