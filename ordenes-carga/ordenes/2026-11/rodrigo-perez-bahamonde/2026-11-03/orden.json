@@ -3,9 +3,9 @@
   "viajes": [
     {
       "cabecera": {
-        "cabeza": "4342",
+        "cabeza": "7347",
         "verificar": {
-          "matricula": "4342LBB",
+          "matricula": "7347LBB",
           "remolque": "R9990BDD",
           "chofer": "RODRIGO PEREZ BAHAMONDE"
         },
@@ -22,7 +22,7 @@
             "esperado": "MUGARDOS"
           },
           "destino": {
-            "codigo": null,
+            "codigo": "MAGNE",
             "esperado": "MAGNE"
           },
           "carga": {
@@ -59,8 +59,8 @@
             "esperado": "BALTRANSA, S.A."
           },
           "origen": {
-            "codigo": null,
-            "esperado": "ROUEN"
+            "codigo": "9741",
+            "esperado": "GRAND QUEVILLY"
           },
           "destino": {
             "codigo": "VALD",
@@ -100,11 +100,11 @@
             "esperado": "QUIMICAS DEL JARAMA, S.A."
           },
           "origen": {
-            "codigo": null,
-            "esperado": "MEJORADA DEL CAMPO"
+            "codigo": "MEJOR",
+            "esperado": "MEJORADA"
           },
           "destino": {
-            "codigo": null,
+            "codigo": "LANDI",
             "esperado": "LANDIM"
           },
           "carga": {
@@ -118,13 +118,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "23,920",
-              "precio": null,
+              "precio": "46,35",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": null,
+              "cantidad": "1.108,69",
               "factor": "0,1600"
             }
           },
@@ -133,7 +133,7 @@
             "fin": "842063",
             "carga": "664"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         }
       ]
     }

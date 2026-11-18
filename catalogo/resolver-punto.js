@@ -31,7 +31,12 @@ var OVERRIDES_LITERAL = {
   // 'Anleo' es una parroquia dentro de Navia (Asturias); la oficina SIEMPRE lo
   // carga como NAVIA. Gana sobre el canonico Gesruta 'ANLEO', que existe pero no
   // se usa en la practica (datos/alias-fichas-reales.md, confirmado por Julio).
-  'ANLEO': { destino: 'NAVIA', nota: "'Anleo' es parroquia de Navia; la oficina siempre lo carga como NAVIA. Override intencional sobre el canonico Gesruta ANLEO (existe pero no se usa)." }
+  'ANLEO': { destino: 'NAVIA', nota: "'Anleo' es parroquia de Navia; la oficina siempre lo carga como NAVIA. Override intencional sobre el canonico Gesruta ANLEO (existe pero no se usa)." },
+  // FORESA (y la oficina) cargan las entregas de 'Santo Tirso' como TERMOLAN, S.A.:
+  // ahi esta pactada la tarifa (CALDAS->TERMOLAN). El canonico Gesruta 'SANTO TIRSO'
+  // (id SANTO) existe pero NO se usa para estas entregas; sin este override la
+  // tarifa no se encuentra. Confirmado por Julio (18/11, viaje Carles Foresa-Santo Tirso).
+  'SANTO TIRSO': { destino: 'TERMOLAN', nota: "'Santo Tirso' se carga como TERMOLAN, S.A. (ahi esta la tarifa CALDAS->TERMOLAN). Override intencional sobre el canonico Gesruta SANTO TIRSO (id SANTO), que existe pero no se usa para estas entregas." }
 };
 
 // Frases de ruido a quitar ANTES que los tokens sueltos (orden: mas larga primero).
