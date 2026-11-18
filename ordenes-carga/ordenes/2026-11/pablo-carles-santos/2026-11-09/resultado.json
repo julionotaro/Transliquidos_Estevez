@@ -1,0 +1,45 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/pablo-carles-santos/2026-11-09/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-18T13:19:50",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "7963",
+      "chofer": "PABLO CARLES SANTOS",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038683",
+          "nro_albaran_gesruta": "01",
+          "estado": "PEDIDO",
+          "motivo": "tarifa",
+          "pendiente_de": [
+            "tarifa"
+          ]
+        },
+        {
+          "referencia": "5050142030",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "714422",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}
