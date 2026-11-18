@@ -1,0 +1,17 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118120930.pdf (2 pags: ficha TLE 3 viajes + CMR FORESA->IP Decor). Jose Ramon Pineiro (TLE propio), 8420KKT (cabeza 8420), remolque PO01956R (cambio del habitual R3697BDK). La ficha trae 3 viajes pero SOLO V1 tiene albaran: V1 FORESA Caldas->Tordera (IP Decor Spain) RES 0540->COLA, ref 2038733 (2o nro CMR 7 dig), peso 23740 (CMR), nacional. V2 (TEPSA Tarragona SOSA 12/11) la ficha dice 'SE CAMBIA VIAJE CON RUBEN' -> no es de este chofer (lo hizo Ruben). V3 (TERQUIMSA Tarragona->Caldas VAM 13/11, entrada a FORESA) NO trae albaran en el escaneo -> no se puede facturar sin peso/ref; REPORTAR a Julio (falta doc o lo hizo otro). Odometro 8420KKT. Dietas NO van a Gesruta.",
+  "escaneo": "20261118120930.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-09",
+  "chofer": "JOSE RAMON PINEIRO",
+  "cabeza": "8420",
+  "viajes": [
+    {
+      "matricula": "8420KKT",
+      "remolque": "PO01956R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TORDERA", "carga_lit": "COLA", "referencia": "2038733", "salida": "09/11/2026", "llegada": "10/11/2026", "peso_kg": 23740, "km_inicio": 970449, "km_fin": 971663 }
+      ]
+    }
+  ]
+}

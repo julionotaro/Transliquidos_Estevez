@@ -1,0 +1,59 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "8420",
+        "verificar": {
+          "matricula": "8420KKT",
+          "remolque": "PO01956R",
+          "chofer": "JOSE RAMON PINEIRO"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2038733",
+          "salida": "09/11/2026",
+          "llegada": "10/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,740",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.717,83",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "970449",
+            "fin": "971663",
+            "carga": "1214"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

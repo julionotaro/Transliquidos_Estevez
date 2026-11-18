@@ -1,0 +1,100 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2256",
+        "verificar": {
+          "matricula": "2256JYX",
+          "remolque": "PO02194R",
+          "chofer": "MANUEL SABARIS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "2",
+            "esperado": "VILLAGARCIA"
+          },
+          "destino": {
+            "codigo": "VA",
+            "esperado": "VALLADOLID"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "2600003540",
+          "salida": "09/11/2026",
+          "llegada": "10/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,840",
+              "precio": "38,66",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "921,65",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "1179315",
+            "fin": "1179855",
+            "carga": "540"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "MIR",
+            "esperado": "MIRANDA DE EBRO"
+          },
+          "destino": {
+            "codigo": "BRAGA",
+            "esperado": "BRAGA (PT)"
+          },
+          "carga": {
+            "codigo": "MEXIFL",
+            "esperado": "MEXIFLEX"
+          },
+          "referencia": "714199",
+          "salida": "12/11/2026",
+          "llegada": "13/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "61,65",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.417,95",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "1180126",
+            "fin": "1180727",
+            "carga": "601"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

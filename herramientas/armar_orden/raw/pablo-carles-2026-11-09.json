@@ -1,0 +1,19 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118120738.pdf (6 pags: ficha TLE 3 viajes + CMR FORESA->Termolan + CMR BRESFOR->Finsa + bascula FINSA + OC Quimidroga/TEPSA + albaran TEPSA). Pablo Carles Santos (TLE propio), 7963MDF/PO02628R -> 1 viaje, 3 albaranes de clientes distintos. V1: FORESA Caldas->Santo Tirso (Termolan, PORTUGAL) RES 3169->COLA, ref 2038683 (2o nro del CMR, 7 dig), peso 22980 (CMR), INTERNACIONAL. V2: BRESFOR Aveiro(Gafanha da Nazare)->Cella (Teruel, Finsa) RES 1350->COLA, ref 5050142030 (doc int 10 dig 5050), peso 23280 (CMR carga; bascula descarga Finsa 23220 -> manda carga R-08), INTERNACIONAL (BRESFOR Portugal). V3: QUIMIDROGA Barcelona(TEPSA)->Orense (Revisa) VINKA-PLAST, ref 714422 (Referencia en factura), peso 23680 (albaran TEPSA neto; la OC decia 24000 PREVISTO redondo), NACIONAL. Odometro 7963MDF. Dietas NO van a Gesruta.",
+  "escaneo": "20261118120738.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-09",
+  "chofer": "PABLO CARLES SANTOS",
+  "cabeza": "7963",
+  "viajes": [
+    {
+      "matricula": "7963MDF",
+      "remolque": "PO02628R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "SANTO TIRSO", "carga_lit": "COLA", "referencia": "2038683", "salida": "09/11/2026", "llegada": "09/11/2026", "peso_kg": 22980, "km_inicio": 408830, "km_fin": 409005 },
+        { "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.", "origen_lit": "AVEIRO", "destino_lit": "CELLA", "carga_lit": "COLA", "referencia": "5050142030", "salida": "10/11/2026", "llegada": "12/11/2026", "peso_kg": 23280, "km_inicio": 409135, "km_fin": 409865 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "ORENSE", "carga_lit": "VINKA-PLAST", "referencia": "714422", "salida": "12/11/2026", "llegada": "16/11/2026", "peso_kg": 23680, "km_inicio": 410432, "km_fin": 411693 }
+      ]
+    }
+  ]
+}
