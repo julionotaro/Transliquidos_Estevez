@@ -62,6 +62,21 @@ function carpetaCliente(codigo, nombre, filas, avisos) {
   return c;
 }
 
+// Subcarpeta de procesados/FORESA por RUTA (Julio 18/11): los distintos flujos de FORESA
+// se archivan separados para facturacion. 5 rutas: Caldas-Orember, Caldas-Otros, Retornos,
+// Villagarcia-Caldas (Metanol), Villagarcia-Otros. Clasifica por origen->destino.
+function rutaForesa(alb) {
+  var o = String((alb.origen && alb.origen.esperado) || '').toUpperCase();
+  var d = String((alb.destino && alb.destino.esperado) || '').toUpperCase();
+  var caldasOrig = o.indexOf('CALDAS') >= 0;
+  var villaOrig = o.indexOf('VILLAGARCIA') >= 0 || o.indexOf('VILAGARCIA') >= 0;
+  var oremberDest = d.indexOf('OREMBER') >= 0;
+  var caldasDest = d.indexOf('CALDAS') >= 0;
+  if (caldasOrig) { return oremberDest ? 'Caldas-Orember' : 'Caldas-Otros'; }
+  if (villaOrig) { return caldasDest ? 'Villagarcia-Caldas (Metanol)' : 'Villagarcia-Otros'; }
+  return 'Retornos';  // cualquier origen que no sea Caldas ni Villagarcia = vuelta a FORESA
+}
+
 function importes(alb) {
   var L = alb.lineas || {};
   var p = L.porte || {};
@@ -150,7 +165,7 @@ function filasDeRaw(raw, opciones) {
         km.inicio || '', km.fin || '', km.carga || '',                // 22-24 odometro / km
         (typeof ra.peso_kg === 'number') ? String(ra.peso_kg) : '',   // 25 peso_real_kg
         estado,                                                       // 26 estado_carga
-        'procesados/' + carpeta + '/' + mes + '/' + nombrePdf + '.pdf', // 27 pdf_doc
+        'procesados/' + carpeta + '/' + (carpeta === 'FORESA' ? rutaForesa(a) + '/' : '') + mes + '/' + nombrePdf + '.pdf', // 27 pdf_doc (FORESA: subcarpeta por ruta)
         observacion(orden, v, a, ra, imp),                            // 28 observaciones
       ].map(limpio);
       if (fila.length !== COLUMNAS) { throw new Error('fila con ' + fila.length + ' columnas (deben ser ' + COLUMNAS + ')'); }
