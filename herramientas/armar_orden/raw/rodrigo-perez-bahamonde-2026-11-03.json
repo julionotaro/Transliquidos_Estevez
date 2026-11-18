@@ -1,17 +1,17 @@
 {
-  "_nota": "CARGA OFICIAL - entrada/20261118121418.pdf (13 pags: ficha TLE 3 viajes + OC/CMR/firmas Forestal + OC Baltransa/CMR/delivery Total + pedido/CMR/albaran Jarama). Rodrigo Perez Bahamonde (TLE propio, NIF 76779329Q), 4342LBB (cabeza 4342, NO en el padron de flota -> VERIFICAR), remolque R9990BDD. 3 albaranes INTERNACIONALES de clientes distintos: V1 FORESTAL DEL ATLANTICO Mugardos->Magne (Jean Thebault, FRANCIA) COLA FENOLICA (Poliphen 49), ref 26P1357 (Nro Pedido Forestal), peso 23130 (CMR; OC 24000 previsto), INTERNACIONAL (plus internacional 50E segun ficha). V2 BALTRANSA (agencia) Rouen (Total Lubrifiants, FRANCIA)->Valdemoro (Total) ACEITE LUBRICANTE (Quartz Ineo 0W20), ref 338172 (Plan de Viaje Baltransa 338.172), peso 22700 (CMR/delivery Total), PRECIO FIJO 2.800,00 EUR (Baltransa: linea porte UN + idx cero). V3 QUIMICAS DEL JARAMA Mejorada del Campo (Madrid)->Landim (RNM Produtos Quimicos, PORTUGAL) AMONIACO sol 24,5%, ref 49926 (albaran Jarama; pedido Jarama T-33/1057/26), peso 23920 (CMR/albaran), INTERNACIONAL, tarifa Mejorada->Landim NUEVA -> tarifa_pendiente. CLIENTE Jarama porque GENERA el viaje (pedido de compras a TLE); RNM es consignatario. REPORTAR a Julio: cabeza 4342 no en flota, tarifas internacionales (Forestal Magne, Jarama Landim) y confirmar cliente/ref de Jarama. Odometro 4342LBB. Dietas NO van a Gesruta.",
+  "_nota": "CARGA OFICIAL - entrada/20261118121418.pdf (13 pags: ficha TLE 3 viajes + OC/CMR/firmas Forestal + OC Baltransa/CMR/delivery Total + pedido/CMR/albaran Jarama). Rodrigo Perez Bahamonde (TLE propio, NIF 76779329Q), tractora 7347LBB (cabeza 7347; CORREGIDO 18/11: la ficha se habia leido 4342, Julio confirma 7347LBB -> cruzar siempre con el padron de flota), remolque R9990BDD. 3 albaranes INTERNACIONALES de clientes distintos: V1 FORESTAL DEL ATLANTICO Mugardos->Magne (Jean Thebault, FRANCIA) COLA FENOLICA (Poliphen 49), ref 26P1357 (Nro Pedido Forestal), peso 23130 (CMR; OC 24000 previsto), destino punto MAGNE. V2 BALTRANSA (agencia) Grand Quevilly (cod 9741, area de Rouen; Total Lubrifiants, FRANCIA)->Valdemoro (Total) ACEITE LUBRICANTE (Quartz Ineo 0W20), ref 338172 (Plan de Viaje Baltransa 338.172), peso 22700 (CMR/delivery Total), PRECIO FIJO 2.800,00 EUR (linea porte UN + idx cero). V3 QUIMICAS DEL JARAMA Mejorada del Campo (cod MEJOR, Madrid)->Landim (cod LANDI, RNM Produtos Quimicos, PORTUGAL) AMONIACO sol 24,5%, ref 49926 (albaran Jarama; pedido T-33/1057/26), peso 23920, tarifa Mejorada->Landim 46,35 EUR/TN (Julio 18/11). CLIENTE Jarama porque GENERA el viaje; RNM es consignatario. CORRECCIONES Julio 18/11: matricula 7347LBB, origen Baltransa Grand Quevilly 9741, puntos Magne/Mejor/Landi dados de alta, tarifa Jarama confirmada. Odometro 7347LBB. Dietas NO van a Gesruta.",
   "escaneo": "20261118121418.pdf",
   "empresa": "TLE",
   "fecha_inicio": "2026-11-03",
   "chofer": "RODRIGO PEREZ BAHAMONDE",
-  "cabeza": "4342",
+  "cabeza": "7347",
   "viajes": [
     {
-      "matricula": "4342LBB",
+      "matricula": "7347LBB",
       "remolque": "R9990BDD",
       "albaranes": [
         { "cliente_lit": "FORESTAL DEL ATLANTICO, S.A.", "origen_lit": "MUGARDOS", "destino_lit": "MAGNE", "carga_lit": "COLA FENOLICA", "referencia": "26P1357", "salida": "03/11/2026", "llegada": "05/11/2026", "peso_kg": 23130, "km_inicio": 838342, "km_fin": 839408 },
-        { "cliente_lit": "BALTRANSA, S.A.", "origen_lit": "ROUEN", "destino_lit": "VALDEMORO", "carga_lit": "ACEITE LUBRICANTE", "referencia": "338172", "salida": "09/11/2026", "llegada": "10/11/2026", "peso_kg": 22700, "precio_fijo": 2800, "km_inicio": 839968, "km_fin": 841349 },
+        { "cliente_lit": "BALTRANSA, S.A.", "origen_lit": "GRAND QUEVILLY", "destino_lit": "VALDEMORO", "carga_lit": "ACEITE LUBRICANTE", "referencia": "338172", "salida": "09/11/2026", "llegada": "10/11/2026", "peso_kg": 22700, "precio_fijo": 2800, "km_inicio": 839968, "km_fin": 841349 },
         { "cliente_lit": "QUIMICAS DEL JARAMA, S.A.", "origen_lit": "MEJORADA DEL CAMPO", "destino_lit": "LANDIM", "carga_lit": "AMONIACO", "referencia": "49926", "salida": "12/11/2026", "llegada": "13/11/2026", "peso_kg": 23920, "km_inicio": 841399, "km_fin": 842063 }
       ]
     }

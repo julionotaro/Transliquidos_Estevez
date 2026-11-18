@@ -22,8 +22,8 @@
             "esperado": "CALDAS DE REIS"
           },
           "destino": {
-            "codigo": "SANTO",
-            "esperado": "SANTO TIRSO"
+            "codigo": "TERMO",
+            "esperado": "TERMOLAN, S.A."
           },
           "carga": {
             "codigo": "1",
@@ -36,13 +36,13 @@
             "porte": {
               "um": "TN",
               "cantidad": "23,000",
-              "precio": null,
+              "precio": "28,89",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": null,
+              "cantidad": "664,47",
               "factor": "0,1553"
             }
           },
@@ -51,7 +51,7 @@
             "fin": "409005",
             "carga": "175"
           },
-          "tarifa_pendiente": true
+          "tarifa_pendiente": false
         },
         {
           "cliente": {

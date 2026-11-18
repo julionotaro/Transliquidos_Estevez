@@ -1,0 +1,26 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118121641.pdf (13 pags: ficha THEC + 10 albaranes FORESA metanol Villagarcia->Caldas + CMR Orember). Jose J. Ferreira Goldar (THEC, NO en flota TLE), tractora 8382JJS. THEC + quimico FORESA => modelo PROVE (empresa TLE, proveedor 5, cabeza='PROVE', matricula completa, km/costos vacios; Julio 03-04/11). SHUTTLE metanol Villagarcia->Caldas (cisterna R6292BCW): se SUMAN las cantidades por DIA, 1 linea sin ref, cantidad=total x 3,68 (Julio 18/11). Dia 02/11: 5 viaxes [26320,26300,26300,26280,26300]=131500 kg (ALB 2600003472/74/77/79/82). Dia 03/11: 5 viaxes [26280,26320,26300,26280,26280]=131460 kg (ALB 2600003486/88/92/94/96). Orember 04/11 (cisterna R3487BCD): FORESA Caldas->Orember RES 2061->COLA, ref 2035958 (2o nro CMR), peso 25160. shuttle_cantidades -> excel_metanol. km omitidos (PROVE los deja vacios; ficha THEC km poco fiables).",
+  "escaneo": "20261118121641.pdf",
+  "empresa": "TLE",
+  "proveedor": "5",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "JOSE J. FERREIRA GOLDAR",
+  "cabeza": "8382",
+  "viajes": [
+    {
+      "matricula": "8382JJS",
+      "remolque": "R6292BCW",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-02", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 131500, "km_pendiente": true, "shuttle_cantidades": [26320, 26300, 26300, 26280, 26300] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-03", "salida": "03/11/2026", "llegada": "03/11/2026", "peso_kg": 131460, "km_pendiente": true, "shuttle_cantidades": [26280, 26320, 26300, 26280, 26280] }
+      ]
+    },
+    {
+      "matricula": "8382JJS",
+      "remolque": "R3487BCD",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2035958", "salida": "04/11/2026", "llegada": "04/11/2026", "peso_kg": 25160, "km_pendiente": true }
+      ]
+    }
+  ]
+}

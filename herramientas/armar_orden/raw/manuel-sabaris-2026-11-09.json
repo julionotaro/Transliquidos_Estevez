@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - entrada/20261118121009.pdf (7 pags: ficha TLE 2 viajes + OC FORESA metanol + albaran FORESA/Curia + carta porte cisterna vacia + OC Quimidroga + CMR internacional + albaran Quimidroga). Manuel Sabaris (TLE propio), 2256JYX (cabeza 2256), remolque PO02194R (habitual R3546BBG; usa el leido). V1: FORESA metanol Villagarcia->Valladolid (Curia Spain, Boecillo) METANOL, ref 2600003540 (nro ALB del albaran FORESA, como los metanol previos 2600003498), peso 23840 (neto albaran FORESA; OC decia 24000 previsto), NACIONAL (FORESA espanol). V2: QUIMIDROGA Miranda de Ebro (Q6)->Braga (TMG-Tecidos, PORTUGAL) MEXIFLEX 911P, ref 714199 (Referencia en factura), peso 20360 (neto albaran/CMR; OC decia 20000 previsto; <23 TN -> min 23), QUIMIDROGA Portugal se factura NACIONAL (P IVA 21 G). Odometro 2256JYX. Dietas NO van a Gesruta.",
+  "_nota": "CARGA OFICIAL - entrada/20261118121009.pdf (7 pags: ficha TLE 2 viajes + OC FORESA metanol + albaran FORESA/Curia + carta porte cisterna vacia + OC Quimidroga + CMR internacional + albaran Quimidroga). Manuel Sabaris (TLE propio), 2256JYX (cabeza 2256), remolque PO02194R (habitual R3546BBG; usa el leido). V1: FORESA metanol Villagarcia->Valladolid (Curia Spain, Boecillo) METANOL, ref 2614182 (nro de OC; REGLA Julio 18/11: si hay OC se usa la OC 26xxxxx, si no hay OC se usa el nro ALB 2600xxx), peso 23840 (neto albaran FORESA; OC decia 24000 previsto), NACIONAL (FORESA espanol). NOTA: este es un viaje de metanol con DESTINO un cliente (Curia Valladolid), NO el shuttle Villagarcia->Caldas; va por referencia y peso propios, no por suma diaria. V2: QUIMIDROGA Miranda de Ebro (Q6)->Braga (TMG-Tecidos, PORTUGAL) MEXIFLEX 911P, ref 714199 (Referencia en factura), peso 20360 (neto albaran/CMR; OC decia 20000 previsto; <23 TN -> min 23), QUIMIDROGA Portugal se factura NACIONAL (P IVA 21 G). Odometro 2256JYX. Dietas NO van a Gesruta.",
   "escaneo": "20261118121009.pdf",
   "empresa": "TLE",
   "fecha_inicio": "2026-11-09",
@@ -10,7 +10,7 @@
       "matricula": "2256JYX",
       "remolque": "PO02194R",
       "albaranes": [
-        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "VALLADOLID", "carga_lit": "METANOL", "referencia": "2600003540", "salida": "09/11/2026", "llegada": "10/11/2026", "peso_kg": 23840, "km_inicio": 1179315, "km_fin": 1179855 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "VALLADOLID", "carga_lit": "METANOL", "referencia": "2614182", "salida": "09/11/2026", "llegada": "10/11/2026", "peso_kg": 23840, "km_inicio": 1179315, "km_fin": 1179855 },
         { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "MIRANDA DE EBRO", "destino_lit": "BRAGA", "carga_lit": "MEXIFLEX", "referencia": "714199", "salida": "12/11/2026", "llegada": "13/11/2026", "peso_kg": 20360, "km_inicio": 1180126, "km_fin": 1180727 }
       ]
     }

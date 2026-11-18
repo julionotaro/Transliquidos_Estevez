@@ -1,306 +1,543 @@
 {
-  "_nota": "MEMORIA DE DECISIONES HUMANAS. Reglas confirmadas por Julio, la fuente de verdad. Claude LEE este archivo antes de cada carga y las aplica ANTES de escribir en la base. Claude no las inventa ni las generaliza mas alla de lo que Julio confirmo.",
-  "reglas": [
-    {
-      "fecha": "2026-09-09", "por": "Julio", "cliente": "RNM", "campo": "destino",
-      "regla": "CARREIRA NUNCA es una descarga real. Todo viaje de RNM cuyos documentos (CMR/consignatario) digan CARREIRA descarga en realidad en VILANOVA FAMALICAO (codigo FAMAL), a 9 km de la sede de RNM. => destino SIEMPRE = FAMAL.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-09-09", "por": "Julio", "cliente": "RNM", "campo": "referencia",
-      "regla": "Jerarquia: 1) obs de la OC, 2) guia de remessa (10 dig empieza en 0), 3) CARTA DE PORTE si no hay 1 ni 2 (ej 2601015975). NUNCA el pedido de compra 31000xxxxx.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-09-09", "por": "Julio", "cliente": "RNM", "campo": "tarifa",
-      "regla": "AVILES -> VILANOVA FAMALICAO, ACIDO SULFURICO: 39,13 EUR/TN vigente. PORTES INTERNACIONALES, IVA 0 (Portugal).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-07", "por": "Julio", "cliente": "FORESA (y general)", "campo": "cantidad/viaje",
-      "regla": "Carga de VARIOS productos en una misma ORDEN DE CARGA = UN solo viaje. Se carga el TOTAL en toneladas (suma de los pesos de los productos). Ej: RES 1440 19.200 + RES 2130 4.520 = 23.720 kg = un viaje con total 23.720.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-07", "por": "Julio", "cliente": "TODOS", "campo": "tarifa",
-      "regla": "CASCADA DE TARIFA: si el tarifario no tiene la ruta exacta (destino puntual), buscar el SIGUIENTE NIVEL = la PROVINCIA/ZONA del destino. Ej: Barcelona->Padron (no existe) -> usar Barcelona->PONTEVEDRA. Caldas->Enguera (no existe) -> usar Caldas->VALENCIA. El precio/TN de la zona aplica al viaje.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-07", "por": "Julio", "cliente": "FORESTAL DEL ATLANTICO, S.A.", "campo": "referencia",
-      "regla": "La REFERENCIA que va a facturacion es el Nº PEDIDO de la orden de Forestal (ej: 26P1213). NO la ref cliente (PPxxxxxxxx) ni el albaran de bascula.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-07", "por": "Julio", "cliente": "FORESTAL DEL ATLANTICO, S.A.", "campo": "tarifa",
-      "regla": "Modalidad de tarifa = PRECIO FIJO POR VIAJE (no por TN; um=UN, cantidad 1), con la INDEXACION DE GASOLEO INCLUIDA en el precio (NO sumar linea G aparte). FORESTAL no tiene tarifario propio, asi que los fijos confirmados por Julio viven aqui como decision: MUGARDOS -> CASTELLON (Quimialmel), material FORPLAS (cola/resina) = 2.025,00 EUR/viaje, IVA 21, concepto P (PORTES NACIONALES). Nuevos fijos FORESTAL se agregan a esta misma regla al confirmarlos.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-08", "por": "Julio", "cliente": "TODOS", "campo": "estructura viaje/albaran",
-      "regla": "VIAJE (administrativo, en Gesruta) = la(s) hoja(s) de servicio que rinde el chofer; puede abarcar 1 o 2 FICHAS de chofer y VARIOS ALBARANES. Cada ORIGEN->DESTINO (un viaje en terminos practicos) = UN albaran. Gesruta asigna Nº de viaje y Nº de albaran al crearlos; nuestros registros deben guardar ambos por fila. Ej: ficha Asensi 29/09-02/10 = 1 viaje con 2 albaranes (Forestal Mugardos->Castellon; Quimidroga Barcelona->Aveiro). Procedimiento de carga: skill 'cargar-viajes-gesruta'.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-08", "por": "Julio", "cliente": "TODOS", "campo": "kilometros",
-      "regla": "Registrar ODOMETRO inicio y final de cada albaran (vienen en la ficha). Km CARGA del albaran = odometro final - inicio (km con carga, coincide con la ficha). Entre albaranes del mismo viaje hay KM VACIO = odometro inicio del siguiente - odometro final del anterior (reposicionamiento sin carga). En Gesruta el form 'Kilometros' es a nivel viaje: Km carga por albaran (fila Chofer); Km vacio y Nueva lectura los confirma Julio (no reproducir a ciegas). Ej Asensi: alb1 873.922->874.976 (1.054 carga); vacio 874.976->875.255 (279); alb2 875.255->876.375 (1.120).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "empresa",
-      "regla": "Cada juego/albaran pertenece a una EMPRESA: TLE (Trans. Liquidos Estevez, S.L.) o THEC (Transportes Hermanos Estevez Casal). Determina en Gesruta la 'Seleccion de Empresas' (TLE = 0006 TRANS. LIQUIDOS ESTEVEZ S.L.; THEC = otra empresa, codigo a confirmar) y por ende a que parte del sistema entra y como varia la forma de carga. La columna 'empresa' es obligatoria en la tabla de datos y en la planilla. La empresa sale del membrete de la ficha. Asensi = TLE.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "precio",
-      "regla": "La tarifa del albaran va por EUR/TN por defecto (um=TN, cantidad = toneladas), SALVO que la ORDEN DE FLETE/OC indique un precio fijo por viaje (um=UN, cantidad 1; ej. HELM 'Coste de transporte' 1.800). Fuente de verdad de tarifas = el tarifario que maneja Julio; el xls datos/gesruta/tarifas-general-2026-08-04 puede estar DESACTUALIZADO (ej: marcaba Aveiro->Navia 900 fijo cuando el real es 40,30 EUR/TN).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "tarifario_fuente",
-      "regla": "Fuentes de tarifas en datos/gesruta/tarifarios/ (ver su README). PRIORIDAD: el tarifario de CLIENTE manda sobre el general (mas actualizado y con mas rutas). RNM y QUIMIDROGA tienen archivo propio. Resto -> general. QUIMIDROGA: respetar vigencia (desde/hasta) y usar tramo 40 TN (44 TN solo megacamion). RNM: tiene EUR/viaje y EUR/TN por ruta; usar EUR/TN.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-15", "por": "Julio", "cliente": "TODOS", "campo": "archivo_procesados",
-      "regla": "DOS archivos con rol distinto, sin duplicar: (1) procesados/<CLIENTE>/<YYYY-MM>/ guarda SOLO los documentos de transporte (albaranes) de cada albaran, renombrados por su Nº de referencia, en la carpeta de su cliente y mes de carga. (2) La FICHA del chofer vive en UN SOLO lugar: ordenes-carga/ordenes/<YYYY-MM>/<chofer>/<YYYY-MM-DD>/, junto a la orden.json de ese viaje. La ficha NO se copia a procesados.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "fecha_carga",
-      "regla": "Usar la FECHA DE CARGA REAL = la de la ficha del chofer, no la de la orden/doc del cliente si difieren. Importa porque define la quincena de indexacion.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "destino",
-      "regla": "DESTINO: usar el punto MAS PRECISO que TENGA TARIFA. Si el punto exacto no tiene tarifa, usar la ZONA que si la tiene (complemento de la cascada). Ej: HELM entrega en Ribeira de Nisa (sin tarifa) -> se usa PORTALEGRE (cod PORT, con tarifa).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "HELM", "campo": "general",
-      "regla": "HELM IBERICA (cod cliente 323): factura los viajes a Portugal como PORTES NACIONALES IVA 21 (no internacional). Indexacion: grupo HELM, concepto G. Referencia = el Nº de orden de flete que el propio doc pide incluir en la factura (ej 6100316242). Precio segun 'Coste de transporte' de la orden.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "RNM", "campo": "indexacion",
-      "regla": "RNM internacional (Portugal) a Espana: PORTES INTERNACIONALES IVA 0, indexacion concepto GPT (INDEXACION GASOLEO PORTUGAL) usando el factor del grupo 'Otros' (ej. octubre 2026 = 0,1450).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "archivo_procesados/nombre",
-      "regla": "Al procesar y guardar un ALBARAN (documento de transporte), RENOMBRARLO con su Nº de REFERENCIA + .pdf (ej 20261009185425.pdf -> 2027535.pdf). ACTUALIZACION 05/11: el PDF del albaran debe contener la OC + la documentacion de carga (CMR/albaran de carga/bascula) en UN SOLO archivo <ref>.pdf; si vienen en paginas sueltas, unirlas. YA NO se separa la OC en un '<ref>-orden.pdf' aparte (ese era el formato viejo): dejar los '-orden.pdf' ya archivados como estan, pero de ahora en mas un unico PDF con OC + carga. Las FICHAS del chofer conservan su nombre original (son compartidas por varios albaranes) y NO van a procesados. El path renombrado se refleja en la columna pdf_doc del registro.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "FORESA", "campo": "referencia/peso/carga",
-      "regla": "FORESA: referencia = el Nº CORTO que empieza en 20 (ej 2027538), arriba a la derecha del albaran; NUNCA el largo 5030xxxxxx. Peso = el del albaran. Indexacion: grupo FORESA-BRESFOR, concepto G. Las resinas (RES xxxx) se cargan como COLA (cod 1).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "descuento_duo",
-      "regla": "NO aplicar el DESCUENTO DUO TRAILER (concepto DUO, -5%) salvo que el viaje sea realmente duotrailer (raro: historicamente ~2 de 60 lineas). Por defecto Dto = 0.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-27", "por": "Julio", "cliente": "TODOS", "campo": "duotrailer",
-      "regla": "DUOTRAILER = una tractora arrastra 2 cisternas en UN MISMO viaje fisico (mismo odometro, mismas fechas), cada cisterna con su matricula y su albaran. En Gesruta van como 2 viajes (uno por matricula). SEPARADO por cisterna: cabecera, albaran, porte e indexacion (cada cisterna tiene su tonelaje). COMPARTIDO = una sola vez (en el viaje lider, NO duplicar en el 2do): KM del tramo, dietas/viaticos y gastos. En la orden: el 2do viaje lleva cabecera.duo_secundario=true y km.cargar=false -> el bot saltea el formulario de km y los gastos/dietas de ese viaje. OJO km: el odometro del 2do arranca casi igual que el del 1ro (va para atras), por eso NO se puede cargar el form de km del 2do como si fuera secuencial. Descuento DUO (-5%): solo si Julio confirma que ESE duotrailer lleva DUO (por defecto no).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-09", "por": "Julio", "cliente": "TODOS", "campo": "fuente_de_precios",
-      "regla": "Las TARIFAS no se copian aqui (se desactualizan). Viven en sus stores y correcciones-julio solo las referencia. Ver _fuente_tarifas.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-14", "por": "Julio", "cliente": "TODOS", "campo": "estructura viaje (matriculas)",
-      "regla": "Si DENTRO de una misma ficha cambia la TRACTORA o el REMOLQUE, se parte en VIAJES distintos: en Gesruta hay que crear un viaje nuevo para cargar las matriculas nuevas. Cada viaje de la orden lleva una sola tractora+remolque. Ej: shuttle Pedro Fraga (tractora 5358KTF) con remolque R8574BBC en 2 albaranes y R3487BCD en 4 -> 2 viajes, aunque el odometro corra continuo.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-15", "por": "Julio", "cliente": "BRESFOR", "campo": "general",
-      "regla": "BRESFOR IND. DO FORMOL, S.A. = cliente Gesruta cod 42. Carga en AVEIRO (Gafanha da Nazare, Portugal). Sus viajes a Espana son INTERNACIONALES: concepto PI (PORTES INTERNACIONALES), IVA 0. Indexacion: concepto GPT (los unicos conceptos de indexacion son G nacional / GPT internacional), factor del grupo FORESA-BRESFOR (oct-2026 = 0,1664). Resinas (RES xxxx) -> carga COLA. Tarifa Aveiro->Teruel = 56,00 EUR/TN. REFERENCIA = el Nº que empieza en 5050 (el 'Doc int' del CMR, que es el Nº de albaran de la guia de remessa, el mismo que aparece en el ticket FINSA), NO el corto 20xxxxx. (OJO: distinto de FORESA, que SI usa el corto 20xxxxx).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-15", "por": "Julio", "cliente": "FORESA/BRESFOR", "campo": "destino/tarifa",
-      "regla": "Planta FINSA de Teruel (docs la nombran 'Finsa Cella', Cella-Teruel): se CARGA destino TERUEL (cod TE), porque la TARIFA vive bajo TERUEL en el tarifario (Caldas->TERUEL FORESA 56,00 PN; Aveiro->TERUEL BRESFOR 56,00 PI). El punto UTISA TERUEL (UTI) existe pero NO tiene esa tarifa. Regla general: usar el punto que TIENE la tarifa; si ninguno la tiene, el mas especifico.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-16", "por": "Julio", "cliente": "FORESA", "campo": "indexacion",
-      "regla": "Servicios FORESA con indexacion ACUMULADA (no linea por albaran): destino OREMBER (cualquier origen; 702 albaranes historicos) y Villagarcia->Caldas METANOL (236 albaranes). Fuente: ficha/periodo-facturacion.js (SERVICIOS_AGREGADOS_FORESA), confirmado por Julio. La idx NO se carga como linea por albaran (se acumula en facturacion), PERO el importe SIEMPRE se calcula y se guarda para control de totales: en el LIBRO MAESTRO base/total incluyen la idx (grupo FORESA-BRESFOR) con marca 'IDX ACUMULADA'; en la ORDEN va con el flag 'cargar': false. El resto de servicios FORESA (otros destinos, retornos) SI se indexan por linea.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-15", "por": "Julio", "cliente": "BALTRANSA", "campo": "indexacion",
-      "regla": "Baltransa: ademas de la linea de porte (importe unitario que viene en la orden de carga), hay que agregar una segunda linea de INDEXACION con cantidad = 1 e importe = 0 (linea de indexacion en cero).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-16", "por": "Julio", "cliente": "TODOS", "campo": "chofer_tipo/kilometros",
-      "regla": "Choferes AUTONOMOS (hoy solo 3: FRAGA, ALFONSIN, ABAL) vs PROPIOS. En Gesruta (empresa TLE): PROPIO -> km en el formulario Kilometros + viaticos en Gastos. AUTONOMO -> SIN viaticos y los KM van en GASTOS (no en el formulario Kilometros). Los autonomos anotan en su ficha km CARGADOS y km VACIOS (cada uno con su formato); hay que extraer AMBOS y pasarlos en cada linea de albaran (km.carga y km.vacio). En la orden: cabecera.tipo = 'propio' | 'autonomo'.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-22", "por": "Julio", "cliente": "FORESA (metanol)", "campo": "tarifa/flujo",
-      "regla": "METANOL: el UNICO flujo metanol no implementado es Villagarcia->Caldas (shuttle agregado). El resto de metanol se carga NORMALMENTE como convencional (linea de porte EUR/TN + idx concepto G grupo FORESA-BRESFOR POR LINEA; nacional P IVA 21). Tarifas confirmadas (del historico de facturacion): Villagarcia->VALLADOLID (destino de CURIA SPAIN, Boecillo; cod VA) = 38,66 EUR/TN (factura 50106); Villagarcia->GIJON (COGERSA, Serin; cod COGER) = 33,10 EUR/TN (factura 50754). El minimo facturable de 23 TN (R-02) aplica igual.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-10-22", "por": "Julio", "cliente": "DIVERSEY/BALTRANSA", "campo": "cliente/referencia",
-      "regla": "DIVERSEY (Valdemoro, Madrid) es PUNTO DE CARGA, no cliente de facturacion. El viaje de sosa Diversey->Leche Celta (Pontedeume) se factura a BALTRANSA (cod 10): referencia = Nº de Orden de Transporte de Baltransa (ej 338681), precio FIJO por viaje que trae la OC (ej 1.150,00 EUR; um UN, cantidad 1), concepto P IVA 21 (destino nacional), mas la linea de indexacion Baltransa con cantidad 1 e importe 0.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "estructura viaje (viaticos)",
-      "regla": "Un VIAJE (Gesruta) se define por los VIATICOS/dietas que el chofer anota en cada HOJA de la ficha: una hoja CON viaticos = un viaje. Una hoja SIN viaticos se UNE a otra (la que lleva los viaticos del periodo) para formar UN SOLO viaje, aunque tenga sus propios albaranes. Se combina con la regla de matriculas (2026-10-14): si cambia tractora o remolque igual se parte en viajes distintos. Ej: shuttle Marcos Eirin Caldas->Orember, hoja1 trae las dietas de toda la semana (26-30/10) y hoja2 sin viaticos -> UN viaje con 6 albaranes.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-02", "por": "Julio", "cliente": "FORESA", "campo": "carga/tarifa",
-      "regla": "El producto 'AVEIRO 3009' (o 'ABEIRO 3009') que aparece en el albaran/ficha de FORESA NO es COLA: es carga FINCAT (cod Gesruta FINCAT). En la ruta Caldas->Orember eso cambia la tarifa: COLA = 13,85 EUR/TN, pero FINCAT = 20,16 EUR/TN (son dos filas distintas en el tarifario, por material). Las resinas 'RES xxxx' si son COLA (13,85). OJO: cargas FORESA Caldas->Orember anteriores que hayan clasificado 'Aveiro 3009' como COLA (p.ej. fila 2027312) estan mal tarifadas y hay que revisarlas.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "lectura/cruce (metodo, NO negociable)",
-      "regla": "La LECTURA es la parte vital: si el dato entra mal, todo sale mal. (1) Leer TODOS los documentos del juego -ficha + OC + albaranes-, nunca un subconjunto: la OC MANDA en cliente y destino, la ficha confirma km/fechas, el albaran da referencia/peso. (2) CRUZAR cada campo contra las tablas antes de armar: matricula de la tractora -> chofer + remolque + tipo propio/autonomo en flota.json (la matricula es la verdad, NO la letra manuscrita); cliente/destino -> clientes/puntos; material -> materiales. (3) El armador (herramientas/armar_orden) hace solo el CALCULO determinista; NO reemplaza la lectura ni justifica leer menos para ahorrar tokens. Errores reales que esto evita (lote 02/11): ABAL vs ABALO (autonomo vs propio), Alcoy vs Aboy, 3 vs 8 y 4716 vs 4916 en matriculas, Mindelo vs Leiria (destino real de la OC), Servitrade vs Comatra (cliente real de la OC). El armador ya deriva la cabecera por matricula via flota y avisa si la lectura no coincide.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "concepto/iva (nacionalidad)",
-      "regla": "El CONCEPTO de porte y el IVA responden a la NACIONALIDAD DEL CLIENTE al que se factura, NO al origen ni al destino del viaje. Cliente PORTUGUES (RNM, BRESFOR, cualquier 'Lda'/'Lda.') => PI (PORTES INTERNACIONALES), IVA 0, indexacion GPT, aunque el viaje sea dentro de Espana. Cliente ESPANOL (Quimidroga, Helm, Baltransa, Comatra, Foresa, Forestal) => P (PORTES NACIONALES), IVA 21, indexacion G, aunque descargue en Portugal (ej Quimidroga->Leiria, Baltransa->Mindelo/Oporto, Helm->PT = P/21). Excepcion ya conocida que confirma la regla: HELM es espanola -> nacional 21 incluso a Portugal. NO volver a preguntar el IVA de un cliente ya clasificado por nacionalidad (error visto: se pregunto el IVA de Baltransa->Portugal). El armador lo resuelve en reglaConcepto() por razon social.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-02", "por": "Julio", "cliente": "TODOS", "campo": "cantidad/minimo (modo)",
-      "regla": "Precision de R-02 (minimo 23 TN). El minimo facturable de 23,000 TN aplica a la LINEA FACTURADA POR PESO (modo EUR/TN, um=TN): si el peso real < 23 TN se factura 23,000. NO aplica a viajes de PRECIO FIJO POR VIAJE (um=UN, cantidad 1: Baltransa, Forestal, Helm con precio cerrado, etc.), porque ahi se factura 1 unidad y no hay tonelaje que redondear. El 'SIEMPRE / sin excepciones por cliente' de R-02 se refiere a que ningun cliente queda exento del minimo en sus lineas por peso, no a forzar tonelaje en lineas um=UN. El armador ya aplica el minimo solo en el modo EUR/TN. Julio lo enuncio como 'viajes facturables por peso y tarifa por EUR/TN'; para los clientes QUIMICOS/LIQUIDOS NO existe una tarifa de facturacion por km (ese 'km' fue un lapsus por 'EUR/TN') y los km del AUTONOMO son un GASTO, no porte ni tarifa al cliente -ver regla chofer_tipo/kilometros 16/10. EXCEPCION CONFIRMADA 06/11: CLAVO FOOD FACTORY (FRIGOS, cod 4) SI se factura POR KM de verdad (importe = km x EUR/km, sin TN, sin minimo 23) -ver regla 'facturacion por km (cliente FRIGOS)' y docs/cliente-CLAVO-frigos.md-. Esta regla del minimo 23/EUR-TN aplica a los clientes por TN; NO niega el modelo km de CLAVO.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "TODOS", "campo": "referencia (formato provisorio de sistema)",
-      "regla": "Cuando por un PROBLEMA DE SISTEMA se emiten OC/albaranes con un FORMATO distinto y de apariencia 'provisoria', esos numeros de referencia SON DEFINITIVOS igual: no son placeholder, el numero queda como esta y NO se re-pide el 'definitivo'. Confirmado lote 26/10: Carlos Abalo FORESA 260032 y Manuel Aboy BRESFOR 4500002523 son definitivos. NO cambia la regla general de ref por cliente (FORESA 20xxxxx, BRESFOR 5050xxxxxx, Quimidroga ref en factura, etc.); aplica solo cuando el propio sistema emitio el documento con formato anomalo.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "TODOS", "campo": "cabecera/matricula (cero a la izquierda)",
-      "regla": "El numero de CABEZA (tractora) puede llevar un CERO A LA IZQUIERDA que DESAMBIGUA matriculas con el mismo tramo numerico. Caso confirmado: cabeza '3729' -> tractora 3729JLH (MARCOS EIRIN FERNANDEZ, propio); cabeza '03729' -> tractora 3729JWP (CARLOS ABALO QUINTELA, propio). Son tractoras DISTINTAS. Al leer la ficha RESPETAR el cero a la izquierda y cruzar con flota.json (campo 'cabeza'): si el numero cae en una colision de tramo, el cero manda. NO normalizar quitando ceros. En la orden, cabecera.cabeza conserva el formato leido (ej '03729'). Error visto 03/11: se puso cabeza '3729' (lleva a 3729JLH, Marcos Eirin) cuando la correcta era '03729' (3729JWP, Abalo); matricula ya estaba bien.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "COMATRA", "campo": "cliente/tarifa",
-      "regla": "COMATRA, S.C.L. (cod Gesruta 33) es cliente ESPANOL -> concepto P, IVA 21. SEVITRADE / El Copero (Sevilla) es PUNTO DE CARGA, no el cliente (error visto: Servitrade vs Comatra). Referencia = ref proveedor de la OC (ej 201786). Tarifa confirmada: El Copero (Sevilla) -> Tradecorp Sanchidrian (Avila) SOSA = 940,00 EUR/VIAJE FIJO (um UN, cantidad 1) con INDEXACION INCLUIDA -> NO agregar linea de indexacion (como Forestal). Destino: Sanchidrian NO tiene punto propio en Gesruta -> se CASCADA a la provincia AVILA (cod AV), via alias en puntos-alta.json. Regla general (Julio 03/11): el destino SIEMPRE debe llevar un codigo valido -el punto exacto si existe, si no su PROVINCIA o region-; NUNCA dejar destino.codigo en null porque el bot aborta la carga. null se reserva solo para un dato realmente ilegible.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "TODOS", "campo": "peso facturable (fuente)",
-      "regla": "El PESO que se factura sale SIEMPRE del documento de peso de CARGA (albaran / CMR / bascula de carga del origen), NUNCA de la OC. La OC trae el 'previsto redondo' (ej 24.000) que casi nunca es el real (24.040 / 23.980) -R-08, D-01-. Precedencia: CMR/albaran de origen > documento de descarga > (NUNCA) OC. Si el unico peso disponible es el de la OC o falta el documento de peso -> NO facturar ese peso: marcar peso_pendiente / REVISAR 'falta documento de peso' y completar con el real. En el armador el raw marca 'peso_pendiente': true (como km_pendiente) y, por RESILIENCIA (ver regla 'resiliencia de carga' 05/11), la orden NO sale con el porte entero en null: sale la linea de porte completa con solo la 'cantidad' (TN) en null (precio/concepto/iva cargados) + peso_pendiente:true; ademas el armador avisa si el peso en modo TN es exactamente multiplo de 1000 (olor a previsto de OC). Error real 03/11: Carlos Abalo QUIMIDROGA 713124 se facturo con 24.000 (previsto de la OC); el CMR (202610001368CMR) y el albaran TEPSA (202610007346CRP), que estaban en paginas APARTE del escaneo, traen peso NETO 22.740 -> 22,74 TN < 23 -> facturar 23 TN (R-02). Leccion extra: LEER TODAS LAS PAGINAS del escaneo; el CMR/albaran con el peso real suele ser pagina separada de la OC. QUIEN DEBE ALERTAR: (1) la LECTURA aplica D-01 y no toma el peso de la OC; (2) el ARMADOR avisa peso redondo / peso_pendiente; (3) el VALIDADOR se puede sumar. Defensa en capas, no un solo control.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "FORESA (y general)", "campo": "reparto (doble destino)",
-      "regla": "DOBLE DESTINO (D-08): cuando un camion entrega la MISMA carga en DOS destinos, se arma UN SOLO albaran por la carga COMBINADA (suma de pesos) al destino/zona que tiene tarifa, MAS una linea con codigo REP (cantidad 1, precio 90,00 por defecto) FUERA de la base de indexacion. NO se factura un minimo 23 por cada destino ni se parte en dos albaranes. Confirmado Julio 03-04/11 (juego Pablo Carles: FORESA Caldas->Valencia, Enguera 11.860 + Alacuas 11.720 = 23.580 kg -> 1 albaran 23,580 TN x 64,04 + linea REP cantidad 1 precio 90). El codigo Gesruta de la linea de reparto es 'REP'. En el armador: raw con 'reparto': <importe> -> lineas.reparto {concepto REP, cantidad 1, precio}; la indexacion se calcula solo sobre el porte.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "FORESA / STOCKMEIER / TERQUIMSA", "campo": "cliente (planta cargadora)",
-      "regla": "STOCKMEIER QUIMICA y TERQUIMSA (y en general las plantas que cargan materia prima destinada a FORESA en Caldas) NO son clientes: son PLANTAS CARGADORAS de material para nuestro cliente FORESA. El viaje de entrada a Foresa Caldas (ej Acetato de Vinilo Tarragona->Caldas) se factura a FORESA (cod 1), NO a Stockmeier. Tarifa FORESA TARRAGONA->CALDAS DE REIS = 72,36 EUR/TN (tabla 'Cualquiera'; historico tiene Acetato de Vinilo). P IVA 21, idx G por linea (Caldas no es Orember). Correccion a la 1a lectura del 03/11 que puso Stockmeier como cliente nuevo: era planta cargadora. Regla general = como TEPSA/Sevitrade/Diversey: el punto de carga NO es el cliente.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "QUIMIDROGA", "campo": "tarifa (cascada por provincia)",
-      "regla": "QUIMIDROGA desde Barcelona a un PUEBLO de Galicia que no tiene tarifa propia -> se usa la tarifa de su PROVINCIA (cascada). Galicia (Pontevedra y Coruna) desde Barcelona = 79,71 EUR/TN. Confirmado 03/11: Barcelona->PORRINO (Pontevedra) = 79,71; Barcelona->PADRON (A Coruna) = 79,71. Se cargan en tarifas-confirmadas-julio.json. Aplica el minimo 23 TN si el peso real es menor. P IVA 21 (Quimidroga espanola).",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "THEC", "campo": "empresa/cabecera (PROVE)",
-      "regla": "Un viaje realizado por THEC (Transportes Hnos. Estevez Casal) se carga EN EL PERFIL DE TRANSLIQUIDOS ESTEVEZ: la EMPRESA SIGUE SIENDO TLE (0006). La diferencia es SOLO en la pantalla 'Entrada de Viajes': (1) en el campo CABEZA se escribe la palabra 'PROVE' en lugar del codigo de la tractora; (2) al lado, en MATRICULA, se digita la matricula COMPLETA de la tractora (no autocompleta); (3) el campo REMOLQUE (codigo) se deja VACIO y al lado se digita la MATRICULA COMPLETA del remolque; (4) se agrega el campo PROVEEDOR = '5' (codigo de THEC; es el UNICO campo extra). De ahi en mas el/los albaran(es) se cargan NORMAL. En orden.json: empresa='TLE', cabecera.cabeza='PROVE', cabecera.verificar.matricula y .remolque = matriculas completas, cabecera.proveedor='5'. Disparador en el armador: que el raw traiga 'proveedor'. KM Y COSTOS: van VACIOS (confirmado Julio 04/11) -> el armador deja km.cargar:false y el bot NO carga ni km ni gastos/dietas. NOTA: THEC tambien tiene su PROPIO perfil en Gesruta (a definir semanas mas adelante); esta regla es para cuando el servicio de THEC se carga desde el perfil de TLE.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-03", "por": "Julio", "cliente": "FORESA", "campo": "destino NEFAB (tarifa especial)",
-      "regla": "NEFAB (NEFAB PONTEV. SL, cod Gesruta NEFAB) es un punto de DESCARGA que es CLIENTE de Foresa y tiene TARIFA ESPECIAL (FORESA Caldas->NEFAB 9,60 EUR/TN). PONTECALDELAS es solo la LOCALIDAD donde esta Nefab, NO un sinonimo del punto: puede haber otras descargas en Pontecaldelas con otra tarifa. Por eso el destino de un albaran a Nefab es NEFAB (no 'Pontecaldelas'), y NO se debe aliasar Pontecaldelas -> Nefab. Alias validos del punto: 'NEFAB', 'NEFAB PONTEVEDRA'.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-05", "por": "Julio", "cliente": "TODOS", "campo": "resiliencia de carga (dato puntual faltante vs aborto)",
-      "regla": "El bot ABORTA la carga de un viaje SOLO si no puede cargar los DATOS BASICOS del viaje (la cabecera: matricula/chofer que no se pueden dar de alta en Gesruta). Un DATO PUNTUAL faltante -tarifa, peso/TN, % de indexacion, o un codigo de punto- NUNCA aborta ni deja el albaran como 'Pedido' sin lineas: se cargan TODAS las lineas posibles y se deja vacio SOLO ese campo, para que el humano complete un unico dato (no el viaje entero). En orden.json esto se refleja asi: tarifa_pendiente:true -> lineas.porte con 'precio' en null (y la 'cantidad' de la indexacion en null), resto cargado; peso_pendiente:true -> lineas.porte con 'cantidad' (TN) en null, resto cargado; codigo de punto en null -> se carga el resto del albaran y se deja ese campo vacio. CAMBIO 05/11 respecto al modelo viejo ('porte null -> albaran queda Pedido, no abrir Lineas'): ahora la linea SIEMPRE se emite con null solo en el campo que falta. El armador implementa esto emitiendo las lineas siempre (campo faltante = null); ver docs/pedido-bot-carga-resiliente.md secciones 3 y 3 bis.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-06", "por": "Julio", "cliente": "CLAVO FOOD FACTORY", "campo": "facturacion por km (cliente FRIGOS)",
-      "regla": "CLAVO FOOD FACTORY, S.A. (CIF A49012339, fabrica en Tordesillas; cod Gesruta cliente 4) es el PRIMER cliente que se factura POR KILOMETRO, no por TN. Importe del tramo = KM con carga x tarifa EUR/km. NO aplica minimo 23 TN, NO hay tonelaje. INDEXACION: CLAVO SI lleva, igual que FORESA -modalidad AGREGADA: NO por albaran, sino UNA sola linea en el momento de FACTURACION sobre el acumulado del periodo, concepto G (nacional); % MENSUAL (agosto 0,0766, septiembre 0,1370, OCTUBRE pendiente). La TARIFA la resuelve el armador por corredor/sentido (NO se teclea del talon; el calculo manuscrito del talon es verificacion): SALIDA (distribucion centro/norte, corredor Tordesillas<->Madrid) = 1,52 EUR/km vigente oct-2026 (historico 1,44->1,48->1,52); RETORNO / backbone Galicia (Tordesillas<->Caldas de Reis y retornos a base) = 1,31 EUR/km (historico 1,24->1,27->1,31); los fijos (Cercanias tipo C, local; y Tordesillas-Reinosa tipo U) son valores MENSUALES de la solapa del Excel -OCTUBRE 2026: Cercanias=212, Reinosa=315; enero 206/306-. Manda la tarifa mas reciente. El SENTIDO (columna L del Excel) lo DERIVA el armador de origen/destino/km (formula de Julio 06/11): km<110 -> C (cercanias); origen/destino Tordesillas<->Reinosa -> U; destino con 'Caldas' -> R; origen con 'Caldas' o 'Tordesillas' -> S; destino con 'Tordesillas' -> R. Importe fijo U/C se carga en Gesruta como um UN, cantidad 1, precio=fijo (confirmado pantalla Reinosa 315,00). El % de indexacion de OCTUBRE es provisorio 0,0915 (prueba de Julio 06/11; reemplazar por el real). Una ficha/parte entera = UN viaje de Gesruta con N albaranes (confirmado viaje 00051053: 8 tramos, total Ingr/Bnf 3.802,26). EN GESRUTA (confirmado con pantallas 06/11): empresa 0006 TLE; linea de albaran Cdgo 'P' concepto PORTES NACIONALES, UM 'TN' (cosmetico: el numero es KM), Cantidad = km con carga, Precio = EUR/km, Iva 21, Importe = cant x precio (ej 764 x 1,52 = 1.161,28); Origen/Destino por codigo de punto (CALDAS DE REIS=1, TORREJON=9735). Multi-punto (Julio 06/11) -> campos SEPARADOS de Gesruta: Campo1 = TODOS los puntos de la CARGA (origenes), con Origen=1er punto de la carga; Campo2 = TODOS los puntos del REPARTO (destinos), con Destino=ultimo punto del reparto; cada lista abreviada (<=19 caracteres para que entre en la factura). En el Excel la columna Origen/Destino lleva la lista completa unida con '+'. Multi-reparto = 1 albaran con el km TOTAL del viaje; CLAVO NO lleva linea REP (eso es FORESA). Form KILOMETROS = 1 apunte por viaje: Km carga = km total con carga (= Cantidad del porte) y Km vacio (NO por segmento). THEC (empresa HEC en el Excel) -> CORRECCION 10/11: un viaje de CLAVO con chofer THEC NO usa PROVE; se carga en el PERFIL THEC de Gesruta (empresa THEC, cabecera NORMAL con el codigo de tractora, SIN campo proveedor, km normales). El modelo PROVE (empresa TLE, cabeza PROVE, proveedor 5, km vacios) sigue SOLO para los clientes quimicos, NO para CLAVO. El armador fuerza empresa THEC + cabecera normal cuando el viaje es CLAVO y hay chofer THEC. NO se cargan a Gesruta (por ahora, Julio 06/11): palets, dietas, gasoil, adblue, otros gastos (son control interno del Excel). La columna 'GesR' del Excel = marca de 'ya cargado en Gesruta'. Detalle completo y pendientes en docs/cliente-CLAVO-frigos.md.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-11", "por": "Julio", "cliente": "TRANSTAMBRE (y cualquier OC con precio cerrado)", "campo": "tarifa/indexacion (tarifa cerrada por OC)",
-      "regla": "TARIFA CERRADA: cuando la ORDEN DE CARGA/FLETE fija su PROPIO precio y su PROPIO % de INDEXACION (tipico de viajes intermediados por un BROKER como TRANSTAMBRE), se RESPETAN la tarifa y el indice de la OC POR ENCIMA de la tabla y del factor del grupo. El % de la OC se carga como el FACTOR de la linea de indexacion (concepto G nacional / GPT internacional segun nacionalidad del cliente). En el armador: el raw del albaran lleva 'idx_pct': <decimal> (ej 0,1553 = 15,53%; 0,1597 = 15,97%) y el armador usa ESE factor en vez del de la tabla; si ademas no hay tarifa de la ruta, el porte queda tarifa_pendiente y se carga el precio A MANO segun la OC. REFERENCIA de los viajes TRANSTAMBRE: el campo 'Referencia de pedido' de la OC; si ese campo trae una INSTRUCCION en vez de un numero (ej 'TRANSTAMBRE + MATRICULAS + NOM APELL Y DNI'), usar el Nº de albaran/carta de porte de la CARGA. Confirmado lote 11/11: Transtambre Tarragona->Porriño ALCOHOL (idx 15,53%, ref TQ5603360) y Teixeiro->Altorricon bioetanol/ACEITE DE MAIZ (precio 56 EUR/TN + 15,97% idx; ref 319574 = albaran Bioetanol Galicia). DISCRECION COMERCIAL Transtambre: la carta de porte puede emitirse con un destino distinto (ej Mengibar) del REAL (Altorricon); para facturar vale el transporte REAL (origen/destino de la OC), no la ficcion documental. Julio verbatim: 'Tarifa cerrada, respetar tarifa e index informada en OC. En la OC de Transtambre muestra Referencia de pedido para utilizar como referencia.'",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-11", "por": "Julio", "cliente": "TODOS", "campo": "cabecera/cabeza (por viaje)",
-      "regla": "La CABEZA (tractora) es POR VIAJE, no por juego: cuando una ficha tiene VARIOS viajes (por cambio de tractora/remolque, regla 2026-10-14), cada viaje lleva SU cabeza. El armador la deriva por viaje con cabezaDeViaje(): prioridad cabeza explicita del viaje -> cabeza de FLOTA por matricula (respetando el CERO A LA IZQUIERDA, regla 03/11) -> digitos iniciales de la matricula -> cabeza del juego. En orden.json cabecera.cabeza se setea por viaje; el validador valida la cabeza EFECTIVA de cada viaje (v.cabeza||raw.cabeza) contra su matricula. Confirmado por Julio: 'Cabeza por-viaje en el armador'. Caso: shuttle FORESA Orember con 2 tractoras distintas en la misma ficha.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-12", "por": "Julio", "cliente": "TODOS", "campo": "destino (empresa sin ruta propia -> provincia)",
-      "regla": "Cuando el destino es una EMPRESA (razon social 'XXX, S.A./S.L./Lda') que NO tiene ruta propia en el tarifario, se carga el destino en su PROVINCIA/ZONA (que si tiene tarifa), leyendo la DIRECCION COMPLETA del albaran. Es la misma cascada de siempre (Enguera->Valencia, Finsa Teruel->Teruel). OJO: el 'fallback por provincia' del armador es por TOKEN del nombre; un destino como 'URSA IBERICA, S.A.' puede matchear por el token basura 'S.A.' contra CUALQUIER empresa (Clariant/Termolan/...) y agarrar una tarifa equivocada (caso real: Caldas->URSA cayo a Caldas->Termolan 28,89). Por eso NO se deja el literal 'EMPRESA, S.A.' como destino: se pone la PROVINCIA. Confirmado por Julio 12/11 (la logica de cascada esta bien; el error era no leer la direccion completa). Caso: FORESA Caldas->URSA Iberica (El Pla de Santa Maria, Tarragona) -> destino TARRAGONA (cod T) = Caldas->Tarragona 72,36 DIRECTA. NO tocar la precedencia del armador por esto.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-12", "por": "Julio", "cliente": "FORESA / TRANSTAMBRE", "campo": "quien genera el viaje -> ref/cliente/tarifa/idx",
-      "regla": "Para un viaje de ENTRADA a FORESA (ej TERQUIMSA/STOCKMEIER Tarragona->Caldas, acetato de vinilo), lo que define REFERENCIA, CLIENTE, TARIFA e INDEXACION es QUIEN GENERA/GESTIONA el viaje, que se ve en el REMITENTE DEL MAIL de la OC: (a) si el pedido lo genera FORESA (entrega a Foresa, mail de Foresa) -> todo es de FORESA: ref = la de FORESA (Nro 2008xxxx) o la del albaran, cliente FORESA, tarifa e idx de FORESA. (b) solo si TRANSTAMBRE gestiona o solicita el viaje (a veces le da viajes a TLE) -> se usa la ref de la OC de Transtambre (TQxxxxxxx), y la tarifa/idx de Transtambre (sea tarifa cerrada o por TN). Confirmado Julio 12/11: Pablo Carles Tarragona->Caldas lo genera FORESA -> ref 200859030 (NO la TQ de la OC de Transtambre que venia en el sobre). Aunque aparezca una OC de Transtambre en el escaneo, no alcanza: lo que manda es quien genera el pedido.",
-      "estado": "confirmada"
-    },
-    {
-      "fecha": "2026-11-12", "por": "Julio", "cliente": "QUIMIDROGA", "campo": "destino (TMG dos plantas)",
-      "regla": "TMG Tecidos (destino de MEXIFLEX desde Miranda de Ebro) tiene DOS plantas en el norte de Portugal: BRAGA (Ponte GMR) y V.N. FAMALICAO (Sao Cosme do Vale, cod Gesruta FAMAL). VERIFICAR EN EL CMR a cual descarga; Sao Cosme do Vale = Famalicao, no Braga. Tarifa igual en ambas (misma zona): Miranda->Braga = Miranda->Famalicao = 61,65 EUR/TN, nacional P IVA 21 (Quimidroga factura PT nacional), con minimo 23 TN. Confirmado Julio 12/11 (viajes Aboy 713899 y Asensi 713900 descargaban en Famalicao, se habia puesto Braga).",
-      "estado": "confirmada"
-    }
-  ],
-  "_fuente_tarifas": {
-    "_nota": "Donde vive cada tipo de precio/punto. correcciones-julio.json NO duplica tarifas: solo guarda REGLAS/DECISIONES. Limpieza del solape 2026-10-09.",
-    "tarifa_por_TN_o_viaje": "datos/gesruta/tarifarios/ (RNM y QUIMIDROGA tienen archivo propio; resto -> tarifario-general). Prioridad cliente > general, EUR/TN por defecto. Ver su README.",
-    "cascada_o_analogia": "catalogo/tarifa-por-analogia.json = destino real sin fila propia -> ruta de la que se toma el precio. Requiere confirmado=true de Julio; sin confirmar NO se factura.",
-    "identidad_de_punto": "catalogo/alias-empresa-punto.json = lo que trae el doc (razon social/direccion) -> punto Gesruta. _pendientes_punto_faltante = puntos a dar de alta en Gesruta.",
-    "historico_facturacion": "datos/gesruta/linea-facturacion-2026-08-26.csv = precios reales ya facturados (de ahi salen FORESA Caldas->Orember 13,85 COLA, Caldas->Tordera 72,36, etc.).",
-    "precios_sin_tarifario": "Clientes sin tarifario propio y con precio FIJO confirmado por Julio (hoy solo FORESTAL Mugardos->Castellon 2.025) viven como REGLA en 'reglas', no aqui."
+ "_nota": "MEMORIA DE DECISIONES HUMANAS. Reglas confirmadas por Julio, la fuente de verdad. Claude LEE este archivo antes de cada carga y las aplica ANTES de escribir en la base. Claude no las inventa ni las generaliza mas alla de lo que Julio confirmo.",
+ "reglas": [
+  {
+   "fecha": "2026-09-09",
+   "por": "Julio",
+   "cliente": "RNM",
+   "campo": "destino",
+   "regla": "CARREIRA NUNCA es una descarga real. Todo viaje de RNM cuyos documentos (CMR/consignatario) digan CARREIRA descarga en realidad en VILANOVA FAMALICAO (codigo FAMAL), a 9 km de la sede de RNM. => destino SIEMPRE = FAMAL.",
+   "estado": "confirmada"
   },
-  "correcciones_puntuales": [
-    {"fecha": "2026-09-09", "juego": "Pablo Carles 24/08 viaje 1 FORESA", "campo": "fecha_carga", "valor": "2026-08-19", "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."},
-    {"fecha": "2026-11-12", "juego": "Nuno Silva 22/10 FENOL (ref 200858712)", "campo": "material/tarifa", "valor": "FENOL FUNDIDO (cod FENOL) -> 83,75 EUR/TN", "nota": "Faltaba el material. Cargado el material FENOL FUNDIDO, la tabla aplica la tarifa ESPECIFICA por material FORESA Huelva->Caldas FENOL FUNDIDO = 83,75 (no la generica 'Cualquiera' 74,25 que se habia usado). El material define la tarifa (como FINCAT!=COLA). Confirmado por Julio (lo corrigio en Gesruta)."},
-    {"fecha": "2026-11-12", "juego": "Pedro Fraga 02/11 shuttle Orember (ref 2036041, 2036058)", "campo": "km_vacio", "valor": "123 (no 124)", "nota": "Dos tramos estaban en 124 por reconstruccion; la ficha (observaciones de las 4 hojas) dice 123. Secuencia real de km vacio por tramo: 123,124,123,123,123,124,124,124,123,144. km_vacio de autonomo va a Gastos, por eso importa el valor exacto."}
-  ],
-  "codigos_gesruta": {
-    "_nota": "Gesruta carga TODO por codigo, no por texto tecleado. Estos son los codigos a usar en la planilla. Fuente: datos/gesruta (clientes 321/403 de linea-facturacion col cli_codcli; cargas por literal; puntos de puntos-geograficos; conceptos de col cli_codcon).",
-    "clientes": {
-      "FORESA IND.QUIMICAS DEL NOROESTE, S.A.": "1",
-      "FORESTAL DEL ATLANTICO, S.A.": "321",
-      "QUIMIDROGA, S.A.": "403"
-    },
-    "cargas": {
-      "_nota": "CATALOGO COMPLETO de materiales (codigo;carga;descripcion) en datos/gesruta/materiales.csv (559 materiales, Julio 2026-10-09). El codigo puede ser numerico (COLA=1) o alfanumerico (VINKA-PLAST=VINKA). Buscar siempre el codigo ahi para no tener que 'BUSCAR por nombre' en Gesruta. Los de abajo son los de uso frecuente.",
-      "COLA": {"cod": "1", "aplica_a": "FORESTAL cola/resina (Forplas), FORESA RES, y cualquier cola/resina (hay RESINA=23 aparte, pero FORESA->Tordera se factura como COLA)"},
-      "SOSA": {"cod": "51", "aplica_a": "sosa caustica (hidroxido sodico), ej RNM"},
-      "VINKA-PLAST": {"cod": "VINKA", "aplica_a": "QUIMIDROGA Vinka-Plast QD 390"},
-      "MONOETILENGLICOL": {"cod": "MONOE", "aplica_a": "HELM / Quimidroga monoetilenglicol"},
-      "FORMOL": {"cod": "3"}, "METANOL": {"cod": "5"}, "RESINA": {"cod": "23"}, "POTASA CAUSTICA": {"cod": "POTASA"}
-    },
-    "puntos": {
-      "MUGARDOS": "MUGAR", "BARCELONA": "B", "AVEIRO": "AVEIR",
-      "CASTELLON": "CASTE (confirmado por Julio 07/10; el duplicado CS no se usa)"
-    },
-    "conceptos_codcon": {
-      "P": "PORTES NACIONALES",
-      "PI": "PORTES INTERNACIONALES (IVA 0)",
-      "G": "INDEXACION GASOLEO (factor decimal en precio, ej 0.1517 = 15,17%, sobre porte neto)",
-      "G1Q": "INDEXACION GASOLEO 1a QUINCENA",
-      "GPT": "INDEXACION GASOLEO PORTUGAL",
-      "DUO": "DESCUENTO DUO TRAILER (-0.05 = -5%), solo si el viaje es duotrailer (raro)"
-    },
-    "indexacion_gasoleo": {
-      "_nota": "Factor por GRUPO de cliente y QUINCENA. Tabla completa en datos/gesruta/indexacion-gasoleo.json (y xlsx suplemento-gasoleo-2026-10-07.xlsx). Se aplica como linea concepto G sobre el porte neto, segun la FECHA DE CARGA del viaje. Grupos: FORESA-BRESFOR, HELM, QUIMIDROGA, OTROS, AGENCIA, AUTONOMOS. Forestal -> grupo OTROS (pero si la tarifa es precio fijo con indexacion incluida, NO se agrega linea G).",
-      "QUIMIDROGA": {"2026-09 (01-30)": 0.137, "2026-10 (01-31)": 0.145},
-      "OTROS": {"2026-09": 0.137, "2026-10": 0.145}
-    }
+  {
+   "fecha": "2026-09-09",
+   "por": "Julio",
+   "cliente": "RNM",
+   "campo": "referencia",
+   "regla": "Jerarquia: 1) obs de la OC, 2) guia de remessa (10 dig empieza en 0), 3) CARTA DE PORTE si no hay 1 ni 2 (ej 2601015975). NUNCA el pedido de compra 31000xxxxx.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-09-09",
+   "por": "Julio",
+   "cliente": "RNM",
+   "campo": "tarifa",
+   "regla": "AVILES -> VILANOVA FAMALICAO, ACIDO SULFURICO: 39,13 EUR/TN vigente. PORTES INTERNACIONALES, IVA 0 (Portugal).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-07",
+   "por": "Julio",
+   "cliente": "FORESA (y general)",
+   "campo": "cantidad/viaje",
+   "regla": "Carga de VARIOS productos en una misma ORDEN DE CARGA = UN solo viaje. Se carga el TOTAL en toneladas (suma de los pesos de los productos). Ej: RES 1440 19.200 + RES 2130 4.520 = 23.720 kg = un viaje con total 23.720.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-07",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "tarifa",
+   "regla": "CASCADA DE TARIFA: si el tarifario no tiene la ruta exacta (destino puntual), buscar el SIGUIENTE NIVEL = la PROVINCIA/ZONA del destino. Ej: Barcelona->Padron (no existe) -> usar Barcelona->PONTEVEDRA. Caldas->Enguera (no existe) -> usar Caldas->VALENCIA. El precio/TN de la zona aplica al viaje.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-07",
+   "por": "Julio",
+   "cliente": "FORESTAL DEL ATLANTICO, S.A.",
+   "campo": "referencia",
+   "regla": "La REFERENCIA que va a facturacion es el Nº PEDIDO de la orden de Forestal (ej: 26P1213). NO la ref cliente (PPxxxxxxxx) ni el albaran de bascula.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-07",
+   "por": "Julio",
+   "cliente": "FORESTAL DEL ATLANTICO, S.A.",
+   "campo": "tarifa",
+   "regla": "Modalidad de tarifa = PRECIO FIJO POR VIAJE (no por TN; um=UN, cantidad 1), con la INDEXACION DE GASOLEO INCLUIDA en el precio (NO sumar linea G aparte). FORESTAL no tiene tarifario propio, asi que los fijos confirmados por Julio viven aqui como decision: MUGARDOS -> CASTELLON (Quimialmel), material FORPLAS (cola/resina) = 2.025,00 EUR/viaje, IVA 21, concepto P (PORTES NACIONALES). Nuevos fijos FORESTAL se agregan a esta misma regla al confirmarlos.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-08",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "estructura viaje/albaran",
+   "regla": "VIAJE (administrativo, en Gesruta) = la(s) hoja(s) de servicio que rinde el chofer; puede abarcar 1 o 2 FICHAS de chofer y VARIOS ALBARANES. Cada ORIGEN->DESTINO (un viaje en terminos practicos) = UN albaran. Gesruta asigna Nº de viaje y Nº de albaran al crearlos; nuestros registros deben guardar ambos por fila. Ej: ficha Asensi 29/09-02/10 = 1 viaje con 2 albaranes (Forestal Mugardos->Castellon; Quimidroga Barcelona->Aveiro). Procedimiento de carga: skill 'cargar-viajes-gesruta'.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-08",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "kilometros",
+   "regla": "Registrar ODOMETRO inicio y final de cada albaran (vienen en la ficha). Km CARGA del albaran = odometro final - inicio (km con carga, coincide con la ficha). Entre albaranes del mismo viaje hay KM VACIO = odometro inicio del siguiente - odometro final del anterior (reposicionamiento sin carga). En Gesruta el form 'Kilometros' es a nivel viaje: Km carga por albaran (fila Chofer); Km vacio y Nueva lectura los confirma Julio (no reproducir a ciegas). Ej Asensi: alb1 873.922->874.976 (1.054 carga); vacio 874.976->875.255 (279); alb2 875.255->876.375 (1.120).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "empresa",
+   "regla": "Cada juego/albaran pertenece a una EMPRESA: TLE (Trans. Liquidos Estevez, S.L.) o THEC (Transportes Hermanos Estevez Casal). Determina en Gesruta la 'Seleccion de Empresas' (TLE = 0006 TRANS. LIQUIDOS ESTEVEZ S.L.; THEC = otra empresa, codigo a confirmar) y por ende a que parte del sistema entra y como varia la forma de carga. La columna 'empresa' es obligatoria en la tabla de datos y en la planilla. La empresa sale del membrete de la ficha. Asensi = TLE.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "precio",
+   "regla": "La tarifa del albaran va por EUR/TN por defecto (um=TN, cantidad = toneladas), SALVO que la ORDEN DE FLETE/OC indique un precio fijo por viaje (um=UN, cantidad 1; ej. HELM 'Coste de transporte' 1.800). Fuente de verdad de tarifas = el tarifario que maneja Julio; el xls datos/gesruta/tarifas-general-2026-08-04 puede estar DESACTUALIZADO (ej: marcaba Aveiro->Navia 900 fijo cuando el real es 40,30 EUR/TN).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "tarifario_fuente",
+   "regla": "Fuentes de tarifas en datos/gesruta/tarifarios/ (ver su README). PRIORIDAD: el tarifario de CLIENTE manda sobre el general (mas actualizado y con mas rutas). RNM y QUIMIDROGA tienen archivo propio. Resto -> general. QUIMIDROGA: respetar vigencia (desde/hasta) y usar tramo 40 TN (44 TN solo megacamion). RNM: tiene EUR/viaje y EUR/TN por ruta; usar EUR/TN.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-15",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "archivo_procesados",
+   "regla": "DOS archivos con rol distinto, sin duplicar: (1) procesados/<CLIENTE>/<YYYY-MM>/ guarda SOLO los documentos de transporte (albaranes) de cada albaran, renombrados por su Nº de referencia, en la carpeta de su cliente y mes de carga. (2) La FICHA del chofer vive en UN SOLO lugar: ordenes-carga/ordenes/<YYYY-MM>/<chofer>/<YYYY-MM-DD>/, junto a la orden.json de ese viaje. La ficha NO se copia a procesados.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "fecha_carga",
+   "regla": "Usar la FECHA DE CARGA REAL = la de la ficha del chofer, no la de la orden/doc del cliente si difieren. Importa porque define la quincena de indexacion.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "destino",
+   "regla": "DESTINO: usar el punto MAS PRECISO que TENGA TARIFA. Si el punto exacto no tiene tarifa, usar la ZONA que si la tiene (complemento de la cascada). Ej: HELM entrega en Ribeira de Nisa (sin tarifa) -> se usa PORTALEGRE (cod PORT, con tarifa).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "HELM",
+   "campo": "general",
+   "regla": "HELM IBERICA (cod cliente 323): factura los viajes a Portugal como PORTES NACIONALES IVA 21 (no internacional). Indexacion: grupo HELM, concepto G. Referencia = el Nº de orden de flete que el propio doc pide incluir en la factura (ej 6100316242). Precio segun 'Coste de transporte' de la orden.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "RNM",
+   "campo": "indexacion",
+   "regla": "RNM internacional (Portugal) a Espana: PORTES INTERNACIONALES IVA 0, indexacion concepto GPT (INDEXACION GASOLEO PORTUGAL) usando el factor del grupo 'Otros' (ej. octubre 2026 = 0,1450).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "archivo_procesados/nombre",
+   "regla": "Al procesar y guardar un ALBARAN (documento de transporte), RENOMBRARLO con su Nº de REFERENCIA + .pdf (ej 20261009185425.pdf -> 2027535.pdf). ACTUALIZACION 05/11: el PDF del albaran debe contener la OC + la documentacion de carga (CMR/albaran de carga/bascula) en UN SOLO archivo <ref>.pdf; si vienen en paginas sueltas, unirlas. YA NO se separa la OC en un '<ref>-orden.pdf' aparte (ese era el formato viejo): dejar los '-orden.pdf' ya archivados como estan, pero de ahora en mas un unico PDF con OC + carga. Las FICHAS del chofer conservan su nombre original (son compartidas por varios albaranes) y NO van a procesados. El path renombrado se refleja en la columna pdf_doc del registro.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "FORESA",
+   "campo": "referencia/peso/carga",
+   "regla": "FORESA: referencia = el Nº CORTO que empieza en 20 (ej 2027538), arriba a la derecha del albaran; NUNCA el largo 5030xxxxxx. Peso = el del albaran. Indexacion: grupo FORESA-BRESFOR, concepto G. Las resinas (RES xxxx) se cargan como COLA (cod 1).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "descuento_duo",
+   "regla": "NO aplicar el DESCUENTO DUO TRAILER (concepto DUO, -5%) salvo que el viaje sea realmente duotrailer (raro: historicamente ~2 de 60 lineas). Por defecto Dto = 0.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-27",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "duotrailer",
+   "regla": "DUOTRAILER = una tractora arrastra 2 cisternas en UN MISMO viaje fisico (mismo odometro, mismas fechas), cada cisterna con su matricula y su albaran. En Gesruta van como 2 viajes (uno por matricula). SEPARADO por cisterna: cabecera, albaran, porte e indexacion (cada cisterna tiene su tonelaje). COMPARTIDO = una sola vez (en el viaje lider, NO duplicar en el 2do): KM del tramo, dietas/viaticos y gastos. En la orden: el 2do viaje lleva cabecera.duo_secundario=true y km.cargar=false -> el bot saltea el formulario de km y los gastos/dietas de ese viaje. OJO km: el odometro del 2do arranca casi igual que el del 1ro (va para atras), por eso NO se puede cargar el form de km del 2do como si fuera secuencial. Descuento DUO (-5%): solo si Julio confirma que ESE duotrailer lleva DUO (por defecto no).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-09",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "fuente_de_precios",
+   "regla": "Las TARIFAS no se copian aqui (se desactualizan). Viven en sus stores y correcciones-julio solo las referencia. Ver _fuente_tarifas.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-14",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "estructura viaje (matriculas)",
+   "regla": "Si DENTRO de una misma ficha cambia la TRACTORA o el REMOLQUE, se parte en VIAJES distintos: en Gesruta hay que crear un viaje nuevo para cargar las matriculas nuevas. Cada viaje de la orden lleva una sola tractora+remolque. Ej: shuttle Pedro Fraga (tractora 5358KTF) con remolque R8574BBC en 2 albaranes y R3487BCD en 4 -> 2 viajes, aunque el odometro corra continuo.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-15",
+   "por": "Julio",
+   "cliente": "BRESFOR",
+   "campo": "general",
+   "regla": "BRESFOR IND. DO FORMOL, S.A. = cliente Gesruta cod 42. Carga en AVEIRO (Gafanha da Nazare, Portugal). Sus viajes a Espana son INTERNACIONALES: concepto PI (PORTES INTERNACIONALES), IVA 0. Indexacion: concepto GPT (los unicos conceptos de indexacion son G nacional / GPT internacional), factor del grupo FORESA-BRESFOR (oct-2026 = 0,1664). Resinas (RES xxxx) -> carga COLA. Tarifa Aveiro->Teruel = 56,00 EUR/TN. REFERENCIA = el Nº que empieza en 5050 (el 'Doc int' del CMR, que es el Nº de albaran de la guia de remessa, el mismo que aparece en el ticket FINSA), NO el corto 20xxxxx. (OJO: distinto de FORESA, que SI usa el corto 20xxxxx).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-15",
+   "por": "Julio",
+   "cliente": "FORESA/BRESFOR",
+   "campo": "destino/tarifa",
+   "regla": "Planta FINSA de Teruel (docs la nombran 'Finsa Cella', Cella-Teruel): se CARGA destino TERUEL (cod TE), porque la TARIFA vive bajo TERUEL en el tarifario (Caldas->TERUEL FORESA 56,00 PN; Aveiro->TERUEL BRESFOR 56,00 PI). El punto UTISA TERUEL (UTI) existe pero NO tiene esa tarifa. Regla general: usar el punto que TIENE la tarifa; si ninguno la tiene, el mas especifico.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-16",
+   "por": "Julio",
+   "cliente": "FORESA",
+   "campo": "indexacion",
+   "regla": "Servicios FORESA con indexacion ACUMULADA (no linea por albaran): destino OREMBER (cualquier origen; 702 albaranes historicos) y Villagarcia->Caldas METANOL (236 albaranes). Fuente: ficha/periodo-facturacion.js (SERVICIOS_AGREGADOS_FORESA), confirmado por Julio. La idx NO se carga como linea por albaran (se acumula en facturacion), PERO el importe SIEMPRE se calcula y se guarda para control de totales: en el LIBRO MAESTRO base/total incluyen la idx (grupo FORESA-BRESFOR) con marca 'IDX ACUMULADA'; en la ORDEN va con el flag 'cargar': false. El resto de servicios FORESA (otros destinos, retornos) SI se indexan por linea.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-15",
+   "por": "Julio",
+   "cliente": "BALTRANSA",
+   "campo": "indexacion",
+   "regla": "Baltransa: ademas de la linea de porte (importe unitario que viene en la orden de carga), hay que agregar una segunda linea de INDEXACION con cantidad = 1 e importe = 0 (linea de indexacion en cero).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-16",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "chofer_tipo/kilometros",
+   "regla": "Choferes AUTONOMOS (hoy solo 3: FRAGA, ALFONSIN, ABAL) vs PROPIOS. En Gesruta (empresa TLE): PROPIO -> km en el formulario Kilometros + viaticos en Gastos. AUTONOMO -> SIN viaticos y los KM van en GASTOS (no en el formulario Kilometros). Los autonomos anotan en su ficha km CARGADOS y km VACIOS (cada uno con su formato); hay que extraer AMBOS y pasarlos en cada linea de albaran (km.carga y km.vacio). En la orden: cabecera.tipo = 'propio' | 'autonomo'.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-22",
+   "por": "Julio",
+   "cliente": "FORESA (metanol)",
+   "campo": "tarifa/flujo",
+   "regla": "METANOL: el UNICO flujo metanol no implementado es Villagarcia->Caldas (shuttle agregado). El resto de metanol se carga NORMALMENTE como convencional (linea de porte EUR/TN + idx concepto G grupo FORESA-BRESFOR POR LINEA; nacional P IVA 21). Tarifas confirmadas (del historico de facturacion): Villagarcia->VALLADOLID (destino de CURIA SPAIN, Boecillo; cod VA) = 38,66 EUR/TN (factura 50106); Villagarcia->GIJON (COGERSA, Serin; cod COGER) = 33,10 EUR/TN (factura 50754). El minimo facturable de 23 TN (R-02) aplica igual.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-10-22",
+   "por": "Julio",
+   "cliente": "DIVERSEY/BALTRANSA",
+   "campo": "cliente/referencia",
+   "regla": "DIVERSEY (Valdemoro, Madrid) es PUNTO DE CARGA, no cliente de facturacion. El viaje de sosa Diversey->Leche Celta (Pontedeume) se factura a BALTRANSA (cod 10): referencia = Nº de Orden de Transporte de Baltransa (ej 338681), precio FIJO por viaje que trae la OC (ej 1.150,00 EUR; um UN, cantidad 1), concepto P IVA 21 (destino nacional), mas la linea de indexacion Baltransa con cantidad 1 e importe 0.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-02",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "estructura viaje (viaticos)",
+   "regla": "Un VIAJE (Gesruta) se define por los VIATICOS/dietas que el chofer anota en cada HOJA de la ficha: una hoja CON viaticos = un viaje. Una hoja SIN viaticos se UNE a otra (la que lleva los viaticos del periodo) para formar UN SOLO viaje, aunque tenga sus propios albaranes. Se combina con la regla de matriculas (2026-10-14): si cambia tractora o remolque igual se parte en viajes distintos. Ej: shuttle Marcos Eirin Caldas->Orember, hoja1 trae las dietas de toda la semana (26-30/10) y hoja2 sin viaticos -> UN viaje con 6 albaranes.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-02",
+   "por": "Julio",
+   "cliente": "FORESA",
+   "campo": "carga/tarifa",
+   "regla": "El producto 'AVEIRO 3009' (o 'ABEIRO 3009') que aparece en el albaran/ficha de FORESA NO es COLA: es carga FINCAT (cod Gesruta FINCAT). En la ruta Caldas->Orember eso cambia la tarifa: COLA = 13,85 EUR/TN, pero FINCAT = 20,16 EUR/TN (son dos filas distintas en el tarifario, por material). Las resinas 'RES xxxx' si son COLA (13,85). OJO: cargas FORESA Caldas->Orember anteriores que hayan clasificado 'Aveiro 3009' como COLA (p.ej. fila 2027312) estan mal tarifadas y hay que revisarlas.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-02",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "lectura/cruce (metodo, NO negociable)",
+   "regla": "La LECTURA es la parte vital: si el dato entra mal, todo sale mal. (1) Leer TODOS los documentos del juego -ficha + OC + albaranes-, nunca un subconjunto: la OC MANDA en cliente y destino, la ficha confirma km/fechas, el albaran da referencia/peso. (2) CRUZAR cada campo contra las tablas antes de armar: matricula de la tractora -> chofer + remolque + tipo propio/autonomo en flota.json (la matricula es la verdad, NO la letra manuscrita); cliente/destino -> clientes/puntos; material -> materiales. (3) El armador (herramientas/armar_orden) hace solo el CALCULO determinista; NO reemplaza la lectura ni justifica leer menos para ahorrar tokens. Errores reales que esto evita (lote 02/11): ABAL vs ABALO (autonomo vs propio), Alcoy vs Aboy, 3 vs 8 y 4716 vs 4916 en matriculas, Mindelo vs Leiria (destino real de la OC), Servitrade vs Comatra (cliente real de la OC). El armador ya deriva la cabecera por matricula via flota y avisa si la lectura no coincide.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-02",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "concepto/iva (nacionalidad)",
+   "regla": "El CONCEPTO de porte y el IVA responden a la NACIONALIDAD DEL CLIENTE al que se factura, NO al origen ni al destino del viaje. Cliente PORTUGUES (RNM, BRESFOR, cualquier 'Lda'/'Lda.') => PI (PORTES INTERNACIONALES), IVA 0, indexacion GPT, aunque el viaje sea dentro de Espana. Cliente ESPANOL (Quimidroga, Helm, Baltransa, Comatra, Foresa, Forestal) => P (PORTES NACIONALES), IVA 21, indexacion G, aunque descargue en Portugal (ej Quimidroga->Leiria, Baltransa->Mindelo/Oporto, Helm->PT = P/21). Excepcion ya conocida que confirma la regla: HELM es espanola -> nacional 21 incluso a Portugal. NO volver a preguntar el IVA de un cliente ya clasificado por nacionalidad (error visto: se pregunto el IVA de Baltransa->Portugal). El armador lo resuelve en reglaConcepto() por razon social.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-02",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "cantidad/minimo (modo)",
+   "regla": "Precision de R-02 (minimo 23 TN). El minimo facturable de 23,000 TN aplica a la LINEA FACTURADA POR PESO (modo EUR/TN, um=TN): si el peso real < 23 TN se factura 23,000. NO aplica a viajes de PRECIO FIJO POR VIAJE (um=UN, cantidad 1: Baltransa, Forestal, Helm con precio cerrado, etc.), porque ahi se factura 1 unidad y no hay tonelaje que redondear. El 'SIEMPRE / sin excepciones por cliente' de R-02 se refiere a que ningun cliente queda exento del minimo en sus lineas por peso, no a forzar tonelaje en lineas um=UN. El armador ya aplica el minimo solo en el modo EUR/TN. Julio lo enuncio como 'viajes facturables por peso y tarifa por EUR/TN'; para los clientes QUIMICOS/LIQUIDOS NO existe una tarifa de facturacion por km (ese 'km' fue un lapsus por 'EUR/TN') y los km del AUTONOMO son un GASTO, no porte ni tarifa al cliente -ver regla chofer_tipo/kilometros 16/10. EXCEPCION CONFIRMADA 06/11: CLAVO FOOD FACTORY (FRIGOS, cod 4) SI se factura POR KM de verdad (importe = km x EUR/km, sin TN, sin minimo 23) -ver regla 'facturacion por km (cliente FRIGOS)' y docs/cliente-CLAVO-frigos.md-. Esta regla del minimo 23/EUR-TN aplica a los clientes por TN; NO niega el modelo km de CLAVO.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "referencia (formato provisorio de sistema)",
+   "regla": "Cuando por un PROBLEMA DE SISTEMA se emiten OC/albaranes con un FORMATO distinto y de apariencia 'provisoria', esos numeros de referencia SON DEFINITIVOS igual: no son placeholder, el numero queda como esta y NO se re-pide el 'definitivo'. Confirmado lote 26/10: Carlos Abalo FORESA 260032 y Manuel Aboy BRESFOR 4500002523 son definitivos. NO cambia la regla general de ref por cliente (FORESA 20xxxxx, BRESFOR 5050xxxxxx, Quimidroga ref en factura, etc.); aplica solo cuando el propio sistema emitio el documento con formato anomalo.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "cabecera/matricula (cero a la izquierda)",
+   "regla": "El numero de CABEZA (tractora) puede llevar un CERO A LA IZQUIERDA que DESAMBIGUA matriculas con el mismo tramo numerico. Caso confirmado: cabeza '3729' -> tractora 3729JLH (MARCOS EIRIN FERNANDEZ, propio); cabeza '03729' -> tractora 3729JWP (CARLOS ABALO QUINTELA, propio). Son tractoras DISTINTAS. Al leer la ficha RESPETAR el cero a la izquierda y cruzar con flota.json (campo 'cabeza'): si el numero cae en una colision de tramo, el cero manda. NO normalizar quitando ceros. En la orden, cabecera.cabeza conserva el formato leido (ej '03729'). Error visto 03/11: se puso cabeza '3729' (lleva a 3729JLH, Marcos Eirin) cuando la correcta era '03729' (3729JWP, Abalo); matricula ya estaba bien.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "COMATRA",
+   "campo": "cliente/tarifa",
+   "regla": "COMATRA, S.C.L. (cod Gesruta 33) es cliente ESPANOL -> concepto P, IVA 21. SEVITRADE / El Copero (Sevilla) es PUNTO DE CARGA, no el cliente (error visto: Servitrade vs Comatra). Referencia = ref proveedor de la OC (ej 201786). Tarifa confirmada: El Copero (Sevilla) -> Tradecorp Sanchidrian (Avila) SOSA = 940,00 EUR/VIAJE FIJO (um UN, cantidad 1) con INDEXACION INCLUIDA -> NO agregar linea de indexacion (como Forestal). Destino: Sanchidrian NO tiene punto propio en Gesruta -> se CASCADA a la provincia AVILA (cod AV), via alias en puntos-alta.json. Regla general (Julio 03/11): el destino SIEMPRE debe llevar un codigo valido -el punto exacto si existe, si no su PROVINCIA o region-; NUNCA dejar destino.codigo en null porque el bot aborta la carga. null se reserva solo para un dato realmente ilegible.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "peso facturable (fuente)",
+   "regla": "El PESO que se factura sale SIEMPRE del documento de peso de CARGA (albaran / CMR / bascula de carga del origen), NUNCA de la OC. La OC trae el 'previsto redondo' (ej 24.000) que casi nunca es el real (24.040 / 23.980) -R-08, D-01-. Precedencia: CMR/albaran de origen > documento de descarga > (NUNCA) OC. Si el unico peso disponible es el de la OC o falta el documento de peso -> NO facturar ese peso: marcar peso_pendiente / REVISAR 'falta documento de peso' y completar con el real. En el armador el raw marca 'peso_pendiente': true (como km_pendiente) y, por RESILIENCIA (ver regla 'resiliencia de carga' 05/11), la orden NO sale con el porte entero en null: sale la linea de porte completa con solo la 'cantidad' (TN) en null (precio/concepto/iva cargados) + peso_pendiente:true; ademas el armador avisa si el peso en modo TN es exactamente multiplo de 1000 (olor a previsto de OC). Error real 03/11: Carlos Abalo QUIMIDROGA 713124 se facturo con 24.000 (previsto de la OC); el CMR (202610001368CMR) y el albaran TEPSA (202610007346CRP), que estaban en paginas APARTE del escaneo, traen peso NETO 22.740 -> 22,74 TN < 23 -> facturar 23 TN (R-02). Leccion extra: LEER TODAS LAS PAGINAS del escaneo; el CMR/albaran con el peso real suele ser pagina separada de la OC. QUIEN DEBE ALERTAR: (1) la LECTURA aplica D-01 y no toma el peso de la OC; (2) el ARMADOR avisa peso redondo / peso_pendiente; (3) el VALIDADOR se puede sumar. Defensa en capas, no un solo control.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "FORESA (y general)",
+   "campo": "reparto (doble destino)",
+   "regla": "DOBLE DESTINO (D-08): cuando un camion entrega la MISMA carga en DOS destinos, se arma UN SOLO albaran por la carga COMBINADA (suma de pesos) al destino/zona que tiene tarifa, MAS una linea con codigo REP (cantidad 1, precio 90,00 por defecto) FUERA de la base de indexacion. NO se factura un minimo 23 por cada destino ni se parte en dos albaranes. Confirmado Julio 03-04/11 (juego Pablo Carles: FORESA Caldas->Valencia, Enguera 11.860 + Alacuas 11.720 = 23.580 kg -> 1 albaran 23,580 TN x 64,04 + linea REP cantidad 1 precio 90). El codigo Gesruta de la linea de reparto es 'REP'. En el armador: raw con 'reparto': <importe> -> lineas.reparto {concepto REP, cantidad 1, precio}; la indexacion se calcula solo sobre el porte.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "FORESA / STOCKMEIER / TERQUIMSA",
+   "campo": "cliente (planta cargadora)",
+   "regla": "STOCKMEIER QUIMICA y TERQUIMSA (y en general las plantas que cargan materia prima destinada a FORESA en Caldas) NO son clientes: son PLANTAS CARGADORAS de material para nuestro cliente FORESA. El viaje de entrada a Foresa Caldas (ej Acetato de Vinilo Tarragona->Caldas) se factura a FORESA (cod 1), NO a Stockmeier. Tarifa FORESA TARRAGONA->CALDAS DE REIS = 72,36 EUR/TN (tabla 'Cualquiera'; historico tiene Acetato de Vinilo). P IVA 21, idx G por linea (Caldas no es Orember). Correccion a la 1a lectura del 03/11 que puso Stockmeier como cliente nuevo: era planta cargadora. Regla general = como TEPSA/Sevitrade/Diversey: el punto de carga NO es el cliente.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "QUIMIDROGA",
+   "campo": "tarifa (cascada por provincia)",
+   "regla": "QUIMIDROGA desde Barcelona a un PUEBLO de Galicia que no tiene tarifa propia -> se usa la tarifa de su PROVINCIA (cascada). Galicia (Pontevedra y Coruna) desde Barcelona = 79,71 EUR/TN. Confirmado 03/11: Barcelona->PORRINO (Pontevedra) = 79,71; Barcelona->PADRON (A Coruna) = 79,71. Se cargan en tarifas-confirmadas-julio.json. Aplica el minimo 23 TN si el peso real es menor. P IVA 21 (Quimidroga espanola).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "THEC",
+   "campo": "empresa/cabecera (PROVE)",
+   "regla": "Un viaje realizado por THEC (Transportes Hnos. Estevez Casal) se carga EN EL PERFIL DE TRANSLIQUIDOS ESTEVEZ: la EMPRESA SIGUE SIENDO TLE (0006). La diferencia es SOLO en la pantalla 'Entrada de Viajes': (1) en el campo CABEZA se escribe la palabra 'PROVE' en lugar del codigo de la tractora; (2) al lado, en MATRICULA, se digita la matricula COMPLETA de la tractora (no autocompleta); (3) el campo REMOLQUE (codigo) se deja VACIO y al lado se digita la MATRICULA COMPLETA del remolque; (4) se agrega el campo PROVEEDOR = '5' (codigo de THEC; es el UNICO campo extra). De ahi en mas el/los albaran(es) se cargan NORMAL. En orden.json: empresa='TLE', cabecera.cabeza='PROVE', cabecera.verificar.matricula y .remolque = matriculas completas, cabecera.proveedor='5'. Disparador en el armador: que el raw traiga 'proveedor'. KM Y COSTOS: van VACIOS (confirmado Julio 04/11) -> el armador deja km.cargar:false y el bot NO carga ni km ni gastos/dietas. NOTA: THEC tambien tiene su PROPIO perfil en Gesruta (a definir semanas mas adelante); esta regla es para cuando el servicio de THEC se carga desde el perfil de TLE.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-03",
+   "por": "Julio",
+   "cliente": "FORESA",
+   "campo": "destino NEFAB (tarifa especial)",
+   "regla": "NEFAB (NEFAB PONTEV. SL, cod Gesruta NEFAB) es un punto de DESCARGA que es CLIENTE de Foresa y tiene TARIFA ESPECIAL (FORESA Caldas->NEFAB 9,60 EUR/TN). PONTECALDELAS es solo la LOCALIDAD donde esta Nefab, NO un sinonimo del punto: puede haber otras descargas en Pontecaldelas con otra tarifa. Por eso el destino de un albaran a Nefab es NEFAB (no 'Pontecaldelas'), y NO se debe aliasar Pontecaldelas -> Nefab. Alias validos del punto: 'NEFAB', 'NEFAB PONTEVEDRA'.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-05",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "resiliencia de carga (dato puntual faltante vs aborto)",
+   "regla": "El bot ABORTA la carga de un viaje SOLO si no puede cargar los DATOS BASICOS del viaje (la cabecera: matricula/chofer que no se pueden dar de alta en Gesruta). Un DATO PUNTUAL faltante -tarifa, peso/TN, % de indexacion, o un codigo de punto- NUNCA aborta ni deja el albaran como 'Pedido' sin lineas: se cargan TODAS las lineas posibles y se deja vacio SOLO ese campo, para que el humano complete un unico dato (no el viaje entero). En orden.json esto se refleja asi: tarifa_pendiente:true -> lineas.porte con 'precio' en null (y la 'cantidad' de la indexacion en null), resto cargado; peso_pendiente:true -> lineas.porte con 'cantidad' (TN) en null, resto cargado; codigo de punto en null -> se carga el resto del albaran y se deja ese campo vacio. CAMBIO 05/11 respecto al modelo viejo ('porte null -> albaran queda Pedido, no abrir Lineas'): ahora la linea SIEMPRE se emite con null solo en el campo que falta. El armador implementa esto emitiendo las lineas siempre (campo faltante = null); ver docs/pedido-bot-carga-resiliente.md secciones 3 y 3 bis.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-06",
+   "por": "Julio",
+   "cliente": "CLAVO FOOD FACTORY",
+   "campo": "facturacion por km (cliente FRIGOS)",
+   "regla": "CLAVO FOOD FACTORY, S.A. (CIF A49012339, fabrica en Tordesillas; cod Gesruta cliente 4) es el PRIMER cliente que se factura POR KILOMETRO, no por TN. Importe del tramo = KM con carga x tarifa EUR/km. NO aplica minimo 23 TN, NO hay tonelaje. INDEXACION: CLAVO SI lleva, igual que FORESA -modalidad AGREGADA: NO por albaran, sino UNA sola linea en el momento de FACTURACION sobre el acumulado del periodo, concepto G (nacional); % MENSUAL (agosto 0,0766, septiembre 0,1370, OCTUBRE pendiente). La TARIFA la resuelve el armador por corredor/sentido (NO se teclea del talon; el calculo manuscrito del talon es verificacion): SALIDA (distribucion centro/norte, corredor Tordesillas<->Madrid) = 1,52 EUR/km vigente oct-2026 (historico 1,44->1,48->1,52); RETORNO / backbone Galicia (Tordesillas<->Caldas de Reis y retornos a base) = 1,31 EUR/km (historico 1,24->1,27->1,31); los fijos (Cercanias tipo C, local; y Tordesillas-Reinosa tipo U) son valores MENSUALES de la solapa del Excel -OCTUBRE 2026: Cercanias=212, Reinosa=315; enero 206/306-. Manda la tarifa mas reciente. El SENTIDO (columna L del Excel) lo DERIVA el armador de origen/destino/km (formula de Julio 06/11): km<110 -> C (cercanias); origen/destino Tordesillas<->Reinosa -> U; destino con 'Caldas' -> R; origen con 'Caldas' o 'Tordesillas' -> S; destino con 'Tordesillas' -> R. Importe fijo U/C se carga en Gesruta como um UN, cantidad 1, precio=fijo (confirmado pantalla Reinosa 315,00). El % de indexacion de OCTUBRE es provisorio 0,0915 (prueba de Julio 06/11; reemplazar por el real). Una ficha/parte entera = UN viaje de Gesruta con N albaranes (confirmado viaje 00051053: 8 tramos, total Ingr/Bnf 3.802,26). EN GESRUTA (confirmado con pantallas 06/11): empresa 0006 TLE; linea de albaran Cdgo 'P' concepto PORTES NACIONALES, UM 'TN' (cosmetico: el numero es KM), Cantidad = km con carga, Precio = EUR/km, Iva 21, Importe = cant x precio (ej 764 x 1,52 = 1.161,28); Origen/Destino por codigo de punto (CALDAS DE REIS=1, TORREJON=9735). Multi-punto (Julio 06/11) -> campos SEPARADOS de Gesruta: Campo1 = TODOS los puntos de la CARGA (origenes), con Origen=1er punto de la carga; Campo2 = TODOS los puntos del REPARTO (destinos), con Destino=ultimo punto del reparto; cada lista abreviada (<=19 caracteres para que entre en la factura). En el Excel la columna Origen/Destino lleva la lista completa unida con '+'. Multi-reparto = 1 albaran con el km TOTAL del viaje; CLAVO NO lleva linea REP (eso es FORESA). Form KILOMETROS = 1 apunte por viaje: Km carga = km total con carga (= Cantidad del porte) y Km vacio (NO por segmento). THEC (empresa HEC en el Excel) -> CORRECCION 10/11: un viaje de CLAVO con chofer THEC NO usa PROVE; se carga en el PERFIL THEC de Gesruta (empresa THEC, cabecera NORMAL con el codigo de tractora, SIN campo proveedor, km normales). El modelo PROVE (empresa TLE, cabeza PROVE, proveedor 5, km vacios) sigue SOLO para los clientes quimicos, NO para CLAVO. El armador fuerza empresa THEC + cabecera normal cuando el viaje es CLAVO y hay chofer THEC. NO se cargan a Gesruta (por ahora, Julio 06/11): palets, dietas, gasoil, adblue, otros gastos (son control interno del Excel). La columna 'GesR' del Excel = marca de 'ya cargado en Gesruta'. Detalle completo y pendientes en docs/cliente-CLAVO-frigos.md.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-11",
+   "por": "Julio",
+   "cliente": "TRANSTAMBRE (y cualquier OC con precio cerrado)",
+   "campo": "tarifa/indexacion (tarifa cerrada por OC)",
+   "regla": "TARIFA CERRADA: cuando la ORDEN DE CARGA/FLETE fija su PROPIO precio y su PROPIO % de INDEXACION (tipico de viajes intermediados por un BROKER como TRANSTAMBRE), se RESPETAN la tarifa y el indice de la OC POR ENCIMA de la tabla y del factor del grupo. El % de la OC se carga como el FACTOR de la linea de indexacion (concepto G nacional / GPT internacional segun nacionalidad del cliente). En el armador: el raw del albaran lleva 'idx_pct': <decimal> (ej 0,1553 = 15,53%; 0,1597 = 15,97%) y el armador usa ESE factor en vez del de la tabla; si ademas no hay tarifa de la ruta, el porte queda tarifa_pendiente y se carga el precio A MANO segun la OC. REFERENCIA de los viajes TRANSTAMBRE: el campo 'Referencia de pedido' de la OC; si ese campo trae una INSTRUCCION en vez de un numero (ej 'TRANSTAMBRE + MATRICULAS + NOM APELL Y DNI'), usar el Nº de albaran/carta de porte de la CARGA. Confirmado lote 11/11: Transtambre Tarragona->Porriño ALCOHOL (idx 15,53%, ref TQ5603360) y Teixeiro->Altorricon bioetanol/ACEITE DE MAIZ (precio 56 EUR/TN + 15,97% idx; ref 319574 = albaran Bioetanol Galicia). DISCRECION COMERCIAL Transtambre: la carta de porte puede emitirse con un destino distinto (ej Mengibar) del REAL (Altorricon); para facturar vale el transporte REAL (origen/destino de la OC), no la ficcion documental. Julio verbatim: 'Tarifa cerrada, respetar tarifa e index informada en OC. En la OC de Transtambre muestra Referencia de pedido para utilizar como referencia.'",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-11",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "cabecera/cabeza (por viaje)",
+   "regla": "La CABEZA (tractora) es POR VIAJE, no por juego: cuando una ficha tiene VARIOS viajes (por cambio de tractora/remolque, regla 2026-10-14), cada viaje lleva SU cabeza. El armador la deriva por viaje con cabezaDeViaje(): prioridad cabeza explicita del viaje -> cabeza de FLOTA por matricula (respetando el CERO A LA IZQUIERDA, regla 03/11) -> digitos iniciales de la matricula -> cabeza del juego. En orden.json cabecera.cabeza se setea por viaje; el validador valida la cabeza EFECTIVA de cada viaje (v.cabeza||raw.cabeza) contra su matricula. Confirmado por Julio: 'Cabeza por-viaje en el armador'. Caso: shuttle FORESA Orember con 2 tractoras distintas en la misma ficha.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-12",
+   "por": "Julio",
+   "cliente": "TODOS",
+   "campo": "destino (empresa sin ruta propia -> provincia)",
+   "regla": "Cuando el destino es una EMPRESA (razon social 'XXX, S.A./S.L./Lda') que NO tiene ruta propia en el tarifario, se carga el destino en su PROVINCIA/ZONA (que si tiene tarifa), leyendo la DIRECCION COMPLETA del albaran. Es la misma cascada de siempre (Enguera->Valencia, Finsa Teruel->Teruel). OJO: el 'fallback por provincia' del armador es por TOKEN del nombre; un destino como 'URSA IBERICA, S.A.' puede matchear por el token basura 'S.A.' contra CUALQUIER empresa (Clariant/Termolan/...) y agarrar una tarifa equivocada (caso real: Caldas->URSA cayo a Caldas->Termolan 28,89). Por eso NO se deja el literal 'EMPRESA, S.A.' como destino: se pone la PROVINCIA. Confirmado por Julio 12/11 (la logica de cascada esta bien; el error era no leer la direccion completa). Caso: FORESA Caldas->URSA Iberica (El Pla de Santa Maria, Tarragona) -> destino TARRAGONA (cod T) = Caldas->Tarragona 72,36 DIRECTA. NO tocar la precedencia del armador por esto.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-12",
+   "por": "Julio",
+   "cliente": "FORESA / TRANSTAMBRE",
+   "campo": "quien genera el viaje -> ref/cliente/tarifa/idx",
+   "regla": "Para un viaje de ENTRADA a FORESA (ej TERQUIMSA/STOCKMEIER Tarragona->Caldas, acetato de vinilo), lo que define REFERENCIA, CLIENTE, TARIFA e INDEXACION es QUIEN GENERA/GESTIONA el viaje, que se ve en el REMITENTE DEL MAIL de la OC: (a) si el pedido lo genera FORESA (entrega a Foresa, mail de Foresa) -> todo es de FORESA: ref = la de FORESA (Nro 2008xxxx) o la del albaran, cliente FORESA, tarifa e idx de FORESA. (b) solo si TRANSTAMBRE gestiona o solicita el viaje (a veces le da viajes a TLE) -> se usa la ref de la OC de Transtambre (TQxxxxxxx), y la tarifa/idx de Transtambre (sea tarifa cerrada o por TN). Confirmado Julio 12/11: Pablo Carles Tarragona->Caldas lo genera FORESA -> ref 200859030 (NO la TQ de la OC de Transtambre que venia en el sobre). Aunque aparezca una OC de Transtambre en el escaneo, no alcanza: lo que manda es quien genera el pedido.",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-12",
+   "por": "Julio",
+   "cliente": "QUIMIDROGA",
+   "campo": "destino (TMG dos plantas)",
+   "regla": "TMG Tecidos (destino de MEXIFLEX desde Miranda de Ebro) tiene DOS plantas en el norte de Portugal: BRAGA (Ponte GMR) y V.N. FAMALICAO (Sao Cosme do Vale, cod Gesruta FAMAL). VERIFICAR EN EL CMR a cual descarga; Sao Cosme do Vale = Famalicao, no Braga. Tarifa igual en ambas (misma zona): Miranda->Braga = Miranda->Famalicao = 61,65 EUR/TN, nacional P IVA 21 (Quimidroga factura PT nacional), con minimo 23 TN. Confirmado Julio 12/11 (viajes Aboy 713899 y Asensi 713900 descargaban en Famalicao, se habia puesto Braga).",
+   "estado": "confirmada"
+  },
+  {
+   "fecha": "2026-11-18",
+   "por": "Julio",
+   "cliente": "*",
+   "campo": "cabecera/matricula",
+   "regla": "Cruzar SIEMPRE la matricula leida contra el padron de flota (catalogo/flota.json). Si la lectura no esta en el padron, NO usarla tal cual: es casi seguro una mala lectura; re-leer la matricula del documento (ampliar) y buscar la tractora real. Caso 18/11: lei '4342LBB' (inexistente); la correcta es 7347LBB (Rodrigo Perez Bahamonde). El armador ya avisa 'matricula NO esta en el padron'; ese aviso = re-leer, no cargar con la inventada."
+  },
+  {
+   "fecha": "2026-11-18",
+   "por": "Julio",
+   "cliente": "*",
+   "campo": "origen/destino",
+   "regla": "Antes de poner un punto en null/REVISAR, BUSCARLO en Gesruta por nombre/alias: muchos existen y no los resolvi. Confirmados 18/11 y agregados a puntos-alta: MAGNE (Magne, FR, cod MAGNE), GRAND QUEVILLY (Rouen area, FR, cod 9741), MEJORADA DEL CAMPO (cod MEJOR), LANDIM (PT, cod LANDI; NO confundir con LANDIN). Regla general: el destino/origen suele existir aunque el literal del documento no matchee exacto."
+  },
+  {
+   "fecha": "2026-11-18",
+   "por": "Julio",
+   "cliente": "FORESA",
+   "campo": "destino/tarifa",
+   "regla": "FORESA Caldas de Reis -> Santo Tirso (Termolan, Portugal): la tarifa esta guardada como CALDAS -> TERMOLAN, S.A. (punto cod TERMO). Usar el punto TERMOLAN (porta la tarifa), no el generico 'SANTO TIRSO' (que no tiene tarifa). Mismo patron que URSA->Tarragona: usar el punto que lleva la tarifa. Hacer las busquedas correspondientes antes de marcar tarifa_pendiente."
+  },
+  {
+   "fecha": "2026-11-18",
+   "por": "Julio",
+   "cliente": "FORESA",
+   "campo": "facturacion",
+   "regla": "SHUTTLE metanol FORESA Villagarcia->Caldas (entrada de metanol a FORESA): NO se factura un albaran por viaxe. Se SUMAN las cantidades cargadas por DIA (varios albaranes del mismo dia, SIN numero de referencia) y se carga UNA sola linea de albaran: cantidad = total TN sumado del dia, precio = tarifa de la ruta (3,68 EUR/TN confirmado). Ademas generar un archivo para copiar/pegar en Excel (como FRIGOS): por tractora, filas por dia, columnas con las cantidades de cada albaran del dia + TOTAL del dia + total mes. Ver docs/cliente-FORESA-shuttle-metanol.md."
+  },
+  {
+   "fecha": "2026-11-18",
+   "por": "Julio",
+   "cliente": "FORESA",
+   "campo": "referencia",
+   "regla": "FORESA metanol (y entregas con OC): si el juego trae la ORDEN DE CARGA (OC), la referencia es el Nro de la OC (formato 26xxxxx, p.ej. Sabaris Villagarcia->Valladolid ref 2614182). SOLO si NO hay OC se usa el Nro de ALB del albaran de entrega (formato 2600xxx). (El shuttle metanol Villagarcia->Caldas va SIN referencia, por la regla de suma diaria.)"
   }
+ ],
+ "_fuente_tarifas": {
+  "_nota": "Donde vive cada tipo de precio/punto. correcciones-julio.json NO duplica tarifas: solo guarda REGLAS/DECISIONES. Limpieza del solape 2026-10-09.",
+  "tarifa_por_TN_o_viaje": "datos/gesruta/tarifarios/ (RNM y QUIMIDROGA tienen archivo propio; resto -> tarifario-general). Prioridad cliente > general, EUR/TN por defecto. Ver su README.",
+  "cascada_o_analogia": "catalogo/tarifa-por-analogia.json = destino real sin fila propia -> ruta de la que se toma el precio. Requiere confirmado=true de Julio; sin confirmar NO se factura.",
+  "identidad_de_punto": "catalogo/alias-empresa-punto.json = lo que trae el doc (razon social/direccion) -> punto Gesruta. _pendientes_punto_faltante = puntos a dar de alta en Gesruta.",
+  "historico_facturacion": "datos/gesruta/linea-facturacion-2026-08-26.csv = precios reales ya facturados (de ahi salen FORESA Caldas->Orember 13,85 COLA, Caldas->Tordera 72,36, etc.).",
+  "precios_sin_tarifario": "Clientes sin tarifario propio y con precio FIJO confirmado por Julio (hoy solo FORESTAL Mugardos->Castellon 2.025) viven como REGLA en 'reglas', no aqui."
+ },
+ "correcciones_puntuales": [
+  {
+   "fecha": "2026-09-09",
+   "juego": "Pablo Carles 24/08 viaje 1 FORESA",
+   "campo": "fecha_carga",
+   "valor": "2026-08-19",
+   "nota": "La ficha se leia 15/8 (mala lectura); la correcta es 19/8 como dicen los documentos."
+  },
+  {
+   "fecha": "2026-11-12",
+   "juego": "Nuno Silva 22/10 FENOL (ref 200858712)",
+   "campo": "material/tarifa",
+   "valor": "FENOL FUNDIDO (cod FENOL) -> 83,75 EUR/TN",
+   "nota": "Faltaba el material. Cargado el material FENOL FUNDIDO, la tabla aplica la tarifa ESPECIFICA por material FORESA Huelva->Caldas FENOL FUNDIDO = 83,75 (no la generica 'Cualquiera' 74,25 que se habia usado). El material define la tarifa (como FINCAT!=COLA). Confirmado por Julio (lo corrigio en Gesruta)."
+  },
+  {
+   "fecha": "2026-11-12",
+   "juego": "Pedro Fraga 02/11 shuttle Orember (ref 2036041, 2036058)",
+   "campo": "km_vacio",
+   "valor": "123 (no 124)",
+   "nota": "Dos tramos estaban en 124 por reconstruccion; la ficha (observaciones de las 4 hojas) dice 123. Secuencia real de km vacio por tramo: 123,124,123,123,123,124,124,124,123,144. km_vacio de autonomo va a Gastos, por eso importa el valor exacto."
+  }
+ ],
+ "codigos_gesruta": {
+  "_nota": "Gesruta carga TODO por codigo, no por texto tecleado. Estos son los codigos a usar en la planilla. Fuente: datos/gesruta (clientes 321/403 de linea-facturacion col cli_codcli; cargas por literal; puntos de puntos-geograficos; conceptos de col cli_codcon).",
+  "clientes": {
+   "FORESA IND.QUIMICAS DEL NOROESTE, S.A.": "1",
+   "FORESTAL DEL ATLANTICO, S.A.": "321",
+   "QUIMIDROGA, S.A.": "403"
+  },
+  "cargas": {
+   "_nota": "CATALOGO COMPLETO de materiales (codigo;carga;descripcion) en datos/gesruta/materiales.csv (559 materiales, Julio 2026-10-09). El codigo puede ser numerico (COLA=1) o alfanumerico (VINKA-PLAST=VINKA). Buscar siempre el codigo ahi para no tener que 'BUSCAR por nombre' en Gesruta. Los de abajo son los de uso frecuente.",
+   "COLA": {
+    "cod": "1",
+    "aplica_a": "FORESTAL cola/resina (Forplas), FORESA RES, y cualquier cola/resina (hay RESINA=23 aparte, pero FORESA->Tordera se factura como COLA)"
+   },
+   "SOSA": {
+    "cod": "51",
+    "aplica_a": "sosa caustica (hidroxido sodico), ej RNM"
+   },
+   "VINKA-PLAST": {
+    "cod": "VINKA",
+    "aplica_a": "QUIMIDROGA Vinka-Plast QD 390"
+   },
+   "MONOETILENGLICOL": {
+    "cod": "MONOE",
+    "aplica_a": "HELM / Quimidroga monoetilenglicol"
+   },
+   "FORMOL": {
+    "cod": "3"
+   },
+   "METANOL": {
+    "cod": "5"
+   },
+   "RESINA": {
+    "cod": "23"
+   },
+   "POTASA CAUSTICA": {
+    "cod": "POTASA"
+   }
+  },
+  "puntos": {
+   "MUGARDOS": "MUGAR",
+   "BARCELONA": "B",
+   "AVEIRO": "AVEIR",
+   "CASTELLON": "CASTE (confirmado por Julio 07/10; el duplicado CS no se usa)"
+  },
+  "conceptos_codcon": {
+   "P": "PORTES NACIONALES",
+   "PI": "PORTES INTERNACIONALES (IVA 0)",
+   "G": "INDEXACION GASOLEO (factor decimal en precio, ej 0.1517 = 15,17%, sobre porte neto)",
+   "G1Q": "INDEXACION GASOLEO 1a QUINCENA",
+   "GPT": "INDEXACION GASOLEO PORTUGAL",
+   "DUO": "DESCUENTO DUO TRAILER (-0.05 = -5%), solo si el viaje es duotrailer (raro)"
+  },
+  "indexacion_gasoleo": {
+   "_nota": "Factor por GRUPO de cliente y QUINCENA. Tabla completa en datos/gesruta/indexacion-gasoleo.json (y xlsx suplemento-gasoleo-2026-10-07.xlsx). Se aplica como linea concepto G sobre el porte neto, segun la FECHA DE CARGA del viaje. Grupos: FORESA-BRESFOR, HELM, QUIMIDROGA, OTROS, AGENCIA, AUTONOMOS. Forestal -> grupo OTROS (pero si la tarifa es precio fijo con indexacion incluida, NO se agrega linea G).",
+   "QUIMIDROGA": {
+    "2026-09 (01-30)": 0.137,
+    "2026-10 (01-31)": 0.145
+   },
+   "OTROS": {
+    "2026-09": 0.137,
+    "2026-10": 0.145
+   }
+  }
+ }
 }
