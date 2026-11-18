@@ -1,0 +1,152 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "PROVE",
+        "verificar": {
+          "matricula": "8382JJS",
+          "remolque": "R3487BCD",
+          "chofer": "JOSE J. FERREIRA GOLDAR"
+        },
+        "tipo": "propio",
+        "proveedor": "5"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2036033",
+          "salida": "04/11/2026",
+          "llegada": "04/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,580",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "340,43",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "NEFAB",
+            "esperado": "NEFAB PONTEV. SL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2037340",
+          "salida": "05/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,260",
+              "precio": "9,60",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "242,50",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "PROVE",
+        "verificar": {
+          "matricula": "8382JJS",
+          "remolque": "R6292BCW",
+          "chofer": "JOSE J. FERREIRA GOLDAR"
+        },
+        "tipo": "propio",
+        "proveedor": "5"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "2",
+            "esperado": "VILLAGARCIA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "",
+          "salida": "05/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "26,320",
+              "precio": "3,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "96,86",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
