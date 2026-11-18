@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - entrada/20261118121814.pdf (6 pags: ficha THEC + CMR Orember + bascula FINSA + CMR Puente Caldelas/NEFAB + bascula NEFAB + ALB metanol). Jose J. Ferreira Goldar (THEC, NO en flota TLE), tractora 8382JJS. THEC + quimico FORESA => modelo PROVE (empresa TLE, proveedor 5, cabeza='PROVE', km/costos vacios). V1: FORESA Caldas->Orember (Finsa Orember, San Ciprian) COLA RES 2090, ref 2036033 (2o nro CMR 5030298879/2036033), peso CMR 24580 (bascula FINSA neto 24540), remolque R3487BCD. V2: FORESA Caldas->Puente Caldelas (NEFAB Pontevedra) COLA RES 2130, ref 2037340 (2o nro CMR 5030299256/2037340), peso CMR 25260 (bascula NEFAB neto 25240), remolque R3487BCD. V3: SHUTTLE metanol Villagarcia->Caldas (cisterna R6292BCW): ficha dice '2 VIAXES' pero solo hay 1 albaran (ALB 2600003513, NETO 26320, 05/11); nota ficha 'AVERIA ROTURA MANGUITO ANTICONGELANTE' => 2o viaxe abortado. Se suma lo cargado por dia: 05/11 = 26320 kg x 3,68, sin ref. REVISAR CON JULIO si el 2o viaxe debe sumarse. shuttle_cantidades -> excel_metanol.",
+  "_nota": "CARGA OFICIAL - entrada/20261118121814.pdf (6 pags: ficha THEC + CMR Orember + bascula FINSA + CMR Puente Caldelas/NEFAB + bascula NEFAB + ALB metanol). Jose J. Ferreira Goldar (THEC, NO en flota TLE), tractora 8382JJS. THEC + quimico FORESA => modelo PROVE (empresa TLE, proveedor 5, cabeza='PROVE', km/costos vacios). V1: FORESA Caldas->Orember (Finsa Orember, San Ciprian) COLA RES 2090, ref 2036033 (2o nro CMR 5030298879/2036033), peso CMR 24580 (bascula FINSA neto 24540), remolque R3487BCD. V2: FORESA Caldas->Puente Caldelas (NEFAB Pontevedra) COLA RES 2130, ref 2037340 (2o nro CMR 5030299256/2037340), peso CMR 25260 (bascula NEFAB neto 25240), remolque R3487BCD. V3: SHUTTLE metanol Villagarcia->Caldas (cisterna R6292BCW): 2 viaxes el 05/11 (ALB 2600003513 hora 12:35 + ALB 2600003516 hora 15:47, NETO 26320 c/u). El escaneo original solo traia 1 albaran por la averia ('ROTURA MANGUITO ANTICONGELANTE'); Julio aporto el 2o albaran (2600003516) el 18/11. Suma diaria 05/11 = 52640 kg x 3,68, sin ref. shuttle_cantidades -> excel_metanol.",
   "escaneo": "20261118121814.pdf",
   "empresa": "TLE",
   "proveedor": "5",
@@ -19,7 +19,7 @@
       "matricula": "8382JJS",
       "remolque": "R6292BCW",
       "albaranes": [
-        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-05", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 26320, "km_pendiente": true, "shuttle_cantidades": [26320] }
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-jorge-ferreira-2026-11-05", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 52640, "km_pendiente": true, "shuttle_cantidades": [26320, 26320] }
       ]
     }
   ]

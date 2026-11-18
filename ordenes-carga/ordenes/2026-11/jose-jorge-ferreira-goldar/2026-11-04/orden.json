@@ -129,14 +129,14 @@
           "lineas": {
             "porte": {
               "um": "TN",
-              "cantidad": "26,320",
+              "cantidad": "52,640",
               "precio": "3,68",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": "96,86",
+              "cantidad": "193,72",
               "factor": "0,1553",
               "cargar": false
             }
