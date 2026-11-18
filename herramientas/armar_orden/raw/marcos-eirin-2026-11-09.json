@@ -1,0 +1,31 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118121113.pdf (11 pags: 2 fichas TLE + 3 CMR FORESA->Finsa Orember + 6 albaranes FORESA metanol Villagarcia->Caldas). Marcos Eirin Fernandez (TLE propio), 3729JLH (cabeza 3729). DOS viajes por cambio de cisterna: Viaje1 remolque R7749BDB = 3 entregas FORESA Caldas->Orember (Finsa, San Ciprian) RES->COLA 13,85, dias 9/12/13-11; refs 2038079 (25260), 2038086 (25320), 2038087 (25260) (2o nro del CMR). Viaje2 cisterna R4104BDL = SHUTTLE metanol FORESA Villagarcia->Caldas (entrada de metanol importado a FORESA), 6 viaxes el 10/11; refs = nro ALB del albaran FORESA: 2600003546, 2600003550, 2600003554, 2600003559, 2600003563, 2600003566; pesos neto ~26680 (26700 el 3554). RUTA NUEVA sin tarifa en el sistema -> tarifa_pendiente; REPORTAR a Julio para la tarifa del shuttle Villagarcia->Caldas metanol y confirmar si se factura por viaxe. Odometro 3729JLH. Dietas NO van a Gesruta.",
+  "escaneo": "20261118121113.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-09",
+  "chofer": "MARCOS EIRIN FERNANDEZ",
+  "cabeza": "3729",
+  "viajes": [
+    {
+      "matricula": "3729JLH",
+      "remolque": "R7749BDB",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2038079", "salida": "09/11/2026", "llegada": "09/11/2026", "peso_kg": 25260, "km_inicio": 1080117, "km_fin": 1080241 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2038086", "salida": "12/11/2026", "llegada": "12/11/2026", "peso_kg": 25320, "km_inicio": 1080601, "km_fin": 1080725 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2038087", "salida": "13/11/2026", "llegada": "13/11/2026", "peso_kg": 25260, "km_inicio": 1080848, "km_fin": 1080972 }
+      ]
+    },
+    {
+      "matricula": "3729JLH",
+      "remolque": "R4104BDL",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "2600003546", "salida": "10/11/2026", "llegada": "10/11/2026", "peso_kg": 26680, "km_pendiente": true, "_obs": "shuttle metanol 6 viaxes 10/11, odometro bloque 1080383-1080597 (214 km total, no se puede partir por viaxe)" },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "2600003550", "salida": "10/11/2026", "llegada": "10/11/2026", "peso_kg": 26680 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "2600003554", "salida": "10/11/2026", "llegada": "10/11/2026", "peso_kg": 26700 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "2600003559", "salida": "10/11/2026", "llegada": "10/11/2026", "peso_kg": 26680 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "2600003563", "salida": "10/11/2026", "llegada": "10/11/2026", "peso_kg": 26680 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "2600003566", "salida": "10/11/2026", "llegada": "10/11/2026", "peso_kg": 26680 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118121228.pdf (4 pags: ficha TLE 2 viajes + CMR FORESA/Finsa Orember + bascula FINSA + CMR FORESA/URSA). Jose Enrique Arias (TLE propio), 0275JLC (cabeza 0275). DOS viajes porque CAMBIA el remolque: V1 remolque R3487BCD, V2 remolque R1943BBL (habitual). V1: FORESA Caldas->Orense (Finsa Orember, San Ciprian de Vinas) RES 2090->COLA, ref 2035956 (2o nro CMR 7 dig), peso 25520 (CMR carga; bascula descarga Finsa Orember 25480 -> manda carga R-08), carga 06/11, nacional. V2: FORESA Caldas->El Pla de Santa Maria (URSA Iberica, prov. TARRAGONA -el destino porta la tarifa 72,36 como corrigio Julio-) RES 3181->COLA, ref 2038078 (2o nro CMR 7 dig), peso 23780 (CMR), carga 09/11, nacional. Odometro 0275JLC. Dietas NO van a Gesruta.",
+  "escaneo": "20261118121228.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-06",
+  "chofer": "JOSE ENRIQUE ARIAS",
+  "cabeza": "0275",
+  "viajes": [
+    {
+      "matricula": "0275JLC",
+      "remolque": "R3487BCD",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2035956", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 25520, "km_inicio": 1307439, "km_fin": 1307566 }
+      ]
+    },
+    {
+      "matricula": "0275JLC",
+      "remolque": "R1943BBL",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TARRAGONA", "carga_lit": "COLA", "referencia": "2038078", "salida": "09/11/2026", "llegada": "10/11/2026", "peso_kg": 23780, "km_inicio": 1307692, "km_fin": 1308721 }
+      ]
+    }
+  ]
+}

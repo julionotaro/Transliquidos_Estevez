@@ -1,0 +1,114 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "0275",
+        "verificar": {
+          "matricula": "0275JLC",
+          "remolque": "R3487BCD",
+          "chofer": "JOSE ENRIQUE ARIAS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2035956",
+          "salida": "06/11/2026",
+          "llegada": "06/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,520",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "353,45",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "inicio": "1307439",
+            "fin": "1307566",
+            "carga": "127"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "0275",
+        "verificar": {
+          "matricula": "0275JLC",
+          "remolque": "R1943BBL",
+          "chofer": "JOSE ENRIQUE ARIAS"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "T",
+            "esperado": "TARRAGONA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2038078",
+          "salida": "09/11/2026",
+          "llegada": "10/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,780",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.720,72",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "1307692",
+            "fin": "1308721",
+            "carga": "1029"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
