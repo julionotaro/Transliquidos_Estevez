@@ -1,0 +1,33 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118123938.pdf (6 pags: 2 hojas de ficha THEC + 4 CMR FORESA->Finsa Orember). Juan L. Giz (THEC, NO en flota TLE), tractora 8168JSD (ficha manuscrita decia 8168NSD; el CMR impreso dice 8168JSD -> uso el impreso; cabeza 8168). THEC + quimico FORESA => modelo PROVE (empresa TLE, proveedor 5, cabeza='PROVE', km/costos vacios). 4 entregas FORESA Caldas->Orember (Finsa Orember, San Ciprian de Vinas): material ABEIRO 3009 => FINCAT (NO es COLA; tarifa Orember FINCAT 20,16); RES 2061 => COLA (tarifa Orember 13,85). Ref = 2o nro del CMR (20xxxxx). REMOLQUE varia por CMR (la ficha anoto solo R9866BCH): se parte en VIAJES por remolque (precedente Pedro Fraga): PO01372R [2038084, 2038080], R9866BCH [2038081], R3546BBG [2038083]. REVISAR con Julio la particion por remolque (ficha vs CMR). Odometro THEC poco fiable (PROVE deja km vacios).",
+  "escaneo": "20261118123938.pdf",
+  "empresa": "TLE",
+  "proveedor": "5",
+  "fecha_inicio": "2026-11-06",
+  "chofer": "JUAN L. GIZ",
+  "cabeza": "8168",
+  "viajes": [
+    {
+      "matricula": "8168JSD",
+      "remolque": "PO01372R",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2038084", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 25800, "km_pendiente": true },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2038080", "salida": "12/11/2026", "llegada": "12/11/2026", "peso_kg": 25560, "km_pendiente": true }
+      ]
+    },
+    {
+      "matricula": "8168JSD",
+      "remolque": "R9866BCH",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2038081", "salida": "09/11/2026", "llegada": "09/11/2026", "peso_kg": 25260, "km_pendiente": true }
+      ]
+    },
+    {
+      "matricula": "8168JSD",
+      "remolque": "R3546BBG",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "FINCAT", "referencia": "2038083", "salida": "12/11/2026", "llegada": "12/11/2026", "peso_kg": 25140, "km_pendiente": true }
+      ]
+    }
+  ]
+}
