@@ -1,0 +1,22 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118161950.pdf (31 pags: 2 hojas de ficha THEC + 29 albaranes FORESA metanol Villagarcia->Caldas). Oscar Sayans Eirin (THEC, DNI 76864896T; en catalogo/flota-externa.json: 8267JJS->OSCAR SAYANS EIRIN), tractora 8267JJS, cisterna R0721BCF. THEC + quimico FORESA => modelo PROVE (empresa TLE, proveedor 5, cabeza='PROVE', km/costos vacios). SHUTTLE metanol Villagarcia->Caldas: se SUMAN las cantidades por DIA, 1 linea sin ref, total x 3,68 (Julio 18/11) + excel_metanol. 5 DIAS: 02/11 6 viaxes=159060 (ALB 2600003471/73/76/78/80/83); 03/11 6=159020 (3485/87/91/93/95/97); 04/11 6=159080 (3499/3500/01/02/03/04); 05/11 6=159120 (3507/08/10/11/15/18); 06/11 5=132600 (3519/21/23/27/29). Ruta -> procesados/FORESA/Villagarcia-Caldas (Metanol)/.",
+  "escaneo": "20261118161950.pdf",
+  "empresa": "TLE",
+  "proveedor": "5",
+  "fecha_inicio": "2026-11-02",
+  "chofer": "OSCAR SAYANS EIRIN",
+  "cabeza": "8267",
+  "viajes": [
+    {
+      "matricula": "8267JJS",
+      "remolque": "R0721BCF",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-oscar-sayans-2026-11-02", "salida": "02/11/2026", "llegada": "02/11/2026", "peso_kg": 159060, "km_pendiente": true, "shuttle_cantidades": [26520, 26520, 26500, 26520, 26500, 26500] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-oscar-sayans-2026-11-03", "salida": "03/11/2026", "llegada": "03/11/2026", "peso_kg": 159020, "km_pendiente": true, "shuttle_cantidades": [26520, 26480, 26500, 26500, 26520, 26500] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-oscar-sayans-2026-11-04", "salida": "04/11/2026", "llegada": "04/11/2026", "peso_kg": 159080, "km_pendiente": true, "shuttle_cantidades": [26520, 26520, 26500, 26500, 26520, 26520] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-oscar-sayans-2026-11-05", "salida": "05/11/2026", "llegada": "05/11/2026", "peso_kg": 159120, "km_pendiente": true, "shuttle_cantidades": [26520, 26520, 26520, 26520, 26540, 26500] },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "VILLAGARCIA", "destino_lit": "CALDAS DE REIS", "carga_lit": "METANOL", "referencia": "", "archivo": "metanol-oscar-sayans-2026-11-06", "salida": "06/11/2026", "llegada": "06/11/2026", "peso_kg": 132600, "km_pendiente": true, "shuttle_cantidades": [26540, 26520, 26500, 26520, 26520] }
+      ]
+    }
+  ]
+}

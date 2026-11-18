@@ -1,0 +1,219 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "PROVE",
+        "verificar": {
+          "matricula": "8267JJS",
+          "remolque": "R0721BCF",
+          "chofer": "OSCAR SAYANS EIRIN"
+        },
+        "tipo": "propio",
+        "proveedor": "5"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "2",
+            "esperado": "VILLAGARCIA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "",
+          "salida": "02/11/2026",
+          "llegada": "02/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "159,060",
+              "precio": "3,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "585,34",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "2",
+            "esperado": "VILLAGARCIA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "",
+          "salida": "03/11/2026",
+          "llegada": "03/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "159,020",
+              "precio": "3,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "585,19",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "2",
+            "esperado": "VILLAGARCIA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "",
+          "salida": "04/11/2026",
+          "llegada": "04/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "159,080",
+              "precio": "3,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "585,41",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "2",
+            "esperado": "VILLAGARCIA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "",
+          "salida": "05/11/2026",
+          "llegada": "05/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "159,120",
+              "precio": "3,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "585,56",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "2",
+            "esperado": "VILLAGARCIA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "5",
+            "esperado": "METANOL"
+          },
+          "referencia": "",
+          "salida": "06/11/2026",
+          "llegada": "06/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "132,600",
+              "precio": "3,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "487,97",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "cargar": false
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
