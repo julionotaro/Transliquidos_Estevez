@@ -20,32 +20,46 @@ facturados/<AÑO>/<MM-mes de FACTURACIÓN>/<CLIENTE>/<Nº factura>/
 
 ## Procedimiento (Claude nube)
 
-1. **Julio sube** el/los PDF de factura a `facturas-entrada/`.
-2. **Leer la factura** y extraer: cliente, **Nº de factura**, **mes de facturación**
-   y la **lista de referencias** facturadas. (En la primera factura de cada formato,
-   mirar bien dónde está la columna de referencia; no inventar. Si el mes de
-   facturación no es obvio, **preguntar a Julio** — no asumir por la fecha de emisión.)
-3. **Mover** (primero en seco, después aplicar):
+1. **Julio sube** el/los PDF de factura a `facturas-entrada/` (puede ser un único PDF
+   con **todas** las facturas del período, decenas de páginas).
+2. **Correr el orquestador** (primero en seco, después aplicar):
    ```
-   node herramientas/facturar/mover-facturados.js \
-     --cliente <CLIENTE> --factura <Nº> --mes <AAAA-MM> \
-     --refs <ref1,ref2,...> [--factura-pdf facturas-entrada/<archivo>.pdf]
-   # revisar el DRY-RUN; si está bien, repetir con --mover
+   python3 -I herramientas/facturar/procesar-facturas.py facturas-entrada/<archivo>.pdf
+   # revisar el DRY-RUN (cuántos scans por factura, a qué carpeta); si está bien:
+   python3 -I herramientas/facturar/procesar-facturas.py facturas-entrada/<archivo>.pdf --mover
    ```
-   La herramienta, por cada referencia: la busca en el libro maestro
-   (`datos/registro-procesamiento.csv`, columna `referencia`), **mueve** su `pdf_doc`
-   al destino, **actualiza** el `pdf_doc` del registro, deja marca en `observaciones`
-   (`FACTURADO fra <Nº> (<mes>)`) y anota una fila en `datos/facturacion-log.csv`.
-   Es **idempotente** (si ya está en `facturados/`, lo saltea) y **ruidoso** (si una
-   referencia no está en el registro o falta el archivo, **no mueve nada** y lo avisa).
-4. La factura PDF se copia dentro de la carpeta de la factura (`FACTURA-<Nº>.pdf`) y
-   sale de `facturas-entrada/`.
-5. **Validar** (`python3 -I herramientas/validar_carga.py`) y **commitear**: el
-   validador sigue en verde porque `pdf_doc` apunta al nuevo lugar (el archivo existe).
+   Lee el PDF (capa de texto), separa **cada factura** (cliente, Nº, **Fecha** de
+   facturación, referencias), parte sus páginas en un `FACTURA-<Nº>.pdf`, cruza las
+   referencias contra el libro maestro y, por cada factura con scans nuestros, llama a
+   `mover-facturados.js`. **Mes de facturación = mes del campo "Fecha" de la factura**
+   (NO "Emisión"). Reporta aparte: facturas con refs que no son nuestras, facturas
+   **sin referencia** (CLAVO por km, o clientes que facturan sin nº de ref) y anomalías.
+3. `mover-facturados.js` (lo llama el orquestador, o se corre suelto para una factura),
+   por cada referencia: la busca en `datos/registro-procesamiento.csv` (columna
+   `referencia`), **mueve** su `pdf_doc` al destino, **actualiza** el `pdf_doc` del
+   registro, deja marca en `observaciones` (`FACTURADO fra <Nº> (<mes>)`) y anota en
+   `datos/facturacion-log.csv`. Idempotente (si ya está en `facturados/`, lo saltea) y
+   ruidoso (ref que no está o archivo faltante → **no mueve nada** y avisa).
+   ```
+   node herramientas/facturar/mover-facturados.js --cliente <C> --factura <Nº> \
+     --mes <AAAA-MM> --refs r1,r2 [--factura-pdf <ruta>] [--mover]
+   ```
+4. **Validar** (`python3 -I herramientas/validar_carga.py`) y **commitear**: el validador
+   sigue en verde porque `pdf_doc` apunta al nuevo lugar (el archivo existe). Vaciar
+   `facturas-entrada/`.
+
+> ⚠️ **NO borrar scans a mano de `procesados/` al facturar.** Borrarlos deja el registro
+> apuntando a archivos inexistentes (validador en rojo) y pierde el respaldo. Siempre
+> **mover** con la herramienta (el 18/11 pasó: 49 scans borrados a mano se restauraron de
+> git y se archivaron con el flujo).
 
 ## Notas
 - Una factura es de **un** cliente: si las referencias apuntan a clientes distintos
   en `procesados/`, la herramienta para y avisa (posible error de refs).
+- **Rectificativas:** las facturas rectificativas corrigen una factura previa, no traen
+  referencias de viaje (0 scans) y referencian el Nº de la factura original → hoy el
+  parser las agrupa con esa factura. No afecta scans ni registro (mejora futura: detectar
+  su propio Nº).
 - **CLAVO (FRIGOS)** se factura distinto (Excel por km, sin `referencia` en el
   registro): si hace falta archivar sus talones facturados, se mueven por nombre de
   archivo, no por referencia (pendiente de definir con Julio cuando surja).
