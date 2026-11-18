@@ -1,138 +1,68 @@
-[18:25:06.019] ==== ROBOT VIAJES viajes-2 ====
-[18:25:06.020] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-11\jose-carlos-rodriguez\2026-11-02\orden.json
-[18:25:06.021] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-11\jose-carlos-rodriguez\2026-11-02\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
-[18:25:06.046] Empresa='TLE' | 1 viaje(s)
-[18:25:07.756] [pid] Gesruta PID=13212 -> se IGNORAN ventanas de otros procesos (p.ej. recordatorios de Outlook, titulados 'N aviso(s)')
-[18:25:07.757] ########## VIAJE 1/1  cabeza='5132'  tipo=propio  (6 albaranes) ##########
-[18:25:07.758] --- NUEVO VIAJE (hoja blanca sola 'Anadir viaje nuevo', NO la de editar) ---
-[18:25:10.292] --- CABECERA: cabeza 5132 (necesita editar=False) ---
-[18:25:16.053]   leer Matricula tractora -> '5132LMC'
-[18:25:18.151]   leer Matricula remolque -> 'R9520BCV'
-[18:25:20.251]   leer Chofer codigo      -> '19'
-[18:25:20.252]   CABECERA OK (tractora=5132LMC remolque=R9520BCV chofer_cod=19)
-[18:25:20.253] --- Abrir albaran 1/6 (Anadir nuevo) ---
-[18:25:25.696]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[18:25:26.897] ##### ALBARAN idx 0 : CLAVO FOOD FACTORY, S.A. #####
-[18:25:29.157]   -> FechaSalida: '02/11/2026'
-[18:25:31.401]   -> FechaLlegada: '03/11/2026'
-[18:25:33.689]   -> Cliente: '4'
-[18:25:42.558]   -> Origen (sobre seleccion): '1'
-[18:25:46.272]   -> Destino: 'QUER'
-[18:25:49.829]   -> Carga: '6'
-[18:25:52.286]   clic solapa Lineas
-[18:25:53.873]   clic add porte
-[18:25:56.565]   -> Cantidad porte: '713,000'
-[18:25:59.106]   -> Precio porte: '1,5200'  [Tab]
-[18:25:59.106]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
-[18:25:59.107]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[18:26:01.098]   [post-albaran] dialogo 'Aviso...  '
-[18:26:01.417]      click Si '&Sí'
-[18:26:03.458]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[18:26:03.860]   >>> ALBARAN idx 0 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[18:26:03.861] --- Abrir albaran 2/6 (Anadir nuevo) ---
-[18:26:07.243]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[18:26:08.445] ##### ALBARAN idx 1 : CLAVO FOOD FACTORY, S.A. #####
-[18:26:10.706]   -> FechaSalida: '03/11/2026'
-[18:26:12.948]   -> FechaLlegada: '04/11/2026'
-[18:26:15.238]   -> Cliente: '4'
-[18:26:24.264]   -> Origen (sobre seleccion): 'TORD'
-[18:26:27.978]   -> Destino: '9735'
-[18:26:31.538]   -> Carga: '6'
-[18:26:35.108]   -> Campo2 (multi-reparto): 'GETAF/TORRE'
-[18:26:36.294]   clic solapa Lineas
-[18:26:37.882]   clic add porte
-[18:26:40.574]   -> Cantidad porte: '253,000'
-[18:26:43.115]   -> Precio porte: '1,5200'  [Tab]
-[18:26:43.115]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
-[18:26:43.121]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[18:26:45.112]   [post-albaran] dialogo 'Aviso...  '
-[18:26:45.419]      click Si '&Sí'
-[18:26:46.239]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[18:26:46.641]   >>> ALBARAN idx 1 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[18:26:46.642] --- Abrir albaran 3/6 (Anadir nuevo) ---
-[18:26:49.637]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[18:26:50.839] ##### ALBARAN idx 2 : CLAVO FOOD FACTORY, S.A. #####
-[18:26:53.099]   -> FechaSalida: '04/11/2026'
-[18:26:55.344]   -> FechaLlegada: '04/11/2026'
-[18:26:57.632]   -> Cliente: '4'
-[18:27:06.656]   -> Origen (sobre seleccion): '9735'
-[18:27:10.369]   -> Destino: 'TORD'
-[18:27:13.929]   -> Carga: '6'
-[18:27:17.500]   -> Campo1 (multi-carga): 'TORRE/AZUQU'
-[18:27:18.687]   clic solapa Lineas
-[18:27:20.271]   clic add porte
-[18:27:22.975]   -> Cantidad porte: '246,000'
-[18:27:25.516]   -> Precio porte: '1,3100'  [Tab]
-[18:27:25.517]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
-[18:27:25.522]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[18:27:27.512]   [post-albaran] dialogo 'Aviso...  '
-[18:27:27.819]      click Si '&Sí'
-[18:27:28.628]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[18:27:29.029]   >>> ALBARAN idx 2 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[18:27:29.030] --- Abrir albaran 4/6 (Anadir nuevo) ---
-[18:27:32.016]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[18:27:33.217] ##### ALBARAN idx 3 : CLAVO FOOD FACTORY, S.A. #####
-[18:27:35.478]   -> FechaSalida: '05/11/2026'
-[18:27:37.721]   -> FechaLlegada: '05/11/2026'
-[18:27:40.010]   -> Cliente: '4'
-[18:27:49.029]   -> Origen (sobre seleccion): 'TORD'
-[18:27:52.795]   -> Destino: 'ONTIG'
-[18:27:56.355]   -> Carga: '6'
-[18:28:00.231]   -> Campo2 (multi-reparto): 'GETAF/VALDE/ONTIG'
-[18:28:01.417]   clic solapa Lineas
-[18:28:03.003]   clic add porte
-[18:28:05.695]   -> Cantidad porte: '254,000'
-[18:28:08.237]   -> Precio porte: '1,5200'  [Tab]
-[18:28:08.238]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
-[18:28:08.238]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[18:28:10.229]   [post-albaran] dialogo 'Aviso...  '
-[18:28:10.533]      click Si '&Sí'
-[18:28:11.341]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[18:28:11.742]   >>> ALBARAN idx 3 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[18:28:11.743] --- Abrir albaran 5/6 (Anadir nuevo) ---
-[18:28:14.715]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[18:28:15.916] ##### ALBARAN idx 4 : CLAVO FOOD FACTORY, S.A. #####
-[18:28:18.176]   -> FechaSalida: '05/11/2026'
-[18:28:20.419]   -> FechaLlegada: '06/11/2026'
-[18:28:22.708]   -> Cliente: '4'
-[18:28:31.733]   -> Origen (sobre seleccion): 'TORD'
-[18:28:35.294]   -> Destino: '1'
-[18:28:38.856]   -> Carga: '6'
-[18:28:41.313]   clic solapa Lineas
-[18:28:42.900]   clic add porte
-[18:28:45.592]   -> Cantidad porte: '451,000'
-[18:28:48.134]   -> Precio porte: '1,3100'  [Tab]
-[18:28:48.135]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
-[18:28:48.136]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[18:28:50.125]   [post-albaran] dialogo 'Aviso...  '
-[18:28:50.439]      click Si '&Sí'
-[18:28:51.247]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[18:28:51.648]   >>> ALBARAN idx 4 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[18:28:51.649] --- Abrir albaran 6/6 (Anadir nuevo) ---
-[18:28:54.633]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
-[18:28:55.835] ##### ALBARAN idx 5 : CLAVO FOOD FACTORY, S.A. #####
-[18:28:58.094]   -> FechaSalida: '06/11/2026'
-[18:29:00.337]   -> FechaLlegada: '06/11/2026'
-[18:29:02.626]   -> Cliente: '4'
-[18:29:11.496]   -> Origen (sobre seleccion): '1'
-[18:29:15.261]   -> Destino: 'PORRI'
-[18:29:18.822]   -> Carga: '6'
-[18:29:21.281]   clic solapa Lineas
-[18:29:22.867]   clic add porte
-[18:29:23.469]   OJO: UM=UN no calibrado -> queda TN
-[18:29:25.257]   -> Cantidad porte: '1'
-[18:29:27.799]   -> Precio porte: '212,00'  [Tab]
-[18:29:27.800]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
-[18:29:27.801]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
-[18:29:29.790]   [post-albaran] dialogo 'Aviso...  '
-[18:29:30.108]      click Si '&Sí'
-[18:29:30.916]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
-[18:29:31.317]   >>> ALBARAN idx 5 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[18:29:31.323] --- GRABAR VIAJE (disquete) ---
-[18:29:38.510]   [resultado] nro_viaje owner-drawn -> capturado a nro_viaje_v1.png (lo lee la extraccion)
-[18:29:38.511]   grabado viaje 1. activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
-[18:29:38.512] Viajes grabados: 1/1
-[18:29:38.523] [resultado] escrito: \\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-11\jose-carlos-rodriguez\2026-11-02\resultado.json
-[18:29:38.524] [git] resultado.json + crop ESCRITOS en la carpeta de la orden del clon: ordenes-carga/ordenes/2026-11/jose-carlos-rodriguez/2026-11-02
-[18:29:38.525] [git] >>> auto-push DESACTIVADO: subir con GitHub Desktop (Commit + Push). (Poner GIT_PUSH_AUTO=True para automatico.)
-[18:29:38.525] ==== FIN robot viajes. ====
+[17:57:11.781] ==== ROBOT VIAJES viajes-2 ====
+[17:57:11.782] [rutas] orden=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-11\marcos-eirin-fernandez\2026-11-09\orden.json
+[17:57:11.782] [rutas] resultado=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez\ordenes-carga\ordenes\2026-11\marcos-eirin-fernandez\2026-11-09\resultado.json | push a git=True (repo=\\servidor\perfiles$\Operaciones\Documents\GitHub\Transliquidos_Estevez)
+[17:57:11.796] Empresa='TLE' | 2 viaje(s)
+[17:57:13.505] [pid] Gesruta PID=7556 -> se IGNORAN ventanas de otros procesos (p.ej. recordatorios de Outlook, titulados 'N aviso(s)')
+[17:57:13.506] ########## VIAJE 1/2  cabeza='3729'  tipo=propio  (3 albaranes) ##########
+[17:57:13.507] --- NUEVO VIAJE (hoja blanca sola 'Anadir viaje nuevo', NO la de editar) ---
+[17:57:16.043] --- CABECERA: cabeza 3729 (necesita editar=False) ---
+[17:57:21.801]   leer Matricula tractora -> '3729JLH'
+[17:57:23.901]   leer Matricula remolque -> 'R7749BDB'
+[17:57:26.001]   leer Chofer codigo      -> '12'
+[17:57:26.002]   CABECERA OK (tractora=3729JLH remolque=R7749BDB chofer_cod=12)
+[17:57:26.003] --- Abrir albaran 1/3 (Anadir nuevo) ---
+[17:57:31.015]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
+[17:57:32.216] ##### ALBARAN idx 0 : FORESA IND.QUIMICAS DEL NOROESTE, S.A. #####
+[17:57:34.322]   -> Refe: '2038079'
+[17:57:36.567]   -> FechaSalida: '09/11/2026'
+[17:57:38.812]   -> FechaLlegada: '09/11/2026'
+[17:57:41.100]   -> Cliente: '1'
+[17:57:41.105]   [cliente] aviso 'Aviso...' botones=['Aceptar']
+[17:57:41.415]      click boton 'Aceptar'
+[17:57:44.896]   -> Origen (sobre seleccion): '1'
+[17:57:48.507]   -> Destino: 'OR'
+[17:57:52.066]   -> Carga: '1'
+[17:57:54.522]   clic solapa Lineas
+[17:57:56.108]   clic add porte
+[17:57:58.753]   -> Cantidad porte: '25,260'
+[17:58:01.245]   -> Precio porte: '13,85'  [Tab]
+[17:58:01.246]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
+[17:58:01.247]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
+[17:58:03.237]   [post-albaran] dialogo 'Aviso...  '
+[17:58:03.549]      click Si '&Sí'
+[17:58:04.356]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
+[17:58:04.758]   >>> ALBARAN idx 0 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
+[17:58:04.759] --- Abrir albaran 2/3 (Anadir nuevo) ---
+[17:58:08.952]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
+[17:58:10.154] ##### ALBARAN idx 1 : FORESA IND.QUIMICAS DEL NOROESTE, S.A. #####
+[17:58:12.259]   -> Refe: '2038086'
+[17:58:14.506]   -> FechaSalida: '12/11/2026'
+[17:58:16.753]   -> FechaLlegada: '12/11/2026'
+[17:58:19.040]   -> Cliente: '1'
+[17:58:19.046]   [cliente] aviso 'Aviso...' botones=['Aceptar']
+[17:58:19.366]      click boton 'Aceptar'
+[17:58:22.849]   -> Origen (sobre seleccion): '1'
+[17:58:26.460]   -> Destino: 'OR'
+[17:58:30.019]   -> Carga: '1'
+[17:58:32.475]   clic solapa Lineas
+[17:58:34.062]   clic add porte
+[17:58:36.704]   -> Cantidad porte: '25,320'
+[17:58:39.196]   -> Precio porte: '13,85'  [Tab]
+[17:58:39.197]   indexacion con cargar:false -> NO se carga la linea (se acumula en facturacion).
+[17:58:39.203]   --- KM ---  CARGAR_KM_FORM_PROPIO=False: SALTEO el formulario de Kilometros (temporal; km propios sin cargar).
+[17:58:41.193]   [post-albaran] dialogo 'Aviso...  '
+[17:58:41.497]      click Si '&Sí'
+[17:58:42.305]   [espera post-albaran-sinkm] 'ENTRADA DE ALBARANES' cerrada
+[17:58:42.706]   >>> ALBARAN idx 1 GRABADO (sin formulario de km). activa='GESRUTA Vr.26.10 - Fecha: 02/10/2026 Empresa: 0006 TRANS. LIQUIDOS ESTÉVEZ S.L. (Operaciones) Nº Serie: 516 425 5090'
+[17:58:42.707] --- Abrir albaran 3/3 (Anadir nuevo) ---
+[17:58:46.903]   [espera abrir-alb] 'ENTRADA DE ALBARANES' abierta
+[17:58:48.105] ##### ALBARAN idx 2 : FORESA IND.QUIMICAS DEL NOROESTE, S.A. #####
+[17:58:50.212]   -> Refe: '2038087'
+[17:58:52.458]   -> FechaSalida: '13/11/2026'
+[17:58:54.703]   -> FechaLlegada: '13/11/2026'
+[17:58:56.993]   -> Cliente: '1'
+[17:58:56.999]   [cliente] aviso 'Aviso...' botones=['Aceptar']
+[17:58:57.317]      click boton 'Aceptar'
+[17:59:00.798]   -> Origen (sobre seleccion): '1'
+[17:59:04.407]   -> Destino: 'OR'
+[17:59:07.966]   -> Carga: '1'

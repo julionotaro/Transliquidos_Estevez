@@ -1,0 +1,55 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/jose-jorge-ferreira-goldar/2026-11-04/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-18T17:20:40",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "PROVE",
+      "chofer": "JOSE J. FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2036033",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2037340",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "PROVE",
+      "chofer": "JOSE J. FERREIRA GOLDAR",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v2.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}

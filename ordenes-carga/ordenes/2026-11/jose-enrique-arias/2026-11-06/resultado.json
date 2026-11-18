@@ -1,0 +1,46 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/jose-enrique-arias/2026-11-06/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-18T13:49:34",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "0275",
+      "chofer": "JOSE ENRIQUE ARIAS",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2035956",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "0275",
+      "chofer": "JOSE ENRIQUE ARIAS",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v2.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038078",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}

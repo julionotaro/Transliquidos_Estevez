@@ -1,0 +1,47 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/rodrigo-perez-bahamonde/2026-11-03/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-18T14:01:42",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "7347",
+      "chofer": "RODRIGO PEREZ BAHAMONDE",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "26P1357",
+          "nro_albaran_gesruta": "01",
+          "estado": "PEDIDO",
+          "motivo": "tarifa; destino",
+          "pendiente_de": [
+            "tarifa",
+            "destino"
+          ]
+        },
+        {
+          "referencia": "338172",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "49926",
+          "nro_albaran_gesruta": "03",
+          "estado": "PEDIDO",
+          "motivo": "tarifa; destino",
+          "pendiente_de": [
+            "tarifa",
+            "destino"
+          ]
+        }
+      ]
+    }
+  ]
+}

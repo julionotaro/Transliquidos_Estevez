@@ -1,0 +1,109 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/marcos-eirin-fernandez/2026-11-09/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-18T13:31:56",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "3729",
+      "chofer": "MARCOS EIRIN FERNANDEZ",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038079",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2038086",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2038087",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "3729",
+      "chofer": "MARCOS EIRIN FERNANDEZ",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v2.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2600003546",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        },
+        {
+          "referencia": "2600003550",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        },
+        {
+          "referencia": "2600003554",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        },
+        {
+          "referencia": "2600003559",
+          "nro_albaran_gesruta": "04",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        },
+        {
+          "referencia": "2600003563",
+          "nro_albaran_gesruta": "05",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        },
+        {
+          "referencia": "2600003566",
+          "nro_albaran_gesruta": "06",
+          "estado": "CARGADO",
+          "motivo": "km",
+          "pendiente_de": [
+            "km"
+          ]
+        }
+      ]
+    }
+  ]
+}

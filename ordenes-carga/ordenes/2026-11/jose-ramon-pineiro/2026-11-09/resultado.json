@@ -1,0 +1,27 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/jose-ramon-pineiro/2026-11-09/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-18T13:53:31",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "8420",
+      "chofer": "JOSE RAMON PINEIRO",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038733",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}
