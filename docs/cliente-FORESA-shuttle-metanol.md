@@ -72,7 +72,8 @@ Un albarán por día en `herramientas/armar_orden/raw/<chofer>-<fecha>.json`:
 - `referencia: ""` + `archivo` fijan el nombre del PDF (`metanol-<chofer>-<fecha>.pdf`);
   `validar_raw.js` acepta `archivo` y `shuttle_cantidades` en la whitelist.
 - **Archivo**: los albaranes del día se **concatenan en un solo PDF**
-  `procesados/FORESA/<YYYY-MM>/metanol-<chofer>-<YYYY-MM-DD>.pdf`.
+  `procesados/FORESA/<YYYY-MM>/Villagarcia-Caldas (Metanol)/metanol-<chofer>-<YYYY-MM-DD>.pdf`
+  (orden de carpetas FORESA, Julio 19/11: **mes ANTES que ruta**).
 
 ## Caso parcial / AVERÍA (fallar ruidoso)
 

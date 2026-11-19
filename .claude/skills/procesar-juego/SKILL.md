@@ -70,6 +70,15 @@ Si el cliente es **CLAVO FOOD FACTORY** (código `4`), el modelo es **distinto**
   `origen_lit` (1er) + `origenes` (→ Campo1), `destino_lit` (último) + `destinos` (→ Campo2), `km_facturable`
   (= odómetro fin − inicio), `km_inicio`/`km_fin`/`km_vacio`, `carga_lit`, `salida`/`llegada`.
   Todos los albaranes de la ficha van en **UN viaje** (una ficha = un viaje de Gesruta).
+- **KM facturable:** el `Kms` del **talón** manda (autoritativo); el odómetro de la ficha es el
+  cruce. Si el talón no trae `Kms`, se usa el odómetro/recorridos de la ficha. El armador avisa si
+  talón y odómetro no coinciden (ver `docs/cliente-CLAVO-frigos.md §10.1`).
+- **KM vacío (1er tramo):** correr **`node herramientas/armar_orden/odometro.js <raw.json>` ANTES de
+  armar**: completa el `km_vacio` del 1er tramo desde el registro de odómetro por tractora
+  (`datos/odometros-tractora.json`) y registra el juego. Los tramos 2..N ya los calcula del hueco del
+  odómetro. Ver `docs/cliente-CLAVO-frigos.md §10.3`.
+- **Puntos repetidos cuentan** (Mercamadrid+Mercamadrid+Madrid = 3 cargas, no 2): repetir el punto en
+  `origenes`/`destinos`; el display usa notación `(n)` (MERCAMADRID(2)+MADRID).
 - **Excel como `.xlsx`** (para abrir/pegar directo): `python3 -I herramientas/armar_orden/excel_frigos_xlsx.py <orden.json> <salida.xlsx>` (mismas columnas, fechas y números tipados).
 - **Dos salidas** (flujo objetivo): la **orden.json** (armador, modo km) **y** las **filas del Excel
   FRIGOS** para pegar: el `.xlsx` (A..R, incl. **Palets Dev.**) con `excel_frigos_xlsx.py`; el TSV de
