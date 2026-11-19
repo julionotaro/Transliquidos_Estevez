@@ -1,0 +1,107 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "6124",
+        "verificar": {
+          "matricula": "6124HZT",
+          "remolque": "R8839BDR",
+          "chofer": "LUIS M. TRINANES"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "AMORE",
+            "esperado": "AMOREBIETA"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "04/11/2026",
+          "llegada": "05/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "345,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "524,40",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "345",
+            "inicio": "358514",
+            "fin": "358859",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "SALVA",
+            "esperado": "SALVATIERRA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "PAN",
+            "esperado": "PAN"
+          },
+          "referencia": "",
+          "salida": "05/11/2026",
+          "llegada": "06/11/2026",
+          "facturacion": "km",
+          "sentido": "R",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "687,000",
+              "precio": "1,3100",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "899,97",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "687",
+            "inicio": "358944",
+            "fin": "359631"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

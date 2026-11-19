@@ -1,0 +1,17 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261118181847.pdf (11 pags: ficha/parte TLE + talones + albaranes de terceros). CLAVO (FRIGOS, POR KM). Luis M. Trinanes Vidal (TLE, 6124HZT). Odometro continuo con 181604 (358514). 2 tramos: V1 04-05/11 Tordesillas(Clavo)->Amorebieta(Eroski Elorrio/Amorebieta) congelado, odo 358514->358859=345km; V2 05-06/11 Salvatierra-Vitoria(Mercagui)->Caldas de Reis(Clavo) PAN, 358994->359631=687km (vacio 135 entre tramos). km del odometro; sentido/tarifa los deriva el armador (origen Tordesillas->S; destino Caldas->R). Solo ficha+talon; terceros se archivan sin leer. Puntos AMOREBIETA/SALVATIERRA pueden no estar en la base Gesruta -> REVISAR (dar de alta).",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-04",
+  "chofer": "LUIS M. TRINANES VIDAL",
+  "cabeza": "6124",
+  "viajes": [
+    {
+      "matricula": "6124HZT",
+      "remolque": "R8839BDR",
+      "albaranes": [
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "AMOREBIETA", "carga_lit": "CONGELADO", "referencia": "", "salida": "04/11/2026", "llegada": "05/11/2026", "km_inicio": 358514, "km_fin": 358859, "km_vacio": 0 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "SALVATIERRA", "destino_lit": "CALDAS DE REIS", "carga_lit": "PAN", "referencia": "", "salida": "05/11/2026", "llegada": "06/11/2026", "km_inicio": 358944, "km_fin": 359631 }
+      ]
+    }
+  ]
+}
