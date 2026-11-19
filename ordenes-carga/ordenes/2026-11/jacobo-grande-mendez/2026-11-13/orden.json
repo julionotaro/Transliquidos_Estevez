@@ -1,0 +1,116 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-11-13",
+    "chofer": "JACOBO GRANDE MENDEZ",
+    "cabeza": "7585",
+    "remolques": [
+      "R3697BDK"
+    ],
+    "viajes": 1,
+    "albaranes": 2,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261119164249.pdf",
+    "choferes_tipo": "propio",
+    "_nota_armador": "Resuelto con herramientas/armar_orden. 1 hoja con viaticos = 1 viaje, 2 albaranes. Remolque R3697BDK de los documentos (ficha se lee R3672BDA)."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "7585",
+        "verificar": {
+          "matricula": "7585MCG",
+          "remolque": "R3697BDK",
+          "chofer": "JACOBO GRANDE MENDEZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2039296",
+          "salida": "13/11/2026",
+          "llegada": "16/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,620",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.781,50",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "425592",
+            "fin": "426727",
+            "carga": "1135"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "FORESA Caldas->IP Decor Tordera (9731). RES0540->COLA cod1. Nacional P IVA 21. Tarifa 72,36 (confirmada). Idx G FORESA-BRESFOR 2a quincena nov 0,1553. Ref FORESA 2039296 (corto que empieza en 20). Peso albaran 24.620. Km A1: la ficha tacha 426675 y corrige a 426727 (fin); verificar, no afecta porte."
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "VILAR",
+            "esperado": "VILARINHO(PT)"
+          },
+          "carga": {
+            "codigo": "VINKA",
+            "esperado": "VINKA-PLAST"
+          },
+          "referencia": "714592",
+          "salida": "17/11/2026",
+          "llegada": "18/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,980",
+              "precio": "84,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "2.030,63",
+              "factor": "0,1600"
+            }
+          },
+          "km": {
+            "inicio": "426833",
+            "fin": "427912",
+            "carga": "1079"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "QUIMIDROGA Barcelona (carga TEPSA)->Endutex Vilarinho STS (Porto, PT). Destino VILARINHO(PT) VILAR. VINKA-PLAST DINP. Quimidroga factura Portugal como NACIONAL (P IVA 21). Tarifa 84,68 del tarifario OFICIAL Quimidroga (agregada a confirmadas 19/11; el armador aun no lee ese tarifario, solo el de RNM). Idx G Quimidroga 2a quincena nov 0,1600. Ref 714592 (ref en factura). Peso albaran TEPSA 23.980."
+        }
+      ]
+    }
+  ]
+}

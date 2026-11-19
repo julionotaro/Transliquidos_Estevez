@@ -1,0 +1,39 @@
+{
+  "_nota": "HECHOS CRUDOS leidos por vision (ficha 20261119164249 p1 + docs p2-5). Jacobo Grande Mendez 7585MCG, propio. 1 hoja con viaticos y misma tractora+remolque -> 1 viaje, 2 albaranes. Remolque R3697BDK de los documentos (la ficha se lee R3672BDA, mala lectura). A1 km_fin 426727 (la ficha tacha 426675 y corrige; verificar km, no afecta porte).",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-13",
+  "chofer": "JACOBO GRANDE MENDEZ",
+  "cabeza": "7585",
+  "viajes": [
+    {
+      "matricula": "7585MCG",
+      "remolque": "R3697BDK",
+      "albaranes": [
+        {
+          "cliente_lit": "FORESA IND. QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "TORDERA",
+          "carga_lit": "COLA",
+          "referencia": "2039296",
+          "salida": "13/11/2026",
+          "llegada": "16/11/2026",
+          "km_inicio": 425592,
+          "km_fin": 426727,
+          "peso_kg": 24620
+        },
+        {
+          "cliente_lit": "QUIMIDROGA, S.A.",
+          "origen_lit": "BARCELONA",
+          "destino_lit": "VILARINHO(PT)",
+          "carga_lit": "VINKA-PLAST",
+          "referencia": "714592",
+          "salida": "17/11/2026",
+          "llegada": "18/11/2026",
+          "km_inicio": 426833,
+          "km_fin": 427912,
+          "peso_kg": 23980
+        }
+      ]
+    }
+  ]
+}
