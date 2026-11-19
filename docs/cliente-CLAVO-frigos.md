@@ -236,3 +236,29 @@ Origen=1º carga+Campo1 y Destino=último reparto+Campo2 abreviados ≤19; index
 - Contrato de la orden (campos km): `ordenes-carga/CONTRATO-orden-json.md`.
 - Regla de odómetro → km carga/vacío: `catalogo/correcciones-julio.json` y la regla CLAVO (06/11).
 - THEC en CLAVO: perfil THEC (NO PROVE) — regla "facturacion por km" en `correcciones-julio.json` §6 del doc. PROVE queda solo para quimicos.
+
+---
+
+## 10. LECCIÓN 19/11 — SIEMPRE leer los TALONES, no solo la ficha
+
+Error detectado por Julio en la tirada del 18/11 (juegos 181424/181604/181847/182740):
+se había leído **solo la ficha/parte** y se perdieron datos que el chofer anota en el
+**talón de porte TLE** (formulario verde/amarillo "TALON DE PORTE N.º"). Consecuencia:
+facturación equivocada (Rodriguez 182740 V1 cargado 414 km cuando eran **814**; odómetro
+mal leído 676869 vs 676469) y falta de multidestinos y palets.
+
+**Reglas firmes (confirmadas con Julio):**
+
+1. **El `Kms` de "Observaciones" del talón es el km facturable AUTORITATIVO.** El odómetro
+   de la ficha es solo apoyo; si discrepan, manda el talón. Cruzar siempre talón vs odómetro.
+2. **Leer TODOS los talones del juego** (uno por tramo). Los terceros (albaranes de Clavo/
+   Costco/Frumen/DCA…) se archivan sin leer, pero los **talones TLE sí se leen enteros**.
+3. **Multicarga → `origenes` (campo1); multireparto → `destinos` (campo2).** El talón lista
+   todos los puntos de carga (REMITENTE/PUNTO DE CARGA) y de reparto (CONSIGNATARIO/DESTINO).
+   El Origen = 1º de la carga; el Destino = último del reparto.
+4. **Palets/maderas devueltos** que el chofer anota en el talón → campo `palets` del raw
+   (NÚMERO, sin comillas) → columna "Palets Dev." del Excel FRIGOS (solo Excel, no Gesruta).
+5. **Archivado PER-TALÓN:** cada talón + su documentación acompañante = **1 PDF**
+   `procesados/CLAVO/<mes>/<chofer>-<fecha>-T<n>.pdf` (campo `archivo` en cada albarán del raw).
+   `<fecha>` = fecha del talón; `<n>` = nº de talón impreso (Triñanes) o secuencial (Carlos,
+   talón en blanco). Un tramo sin talón TLE (p.ej. entrada de proveedor) va con el talón contiguo.

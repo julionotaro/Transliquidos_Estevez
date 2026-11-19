@@ -97,3 +97,18 @@ peso propios** (ref = **OC `26xxxxx`** si la hay; si no, el **ALB `2600xxx`**), 
 | 121814 | J. Ferreira (THEC) | PROVE | 05/11 | 1→26320 (ficha 2, AVERÍA 2º) |
 | 121918 | J. Ferreira (THEC) | PROVE | 06/11 | 5→131580 |
 | 121113 | Marcos Eirín (TLE) | propio | 10/11 | 6→160100 |
+
+---
+
+## LECCIÓN 19/11 — Lectura de NETO: bandas de ≤3 páginas
+
+Error detectado por Julio: en el juego 131031 (Ferreira) el 10/11 se había leído
+`157.880` cuando era `157.860` (el ALB 2600003549 es 26.300, no 26.320).
+
+**Causa raíz:** al rasterizar los albaranes FORESA en "bandas" (recorte girado 90°, varios
+albaranes apilados en una imagen), con **≥6 albaranes por banda** los dígitos del NETO se
+comprimen y se confunde 26.300 con 26.320.
+
+**Regla firme:** rasterizar **≤3 albaranes por banda** (helper `cs_metanol.py`) y **cruzar
+siempre `NETO = Bruto − Tara`** en cada albarán. Re-verificado así todo el metanol de la
+tirada (131031, 161950, 162300): el único error era el 10/11 de 131031.

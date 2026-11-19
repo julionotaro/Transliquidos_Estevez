@@ -76,14 +76,14 @@
           "lineas": {
             "porte": {
               "um": "TN",
-              "cantidad": "157,880",
+              "cantidad": "157,860",
               "precio": "3,68",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": "581,00",
+              "cantidad": "580,92",
               "factor": "0,1553",
               "cargar": false
             }

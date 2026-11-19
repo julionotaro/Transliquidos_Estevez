@@ -34,6 +34,14 @@
           "llegada": "05/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "Burgos",
+            "Arrigorriaga",
+            "Basauri",
+            "Amorebieta"
+          ],
+          "campo2": "BURGO/ARRIG/BASAU/A",
+          "palets": 12,
           "lineas": {
             "porte": {
               "um": "TN",
