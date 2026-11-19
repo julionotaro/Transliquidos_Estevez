@@ -1,0 +1,74 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/juan-l-gonzalez/2026-11-06/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-19T09:59:34",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "PROVE",
+      "chofer": "JUAN L. GONZALEZ",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038084",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "2038080",
+          "nro_albaran_gesruta": "02",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "PROVE",
+      "chofer": "JUAN L. GONZALEZ",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v2.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038081",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    },
+    {
+      "cabeza": "PROVE",
+      "chofer": "JUAN L. GONZALEZ",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v3.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "2038083",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}
