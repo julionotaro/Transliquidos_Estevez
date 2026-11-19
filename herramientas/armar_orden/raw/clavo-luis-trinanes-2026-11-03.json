@@ -1,5 +1,6 @@
 {
   "_nota": "CARGA OFICIAL - entrada/20261118181604.pdf (9 pags: ficha/parte TLE + 3 talones + albaranes de terceros). CLAVO (FRIGOS, facturacion POR KM). Luis M. Trinanes Vidal (TLE propio, 6124HZT->LUIS M. TRINANES en flota; remolque R8839BDR). Odometro continuo con el juego previo 181424 (357836) y el siguiente 181847 (358514). 3 tramos: V1 03/11 Torija(Costco)->Tordesillas(Clavo) congelado, odo 357836->358095=259km; V2 04/11 Tordesillas(Clavo)->Getafe(Montfrisa) congelado, 358095->358298=203km; V3 04/11 Mercamadrid(Los Norteños)->Tordesillas(Clavo) congelado/refrig, 358314->358514=200km (talon 05, 200kms, sin palets). km facturable del odometro; sentido y tarifa EUR/km los deriva el armador (destino Tordesillas->R; origen Tordesillas->S). Solo se lee ficha+talon; albaranes de terceros se archivan sin leer.",
+  "escaneo": "20261118181604.pdf",
   "empresa": "TLE",
   "fecha_inicio": "2026-11-03",
   "chofer": "LUIS M. TRINANES VIDAL",
@@ -9,9 +10,41 @@
       "matricula": "6124HZT",
       "remolque": "R8839BDR",
       "albaranes": [
-        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORIJA", "destino_lit": "TORDESILLAS", "carga_lit": "CONGELADO", "referencia": "", "salida": "03/11/2026", "llegada": "03/11/2026", "km_inicio": 357836, "km_fin": 358095, "km_vacio": 0 },
-        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "GETAFE", "carga_lit": "CONGELADO", "referencia": "", "salida": "04/11/2026", "llegada": "04/11/2026", "km_inicio": 358095, "km_fin": 358298, "km_vacio": 0 },
-        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "MERCAMADRID", "destino_lit": "TORDESILLAS", "carga_lit": "CONGELADO", "referencia": "", "salida": "04/11/2026", "llegada": "04/11/2026", "km_inicio": 358314, "km_fin": 358514 }
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORIJA",
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "03/11/2026",
+          "llegada": "03/11/2026",
+          "km_inicio": 357836,
+          "km_fin": 358095,
+          "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "GETAFE",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "04/11/2026",
+          "llegada": "04/11/2026",
+          "km_inicio": 358095,
+          "km_fin": 358298,
+          "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "MERCAMADRID",
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "salida": "04/11/2026",
+          "llegada": "04/11/2026",
+          "km_inicio": 358314,
+          "km_fin": 358514
+        }
       ]
     }
   ]
