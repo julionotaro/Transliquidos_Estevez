@@ -1,0 +1,19 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261119115734.pdf (28 pags: ficha/parte TLE + 3 talones TLE (V1 con copia) + albaranes de terceros). CLAVO (FRIGOS, POR KM). Jose Manuel Paz (TLE propio, 2050MZY->JOSE MANUEL PAZ en flota; remolque habitual R2006BDT, esta tanda usa R1813BCV -> swap de remolque, se registra el leido). Juego cruza oct->nov; odometro continuo con 115124 (siguiente). LEIDO CRUZANDO LOS 3 TALONES (pags 2,14,18; p8 es copia del talon V1). Este chofer NO escribe 'Kms' en el talon: el km facturable sale del odometro/recorridos de la ficha (coinciden en los 3 tramos). 3 tramos: V1 30/10-02/11 Caldas->Siguero+Tordesillas congelado, odo 181944->182430=486km, sin maderas; V2 03/11 Tordesillas->Getafe+Torrejon de Ardoz+Getafe congelado (23070kg), odo 182430->182704=274km, 12 maderas en Novafrigo; V3 04/11 Tordesillas->Getafe+Colmenar Viejo congelado (20000kg), odo 182907->183173=266km, 19+6=25 maderas (Logiest+Espejo). sentido/tarifa los deriva el armador (origen Caldas/Tordesillas->S). Puntos nuevos (Siguero, Colmenar Viejo, Torrejon) pueden faltar en Gesruta -> REVISAR. Archivado PER-TALON: jose-manuel-paz-<fecha>-T<n>.pdf (T1=V1, T2=V2, T3=V3).",
+  "escaneo": "20261119115734.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-10-30",
+  "chofer": "JOSE MANUEL PAZ",
+  "cabeza": "2050",
+  "viajes": [
+    {
+      "matricula": "2050MZY",
+      "remolque": "R1813BCV",
+      "albaranes": [
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TORDESILLAS", "destinos": ["Siguero", "Tordesillas"], "carga_lit": "CONGELADO", "referencia": "", "archivo": "jose-manuel-paz-2026-10-30-T1", "salida": "30/10/2026", "llegada": "02/11/2026", "km_inicio": 181944, "km_fin": 182430, "km_vacio": 0 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "GETAFE", "destinos": ["Getafe", "Torrejon de Ardoz", "Getafe"], "carga_lit": "CONGELADO", "referencia": "", "archivo": "jose-manuel-paz-2026-11-03-T2", "salida": "03/11/2026", "llegada": "03/11/2026", "km_inicio": 182430, "km_fin": 182704, "km_vacio": 0, "palets": 12 },
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "COLMENAR VIEJO", "destinos": ["Getafe", "Colmenar Viejo"], "carga_lit": "CONGELADO", "referencia": "", "archivo": "jose-manuel-paz-2026-11-04-T3", "salida": "04/11/2026", "llegada": "04/11/2026", "km_inicio": 182907, "km_fin": 183173, "km_vacio": 203, "palets": 25 }
+      ]
+    }
+  ]
+}

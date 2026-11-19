@@ -1,0 +1,171 @@
+{
+  "empresa": "TLE",
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "2050",
+        "verificar": {
+          "matricula": "2050MZY",
+          "remolque": "R1813BCV",
+          "chofer": "JOSE MANUEL PAZ"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "30/10/2026",
+          "llegada": "02/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "destinos": [
+            "Siguero",
+            "Tordesillas"
+          ],
+          "campo2": "SIGUE/TORDE",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "486,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "738,72",
+              "factor": "0,1450",
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "486",
+            "inicio": "181944",
+            "fin": "182430",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "GETAF",
+            "esperado": "GETAFE"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "03/11/2026",
+          "llegada": "03/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "destinos": [
+            "Getafe",
+            "Torrejon de Ardoz",
+            "Getafe"
+          ],
+          "campo2": "GETAF(2)/TORRE",
+          "palets": 12,
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "274,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "416,48",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "274",
+            "inicio": "182430",
+            "fin": "182704",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": null,
+            "esperado": "COLMENAR VIEJO"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "04/11/2026",
+          "llegada": "04/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "destinos": [
+            "Getafe",
+            "Colmenar Viejo"
+          ],
+          "campo2": "GETAF/COLME",
+          "palets": 25,
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "266,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "404,32",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "266",
+            "inicio": "182907",
+            "fin": "183173",
+            "vacio": "203"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

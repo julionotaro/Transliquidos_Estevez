@@ -1,0 +1,17 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261119115414.pdf (6 pags: ficha/parte TLE + 1 talon TLE + albaranes de terceros). CLAVO (FRIGOS, POR KM). Jose Manuel Paz (TLE propio, 2050MZY; remolque R1813BCV, swap del habitual). Odometro continuo con 115124 (previo, 184191). LEIDO CRUZANDO EL TALON (pag 2). Talon sin 'Kms' (Observaciones vacio); km del odometro de la ficha (recorridos 434 coincide). 1 tramo: V1 06-07/11 Tordesillas->Caldas de Reis congelado+refrigerado (21000kg), odo 184191->184625=434km, sin maderas, sentido R (destino Caldas). sentido/tarifa los deriva el armador. Archivado PER-TALON: T7=V1.",
+  "escaneo": "20261119115414.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-06",
+  "chofer": "JOSE MANUEL PAZ",
+  "cabeza": "2050",
+  "viajes": [
+    {
+      "matricula": "2050MZY",
+      "remolque": "R1813BCV",
+      "albaranes": [
+        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "CALDAS DE REIS", "carga_lit": "CONGELADO", "referencia": "", "archivo": "jose-manuel-paz-2026-11-06-T7", "salida": "06/11/2026", "llegada": "07/11/2026", "km_inicio": 184191, "km_fin": 184625, "km_vacio": 0 }
+      ]
+    }
+  ]
+}
