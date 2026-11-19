@@ -34,24 +34,32 @@
           "llegada": "10/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "Silleiro",
+            "Getafe",
+            "Torija",
+            "Quer"
+          ],
+          "campo2": "SILLE/GETAF/TORIJ/Q",
+          "palets": 25,
           "lineas": {
             "porte": {
               "um": "TN",
-              "cantidad": "414,000",
+              "cantidad": "814,000",
               "precio": "1,5200",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": "629,28",
+              "cantidad": "1.237,28",
               "factor": null,
               "cargar": false
             }
           },
           "km": {
-            "carga": "414",
-            "inicio": "676869",
+            "carga": "814",
+            "inicio": "676469",
             "fin": "677283",
             "vacio": "0"
           },
@@ -123,25 +131,33 @@
           "llegada": "11/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "Segovia",
+            "Colmenar Viejo",
+            "Getafe",
+            "Torrejon"
+          ],
+          "campo2": "SEGOV/COLME/GETAF/T",
+          "palets": 25,
           "lineas": {
             "porte": {
               "um": "TN",
-              "cantidad": "312,000",
+              "cantidad": "316,000",
               "precio": "1,5200",
               "concepto_esperado": "P",
               "iva_esperado": "21"
             },
             "indexacion": {
               "concepto": "G",
-              "cantidad": "474,24",
+              "cantidad": "480,32",
               "factor": null,
               "cargar": false
             }
           },
           "km": {
-            "carga": "312",
+            "carga": "316",
             "inicio": "677541",
-            "fin": "677853"
+            "fin": "677857"
           },
           "tarifa_pendiente": false
         },
@@ -152,7 +168,7 @@
           },
           "origen": {
             "codigo": null,
-            "esperado": "VALLECAS"
+            "esperado": "ALCALA"
           },
           "destino": {
             "codigo": "TORD",
@@ -168,11 +184,11 @@
           "facturacion": "km",
           "sentido": "R",
           "origenes": [
-            "Vallecas",
+            "Alcala",
             "Azuqueca",
-            "Alcala"
+            "Vallecas"
           ],
-          "campo1": "VALLE/AZUQU/ALCAL",
+          "campo1": "ALCAL/AZUQU/VALLE",
           "lineas": {
             "porte": {
               "um": "TN",
@@ -245,7 +261,7 @@
             "esperado": "CLAVO FOOD FACTORY, S.A."
           },
           "origen": {
-            "codigo": null,
+            "codigo": "9736",
             "esperado": "VALLECAS"
           },
           "destino": {

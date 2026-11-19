@@ -18,7 +18,7 @@
             "esperado": "CLAVO FOOD FACTORY, S.A."
           },
           "origen": {
-            "codigo": null,
+            "codigo": "9743",
             "esperado": "TORIJA"
           },
           "destino": {
@@ -34,6 +34,7 @@
           "llegada": "03/11/2026",
           "facturacion": "km",
           "sentido": "R",
+          "palets": 2,
           "lineas": {
             "porte": {
               "um": "TN",
@@ -108,7 +109,7 @@
             "esperado": "CLAVO FOOD FACTORY, S.A."
           },
           "origen": {
-            "codigo": null,
+            "codigo": "9742",
             "esperado": "MERCAMADRID"
           },
           "destino": {
@@ -124,6 +125,11 @@
           "llegada": "04/11/2026",
           "facturacion": "km",
           "sentido": "R",
+          "origenes": [
+            "Mercamadrid",
+            "Madrid"
+          ],
+          "campo1": "MERCA/MADRI",
           "lineas": {
             "porte": {
               "um": "TN",

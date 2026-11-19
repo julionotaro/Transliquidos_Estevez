@@ -1,5 +1,5 @@
 {
-  "_nota": "CARGA OFICIAL - entrada/20261118181424.pdf (15 pags: ficha/parte TLE + talones + albaranes de terceros). CLAVO (FRIGOS, POR KM). Luis M. Trinanes Vidal (TLE, 6124HZT). Juego cruza oct->nov; odometro continuo con 181604 (357836). 3 tramos: V1 29-30/10 Salvatierra-Vitoria(Mercagui)->Caldas de Reis(Clavo) PAN, odo 356394->357106=712km; V2 30/10-02/11 Caldas de Reis(Clavo)->Tordesillas(Clavo) congelado, 357106->357542=436km; V3 03/11 Tordesillas(Clavo)->Torija(Costco) congelado, 357542->357836=294km. km del odometro; sentido/tarifa los deriva el armador (destino Caldas->R; origen Caldas/Tordesillas->S). Solo ficha+talon. TORIJA puede no estar en la base Gesruta -> REVISAR. El doc se archiva en CLAVO/2026-10 y se copia a 2026-11 (el juego cruza mes; V3 es 03/11).",
+  "_nota": "CARGA OFICIAL - entrada/20261118181424.pdf (14 pags: ficha/parte TLE + 2 talones TLE + albaranes de terceros). CLAVO (FRIGOS, POR KM). Luis M. Trinanes Vidal (TLE, 6124HZT). Juego cruza oct->nov; odometro continuo con 181604 (357836). RE-LEIDO 19/11 CRUZANDO LOS TALONES. 3 tramos: V1 29-30/10 Salvatierra-Vitoria(Mercagui)->Caldas de Reis(Clavo) PAN, odo 356394->357106=712km (SIN talon TLE, es entrada de proveedor; km del odometro); V2 30/10-02/11 (talon 01) Caldas->Orense+Tordesillas congelado, 357106->357542=436km, 5 maderas; V3 03/11 (talon 02) Tordesillas->Torrejon de Ardoz+Torija+Quer congelado, 357542->357836=294km, 11 maderas. El 'Kms' del talon coincide con el odometro en los 3 tramos. sentido/tarifa los deriva el armador (destino Caldas->R; origen Caldas/Tordesillas->S). Puntos nuevos (Orense, Torrejon, Torija, Quer) pueden faltar en la base Gesruta -> REVISAR. Archivado PER-TALON en CLAVO/2026-11 (T1=talon01/V2, T2=talon02/V3); V1 sin talon va con la ficha.",
   "escaneo": "20261118181424.pdf",
   "empresa": "TLE",
   "fecha_inicio": "2026-10-29",
@@ -16,6 +16,7 @@
           "destino_lit": "CALDAS DE REIS",
           "carga_lit": "PAN",
           "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-10-30-T1",
           "salida": "29/10/2026",
           "llegada": "30/10/2026",
           "km_inicio": 356394,
@@ -26,25 +27,38 @@
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
           "origen_lit": "CALDAS DE REIS",
           "destino_lit": "TORDESILLAS",
+          "destinos": [
+            "Orense",
+            "Tordesillas"
+          ],
           "carga_lit": "CONGELADO",
           "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-10-30-T1",
           "salida": "30/10/2026",
           "llegada": "02/11/2026",
           "km_inicio": 357106,
           "km_fin": 357542,
-          "km_vacio": 0
+          "km_vacio": 0,
+          "palets": 5
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
           "origen_lit": "TORDESILLAS",
-          "destino_lit": "TORIJA",
+          "destino_lit": "QUER",
+          "destinos": [
+            "Torrejon de Ardoz",
+            "Torija",
+            "Quer"
+          ],
           "carga_lit": "CONGELADO",
           "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-11-03-T2",
           "salida": "03/11/2026",
           "llegada": "03/11/2026",
           "km_inicio": 357542,
           "km_fin": 357836,
-          "km_vacio": 0
+          "km_vacio": 0,
+          "palets": 11
         }
       ]
     }

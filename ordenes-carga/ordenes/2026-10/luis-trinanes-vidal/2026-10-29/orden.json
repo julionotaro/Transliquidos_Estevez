@@ -79,6 +79,12 @@
           "llegada": "02/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "Orense",
+            "Tordesillas"
+          ],
+          "campo2": "ORENS/TORDE",
+          "palets": 5,
           "lineas": {
             "porte": {
               "um": "TN",
@@ -112,8 +118,8 @@
             "esperado": "TORDESILLAS"
           },
           "destino": {
-            "codigo": null,
-            "esperado": "TORIJA"
+            "codigo": "QUER",
+            "esperado": "QUER"
           },
           "carga": {
             "codigo": "6",
@@ -124,6 +130,13 @@
           "llegada": "03/11/2026",
           "facturacion": "km",
           "sentido": "S",
+          "destinos": [
+            "Torrejon de Ardoz",
+            "Torija",
+            "Quer"
+          ],
+          "campo2": "TORRE/TORIJ/QUER",
+          "palets": 11,
           "lineas": {
             "porte": {
               "um": "TN",
