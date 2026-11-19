@@ -170,9 +170,17 @@ function mesDeFecha(fechaDDMMYYYY) {
 // caracteres para que entren en la factura (regla Julio 06/11).
 function abreviarPuntos(destinos, maxLen) {
   if (!destinos || !destinos.length) { return null; }
-  var abv = destinos.map(function (d) {
-    var s = cruce.norm(d).replace(/[^A-Z0-9 ]/g, '').trim();
-    return s.length > 5 ? s.slice(0, 5) : s;
+  // Agrupa puntos REPETIDOS con (n) -> [A,A,B] = "A(2)/B" (Julio 19/11: un mismo
+  // nombre repetido son cargas/repartos DISTINTOS; cuentan todos para el seguimiento).
+  var orden = [], cnt = {};
+  destinos.forEach(function (d) {
+    var k = cruce.norm(d).replace(/[^A-Z0-9 ]/g, '').trim();
+    if (!(k in cnt)) { orden.push(k); cnt[k] = 0; }
+    cnt[k]++;
+  });
+  var abv = orden.map(function (k) {
+    var s = k.length > 5 ? k.slice(0, 5) : k;
+    return cnt[k] > 1 ? s + '(' + cnt[k] + ')' : s;
   });
   var out = abv.join('/');
   return (out.length > maxLen) ? out.slice(0, maxLen) : out;
@@ -199,10 +207,24 @@ function armarAlbaranKm(raw, ctx, codCli, esperadoCli, po, pd, codCarga, cargaNo
   var clavo = deps.clavo;
   var mes = mesDeFecha(raw.salida);
 
-  // km con carga: preferir km_facturable; si no, odometro fin - inicio.
+  // km con carga: el km facturable AUTORITATIVO es el "Kms" del TALON (km_facturable).
+  // El odometro de la ficha (km_inicio/km_fin) es el CRUCE de control.
   var km = null;
   if (typeof raw.km_facturable === 'number') { km = raw.km_facturable; }
   else if (typeof raw.km_inicio === 'number' && typeof raw.km_fin === 'number') { km = raw.km_fin - raw.km_inicio; }
+
+  // CRUCE talon vs odometro (Julio 19/11): si vienen ambos y no coinciden, el talon manda
+  // pero se AVISA para revisar la lectura (odometro manuscrito es ambiguo; asi se caza un
+  // digito mal leido como el 676869 vs 676469 que daba 414 en vez de 814 km).
+  if (typeof raw.km_facturable === 'number' &&
+      typeof raw.km_inicio === 'number' && typeof raw.km_fin === 'number') {
+    var kmOdo = raw.km_fin - raw.km_inicio;
+    if (Math.abs(raw.km_facturable - kmOdo) > 2) {
+      avisos.push('[' + ctx + '] CLAVO: el "Kms" del talon (' + raw.km_facturable +
+        ') NO coincide con el odometro de la ficha (' + raw.km_inicio + '->' + raw.km_fin +
+        ' = ' + kmOdo + '). Manda el talon; REVISAR la lectura del odometro.');
+    }
+  }
 
   // SENTIDO: lo trae el raw, o se DERIVA de origen/destino/km (formula columna L).
   var sentido = raw.sentido ? String(raw.sentido).toUpperCase() : derivarSentido(po.esperado, pd.esperado, km);

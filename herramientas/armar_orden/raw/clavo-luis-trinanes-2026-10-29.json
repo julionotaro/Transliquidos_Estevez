@@ -39,7 +39,8 @@
           "km_inicio": 357106,
           "km_fin": 357542,
           "km_vacio": 0,
-          "palets": 5
+          "palets": 5,
+          "km_facturable": 436
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -58,7 +59,8 @@
           "km_inicio": 357542,
           "km_fin": 357836,
           "km_vacio": 0,
-          "palets": 11
+          "palets": 11,
+          "km_facturable": 294
         }
       ]
     }

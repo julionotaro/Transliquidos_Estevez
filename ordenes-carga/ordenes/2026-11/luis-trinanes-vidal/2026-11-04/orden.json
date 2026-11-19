@@ -36,11 +36,12 @@
           "sentido": "S",
           "destinos": [
             "Burgos",
+            "Burgos",
             "Arrigorriaga",
             "Basauri",
             "Amorebieta"
           ],
-          "campo2": "BURGO/ARRIG/BASAU/A",
+          "campo2": "BURGO(2)/ARRIG/BASA",
           "palets": 12,
           "lineas": {
             "porte": {
@@ -105,7 +106,8 @@
           "km": {
             "carga": "687",
             "inicio": "358944",
-            "fin": "359631"
+            "fin": "359631",
+            "vacio": "85"
           },
           "tarifa_pendiente": false
         }

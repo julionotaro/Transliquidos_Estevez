@@ -127,9 +127,10 @@
           "sentido": "R",
           "origenes": [
             "Mercamadrid",
+            "Mercamadrid",
             "Madrid"
           ],
-          "campo1": "MERCA/MADRI",
+          "campo1": "MERCA(2)/MADRI",
           "lineas": {
             "porte": {
               "um": "TN",
@@ -148,7 +149,8 @@
           "km": {
             "carga": "200",
             "inicio": "358314",
-            "fin": "358514"
+            "fin": "358514",
+            "vacio": "16"
           },
           "tarifa_pendiente": false
         }

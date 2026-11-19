@@ -39,6 +39,17 @@ def intz(s):
         return s or ""
 
 
+def agrupar(pts):
+    """[A,A,B] -> 'A(2)+B' (puntos repetidos son cargas/repartos distintos; cuentan todos)."""
+    orden, cnt = [], {}
+    for p in pts:
+        k = str(p).upper()
+        if k not in cnt:
+            orden.append(k); cnt[k] = 0
+        cnt[k] += 1
+    return "+".join(k + ("(%d)" % cnt[k] if cnt[k] > 1 else "") for k in orden)
+
+
 def filas(orden):
     out = []
     for v in orden.get("viajes", []):
@@ -53,10 +64,10 @@ def filas(orden):
             cant, prec = num_es(porte.get("cantidad")), num_es(porte.get("precio"))
             importe = round(cant * prec, 2) if (cant is not None and prec is not None) else None
             ori = a.get("origenes")
-            origen = "+".join(x.upper() for x in ori) if ori else (a.get("origen") or {}).get("esperado", "").upper()
+            origen = agrupar(ori) if ori else (a.get("origen") or {}).get("esperado", "").upper()
             n_carg = len(ori) if ori else 1
             des = a.get("destinos")
-            destino = "+".join(x.upper() for x in des) if des else (a.get("destino") or {}).get("esperado", "").upper()
+            destino = agrupar(des) if des else (a.get("destino") or {}).get("esperado", "").upper()
             n_rep = len(des) if des else 1
             pal = a.get("palets")
             out.append([

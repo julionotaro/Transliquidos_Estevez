@@ -28,7 +28,8 @@
           "km_inicio": 676469,
           "km_fin": 677283,
           "km_vacio": 0,
-          "palets": 25
+          "palets": 25,
+          "km_facturable": 814
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -40,7 +41,9 @@
           "salida": "10/11/2026",
           "llegada": "10/11/2026",
           "km_inicio": 677335,
-          "km_fin": 677541
+          "km_fin": 677541,
+          "km_facturable": 206,
+          "km_vacio": 52
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -59,7 +62,9 @@
           "llegada": "11/11/2026",
           "km_inicio": 677541,
           "km_fin": 677857,
-          "palets": 25
+          "palets": 25,
+          "km_facturable": 316,
+          "km_vacio": 0
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -76,7 +81,9 @@
           "salida": "11/11/2026",
           "llegada": "11/11/2026",
           "km_inicio": 677857,
-          "km_fin": 678123
+          "km_fin": 678123,
+          "km_facturable": 266,
+          "km_vacio": 0
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -88,7 +95,9 @@
           "salida": "12/11/2026",
           "llegada": "12/11/2026",
           "km_inicio": 678123,
-          "km_fin": 678329
+          "km_fin": 678329,
+          "km_facturable": 206,
+          "km_vacio": 0
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -104,7 +113,9 @@
           "salida": "12/11/2026",
           "llegada": "12/11/2026",
           "km_inicio": 678341,
-          "km_fin": 678615
+          "km_fin": 678615,
+          "km_facturable": 274,
+          "km_vacio": 12
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -116,7 +127,9 @@
           "salida": "12/11/2026",
           "llegada": "13/11/2026",
           "km_inicio": 678615,
-          "km_fin": 679067
+          "km_fin": 679067,
+          "km_facturable": 452,
+          "km_vacio": 0
         }
       ]
     }

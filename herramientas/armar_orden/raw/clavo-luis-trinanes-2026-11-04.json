@@ -16,6 +16,7 @@
           "destino_lit": "AMOREBIETA",
           "destinos": [
             "Burgos",
+            "Burgos",
             "Arrigorriaga",
             "Basauri",
             "Amorebieta"
@@ -28,7 +29,8 @@
           "km_inicio": 358514,
           "km_fin": 358859,
           "km_vacio": 0,
-          "palets": 12
+          "palets": 12,
+          "km_facturable": 345
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -40,7 +42,9 @@
           "salida": "05/11/2026",
           "llegada": "06/11/2026",
           "km_inicio": 358944,
-          "km_fin": 359631
+          "km_fin": 359631,
+          "km_facturable": 687,
+          "km_vacio": 85
         }
       ]
     }

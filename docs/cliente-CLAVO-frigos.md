@@ -262,3 +262,31 @@ mal leído 676869 vs 676469) y falta de multidestinos y palets.
    `procesados/CLAVO/<mes>/<chofer>-<fecha>-T<n>.pdf` (campo `archivo` en cada albarán del raw).
    `<fecha>` = fecha del talón; `<n>` = nº de talón impreso (Triñanes) o secuencial (Carlos,
    talón en blanco). Un tramo sin talón TLE (p.ej. entrada de proveedor) va con el talón contiguo.
+
+### 10.1 De dónde salen los KM (carga y vacío) y cómo se cruzan — 19/11
+
+**KM CON CARGA (facturable):** del **talón de porte** (campo "Observaciones: Kms XXX" que
+escribe el chofer). Es el dato **autoritativo** para facturar. En el raw va como `km_facturable`.
+
+**ODÓMETRO (ficha/parte):** la ficha trae, por tramo, `KM AL INICIO DEL VIAJE` y `KM AL FINAL`
+(no suele traer "km recorridos"). Se cargan en el raw como `km_inicio`/`km_fin` y son el **CRUCE
+de control**, no la fuente de facturación.
+
+**CRUCE (cómo se corrobora y se evita el error):** el armador compara `km_facturable` (talón) con
+`km_fin − km_inicio` (odómetro). Si difieren en más de 2 km, **avisa** ("el Kms del talón NO
+coincide con el odómetro → REVISAR"). El error del 18/11 (814 leído como 414) fue por leer **solo**
+el odómetro y confundir un dígito manuscrito (676869 vs 676469); leyendo el talón y cruzando, salta.
+
+**KM EN VACÍO:** es el trayecto vacío para posicionarse antes de cargar = `km_inicio(tramo) −
+km_fin(tramo anterior)` (hueco del odómetro entre tramos). Se asigna al tramo al que se llega
+vacío. El 1º tramo del juego no tiene vacío calculable dentro del juego (viene de antes) → 0.
+Control: Σ(km_carga) + Σ(km_vacío) = odómetro total del juego (último fin − primer inicio).
+Va en el raw como `km_vacio`, en la orden (`km.vacio`) y en el Excel FRIGOS (col "Kms en vacio").
+
+### 10.2 Puntos repetidos cuentan (seguimiento) — 19/11
+
+Un mismo nombre de punto **repetido** en carga o reparto son operaciones **distintas** y se
+cuentan todas: Mercamadrid+Mercamadrid+Madrid = **3 cargas** (no 2); Burgos+Burgos = **Burgos(2)**.
+No es lo mismo cargar en 1 sitio que en 3. En el raw se repite el punto en `origenes`/`destinos`
+(no se deduplica); el Nº Carg/Nº Rep del Excel = total con repeticiones; y el display usa la
+notación `(n)`: `MERCAMADRID(2)+MADRID`, `BURGOS(2)+ARRIGORRIAGA+...` (en Campo1/Campo2 abreviado).

@@ -22,7 +22,8 @@
           "km_inicio": 357836,
           "km_fin": 358095,
           "km_vacio": 0,
-          "palets": 2
+          "palets": 2,
+          "km_facturable": 259
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
@@ -35,12 +36,14 @@
           "llegada": "04/11/2026",
           "km_inicio": 358095,
           "km_fin": 358298,
-          "km_vacio": 0
+          "km_vacio": 0,
+          "km_facturable": 203
         },
         {
           "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
           "origen_lit": "MERCAMADRID",
           "origenes": [
+            "Mercamadrid",
             "Mercamadrid",
             "Madrid"
           ],
@@ -51,7 +54,9 @@
           "salida": "04/11/2026",
           "llegada": "04/11/2026",
           "km_inicio": 358314,
-          "km_fin": 358514
+          "km_fin": 358514,
+          "km_facturable": 200,
+          "km_vacio": 16
         }
       ]
     }

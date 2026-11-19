@@ -105,7 +105,8 @@
           "km": {
             "carga": "206",
             "inicio": "677335",
-            "fin": "677541"
+            "fin": "677541",
+            "vacio": "52"
           },
           "tarifa_pendiente": false
         },
@@ -157,7 +158,8 @@
           "km": {
             "carga": "316",
             "inicio": "677541",
-            "fin": "677857"
+            "fin": "677857",
+            "vacio": "0"
           },
           "tarifa_pendiente": false
         },
@@ -207,7 +209,8 @@
           "km": {
             "carga": "266",
             "inicio": "677857",
-            "fin": "678123"
+            "fin": "678123",
+            "vacio": "0"
           },
           "tarifa_pendiente": false
         },
@@ -251,7 +254,8 @@
           "km": {
             "carga": "206",
             "inicio": "678123",
-            "fin": "678329"
+            "fin": "678329",
+            "vacio": "0"
           },
           "tarifa_pendiente": false
         },
@@ -300,7 +304,8 @@
           "km": {
             "carga": "274",
             "inicio": "678341",
-            "fin": "678615"
+            "fin": "678615",
+            "vacio": "12"
           },
           "tarifa_pendiente": false
         },
@@ -344,7 +349,8 @@
           "km": {
             "carga": "452",
             "inicio": "678615",
-            "fin": "679067"
+            "fin": "679067",
+            "vacio": "0"
           },
           "tarifa_pendiente": false
         }
