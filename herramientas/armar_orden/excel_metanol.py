@@ -10,7 +10,8 @@ Lee el raw del juego: toma los albaranes del shuttle (los que traen "shuttle_can
   Emp  Tractora  Chofer  Fecha  <cant1> <cant2> ... <cantN>  TOTAL(kg)  TOTAL(TN)
 
 Julio pega esa fila en la hoja de la tractora del mes (RESUMEN NOVIEMBRE / 3729 / 8382JJS...).
-El TOTAL TN se emite con formato xx,xxx (3 decimales), como en el Excel de Julio (18/11).
+Cada albaran y el TOTAL van en TN con formato xx,xxx (3 decimales), como en el Excel de Julio
+(18/11 total; 19/11 todos los valores, no solo el total). Se mantiene TOTAL kg (entero) de control.
 
 uso: python3 -I excel_metanol.py <raw.json> [<salida.xlsx>]
 """
@@ -48,12 +49,13 @@ def main():
         print("(sin shuttle metanol en este raw)")
         return
     maxc = max(len(f["cants"]) for f in filas)
-    cols = ["Emp", "Tractora", "Chofer", "Fecha"] + [f"Alb{i+1}" for i in range(maxc)] + ["TOTAL kg", "TOTAL TN"]
-    # TSV a stdout (TOTAL TN con 3 decimales)
+    # Cada albaran en TN con 3 decimales (Julio 19/11: "todos los valores de tn, no solo los totales").
+    cols = ["Emp", "Tractora", "Chofer", "Fecha"] + [f"Alb{i+1} (TN)" for i in range(maxc)] + ["TOTAL kg", "TOTAL TN"]
+    # TSV a stdout (todas las cantidades en TN, 3 decimales)
     print("\t".join(cols))
     for f in filas:
         row = [f["empresa"], f["tractora"], f["chofer"], f["fecha"]] + \
-              [str(x) for x in f["cants"]] + [""] * (maxc - len(f["cants"])) + \
+              [tn3(x / 1000.0) for x in f["cants"]] + [""] * (maxc - len(f["cants"])) + \
               [str(f["total_kg"]), tn3(f["total_tn"])]
         print("\t".join(row))
     # .xlsx opcional
@@ -68,9 +70,11 @@ def main():
         tn_col = len(cols)  # ultima columna = TOTAL TN
         for f in filas:
             ws.append([f["empresa"], f["tractora"], f["chofer"], f["fecha"]] +
-                      list(f["cants"]) + [None] * (maxc - len(f["cants"])) +
+                      [round(x / 1000.0, 3) for x in f["cants"]] + [None] * (maxc - len(f["cants"])) +
                       [f["total_kg"], f["total_tn"]])
-            # formato TN = xx,xxx (3 decimales) en la celda de TOTAL TN de esta fila
+            # formato TN = xx,xxx (3 decimales) en cada albaran (cols 5..) y en TOTAL TN
+            for col in range(5, 4 + maxc + 1):
+                ws.cell(row=ws.max_row, column=col).number_format = "0.000"
             ws.cell(row=ws.max_row, column=tn_col).number_format = "0.000"
         wb.save(sys.argv[2])
         print("escrito", sys.argv[2], file=sys.stderr)
