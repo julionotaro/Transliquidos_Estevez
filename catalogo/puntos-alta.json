@@ -398,6 +398,17 @@
     "origen_alta": "gesruta-usado"
   },
   {
+    "id_punto": "COLME",
+    "nombre_canonico": "COLMENAR VIEJO",
+    "alias": "",
+    "municipio": "",
+    "provincia": "",
+    "pais": "",
+    "tipo": "generico",
+    "empresa_sede": "",
+    "origen_alta": "julio-19-11"
+  },
+  {
     "id_punto": "BU",
     "nombre_canonico": "BURGOS",
     "alias": "",
