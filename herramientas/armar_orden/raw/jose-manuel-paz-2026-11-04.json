@@ -10,9 +10,47 @@
       "matricula": "2050MZY",
       "remolque": "R1813BCV",
       "albaranes": [
-        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "GETAFE", "carga_lit": "CONGELADO", "referencia": "", "archivo": "jose-manuel-paz-2026-11-04-T4", "salida": "04/11/2026", "llegada": "05/11/2026", "km_inicio": 183353, "km_fin": 183561, "km_vacio": 0, "palets": 33, "_obs": "Ficha: KM RECORRIDOS 218 vs odometro 208; se factura 208 (confirmado Julio 19/11)." },
-        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "TORDESILLAS", "destino_lit": "REINOSA", "carga_lit": "CONGELADO", "referencia": "", "archivo": "jose-manuel-paz-2026-11-05-T5", "salida": "05/11/2026", "llegada": "06/11/2026", "km_inicio": 183771, "km_fin": 183981, "km_vacio": 210 },
-        { "cliente_lit": "CLAVO FOOD FACTORY, S.A.", "origen_lit": "REINOSA", "destino_lit": "TORDESILLAS", "carga_lit": "CONGELADO", "referencia": "", "archivo": "jose-manuel-paz-2026-11-06-T6", "salida": "06/11/2026", "llegada": "06/11/2026", "km_inicio": 183981, "km_fin": 184191, "km_vacio": 0 }
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "GETAFE",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "jose-manuel-paz-2026-11-04-T4",
+          "salida": "04/11/2026",
+          "llegada": "05/11/2026",
+          "km_inicio": 183353,
+          "km_fin": 183561,
+          "km_vacio": 180,
+          "palets": 33,
+          "_obs": "Ficha: KM RECORRIDOS 218 vs odometro 208; se factura 208 (confirmado Julio 19/11)."
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "REINOSA",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "jose-manuel-paz-2026-11-05-T5",
+          "salida": "05/11/2026",
+          "llegada": "06/11/2026",
+          "km_inicio": 183771,
+          "km_fin": 183981,
+          "km_vacio": 210
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "REINOSA",
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "jose-manuel-paz-2026-11-06-T6",
+          "salida": "06/11/2026",
+          "llegada": "06/11/2026",
+          "km_inicio": 183981,
+          "km_fin": 184191,
+          "km_vacio": 0
+        }
       ]
     }
   ]

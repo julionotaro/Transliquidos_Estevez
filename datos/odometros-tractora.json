@@ -1,0 +1,70 @@
+{
+  "5132LMC": [
+    {
+      "juego": "clavo-jose-carlos-rodriguez-2026-10-26-completo.json",
+      "fecha": "26/10/2026",
+      "km_inicio": 671055,
+      "km_fin": 673954
+    },
+    {
+      "juego": "20261112182310.pdf",
+      "fecha": "02/11/2026",
+      "km_inicio": 673954,
+      "km_fin": 676421
+    },
+    {
+      "juego": "20261118182740.pdf",
+      "fecha": "09/11/2026",
+      "km_inicio": 676469,
+      "km_fin": 679067
+    }
+  ],
+  "6124HZT": [
+    {
+      "juego": "20261118181424.pdf",
+      "fecha": "29/10/2026",
+      "km_inicio": 356394,
+      "km_fin": 357836
+    },
+    {
+      "juego": "20261118181604.pdf",
+      "fecha": "03/11/2026",
+      "km_inicio": 357836,
+      "km_fin": 358514
+    },
+    {
+      "juego": "20261118181847.pdf",
+      "fecha": "04/11/2026",
+      "km_inicio": 358514,
+      "km_fin": 359631
+    }
+  ],
+  "9400LLC": [
+    {
+      "juego": "clavo-thec-manuel-eirin-2026-11-03.json",
+      "fecha": "03/11/2026",
+      "km_inicio": 100000,
+      "km_fin": 100451
+    }
+  ],
+  "2050MZY": [
+    {
+      "juego": "20261119115734.pdf",
+      "fecha": "30/10/2026",
+      "km_inicio": 181944,
+      "km_fin": 183173
+    },
+    {
+      "juego": "20261119115124.pdf",
+      "fecha": "04/11/2026",
+      "km_inicio": 183353,
+      "km_fin": 184191
+    },
+    {
+      "juego": "20261119115414.pdf",
+      "fecha": "06/11/2026",
+      "km_inicio": 184191,
+      "km_fin": 184625
+    }
+  ]
+}

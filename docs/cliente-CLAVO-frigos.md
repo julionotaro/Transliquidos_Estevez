@@ -277,11 +277,28 @@ de control**, no la fuente de facturación.
 coincide con el odómetro → REVISAR"). El error del 18/11 (814 leído como 414) fue por leer **solo**
 el odómetro y confundir un dígito manuscrito (676869 vs 676469); leyendo el talón y cruzando, salta.
 
-**KM EN VACÍO:** es el trayecto vacío para posicionarse antes de cargar = `km_inicio(tramo) −
-km_fin(tramo anterior)` (hueco del odómetro entre tramos). Se asigna al tramo al que se llega
-vacío. El 1º tramo del juego no tiene vacío calculable dentro del juego (viene de antes) → 0.
-Control: Σ(km_carga) + Σ(km_vacío) = odómetro total del juego (último fin − primer inicio).
-Va en el raw como `km_vacio`, en la orden (`km.vacio`) y en el Excel FRIGOS (col "Kms en vacio").
+**KM EN VACÍO:** es el trayecto vacío para posicionarse antes de cargar, asignado al tramo al que
+se llega vacío. Para los tramos 2..N del juego = `km_inicio(tramo) − km_fin(tramo anterior)` (hueco
+del odómetro dentro del juego). Para el **1er tramo** = `km_inicio − km_fin del juego ANTERIOR de
+esa tractora`, que sale del **registro propio de odómetro por tractora**
+`datos/odometros-tractora.json` (Julio 19/11). Va en el raw (`km_vacio`), en la orden (`km.vacio`) y
+en el Excel FRIGOS (col "Kms en vacio"). Control: Σ(km_carga) + Σ(km_vacío) ≈ odómetro total.
+
+### 10.3 Registro de odómetro por tractora — helper `odometro.js`
+
+`herramientas/armar_orden/odometro.js` mantiene `datos/odometros-tractora.json` (una entrada por
+juego y tractora: `{juego, fecha, km_inicio, km_fin}`) y calcula los `km_vacio` del raw cruzándolo:
+
+```bash
+node herramientas/armar_orden/odometro.js <raw.json>   # calcula vacios, reescribe el raw y registra el juego
+node herramientas/armar_orden/odometro.js <raw.json> --dry           # solo muestra
+node herramientas/armar_orden/odometro.js <raw.json> --solo-registrar # solo agrega al registro
+```
+
+**Se corre ANTES de `armar_orden.js`** (deja el `km_vacio` del 1er tramo en el raw). Si no hay juego
+anterior de esa tractora en el registro, o el hueco es > 700 km (faltan juegos intermedios), deja el
+1er tramo en 0 y **avisa** (falla ruidoso). Es idempotente (la clave es juego+km_inicio; al calcular
+excluye el propio juego).
 
 ### 10.2 Puntos repetidos cuentan (seguimiento) — 19/11
 
