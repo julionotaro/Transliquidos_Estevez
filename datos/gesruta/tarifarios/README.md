@@ -24,3 +24,15 @@ salvo que la orden de flete/OC indique un precio fijo por viaje.
 2. Resto → tarifario general.
 3. Dentro de la ruta: €/TN por defecto; fijo por viaje solo si la OC lo indica.
 4. QUIMIDROGA: respetar la vigencia (desde/hasta) y usar el tramo de 40 TN (44 TN solo si es megacamión).
+
+## Precedencia en el armador (implementado 19/11)
+
+`resolverTarifa` (`herramientas/armar_orden/armar_orden.js`) consulta en este orden:
+1. **overlay `catalogo/tarifas-confirmadas-julio.json`** — correcciones humanas de Julio, mandan.
+2. **tarifario de cliente**: RNM (`cargarTarifarioRNM`) y **QUIMIDROGA** (`cargarTarifarioQuimidroga`,
+   `precio_tn_40` + vigencia `desde`/`hasta`). €/TN.
+3. **export n8n** `datos/n8n-export/tarifas.csv`.
+4. **analogía confirmada** `catalogo/tarifa-por-analogia.json`.
+
+Pendiente de sumar al armador: **general** (`.xls`) y **Jarama** (`.xls`) — el general iría DEBAJO del
+export para no pisar rutas que ya funcionan. Ver `docs/pedido-armador-lee-tarifarios.md`.

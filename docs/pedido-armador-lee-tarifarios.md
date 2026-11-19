@@ -54,3 +54,33 @@ en el raw con `precio_fijo`/`um:"UN"`).
 Sigo grabando en `tarifas-confirmadas-julio.json` las rutas de **tarifario oficial** que el armador aún
 no lee (marcadas `por: "Julio (tarifario oficial <cliente>)"`), para no dejar pendiente una tarifa
 documentada. Al implementarse esto, esas entradas se pueden limpiar.
+
+---
+
+## Estado — DEV (19/11/2026)
+
+**QUIMIDROGA: IMPLEMENTADO.** El armador lee el tarifario oficial de QUIMIDROGA
+(`datos/gesruta/tarifarios/tarifario-QUIMIDROGA-2026.csv`) con `precio_tn_40` y **vigencia
+`desde`/`hasta`**. Código: `lib/datos.js::cargarTarifarioQuimidroga` + `armar_orden.js::tarifaQuimidroga`
+y la nueva precedencia en `resolverTarifa`. Test: `tarifa-quimidroga.test.js` (4 casos, verde).
+
+**Decisión de precedencia (punto 1, la resolví yo como dev):** el **overlay
+`tarifas-confirmadas-julio.json` va al TOPE** (correcciones humanas mandan sobre cualquier tarifario
+con error). Orden final:
+1. overlay confirmado-julio
+2. tarifario de cliente (RNM / QUIMIDROGA, €/TN, con vigencia)
+3. export n8n `tarifas.csv`
+4. analogía confirmada
+
+Dejé el **export por encima del general** (y el general sin sumar todavía, ver abajo) para **no
+regresionar** el golden, que se construyó sobre el export. RNM sigue mandando su €/TN (discrepancia
+Aveiro→Navia intacta).
+
+**Aceptación: cumplida.** golden verde; jacobo 714592 (Barcelona→Vilarinho) = **84,68 €/TN**,
+`tarifa_pendiente: false`, **sin** la entrada de overlay (la quité: estaba marcada `por: "Julio
+(tarifario oficial Quimidroga)"`); vigencia respetada (Espinho 2025 no matchea en 2026); RNM OK.
+
+**PENDIENTE (no bloquea la aceptación):** tarifario **general** (`.xls`, cp850) y **Jarama** (`.xls`).
+Necesitan convertir `.xls`→CSV (o un parser) y definir su lugar (el general va DEBAJO del export para
+no pisar rutas que ya funcionan). Mientras tanto el operador sigue usando el overlay para esos clientes
+(entradas marcadas `por: "Julio (tarifario oficial <cliente>)"`), que se limpian cuando se sumen.

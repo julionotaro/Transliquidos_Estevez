@@ -193,17 +193,6 @@
       "fecha": "2026-11-18",
       "por": "Julio",
       "nota": "Tarifa 2026 del tarifario QUIMICAS_DEL_JARAMA (Mejorada del Campo (Madrid) -> Landim (Portugal) = 46,35 EUR/TN, columna TARIFAS 2026). Cliente = Jarama (genera el pedido de compras a TLE); RNM Produtos Quimicos es el consignatario en Landim. INTERNACIONAL (Portugal). El tarifario tiene mas destinos desde Mejorada (Leon 30,90; Barcelona 49,955; Tarragona 42,745; Ourense 42,745; etc.) en datos/ si hace falta."
-    },
-    {
-      "cliente": "QUIMIDROGA, S.A.",
-      "origen": "BARCELONA",
-      "destino": "VILARINHO",
-      "precio": 84.68,
-      "vigente_desde": "2026-01-15",
-      "confirmado": true,
-      "fecha": "2026-11-19",
-      "por": "Julio (tarifario oficial Quimidroga)",
-      "nota": "Barcelona->Vilarinho STS (Endutex, Porto, PT). Esta en el tarifario oficial Quimidroga (tarifario-QUIMIDROGA-2026.csv, vigente 2026-01-15..12-31) pero NO en el export n8n (tarifas.csv), por eso el armador la marca pendiente. Quimidroga factura PT como NACIONAL (P, IVA 21). El armador hoy solo lee el tarifario propio de RNM; mientras no lea el de Quimidroga, estas rutas van por este overlay."
     }
   ]
 }

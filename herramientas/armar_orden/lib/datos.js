@@ -131,6 +131,21 @@ function cargarTarifarioRNM() {
   });
 }
 
+/** Tarifario oficial de QUIMIDROGA: EUR/TN por ciudad con vigencia (desde/hasta).
+ *  Cabecera: pais_origen;ciudad_origen;pais_destino;ciudad_destino;um;precio_tn_40;desde;hasta;precio_tn_44
+ *  Se usa precio_tn_40 (el de 44 TN es solo megacamion). */
+function cargarTarifarioQuimidroga() {
+  var txt = fs.readFileSync(p('datos/gesruta/tarifarios/tarifario-QUIMIDROGA-2026.csv'), 'utf8');
+  var filas = parseCsv(txt);
+  return filas.map(function (r) {
+    return {
+      origen: r.ciudad_origen, destino: r.ciudad_destino,
+      precio_tn: r.precio_tn_40, precio_tn_44: r.precio_tn_44,
+      desde: r.desde || '', hasta: r.hasta || '',
+    };
+  }).filter(function (r) { return r.origen && r.destino; });
+}
+
 module.exports = {
   ROOT: ROOT,
   cargarTarifas: cargarTarifas,
@@ -140,6 +155,7 @@ module.exports = {
   cargarAnalogiasConfirmadas: cargarAnalogiasConfirmadas,
   cargarTarifasConfirmadas: cargarTarifasConfirmadas,
   cargarTarifarioRNM: cargarTarifarioRNM,
+  cargarTarifarioQuimidroga: cargarTarifarioQuimidroga,
   cargarFlota: cargarFlota,
   cargarFlotaExterna: cargarFlotaExterna,
   cargarPadron: cargarPadron,

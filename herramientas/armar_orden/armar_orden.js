@@ -93,6 +93,21 @@ function tarifaRNM(origenCanon, destinoCanon, deps) {
   return null;
 }
 
+// Tarifario oficial de QUIMIDROGA: EUR/TN por ciudad, RESPETANDO la vigencia desde/hasta
+// (fIso = fecha de carga ISO). Usa precio_tn_40 (44 TN es solo megacamion). null si no matchea.
+function tarifaQuimidroga(origenCanon, destinoCanon, fIso, deps) {
+  if (!deps.quimidroga) { return null; }
+  for (var i = 0; i < deps.quimidroga.length; i++) {
+    var r = deps.quimidroga[i];
+    if (!cruce.coincideTexto(origenCanon, r.origen) || !cruce.coincideTexto(destinoCanon, r.destino)) { continue; }
+    if (r.desde && fIso && fIso < r.desde) { continue; } // fuera de vigencia (antes)
+    if (r.hasta && fIso && fIso > r.hasta) { continue; } // fuera de vigencia (despues)
+    var tn = parseFloat(String(r.precio_tn).replace(',', '.'));
+    if (isFinite(tn)) { return tn; }
+  }
+  return null;
+}
+
 // Filtra la tabla a filas cuyo material coincide con la carga o es generico
 // ('Cualquiera'/vacio). Desambigua rutas con varias tarifas por material (ej.
 // Caldas->Orember COLA 13,85 vs FINCAT 20,16). Nunca bloquea: si el filtro deja
@@ -107,16 +122,32 @@ function filtrarPorMaterial(tarifas, materialNombre) {
   return f.length ? f : tarifas;
 }
 
-// ---------- resolucion de tarifa: RNM-tarifario / tabla(material) / analogia ----------
+// ---------- resolucion de tarifa (precedencia Julio 19/11) --------------------
+// 1) overlay confirmado-julio (correcciones humanas, mandan sobre todo)
+// 2) tarifario de CLIENTE (RNM / QUIMIDROGA, EUR/TN, con vigencia)
+// 3) export n8n (tarifas.csv, desambiguado por material)
+// 4) analogia confirmada
 function resolverTarifa(razonSocial, origenCanon, destinoCanon, materialNombre, fIso, deps) {
-  // RNM: tarifario propio, EUR/TN.
-  if (cruce.norm(razonSocial).indexOf('RNM') >= 0) {
+  var cliNorm = cruce.norm(razonSocial);
+  // 1) OVERLAY de Julio (manda sobre tarifarios y export). Match cliente+origen+destino (+material).
+  var cf = deps.confirmadas.find(function (t) {
+    return cruce.norm(t.cliente) === cliNorm
+      && cruce.coincideTexto(origenCanon, t.origen)
+      && cruce.coincideTexto(destinoCanon, t.destino)
+      && (!t.material || cruce.norm(t.material) === cruce.norm(materialNombre));
+  });
+  if (cf) { return { precio: cf.precio, tipo: 'tn', via: 'confirmada-julio', motivo: null }; }
+  // 2) TARIFARIO OFICIAL DE CLIENTE (EUR/TN). RNM manda sobre el general (README).
+  if (cliNorm.indexOf('RNM') >= 0) {
     var tn = tarifaRNM(origenCanon, destinoCanon, deps);
     if (tn !== null) { return { precio: tn, tipo: 'tn', via: 'RNM-tarifario', motivo: null }; }
-    // sin ruta en el tarifario RNM -> sigue a tabla/analogia (y si nada, pending).
   }
+  if (cliNorm.indexOf('QUIMIDROGA') >= 0) {
+    var tq = tarifaQuimidroga(origenCanon, destinoCanon, fIso, deps);
+    if (tq !== null) { return { precio: tq, tipo: 'tn', via: 'QUIMIDROGA-tarifario', motivo: null }; }
+  }
+  // 3) EXPORT n8n (tabla): filtrada por material (desambigua), luego completa.
   var consulta = { cliente: razonSocial, origen: origenCanon, destino: destinoCanon, fecha: fIso };
-  // 1) tabla filtrada por material (desambigua), 2) tabla completa (no bloquear por material).
   var filt = filtrarPorMaterial(deps.tarifas, materialNombre);
   var r = tarifasMod.buscarTarifa(consulta, filt);
   if (r.estado === 'SIN_TARIFA' && filt !== deps.tarifas) {
@@ -125,17 +156,9 @@ function resolverTarifa(razonSocial, origenCanon, destinoCanon, materialNombre, 
   if (r.estado !== 'SIN_TARIFA' && r.tarifa) {
     return { precio: r.tarifa.valor, tipo: r.tarifa.tipo, via: r.estado, motivo: null };
   }
-  // 2b) TARIFA CONFIRMADA por Julio (overlay fuera del export). Match cliente+origen+destino (+material).
-  var cf = deps.confirmadas.find(function (t) {
-    return cruce.norm(t.cliente) === cruce.norm(razonSocial)
-      && cruce.coincideTexto(origenCanon, t.origen)
-      && cruce.coincideTexto(destinoCanon, t.destino)
-      && (!t.material || cruce.norm(t.material) === cruce.norm(materialNombre));
-  });
-  if (cf) { return { precio: cf.precio, tipo: 'tn', via: 'confirmada-julio', motivo: null }; }
-  // 3) Cascada por ANALOGIA CONFIRMADA (destino real sin fila -> precio de otra ruta).
+  // 4) Cascada por ANALOGIA CONFIRMADA (destino real sin fila -> precio de otra ruta).
   var a = deps.analogias.find(function (c) {
-    return cruce.norm(c.cliente) === cruce.norm(razonSocial)
+    return cruce.norm(c.cliente) === cliNorm
       && cruce.norm(c.origen) === cruce.norm(origenCanon)
       && cruce.norm(c.destino_real) === cruce.norm(destinoCanon);
   });
@@ -581,6 +604,7 @@ function cargarDeps() {
     analogias: datos.cargarAnalogiasConfirmadas(),
     confirmadas: datos.cargarTarifasConfirmadas(),
     rnm: datos.cargarTarifarioRNM(),
+    quimidroga: datos.cargarTarifarioQuimidroga(),
     flota: datos.cargarPadron(),
     clavo: datos.cargarClavo(),
   };
