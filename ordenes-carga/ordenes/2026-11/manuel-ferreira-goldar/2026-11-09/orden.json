@@ -1,0 +1,225 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-11-09",
+    "chofer": "MANUEL FERREIRA GOLDAR",
+    "cabeza": "9039",
+    "remolques": [
+      "R7936BCV",
+      "R3546BBG"
+    ],
+    "viajes": 3,
+    "albaranes": 4,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261120160629.pdf",
+    "choferes_tipo": "propio",
+    "_nota_armador": "Resuelto con armar_orden. M. Ferreira PROPIO (9039KDR). 2 hojas, 4 tramos FORESA con cambio de remolque (BCV->BBG->BCV, regla 'viaje nuevo si cambia remolque' secuencial -> 3 viajes). Leg1 Orember Ourense 9/11 (2038982, 24.960, R7936BCV) 13,85 idx acumulada. Leg2 Termolan Vila das Aves PT 9-10/11 (2038684, 23.000, R3546BBG) 28,89 idx normal; peso 23.000 = CMR casilla 13 (sin bascula en PT, peso_ok_redondo). Leg3 Nefab Pontecaldelas 12/11 (2039210, 25.260, R7936BCV) 9,60 idx normal. Leg4 Orember Ourense 13/11 (2038088, 25.220, R7936BCV) 13,85 idx acumulada. Pesos del CMR casilla 13. Todas idx 0,1553 (nov 1a quinc). KM de la ficha (propio)."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "9039",
+        "verificar": {
+          "matricula": "9039KDR",
+          "remolque": "R7936BCV",
+          "chofer": "MANUEL FERREIRA GOLDAR"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2038982",
+          "salida": "09/11/2026",
+          "llegada": "09/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,960",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "345,70",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "inicio": "947509",
+            "fin": "947633",
+            "carga": "124"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "9039",
+        "verificar": {
+          "matricula": "9039KDR",
+          "remolque": "R3546BBG",
+          "chofer": "MANUEL FERREIRA GOLDAR"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "TERMO",
+            "esperado": "TERMOLAN, S.A."
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2038684",
+          "salida": "09/11/2026",
+          "llegada": "10/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "28,89",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "664,47",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "947779",
+            "fin": "947967",
+            "carga": "188"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    },
+    {
+      "cabecera": {
+        "cabeza": "9039",
+        "verificar": {
+          "matricula": "9039KDR",
+          "remolque": "R7936BCV",
+          "chofer": "MANUEL FERREIRA GOLDAR"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "NEFAB",
+            "esperado": "NEFAB PONTEV. SL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2039210",
+          "salida": "12/11/2026",
+          "llegada": "12/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,260",
+              "precio": "9,60",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "242,50",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "948162",
+            "fin": "948209",
+            "carga": "47"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "OR",
+            "esperado": "OREMBER"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2038088",
+          "salida": "13/11/2026",
+          "llegada": "13/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "25,220",
+              "precio": "13,85",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "349,30",
+              "factor": "0,1553",
+              "cargar": false
+            }
+          },
+          "km": {
+            "inicio": "948254",
+            "fin": "948378",
+            "carga": "124"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}

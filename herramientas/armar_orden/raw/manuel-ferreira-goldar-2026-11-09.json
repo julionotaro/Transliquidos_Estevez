@@ -1,0 +1,35 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261120160629.pdf (9 pags: 2 hojas ficha TLE p1-p2 + 4 CMR FORESA + 3 tickets bascula). Manuel Ferreira Goldar (TLE PROPIO), tractora 9039KDR (cabeza 9039). 2 hojas, 4 tramos FORESA, CAMBIO DE REMOLQUE (BCV->BBG->BCV, observaciones ficha p1: lunes 9/11 engancha R7936BCV 1 viaje a Ourense; pola tarde engancha R3546BBG, lava y carga COLA para Termolan; 12-13/11 vuelve a R7936BCV). Regla 'viaje nuevo si cambia tractora/remolque' (secuencial) -> 3 viajes. Tramos: leg1 Orember Ourense 9/11 (CMR 2038982, alb 24.960, bascula FINSA 24.900), leg2 Termolan Vila das Aves PT 9-10/11 (CMR 2038684, alb 23.000, R3546BBG), leg3 Nefab Pontecaldelas 12/11 (CMR 2039210, alb 25.260, bascula Nefab 25.280), leg4 Orember Ourense 13/11 (CMR 2038088, alb 25.220, bascula FINSA 25.060). PESOS del CMR casilla 13 (albaran; bascula difiere +-60/160 kg, precedente = albaran). Todas COLA (RES 2090/3169/2130/2090). Orember -> idx ACUMULADA 0,1553 (carga nov 1a quinc). Termolan y Nefab -> idx G normal. KM de la ficha (propio, van a Gesruta; delta = tramo con carga ida). Dietas (control interno) NO van a Gesruta. Nefab Pontecaldelas: tarifa a resolver por el armador (destino nuevo).",
+  "escaneo": "20261120160629.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-09",
+  "chofer": "MANUEL FERREIRA GOLDAR",
+  "cabeza": "9039",
+  "viajes": [
+    {
+      "matricula": "9039KDR",
+      "cabeza": "9039",
+      "remolque": "R7936BCV",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2038982", "salida": "09/11/2026", "llegada": "09/11/2026", "peso_kg": 24960, "km_inicio": 947509, "km_fin": 947633 }
+      ]
+    },
+    {
+      "matricula": "9039KDR",
+      "cabeza": "9039",
+      "remolque": "R3546BBG",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TERMOLAN", "carga_lit": "COLA", "referencia": "2038684", "salida": "09/11/2026", "llegada": "10/11/2026", "peso_kg": 23000, "peso_ok_redondo": true, "km_inicio": 947779, "km_fin": 947967 }
+      ]
+    },
+    {
+      "matricula": "9039KDR",
+      "cabeza": "9039",
+      "remolque": "R7936BCV",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "NEFAB", "carga_lit": "COLA", "referencia": "2039210", "salida": "12/11/2026", "llegada": "12/11/2026", "peso_kg": 25260, "km_inicio": 948162, "km_fin": 948209 },
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "OREMBER", "carga_lit": "COLA", "referencia": "2038088", "salida": "13/11/2026", "llegada": "13/11/2026", "peso_kg": 25220, "km_inicio": 948254, "km_fin": 948378 }
+      ]
+    }
+  ]
+}
