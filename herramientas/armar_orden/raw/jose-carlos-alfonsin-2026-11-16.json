@@ -1,0 +1,18 @@
+{
+  "_nota": "CARGA OFICIAL - leido de entrada/20261120160135.pdf (9 pags: ficha TLE p1 + CMR/albaran FORESA 2040316 p2 + OC Quimidroga 715088 p3 con nota manuscrita REPARTO 90 + CMR/albaran Quimicalis Santo Tirso 83349572 9.160 p4-6 + CMR/albaran Tintas 2000 Maia 83349574 12.040 p7-9). Jose Carlos Alfonsin (AUTONOMO), tractora 4916NJG (cabeza 4916), remolque R1783BBJ. 1 hoja con 2 tramos -> 1 viaje, 2 albaranes. T1 FORESA Caldas->IP Decor Tordera COLA (RES0540) 24.220, ref corto 2040316 (CMR largo 5030299999). T2 QUIMIDROGA REPARTO (D-08, doble destino): acetato de metilo tecnico Barcelona(QD11)->Quimicalis Santo Tirso 9.160 (alb 83349572) + Fabrica Tintas 2000 Maia 12.040 (alb 83349574) = 21.200 kg combinado -> 1 albaran a la zona O PORTO 84,68 EUR/TN + linea REP 90. Nota manuscrita en OC: 'REPARTO 90 - se factura el viaje a la tarifa del destino'. Ambos destinos (Santo Tirso, Maia) estan en zona Porto = 84,68 (Santo Tirso tiene tarifa propia; Maia cae en O PORTO). Peso combinado 21.200 < 23 -> minimo 23 TN. Ref factura Quimidroga = OC 715088. KM de autonomo: odometro por tramo + vacio explicito de la ficha (T1 126 vacio, T2 195 vacio).",
+  "escaneo": "20261120160135.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-16",
+  "chofer": "JOSE CARLOS ALFONSIN",
+  "cabeza": "4916",
+  "viajes": [
+    {
+      "matricula": "4916NJG",
+      "remolque": "R1783BBJ",
+      "albaranes": [
+        { "cliente_lit": "FORESA IND.QUIMICAS DEL NOROESTE, S.A.", "origen_lit": "CALDAS DE REIS", "destino_lit": "TORDERA", "carga_lit": "COLA", "referencia": "2040316", "salida": "16/11/2026", "llegada": "17/11/2026", "peso_kg": 24220, "km_inicio": 102539, "km_fin": 103739, "km_vacio": 126 },
+        { "cliente_lit": "QUIMIDROGA, S.A.", "origen_lit": "BARCELONA", "destino_lit": "O PORTO", "carga_lit": "ACETATO METILO", "referencia": "715088", "salida": "18/11/2026", "llegada": "20/11/2026", "peso_kg": 21200, "reparto": 90, "km_inicio": 103865, "km_fin": 105054, "km_vacio": 195 }
+      ]
+    }
+  ]
+}

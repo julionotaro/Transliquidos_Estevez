@@ -1,0 +1,121 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-11-16",
+    "chofer": "JOSE CARLOS ALFONSIN",
+    "cabeza": "4916",
+    "remolques": [
+      "R1783BBJ"
+    ],
+    "viajes": 1,
+    "albaranes": 2,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261120160135.pdf",
+    "choferes_tipo": "autonomo",
+    "_nota_armador": "Resuelto con armar_orden. Alfonsin AUTONOMO (km por tramo + vacio explicito de la ficha). Albaran 1: FORESA Caldas->IP Decor Tordera COLA 24.220, ref corto 2040316. IDX G 2a quincena nov PENDIENTE: el factor FORESA-BRESFOR 16-30/11 no esta en indexacion-gasoleo.json (suplemento solo hasta 15/11) -> linea idx con factor vacio, estado INDICE_PENDIENTE en el registro; regenerar al publicarse. Albaran 2: QUIMIDROGA REPARTO (D-08, doble destino): acetato de metilo Barcelona->Quimicalis Santo Tirso 9.160 (alb 83349572) + Fabrica Tintas 2000 Maia 12.040 (alb 83349574) = 21.200 kg combinado -> 1 albaran a la zona O PORTO 84,68 EUR/TN (min 23 TN) + linea REP 90, idx solo sobre porte. Ref factura = OC 715088."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "4916",
+        "verificar": {
+          "matricula": "4916NJG",
+          "remolque": "R1783BBJ",
+          "chofer": "JOSE CARLOS ALFONSIN"
+        },
+        "tipo": "autonomo"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "9731",
+            "esperado": "TORDERA"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2040316",
+          "salida": "16/11/2026",
+          "llegada": "17/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,220",
+              "precio": "72,36",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.752,56",
+              "factor": null
+            }
+          },
+          "km": {
+            "inicio": "102539",
+            "fin": "103739",
+            "carga": "1200",
+            "vacio": "126"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "403",
+            "esperado": "QUIMIDROGA, S.A."
+          },
+          "origen": {
+            "codigo": "B",
+            "esperado": "BARCELONA"
+          },
+          "destino": {
+            "codigo": "OPORT",
+            "esperado": "O PORTO"
+          },
+          "carga": {
+            "codigo": "53",
+            "esperado": "ACETATO METILO"
+          },
+          "referencia": "715088",
+          "salida": "18/11/2026",
+          "llegada": "20/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,000",
+              "precio": "84,68",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "1.947,64",
+              "factor": "0,1600"
+            },
+            "reparto": {
+              "concepto": "REP",
+              "cantidad": "1",
+              "precio": "90,00"
+            }
+          },
+          "km": {
+            "inicio": "103865",
+            "fin": "105054",
+            "carga": "1189",
+            "vacio": "195"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
