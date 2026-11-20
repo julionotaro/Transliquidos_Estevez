@@ -1,0 +1,65 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261120161229.pdf (17 pags: ficha/parte TLE p1 + 3 talones TLE (#11 p10, #12 p7, #13 p2) + albaranes de terceros). CLAVO (FRIGOS, POR KM). Luis M. Trinanes Vidal (TLE, 6124HZT/R8839BDR). Odometro continuo con 160815 (fin 361349). LEIDO CRUZANDO LOS 3 TALONES. 3 tramos: V1 11-12/11 (talon 11) Tordesillas(Clavo) -> reparto Palencia(Alcopa)+Burgos(Rodriguez y Renes)+Burgos(Campofrio)+Amorebieta/Bilbao(Eroski-STEF), congelado, 344 km talon (odo 361349->361693=344, match), 7 maderas; V2 13/11 (talon 12) Salvatierra-Alava(Illargui) -> Caldas de Reis(Clavo), PAN, 683 km talon (odo 361780->362463=683, match), sin palets en talon; V3 13-16/11 (talon 13) Caldas de Reis(Clavo) -> Tordesillas(Clavo), congelado, 466 km talon (odo 362463->362929=466, match), sin palets. sentido/tarifa los deriva el armador. Puntos (Palencia, Burgos, Amorebieta, Salvatierra) pueden faltar en base Gesruta -> REVISAR. idx nov agregada tipo FORESA (factor pendiente). Archivado PER-TALON: T11=talon11/V1, T12=talon12/V2, T13=talon13/V3.",
+  "escaneo": "20261120161229.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-11",
+  "chofer": "LUIS M. TRINANES VIDAL",
+  "cabeza": "6124",
+  "viajes": [
+    {
+      "matricula": "6124HZT",
+      "remolque": "R8839BDR",
+      "albaranes": [
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "AMOREBIETA",
+          "destinos": [
+            "Palencia",
+            "Burgos",
+            "Burgos",
+            "Amorebieta"
+          ],
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-11-11-T11",
+          "salida": "11/11/2026",
+          "llegada": "12/11/2026",
+          "km_inicio": 361349,
+          "km_fin": 361693,
+          "km_facturable": 344,
+          "palets": 7,
+          "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "SALVATIERRA",
+          "destino_lit": "CALDAS DE REIS",
+          "carga_lit": "PAN",
+          "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-11-13-T12",
+          "salida": "13/11/2026",
+          "llegada": "13/11/2026",
+          "km_inicio": 361780,
+          "km_fin": 362463,
+          "km_facturable": 683,
+          "km_vacio": 87
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-11-13-T13",
+          "salida": "13/11/2026",
+          "llegada": "16/11/2026",
+          "km_inicio": 362463,
+          "km_fin": 362929,
+          "km_facturable": 466,
+          "km_vacio": 0
+        }
+      ]
+    }
+  ]
+}

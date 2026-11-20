@@ -1,0 +1,176 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-11-11",
+    "chofer": "LUIS M. TRINANES VIDAL",
+    "cabeza": "6124",
+    "remolques": [
+      "R8839BDR"
+    ],
+    "viajes": 1,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "cliente": "CLAVO FOOD FACTORY (FRIGOS, por km)",
+    "source_ficha": "20261120161229.pdf",
+    "choferes_tipo": "propio",
+    "_nota_armador": "CLAVO FRIGOS por km. Luis Trinanes 6124HZT. 3 tramos (talones 11/12/13), km del talon (cruza con odometro). V1 11-12/11 T11 Tordesillas -> Palencia+Burgos(2)+Amorebieta, S 344km, 7 palets. V2 13/11 T12 Salvatierra(Illargui) -> Caldas, PAN, R 683km. V3 13-16/11 T13 Caldas -> Tordesillas, S 466km. idx nov PENDIENTE (% no publicado) -> idx factor vacio acumulada. Palets solo Excel."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "6124",
+        "verificar": {
+          "matricula": "6124HZT",
+          "remolque": "R8839BDR",
+          "chofer": "LUIS M. TRINANES"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "AMORE",
+            "esperado": "AMOREBIETA"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "11/11/2026",
+          "llegada": "12/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "destinos": [
+            "Palencia",
+            "Burgos",
+            "Burgos",
+            "Amorebieta"
+          ],
+          "campo2": "PALEN/BURGO(2)/AMOR",
+          "palets": 7,
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "344,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "522,88",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "344",
+            "inicio": "361349",
+            "fin": "361693",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "SALVA",
+            "esperado": "SALVATIERRA"
+          },
+          "destino": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "carga": {
+            "codigo": "PAN",
+            "esperado": "PAN"
+          },
+          "referencia": "",
+          "salida": "13/11/2026",
+          "llegada": "13/11/2026",
+          "facturacion": "km",
+          "sentido": "R",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "683,000",
+              "precio": "1,3100",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "894,73",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "683",
+            "inicio": "361780",
+            "fin": "362463",
+            "vacio": "87"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "13/11/2026",
+          "llegada": "16/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "466,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "708,32",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "466",
+            "inicio": "362463",
+            "fin": "362929",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
