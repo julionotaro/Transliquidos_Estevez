@@ -1,0 +1,63 @@
+{
+  "_nota": "CARGA OFICIAL - entrada/20261120161537.pdf (11 pags: ficha/parte TLE p1 + 3 talones TLE (#14 p9, #15 p4, #16 p2) + albaranes de terceros). CLAVO (FRIGOS, POR KM). Luis M. Trinanes Vidal (TLE, 6124HZT/R8839BDR). Odometro continuo con 161229 (fin 362929). LEIDO CRUZANDO LOS 3 TALONES. 3 tramos: V1 16/11 (talon 14) Tordesillas(Clavo) -> Reinosa(Clavo), congelado+hierros, 206 km talon (odo 362929->363135=206, match), SENTIDO U (Tordesillas-Reinosa, fijo 315), sin palets; V2 16-17/11 (talon 15) Reinosa (Clavo+Hapi Iberica, 2 cargas) -> Tordesillas(Clavo), congelado, 208 km talon (odo 363135->363343=208, match), SENTIDO U (fijo 315), sin palets; V3 17/11 (talon 16) Tordesillas(Clavo) -> Getafe(TopGel/Montfrisa), congelado, 201 km talon (odo 363343->363544=201, match), sentido S, 32 maderas. sentido/tarifa los deriva el armador (U = um UN cantidad 1 precio 315). idx nov agregada tipo FORESA (factor pendiente). Archivado PER-TALON: T14=talon14/V1, T15=talon15/V2, T16=talon16/V3.",
+  "escaneo": "20261120161537.pdf",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-16",
+  "chofer": "LUIS M. TRINANES VIDAL",
+  "cabeza": "6124",
+  "viajes": [
+    {
+      "matricula": "6124HZT",
+      "remolque": "R8839BDR",
+      "albaranes": [
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "REINOSA",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-11-16-T14",
+          "salida": "16/11/2026",
+          "llegada": "16/11/2026",
+          "km_inicio": 362929,
+          "km_fin": 363135,
+          "km_facturable": 206,
+          "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "REINOSA",
+          "origenes": [
+            "Reinosa",
+            "Reinosa"
+          ],
+          "destino_lit": "TORDESILLAS",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-11-16-T15",
+          "salida": "16/11/2026",
+          "llegada": "17/11/2026",
+          "km_inicio": 363135,
+          "km_fin": 363343,
+          "km_facturable": 208,
+          "km_vacio": 0
+        },
+        {
+          "cliente_lit": "CLAVO FOOD FACTORY, S.A.",
+          "origen_lit": "TORDESILLAS",
+          "destino_lit": "GETAFE",
+          "carga_lit": "CONGELADO",
+          "referencia": "",
+          "archivo": "luis-m-trinanes-vidal-2026-11-17-T16",
+          "salida": "17/11/2026",
+          "llegada": "17/11/2026",
+          "km_inicio": 363343,
+          "km_fin": 363544,
+          "km_facturable": 201,
+          "palets": 32,
+          "km_vacio": 0
+        }
+      ]
+    }
+  ]
+}

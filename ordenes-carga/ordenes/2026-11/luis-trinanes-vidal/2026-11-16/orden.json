@@ -1,0 +1,174 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-11-16",
+    "chofer": "LUIS M. TRINANES VIDAL",
+    "cabeza": "6124",
+    "remolques": [
+      "R8839BDR"
+    ],
+    "viajes": 1,
+    "albaranes": 3,
+    "estado": "pendiente_carga",
+    "cliente": "CLAVO FOOD FACTORY (FRIGOS, por km)",
+    "source_ficha": "20261120161537.pdf",
+    "choferes_tipo": "propio",
+    "_nota_armador": "CLAVO FRIGOS. Luis Trinanes 6124HZT. 3 tramos (talones 14/15/16). V1 16/11 T14 Tordesillas -> Reinosa, SENTIDO U (Tordesillas-Reinosa) fijo 315 (um UN cant 1), congelado+hierros, odo 206km. V2 16-17/11 T15 Reinosa (Clavo+Hapi, 2 cargas) -> Tordesillas, U fijo 315, odo 208km. V3 17/11 T16 Tordesillas -> Getafe(TopGel), S 201km x1,52, 32 palets. idx nov PENDIENTE -> idx factor vacio acumulada. Palets solo Excel."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "6124",
+        "verificar": {
+          "matricula": "6124HZT",
+          "remolque": "R8839BDR",
+          "chofer": "LUIS M. TRINANES"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "REIN",
+            "esperado": "REINOSA"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "16/11/2026",
+          "llegada": "16/11/2026",
+          "facturacion": "km",
+          "sentido": "U",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "315,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "315,00",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "206",
+            "inicio": "362929",
+            "fin": "363135",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "REIN",
+            "esperado": "REINOSA"
+          },
+          "destino": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "16/11/2026",
+          "llegada": "17/11/2026",
+          "facturacion": "km",
+          "sentido": "U",
+          "origenes": [
+            "Reinosa",
+            "Reinosa"
+          ],
+          "campo1": "REINO(2)",
+          "lineas": {
+            "porte": {
+              "um": "UN",
+              "cantidad": "1",
+              "precio": "315,00",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "315,00",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "208",
+            "inicio": "363135",
+            "fin": "363343",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        },
+        {
+          "cliente": {
+            "codigo": "4",
+            "esperado": "CLAVO FOOD FACTORY, S.A."
+          },
+          "origen": {
+            "codigo": "TORD",
+            "esperado": "TORDESILLAS"
+          },
+          "destino": {
+            "codigo": "GETAF",
+            "esperado": "GETAFE"
+          },
+          "carga": {
+            "codigo": "6",
+            "esperado": "CONGELADO"
+          },
+          "referencia": "",
+          "salida": "17/11/2026",
+          "llegada": "17/11/2026",
+          "facturacion": "km",
+          "sentido": "S",
+          "palets": 32,
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "201,000",
+              "precio": "1,5200",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "305,52",
+              "factor": null,
+              "cargar": false
+            }
+          },
+          "km": {
+            "carga": "201",
+            "inicio": "363343",
+            "fin": "363544",
+            "vacio": "0"
+          },
+          "tarifa_pendiente": false
+        }
+      ]
+    }
+  ]
+}
