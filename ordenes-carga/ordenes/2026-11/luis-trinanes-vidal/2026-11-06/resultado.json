@@ -1,0 +1,45 @@
+{
+  "orden": "ordenes-carga/ordenes/2026-11/luis-trinanes-vidal/2026-11-06/orden.json",
+  "empresa": "TLE",
+  "corrida": "2026-11-20T18:09:46",
+  "bot_version": "viajes-2",
+  "viajes": [
+    {
+      "cabeza": "6124",
+      "chofer": "LUIS M. TRINANES",
+      "nro_viaje_gesruta": "",
+      "nro_viaje_crop": "nro_viaje_v1.png",
+      "estado": "grabado",
+      "motivo": "",
+      "albaranes": [
+        {
+          "referencia": "",
+          "nro_albaran_gesruta": "01",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        },
+        {
+          "referencia": "",
+          "nro_albaran_gesruta": "02",
+          "estado": "PEDIDO",
+          "motivo": "destino",
+          "pendiente_de": [
+            "destino"
+          ]
+        },
+        {
+          "referencia": "",
+          "nro_albaran_gesruta": "03",
+          "estado": "CARGADO",
+          "motivo": "km_form_propio (temporal)",
+          "pendiente_de": [
+            "km_form_propio (temporal)"
+          ]
+        }
+      ]
+    }
+  ]
+}
