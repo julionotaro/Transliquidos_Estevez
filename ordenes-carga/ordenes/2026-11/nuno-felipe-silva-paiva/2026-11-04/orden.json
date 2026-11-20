@@ -1,0 +1,116 @@
+{
+  "empresa": "TLE",
+  "_meta": {
+    "fecha_inicio": "2026-11-04",
+    "chofer": "NUNO FELIPE SILVA PAIVA",
+    "cabeza": "8504",
+    "remolques": [
+      "R4905BDF"
+    ],
+    "viajes": 1,
+    "albaranes": 2,
+    "estado": "pendiente_carga",
+    "source_ficha": "20261120160717.pdf",
+    "choferes_tipo": "propio",
+    "_nota_armador": "Resuelto con armar_orden. La ficha tiene 3 viajes; el viaje 1 (FENOL Moeve Huelva->FORESA Caldas, 4-5/11, 24.340) NO tiene documento en el escaneo -> fuera de la orden, va REVISAR en el registro; falta el albaran. Aca: FORESA Termolan + BRESFOR Teruel."
+  },
+  "viajes": [
+    {
+      "cabecera": {
+        "cabeza": "8504",
+        "verificar": {
+          "matricula": "8504KDR",
+          "remolque": "R4905BDF",
+          "chofer": "NUNO FELIPE SILVA PAIVA"
+        },
+        "tipo": "propio"
+      },
+      "albaranes": [
+        {
+          "cliente": {
+            "codigo": "1",
+            "esperado": "FORESA IND.QUIMICAS DEL NOROESTE, S.A."
+          },
+          "origen": {
+            "codigo": "1",
+            "esperado": "CALDAS DE REIS"
+          },
+          "destino": {
+            "codigo": "TERMO",
+            "esperado": "TERMOLAN, S.A."
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "2038008",
+          "salida": "06/11/2026",
+          "llegada": "07/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "24,280",
+              "precio": "28,89",
+              "concepto_esperado": "P",
+              "iva_esperado": "21"
+            },
+            "indexacion": {
+              "concepto": "G",
+              "cantidad": "701,45",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "16076",
+            "fin": "16263",
+            "carga": "187"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "FORESA Caldas->TERMOLAN (Vila das Aves, Santo Tirso, PT) TERMO. RES3169->COLA. FORESA cliente ESPANOL -> nacional P IVA 21 (aunque entregue en PT). Tarifa 28,89 (tarifas.csv). Idx G FORESA-BRESFOR 2a quinc nov 0,1553. Ref 2038008. Peso 24.280."
+        },
+        {
+          "cliente": {
+            "codigo": "42",
+            "esperado": "BRESFOR IND. DO FORMOL, S.A."
+          },
+          "origen": {
+            "codigo": "AVEIR",
+            "esperado": "AVEIRO"
+          },
+          "destino": {
+            "codigo": "TE",
+            "esperado": "TERUEL"
+          },
+          "carga": {
+            "codigo": "1",
+            "esperado": "COLA"
+          },
+          "referencia": "5050142019",
+          "salida": "07/11/2026",
+          "llegada": "10/11/2026",
+          "lineas": {
+            "porte": {
+              "um": "TN",
+              "cantidad": "23,820",
+              "precio": "56,00",
+              "concepto_esperado": "PI",
+              "iva_esperado": "0"
+            },
+            "indexacion": {
+              "concepto": "GPT",
+              "cantidad": "1.333,92",
+              "factor": "0,1553"
+            }
+          },
+          "km": {
+            "inicio": "16389",
+            "fin": "17225",
+            "carga": "836"
+          },
+          "tarifa_pendiente": false,
+          "_nota": "BRESFOR Aveiro->Finsa Cella (TERUEL TE). RES1350->COLA. Cliente PORTUGUES -> PI IVA 0 GPT. Tarifa 56,00. Idx GPT 2a quinc nov 0,1553. Ref 5050142019 (Doc int). Peso guia 23.820 (bascula FINSA 23.780)."
+        }
+      ]
+    }
+  ]
+}

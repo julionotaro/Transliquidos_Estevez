@@ -1,0 +1,39 @@
+{
+  "_nota": "Nuno Felipe Silva Paiva 8504KDR, propio. Ficha 20261120160717. 3 viajes en la ficha PERO el viaje 1 (FENOL Moeve Huelva->FORESA Caldas, 4-5/11, 24.340) NO tiene documento en el escaneo -> queda FUERA del armador, se marca REVISAR en el registro y se pide el albaran a Julio. Aca van los 2 documentados (FORESA Termolan + BRESFOR Teruel). Misma tractora+remolque R4905BDF.",
+  "empresa": "TLE",
+  "fecha_inicio": "2026-11-06",
+  "chofer": "NUNO FELIPE SILVA PAIVA",
+  "cabeza": "8504",
+  "viajes": [
+    {
+      "matricula": "8504KDR",
+      "remolque": "R4905BDF",
+      "albaranes": [
+        {
+          "cliente_lit": "FORESA IND. QUIMICAS DEL NOROESTE, S.A.",
+          "origen_lit": "CALDAS DE REIS",
+          "destino_lit": "TERMOLAN",
+          "carga_lit": "COLA",
+          "referencia": "2038008",
+          "salida": "06/11/2026",
+          "llegada": "07/11/2026",
+          "km_inicio": 16076,
+          "km_fin": 16263,
+          "peso_kg": 24280
+        },
+        {
+          "cliente_lit": "BRESFOR IND. DO FORMOL, S.A.",
+          "origen_lit": "AVEIRO",
+          "destino_lit": "TERUEL",
+          "carga_lit": "COLA",
+          "referencia": "5050142019",
+          "salida": "07/11/2026",
+          "llegada": "10/11/2026",
+          "km_inicio": 16389,
+          "km_fin": 17225,
+          "peso_kg": 23820
+        }
+      ]
+    }
+  ]
+}
